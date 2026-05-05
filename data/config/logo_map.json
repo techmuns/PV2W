@@ -1,33 +1,39 @@
 {
-  "_notes": "Logo_URL is intentionally null for all entries: the dashboard renders an original abstract brand badge inline (see brandBadge() in js/dashboard.js) instead of fetching real OEM logos. To replace with a verified official logo later, drop the URL into the matching entry — the renderer will pick it up.",
-  "Maruti": {
-    "url": null,
-    "source": null,
-    "source_url": null,
+  "_notes": "OEM logo URLs. Wikimedia Special:FilePath endpoints — stable redirects to whatever Commons has for the canonical filename. The dashboard's <img> tries this URL; on load error it falls back to the inline abstract badge generator (brandBadge in js/dashboard.js). To switch to a self-hosted asset later, replace 'url' with a local path like '/assets/logos/maruti.svg' — the dashboard will use it as-is.",
+  "_priority": "1) local cached file (set 'url' to /assets/...) → 2) remote URL → 3) inline abstract badge",
+  "Industry": {
+    "url":          null,
+    "source":       "Generated abstract badge",
+    "source_url":   null,
+    "brand_color":  "#334E68",
     "last_updated": null
+  },
+  "Maruti": {
+    "url":          "https://commons.wikimedia.org/wiki/Special:FilePath/Maruti%20Suzuki%20logo.svg",
+    "source":       "Wikimedia fallback",
+    "source_url":   "https://commons.wikimedia.org/wiki/File:Maruti_Suzuki_logo.svg",
+    "brand_color":  "#C95A5A",
+    "last_updated": "2026-05-05"
   },
   "Hyundai": {
-    "url": null,
-    "source": null,
-    "source_url": null,
-    "last_updated": null
+    "url":          "https://commons.wikimedia.org/wiki/Special:FilePath/Hyundai%20Motor%20Company%20logo.svg",
+    "source":       "Wikimedia fallback",
+    "source_url":   "https://commons.wikimedia.org/wiki/File:Hyundai_Motor_Company_logo.svg",
+    "brand_color":  "#0F3D75",
+    "last_updated": "2026-05-05"
   },
   "M&M": {
-    "url": null,
-    "source": null,
-    "source_url": null,
-    "last_updated": null
+    "url":          "https://commons.wikimedia.org/wiki/Special:FilePath/Mahindra%20logo.svg",
+    "source":       "Wikimedia fallback",
+    "source_url":   "https://commons.wikimedia.org/wiki/File:Mahindra_logo.svg",
+    "brand_color":  "#7A2E3A",
+    "last_updated": "2026-05-05"
   },
   "Tata Motors PV": {
-    "url": null,
-    "source": null,
-    "source_url": null,
-    "last_updated": null
-  },
-  "Industry": {
-    "url": null,
-    "source": null,
-    "source_url": null,
-    "last_updated": null
+    "url":          "https://commons.wikimedia.org/wiki/Special:FilePath/Tata%20Motors%20Logo.svg",
+    "source":       "Wikimedia fallback",
+    "source_url":   "https://commons.wikimedia.org/wiki/File:Tata_Motors_Logo.svg",
+    "brand_color":  "#1E4E8C",
+    "last_updated": "2026-05-05"
   }
 }

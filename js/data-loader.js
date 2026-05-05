@@ -89,9 +89,11 @@
         r.Image_URL = entry.url;
         r.Image_Source = entry.source || null;
         r.Image_Source_URL = entry.source_url || null;
+        r.Image_Status = entry.status || null;
         if (entry.last_updated) r.Image_Last_Updated = entry.last_updated;
       } else {
         r.Image_URL = null;
+        r.Image_Status = null;
       }
     });
   }

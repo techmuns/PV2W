@@ -234,10 +234,34 @@
     return fn(brand.color);
   }
 
+  /* Render the logo box. Priority:
+       1) Logo_URL (real OEM logo from Company_Info)
+       2) on <img> error: abstract brand badge (also used for Industry,
+          which has Logo_URL = null by design)
+     The container always renders something so layout doesn't shift. */
   function applyLogoMark(el, company, sizeClass = "") {
-    el.className = `logo-mark logo-mark-badge ${sizeClass}`.trim();
+    const info = getCompanyInfo(state.fy, company);
+    const url  = info && info.Logo_URL;
+    const baseClass = `logo-mark ${sizeClass}`.trim();
+
+    if (!url) {
+      el.className = `${baseClass} logo-mark-badge`;
+      el.removeAttribute("style");
+      el.innerHTML = brandBadge(company);
+      return;
+    }
+
+    el.className = `${baseClass} logo-mark-image`;
     el.removeAttribute("style");
-    el.innerHTML = brandBadge(company);
+    el.innerHTML = "";
+    const img = document.createElement("img");
+    img.alt = `${company} logo`;
+    img.onerror = () => {
+      el.className = `${baseClass} logo-mark-badge`;
+      el.innerHTML = brandBadge(company);
+    };
+    img.src = url;
+    el.appendChild(img);
   }
 
   /* Vehicle art — original abstract side-view silhouettes built from
@@ -690,10 +714,13 @@
       const sigLabel = sig === "Positive" ? "Gain" : sig === "Negative" ? "Loss" : "Stable";
       const fresh = r ? freshness(r.Last_Updated) : "Missing";
 
-      /* Abstract vehicle art (SVG silhouette by segment). Real
-         photos / Image_URL aren't used in the visible UI — the
-         field stays in the schema for a future replacement layer. */
-      const imageSlot = `<div class="veh-image-slot is-art">${vehicleArt(r ? r.Segment : null)}</div>`;
+      /* Vehicle image: render Image_URL when present; on <img> load
+         error remove the slot entirely (no "Image pending" state).
+         The slot grows from compact → larger on hover via CSS. */
+      const imageSlot = (r && r.Image_URL)
+        ? `<div class="veh-image-slot has-image"><img class="veh-image" src="${r.Image_URL}" alt="${name}"
+             onerror="this.parentElement.remove();"></div>`
+        : "";
 
       /* Expand rows — only those with real values are kept. */
       const expandRows = !placeholder ? [
@@ -1145,10 +1172,24 @@
                 || allRows[allRows.length - 1]
                 || null;
 
-    /* Header art — abstract vehicle silhouette by segment. */
+    /* Header image — uses the same Image_URL the card uses; on load
+       error the slot collapses to its empty box (no fallback art). */
     const imgEl = $("#vmodal-image");
-    imgEl.className = "vmod-image is-art";
-    imgEl.innerHTML = vehicleArt(current ? current.Segment : null);
+    if (current && current.Image_URL) {
+      imgEl.className = "vmod-image has-image";
+      imgEl.innerHTML = "";
+      const img = document.createElement("img");
+      img.alt = vehicleName;
+      img.onerror = () => {
+        imgEl.className = "vmod-image";
+        imgEl.innerHTML = "";
+      };
+      img.src = current.Image_URL;
+      imgEl.appendChild(img);
+    } else {
+      imgEl.className = "vmod-image";
+      imgEl.innerHTML = "";
+    }
 
     $("#vmodal-title").textContent   = `${vehicleName} — ${company}`;
     const segLabel = current && current.Segment ? current.Segment : "Segment pending";

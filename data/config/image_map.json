@@ -1,41 +1,185 @@
 {
-  "_notes": "Vehicle image URLs. Source verified URLs only from official OEM product/media pages — never random blogs or unverified third-party galleries. Each entry: { url, source, source_url, last_updated }. Null url = the dashboard renders an 'Image pending' state. Replace one model at a time as URLs are verified.",
-  "_preferred_endpoints": {
-    "Maruti":         "https://www.marutisuzuki.com/.../<model>/gallery",
-    "Hyundai":        "https://www.hyundai.com/in/.../<model>",
-    "M&M":            "https://auto.mahindra.com/.../<model>",
-    "Tata Motors PV": "https://cars.tatamotors.com/.../<model>"
+  "_notes": "Vehicle image URLs. Each row uses Wikimedia Special:FilePath as a stable redirect to the canonical Commons file. The dashboard's <img> tries this URL; on load error it removes the image slot entirely (no 'Image pending'). To switch to a self-hosted asset, replace 'url' with a local path like '/assets/vehicles/swift.jpg'.",
+  "_priority": "1) local cached file (set 'url' to /assets/...) → 2) remote URL → 3) skip the image area cleanly",
+  "_status_legend": {
+    "temporary_fallback": "Wikimedia image used as a stop-gap while official OEM media-page URLs are pending agent verification.",
+    "verified": "Verified URL from official OEM media page or annual report.",
+    "pending": "No URL yet — agents have not resolved this row."
   },
   "Maruti": {
-    "Swift":        { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Brezza":       { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Fronx":        { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Grand Vitara": { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Ertiga":       { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Baleno":       { "url": null, "source": null, "source_url": null, "last_updated": null }
+    "Swift": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuki%20Swift%20%282024%29%20hybrid%20IMG%202581.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Suzuki_Swift_(2024)_hybrid_IMG_2581.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Brezza": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Maruti%20Vitara%20Brezza.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Maruti_Vitara_Brezza.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Fronx": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2023%20Suzuki%20Fronx%201.2%20Delta%2B%20%28India%29%20front%20view.png",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2023_Suzuki_Fronx_1.2_Delta%2B_(India)_front_view.png",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Grand Vitara": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2022%20Maruti%20Suzuki%20Grand%20Vitara%20Alpha%20Smart%20Hybrid%20%28India%29%20front%20view.png",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2022_Maruti_Suzuki_Grand_Vitara_Alpha_Smart_Hybrid_(India)_front_view.png",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Ertiga": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2019%20Suzuki%20Ertiga%20GX%20%28Indonesia%29%20front%20view.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2019_Suzuki_Ertiga_GX_(Indonesia)_front_view.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Baleno": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuki%20Baleno%202015%201.4%20GL%20front.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Suzuki_Baleno_2015_1.4_GL_front.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    }
   },
   "Hyundai": {
-    "Creta":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Venue":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Exter":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "i20":     { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Verna":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Alcazar": { "url": null, "source": null, "source_url": null, "last_updated": null }
+    "Creta": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2021%20Hyundai%20Creta%20SX%28O%29%20CRDi%20%28India%29%20front%20view.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2021_Hyundai_Creta_SX(O)_CRDi_(India)_front_view.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Venue": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hyundai%20Venue%20%28Front%29.png",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Hyundai_Venue_(Front).png",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Exter": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2023%20Hyundai%20Exter%20SX%20%28O%29.png",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2023_Hyundai_Exter_SX_(O).png",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "i20": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hyundai%20i20%20%28BC3%29%20IMG%204108.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Hyundai_i20_(BC3)_IMG_4108.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Verna": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2020%20Hyundai%20Verna%20SX%28O%29%201.5%20Diesel%20front%20view%20%28India%29.png",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2020_Hyundai_Verna_SX(O)_1.5_Diesel_front_view_(India).png",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Alcazar": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2021%20Hyundai%20Alcazar%202.0%20Signature%20%28India%29%20front%20view.png",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2021_Hyundai_Alcazar_2.0_Signature_(India)_front_view.png",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    }
   },
   "M&M": {
-    "Scorpio-N": { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "XUV700":    { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Thar":      { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "XUV 3XO":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Bolero":    { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "XUV400":    { "url": null, "source": null, "source_url": null, "last_updated": null }
+    "Scorpio-N": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2024%20Mahindra%20Scorpio%20Z8L%20front.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2024_Mahindra_Scorpio_Z8L_front.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "XUV700": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2023%20Mahindra%20XUV700%20AX7L%20front.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2023_Mahindra_XUV700_AX7L_front.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Thar": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mahindra%20Thar.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mahindra_Thar.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "XUV 3XO": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2025%20Mahindra%20XUV%203XO%20AX7L%20front.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2025_Mahindra_XUV_3XO_AX7L_front.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Bolero": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mahindra%20Bolero%20Gen%203.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mahindra_Bolero_Gen_3.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "XUV400": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2023%20Mahindra%20XUV%20400%20EL%20EV%20%2C%20Ashiana%20Brahmananda%2C%20Jamshedpur%2C%20Jharkhand%2C%20India%20%28%20Ank%20Kumar%2C%20Infosys%20Limited%20%29%2003.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2023_Mahindra_XUV_400_EL_EV_%2C_Ashiana_Brahmananda%2C_Jamshedpur%2C_Jharkhand%2C_India_(_Ank_Kumar%2C_Infosys_Limited_)_03.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    }
   },
   "Tata Motors PV": {
-    "Nexon":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Punch":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Harrier": { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Safari":  { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Tiago":   { "url": null, "source": null, "source_url": null, "last_updated": null },
-    "Altroz":  { "url": null, "source": null, "source_url": null, "last_updated": null }
+    "Nexon": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2023%20Tata%20Nexon%20XZA%2B%20front%20view.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2023_Tata_Nexon_XZA%2B_front_view.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Punch": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2021%20Tata%20Punch%20Creative%20%28India%29%20front%20view%2001.png",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2021_Tata_Punch_Creative_(India)_front_view_01.png",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Harrier": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Tata%20Buzzard%20Sport%2C%20GIMS%202019%2C%20Le%20Grand-Saconnex%20%28GIMS0651%29.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Tata_Buzzard_Sport%2C_GIMS_2019%2C_Le_Grand-Saconnex_(GIMS0651).jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Safari": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/4th%20International%20Auto%20Show%2C%20Bangalore%20%282025%29%20108.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:4th_International_Auto_Show%2C_Bangalore_(2025)_108.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Tiago": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2022%20Tata%20Tiago%20XZA%2B%20front%2020230512.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2022_Tata_Tiago_XZA%2B_front_20230512.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    },
+    "Altroz": {
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Tata%20Altroz%20front%2020230617.jpg",
+      "source": "Wikimedia fallback",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Tata_Altroz_front_20230617.jpg",
+      "status": "temporary_fallback",
+      "last_updated": "2026-05-05"
+    }
   }
 }
