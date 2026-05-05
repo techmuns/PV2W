@@ -12,27 +12,34 @@
       theme: {
         extend: {
           colors: {
-            bg:        '#F6F7F9',
-            card:      '#FFFFFF',
-            ink:       '#1F2937',
-            inkSoft:   '#4B5563',
-            inkMuted:  '#6B7280',
-            navy:      '#0B2545',
-            steel:     '#4A6FA5',
-            steelSoft: '#E3EAF3',
-            pos:       '#4A8B6F',
-            posSoft:   '#E6F1EB',
-            neg:       '#B5524A',
-            negSoft:   '#F6E6E4',
-            warn:      '#B58A4A',
-            warnSoft:  '#F6EEE0',
-            line:      '#E5E7EB',
-            lineSoft:  '#EEF0F3',
+            bg:       '#F5F7FA',
+            card:     '#FFFFFF',
+            ink:      '#111827',
+            inkSoft:  '#374151',
+            inkMuted: '#6B7280',
+            navy:     '#0B1F33',
+            navyDeep: '#081827',
+            blue:     '#2563EB',
+            blueSoft: '#EAF0FE',
+            blueTint: '#F3F7FE',
+            teal:     '#0F766E',
+            tealSoft: '#E2F1EE',
+            pos:      '#15803D',
+            posSoft:  '#E4F2EA',
+            neg:      '#B91C1C',
+            negSoft:  '#FBE8E8',
+            warn:     '#B45309',
+            warnSoft: '#FBEFDC',
+            neu:      '#64748B',
+            neuSoft:  '#EEF1F5',
+            line:     '#E5E7EB',
+            lineSoft: '#EEF1F5',
           },
           fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
           boxShadow: {
-            card: '0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03)',
-            cardHover: '0 4px 12px rgba(15, 23, 42, 0.06)',
+            card:      '0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03)',
+            cardHover: '0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04)',
+            drawer:    '-12px 0 32px rgba(15, 23, 42, 0.12)',
           },
         },
       },
@@ -41,39 +48,42 @@
 </head>
 <body class="bg-bg text-ink font-sans antialiased min-h-screen">
 
+  <!-- Subtle navy gradient band behind the header -->
+  <div class="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-navyDeep via-navy/95 to-navy/0 -z-10"></div>
+
   <!-- ============== TOP STATUS BAR ============== -->
-  <header class="bg-card border-b border-line sticky top-0 z-30">
+  <header class="bg-navy text-white sticky top-0 z-30 shadow-md">
     <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-6 flex-wrap">
       <div class="flex items-center gap-3 mr-2">
-        <div class="w-8 h-8 rounded bg-navy text-white flex items-center justify-center font-semibold text-sm">PV</div>
+        <div class="w-9 h-9 rounded-md bg-blue/90 flex items-center justify-center font-semibold text-sm tracking-tight">PV</div>
         <div class="leading-tight">
-          <div class="text-navy font-semibold text-sm tracking-tight">PV Industry Dashboard</div>
-          <div class="text-[11px] text-inkMuted">Buy-side research view</div>
+          <div class="text-white font-semibold text-[15px] tracking-tight">PV Industry Dashboard</div>
+          <div class="text-[11px] text-white/55">Buy-side research view</div>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <label class="text-[11px] text-inkMuted uppercase tracking-wide">FY</label>
-        <select id="fy-select" class="text-sm bg-bg border border-line rounded px-2 py-1 focus:outline-none focus:border-steel"></select>
+        <label class="text-[10px] text-white/55 uppercase tracking-wider">FY</label>
+        <select id="fy-select" class="text-sm bg-white/10 hover:bg-white/15 text-white border border-white/20 rounded px-2 py-1 focus:outline-none focus:border-blue"></select>
       </div>
 
       <div class="flex items-center gap-2">
-        <label class="text-[11px] text-inkMuted uppercase tracking-wide">Company</label>
-        <select id="company-select" class="text-sm bg-bg border border-line rounded px-2 py-1 min-w-[160px] focus:outline-none focus:border-steel"></select>
+        <label class="text-[10px] text-white/55 uppercase tracking-wider">Company</label>
+        <select id="company-select" class="text-sm bg-white/10 hover:bg-white/15 text-white border border-white/20 rounded px-2 py-1 min-w-[160px] focus:outline-none focus:border-blue"></select>
       </div>
 
-      <div class="flex items-center gap-2 pl-4 border-l border-line">
-        <span class="text-[11px] text-inkMuted uppercase tracking-wide">Signal</span>
+      <div class="flex items-center gap-2 pl-4 border-l border-white/15">
+        <span class="text-[10px] text-white/55 uppercase tracking-wider">Signal</span>
         <span id="overall-signal" class="text-xs font-medium px-2 py-0.5 rounded-full"></span>
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-[11px] text-inkMuted uppercase tracking-wide">Updated</span>
-        <span id="last-updated" class="text-xs text-ink"></span>
+        <span class="text-[10px] text-white/55 uppercase tracking-wider">Updated</span>
+        <span id="last-updated" class="text-xs text-white/85"></span>
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-[11px] text-inkMuted uppercase tracking-wide">Data</span>
+        <span class="text-[10px] text-white/55 uppercase tracking-wider">Data</span>
         <span id="freshness-badge" class="text-xs font-medium px-2 py-0.5 rounded-full"></span>
       </div>
 
@@ -84,16 +94,15 @@
   </header>
 
   <!-- ============== MAIN ============== -->
-  <main class="max-w-[1400px] mx-auto px-6 py-6 space-y-6">
+  <main class="max-w-[1400px] mx-auto px-6 py-7 space-y-6">
 
     <!-- Subheader -->
-    <div class="flex items-end justify-between">
+    <div class="flex items-end justify-between flex-wrap gap-3">
       <div>
-        <h1 id="view-title" class="text-2xl font-semibold text-navy tracking-tight"></h1>
-        <p id="view-subtitle" class="text-sm text-inkSoft mt-0.5"></p>
+        <h1 id="view-title" class="text-[26px] font-semibold text-navy tracking-tight leading-tight"></h1>
+        <p id="view-subtitle" class="text-sm text-inkSoft mt-1"></p>
       </div>
-      <!-- Reserved hero image slot (kept empty per spec) -->
-      <div id="hero-image-slot" class="hidden w-40 h-20 bg-lineSoft rounded border border-dashed border-line"></div>
+      <div id="hero-image-slot" class="hidden w-44 h-20 bg-lineSoft rounded-md border border-dashed border-line"></div>
     </div>
 
     <!-- ============== HERO KPI STRIP ============== -->
@@ -101,40 +110,40 @@
 
     <!-- ============== MAIN ROW: 2 CHARTS + SIGNAL BOX ============== -->
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <!-- Chart 1 -->
       <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
-        <div class="flex items-baseline justify-between mb-3">
-          <h2 id="chart1-title" class="text-sm font-semibold text-navy"></h2>
+        <div class="flex items-baseline justify-between mb-1">
+          <h2 id="chart1-title" class="text-[13px] font-semibold text-navy"></h2>
           <span id="chart1-sub" class="text-[11px] text-inkMuted"></span>
         </div>
+        <p id="chart1-help" class="text-[11px] text-inkMuted mb-3"></p>
         <div id="chart1"></div>
-        <div id="chart1-legend" class="flex gap-4 text-[11px] text-inkSoft mt-2"></div>
+        <div id="chart1-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
       </div>
 
-      <!-- Chart 2 -->
       <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
-        <div class="flex items-baseline justify-between mb-3">
-          <h2 id="chart2-title" class="text-sm font-semibold text-navy"></h2>
+        <div class="flex items-baseline justify-between mb-1">
+          <h2 id="chart2-title" class="text-[13px] font-semibold text-navy"></h2>
           <span id="chart2-sub" class="text-[11px] text-inkMuted"></span>
         </div>
+        <p id="chart2-help" class="text-[11px] text-inkMuted mb-3"></p>
         <div id="chart2"></div>
-        <div id="chart2-legend" class="flex gap-4 text-[11px] text-inkSoft mt-2"></div>
+        <div id="chart2-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
       </div>
 
-      <!-- Buy-side Signal Box -->
-      <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-sm font-semibold text-navy">Buy-side Signal</h2>
-          <span class="text-[10px] text-inkMuted uppercase tracking-wide">Primary read</span>
+      <!-- Buy-side Signal Box: pale blue tint, table-like -->
+      <div class="rounded-xl shadow-card border border-blue/15 lg:col-span-1 overflow-hidden bg-blueTint">
+        <div class="flex items-center justify-between px-5 py-3 border-b border-blue/15 bg-white/60">
+          <h2 class="text-[13px] font-semibold text-navy">Buy-side Signal</h2>
+          <span class="text-[10px] text-inkMuted uppercase tracking-wider">Primary read</span>
         </div>
-        <div id="signal-box" class="divide-y divide-lineSoft"></div>
+        <div id="signal-box" class="px-5 py-2"></div>
       </div>
     </section>
 
     <!-- ============== VEHICLE CARDS ============== -->
     <section id="vehicle-section">
       <div class="flex items-baseline justify-between mb-3">
-        <h2 class="text-sm font-semibold text-navy">Model-level drivers</h2>
+        <h2 class="text-[13px] font-semibold text-navy">Model-level drivers</h2>
         <span class="text-[11px] text-inkMuted">Top 6 by latest FY volume</span>
       </div>
       <div id="vehicle-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
@@ -152,9 +161,55 @@
       <span class="font-mono">BuySide_Signals</span>,
       <span class="font-mono">Company_Info</span>,
       <span class="font-mono">Industry_FY_Metrics</span>.
-      All visuals are bound to these tables — agents populate values without UI changes.
+      All visuals bind to these tables — agents populate values without UI changes.
     </footer>
   </main>
+
+  <!-- ============== TOOLTIP ============== -->
+  <div id="hover-tip" class="hidden pointer-events-none fixed z-40 bg-navy text-white text-[11px] px-2 py-1 rounded shadow-lg">
+    Click to view 10-year trend
+  </div>
+
+  <!-- ============== DRAWER (10-Y trend) ============== -->
+  <div id="drawer-overlay" class="hidden fixed inset-0 bg-navyDeep/30 backdrop-blur-[1px] z-40 transition-opacity"></div>
+  <aside id="drawer"
+         class="fixed right-0 top-0 h-full w-full sm:w-[520px] bg-card border-l border-line shadow-drawer z-50
+                transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
+    <!-- header -->
+    <header class="px-6 pt-5 pb-4 border-b border-line">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="text-[10px] text-inkMuted uppercase tracking-wider" id="drawer-eyebrow">10-year trend</div>
+          <h3 id="drawer-title" class="text-[18px] font-semibold text-navy mt-0.5 leading-tight"></h3>
+          <div class="text-xs text-inkSoft mt-1" id="drawer-context"></div>
+        </div>
+        <button id="drawer-close"
+                class="w-8 h-8 rounded-md hover:bg-lineSoft flex items-center justify-center text-inkSoft text-lg leading-none">
+          ×
+        </button>
+      </div>
+    </header>
+
+    <!-- body -->
+    <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+      <div>
+        <div class="flex items-baseline justify-between mb-2">
+          <span class="text-[12px] font-medium text-ink" id="drawer-chart-title"></span>
+          <span class="text-[11px] text-inkMuted" id="drawer-chart-sub"></span>
+        </div>
+        <div id="drawer-chart"></div>
+        <div id="drawer-chart-legend" class="flex gap-4 text-[11px] text-inkSoft mt-2"></div>
+      </div>
+
+      <div id="drawer-stats" class="grid grid-cols-2 gap-3"></div>
+
+      <div id="drawer-insight" class="rounded-lg bg-blueTint border border-blue/15 px-4 py-3 text-[12.5px] text-ink leading-relaxed"></div>
+
+      <div class="text-[10.5px] text-inkMuted pt-2 border-t border-lineSoft">
+        Source: <span id="drawer-source">Placeholder</span> · Last updated <span id="drawer-updated">—</span>
+      </div>
+    </div>
+  </aside>
 
   <script src="data/backend-tables.js"></script>
   <script src="js/dashboard.js"></script>

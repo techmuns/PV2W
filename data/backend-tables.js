@@ -4,7 +4,7 @@
    Future data agents replace the rows below. The UI does not need
    any changes when values are updated — visuals bind to these tables.
 
-   Table schemas (per spec):
+   Schemas (per spec):
 
    1) Company_FY_Metrics
       FY, Company, Metric, Value, YoY_Change, Signal, Source, Last_Updated
@@ -25,17 +25,17 @@
       FY, Metric, Value, YoY_Change, Signal, Source, Last_Updated
 
    Signal values: "Positive" | "Negative" | "Neutral"
-   FY format: "FY23" | "FY24" | "FY25"
+   FY format: "FY16" .. "FY25"
    ================================================================= */
 
 window.PV_DATA = (function () {
 
   const COMPANIES   = ["Industry", "Maruti", "Hyundai", "M&M", "Tata Motors PV"];
-  const FYS         = ["FY23", "FY24", "FY25"];
-  const TODAY_ISO   = "2026-04-20";   // pretend last-refresh; tweak per row to test stale states
-  const STALE_ISO   = "2025-12-01";   // > 30 days old → triggers stale badge
+  const FYS_FULL    = ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25"];
+  const FYS         = ["FY23", "FY24", "FY25"];   // years with full coverage (used by main view)
+  const TODAY_ISO   = "2026-04-20";
+  const STALE_ISO   = "2025-12-01";
 
-  /* Default 6-vehicle list per OEM (per spec). */
   const DEFAULT_VEHICLES = {
     "Maruti":         ["Swift", "Brezza", "Fronx", "Grand Vitara", "Ertiga", "Baleno"],
     "Hyundai":        ["Creta", "Venue", "Exter", "i20", "Verna", "Alcazar"],
@@ -43,7 +43,6 @@ window.PV_DATA = (function () {
     "Tata Motors PV": ["Nexon", "Punch", "Harrier", "Safari", "Tiago", "Altroz"],
   };
 
-  /* The 6 KPIs that appear on the OEM hero strip, in display order. */
   const OEM_KPIS = [
     "Market Share %",
     "Volume Growth %",
@@ -53,7 +52,6 @@ window.PV_DATA = (function () {
     "Stock Price (31-Mar)",
   ];
 
-  /* The 6 KPIs that appear on the Industry hero strip. */
   const INDUSTRY_KPIS = [
     "Total PV Volume",
     "PV Volume Growth %",
@@ -63,7 +61,14 @@ window.PV_DATA = (function () {
     "Top Gaining OEM",
   ];
 
-  /* ---------- helper to seed deterministic placeholders ---------- */
+  /* Metrics for which we expose a 10-year trend in the drawer. */
+  const TREND_METRICS = new Set([
+    "Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %",
+    "SUV Revenue %", "Stock Price (31-Mar)",
+    "Gross Margin %", "Realisation Growth %", "Export Revenue %", "EV Revenue %",
+    "Capacity Utilisation %", "Working Capital Days", "Capex (Rs Cr)",
+  ]);
+
   const m = (FY, Company, Metric, Value, YoY_Change, Signal, Last_Updated = TODAY_ISO) => ({
     FY, Company, Metric, Value, YoY_Change, Signal,
     Source: "Placeholder",
@@ -71,13 +76,10 @@ window.PV_DATA = (function () {
   });
 
   /* =========================================================
-     Table 1 — Company_FY_Metrics
-     Covers all metrics referenced anywhere in the dashboard
-     (KPI strip + tabs).
+     Table 1 — Company_FY_Metrics (FY23-FY25 hand-seeded)
      ========================================================= */
   const Company_FY_Metrics = [];
 
-  // Maruti — 3 FYs
   ([
     ["FY23", { "Market Share %": [41.2, 0.6, "Positive"], "Volume Growth %": [19.0, 6.0, "Positive"],
                "Revenue Growth %": [22.5, 7.2, "Positive"], "EBITDA Margin %": [9.8, 1.1, "Positive"],
@@ -121,7 +123,6 @@ window.PV_DATA = (function () {
     });
   });
 
-  // Hyundai — 3 FYs (placeholder pattern: "Data pending" not used; values are illustrative)
   ([
     ["FY23", { "Market Share %": [14.5, 0.2, "Neutral"], "Volume Growth %": [17.2, 3.0, "Positive"],
                "Revenue Growth %": [19.0, 4.5, "Positive"], "EBITDA Margin %": [12.8, 0.5, "Positive"],
@@ -145,7 +146,7 @@ window.PV_DATA = (function () {
                "Facelift Launches": [1, null, "Neutral"], "Top Selling Model": ["Creta", null, "Neutral"] }],
     ["FY25", { "Market Share %": [14.4, -0.2, "Negative"], "Volume Growth %": [3.0, -5.5, "Negative"],
                "Revenue Growth %": [5.5, -4.9, "Negative"], "EBITDA Margin %": [13.1, -0.3, "Neutral"],
-               "SUV Revenue %": [62.5, 2.5, "Positive"],  "Stock Price (31-Mar)": [null, null, "Neutral"],
+               "SUV Revenue %": [62.5, 2.5, "Positive"],  "Stock Price (31-Mar)": [1820, null, "Neutral"],
                "Gross Margin %": [30.4, -0.2, "Neutral"], "Realisation Growth %": [2.4, 0.7, "Neutral"],
                "SUV Volume %": [58.0, 2.0, "Positive"], "EV Volume %": [1.1, 0.4, "Positive"],
                "EV Revenue %": [2.6, 0.7, "Positive"], "Export Volume %": [25.0, 1.5, "Positive"],
@@ -159,7 +160,6 @@ window.PV_DATA = (function () {
     });
   });
 
-  // M&M — 3 FYs
   ([
     ["FY23", { "Market Share %": [9.4, 1.4, "Positive"], "Volume Growth %": [56.0, 25.0, "Positive"],
                "Revenue Growth %": [62.0, 24.0, "Positive"], "EBITDA Margin %": [12.0, 1.5, "Positive"],
@@ -197,7 +197,6 @@ window.PV_DATA = (function () {
     });
   });
 
-  // Tata Motors PV — 3 FYs (FY25 marked stale to demonstrate badge logic)
   ([
     ["FY23", { "Market Share %": [13.5, 1.0, "Positive"], "Volume Growth %": [45.0, 22.0, "Positive"],
                "Revenue Growth %": [48.0, 23.0, "Positive"], "EBITDA Margin %": [6.5, 1.0, "Neutral"],
@@ -231,9 +230,122 @@ window.PV_DATA = (function () {
                "Facelift Launches": [2, null, "Neutral"], "Top Selling Model": ["Nexon", null, "Neutral"] }],
   ]).forEach(([fy, metrics]) => {
     Object.entries(metrics).forEach(([metric, [val, yoy, sig]]) => {
-      // FY25 Tata is intentionally stale to demo the stale badge
       const lu = (fy === "FY25") ? STALE_ISO : TODAY_ISO;
       Company_FY_Metrics.push(m(fy, "Tata Motors PV", metric, val, yoy, sig, lu));
+    });
+  });
+
+  /* =========================================================
+     Back-projected history (FY16-FY22) — placeholder series.
+     Anchors: FY16 baseline + FY23 actual (already in table above).
+     Generates smoothly varying values agents can later overwrite
+     row-by-row.
+     ========================================================= */
+  const HISTORY_BASELINES = {
+    "Maruti": {
+      "Market Share %":          [50.5, 41.2],
+      "Volume Growth %":         [10.5, 19.0],
+      "Revenue Growth %":        [11.0, 22.5],
+      "EBITDA Margin %":         [16.2, 9.8],
+      "SUV Revenue %":           [9.0,  22.0],
+      "Stock Price (31-Mar)":    [3700, 8650],
+      "Gross Margin %":          [30.5, 27.5],
+      "Realisation Growth %":    [4.5,  3.2],
+      "Export Revenue %":        [9.0,  10.1],
+      "EV Revenue %":            [0.0,  0.0],
+      "Capacity Utilisation %":  [80.0, 85.0],
+      "Working Capital Days":    [-8,   -12],
+      "Capex (Rs Cr)":           [3500, 7000],
+    },
+    "Hyundai": {
+      "Market Share %":          [16.5, 14.5],
+      "Volume Growth %":         [8.5,  17.2],
+      "Revenue Growth %":        [10.5, 19.0],
+      "EBITDA Margin %":         [11.0, 12.8],
+      "SUV Revenue %":           [38.0, 56.0],
+      "Stock Price (31-Mar)":    [null, null],
+      "Gross Margin %":          [29.0, 30.0],
+      "Realisation Growth %":    [3.0,  2.5],
+      "Export Revenue %":        [16.0, 21.0],
+      "EV Revenue %":            [0.1,  1.4],
+      "Capacity Utilisation %":  [88.0, 99.0],
+      "Working Capital Days":    [12,   10],
+      "Capex (Rs Cr)":           [1500, 3000],
+    },
+    "M&M": {
+      "Market Share %":          [7.5,  9.4],
+      "Volume Growth %":         [5.5,  56.0],
+      "Revenue Growth %":        [6.0,  62.0],
+      "EBITDA Margin %":         [11.0, 12.0],
+      "SUV Revenue %":           [80.0, 92.0],
+      "Stock Price (31-Mar)":    [320,  1185],
+      "Gross Margin %":          [24.0, 25.5],
+      "Realisation Growth %":    [2.5,  3.8],
+      "Export Revenue %":        [3.5,  4.4],
+      "EV Revenue %":            [0.0,  0.0],
+      "Capacity Utilisation %":  [70.0, 82.0],
+      "Working Capital Days":    [-2,   -8],
+      "Capex (Rs Cr)":           [2200, 3000],
+    },
+    "Tata Motors PV": {
+      "Market Share %":          [5.5,  13.5],
+      "Volume Growth %":         [3.0,  45.0],
+      "Revenue Growth %":        [4.5,  48.0],
+      "EBITDA Margin %":         [-2.0, 6.5],
+      "SUV Revenue %":           [22.0, 62.0],
+      "Stock Price (31-Mar)":    [380,  430],
+      "Gross Margin %":          [16.0, 22.5],
+      "Realisation Growth %":    [-1.0, 2.0],
+      "Export Revenue %":        [3.0,  1.6],
+      "EV Revenue %":            [0.0,  12.0],
+      "Capacity Utilisation %":  [55.0, 89.0],
+      "Working Capital Days":    [12,   5],
+      "Capex (Rs Cr)":           [2200, 3500],
+    },
+  };
+
+  /* deterministic small-amplitude wobble so curves don't look like rulers */
+  function wobble(seedKey, i, magnitude) {
+    let h = 0;
+    for (let c = 0; c < seedKey.length; c++) h = (h * 31 + seedKey.charCodeAt(c)) | 0;
+    h = (h * 17 + i * 113) | 0;
+    return ((Math.abs(h) % 1000) / 1000 - 0.5) * 2 * magnitude;
+  }
+
+  const HIST_FYS = ["FY16","FY17","FY18","FY19","FY20","FY21","FY22"];
+
+  Object.entries(HISTORY_BASELINES).forEach(([company, metricBaselines]) => {
+    Object.entries(metricBaselines).forEach(([metric, [v0, v7]]) => {
+      if (v0 === null || v7 === null) {
+        // emit empty rows so the drawer can show "Limited history available"
+        HIST_FYS.forEach(fy => Company_FY_Metrics.push({
+          FY: fy, Company: company, Metric: metric,
+          Value: null, YoY_Change: null, Signal: "Neutral",
+          Source: "Placeholder", Last_Updated: null,
+        }));
+        return;
+      }
+      // Special case — COVID dip in FY21 for growth/volume metrics
+      const isGrowth = metric.includes("Growth") || metric.includes("Volume");
+      const wobMag = Math.max(Math.abs(v7 - v0) * 0.06, Math.abs(v7) * 0.03, 0.3);
+
+      HIST_FYS.forEach((fy, i) => {
+        const t = (i + 1) / 8;
+        let linear = v0 + (v7 - v0) * t;
+        if (isGrowth && fy === "FY21") linear *= -0.5;        // covid hit
+        if (isGrowth && fy === "FY22") linear = Math.max(linear, 8);
+        const noise = wobble(company + metric, i, wobMag);
+        let value = linear + noise;
+        // Round sensibly
+        if (Math.abs(value) >= 100) value = Math.round(value);
+        else value = Math.round(value * 10) / 10;
+
+        Company_FY_Metrics.push({
+          FY: fy, Company: company, Metric: metric,
+          Value: value, YoY_Change: null, Signal: "Neutral",
+          Source: "Placeholder", Last_Updated: TODAY_ISO,
+        });
+      });
     });
   });
 
@@ -283,8 +395,7 @@ window.PV_DATA = (function () {
         const [vol, yoy, rank, sig] = info[fy];
         const lu = (company === "Tata Motors PV" && fy === "FY25") ? STALE_ISO : TODAY_ISO;
         Vehicle_FY_Metrics.push({
-          FY: fy, Company: company, Vehicle: vehicle,
-          Segment: info.segment,
+          FY: fy, Company: company, Vehicle: vehicle, Segment: info.segment,
           Volume: vol, YoY_Growth: yoy, Segment_Rank: rank,
           Signal: sig, Source: "Placeholder", Last_Updated: lu,
         });
@@ -296,73 +407,57 @@ window.PV_DATA = (function () {
      Table 3 — BuySide_Signals
      ========================================================= */
   const BuySide_Signals = [
-    // Maruti
-    { FY: "FY23", Company: "Maruti",
-      Share_Read: "Gaining",  Growth_Read: "Ahead of industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV improving",
-      Risk_Read: "EV gap",    Trigger_Read: "Brezza/Grand Vitara ramp",
-      Overall_Signal: "Positive", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY24", Company: "Maruti",
-      Share_Read: "Gaining",  Growth_Read: "In line with industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV improving, exports up",
-      Risk_Read: "Hatch weakness", Trigger_Read: "Operating leverage, exports",
-      Overall_Signal: "Positive", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY25", Company: "Maruti",
-      Share_Read: "Stable",   Growth_Read: "Ahead of industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV/Export improving",
-      Risk_Read: "EV gap",    Trigger_Read: "e-Vitara launch, capacity adds",
-      Overall_Signal: "Positive", Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY23", Company: "Maruti", Share_Read: "Gaining", Growth_Read: "Ahead",
+      Margin_Read: "Expanding", Mix_Read: "SUV improving", Risk_Read: "EV gap",
+      Trigger_Read: "Brezza/Grand Vitara ramp", Overall_Signal: "Positive",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY24", Company: "Maruti", Share_Read: "Gaining", Growth_Read: "In line",
+      Margin_Read: "Expanding", Mix_Read: "SUV + Exports up", Risk_Read: "Hatch weakness",
+      Trigger_Read: "Operating leverage, exports", Overall_Signal: "Positive",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY25", Company: "Maruti", Share_Read: "Stable", Growth_Read: "Ahead",
+      Margin_Read: "Expanding", Mix_Read: "SUV + Export improving", Risk_Read: "EV gap",
+      Trigger_Read: "e-Vitara launch, capacity adds", Overall_Signal: "Positive",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
 
-    // Hyundai
-    { FY: "FY23", Company: "Hyundai",
-      Share_Read: "Stable",   Growth_Read: "In line with industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV strong",
-      Risk_Read: "Capacity ceiling", Trigger_Read: "Talegaon plant",
-      Overall_Signal: "Neutral", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY24", Company: "Hyundai",
-      Share_Read: "Stable",   Growth_Read: "Behind industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV/Export improving",
-      Risk_Read: "Capacity ceiling", Trigger_Read: "IPO unlock, Creta facelift",
-      Overall_Signal: "Neutral", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY25", Company: "Hyundai",
-      Share_Read: "Losing",   Growth_Read: "Behind industry",
-      Margin_Read: "Flat",    Mix_Read: "SUV mix richer; volume soft",
-      Risk_Read: "Sub-Rs10L weakness", Trigger_Read: "Creta EV, Talegaon ramp",
-      Overall_Signal: "Negative", Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY23", Company: "Hyundai", Share_Read: "Stable", Growth_Read: "In line",
+      Margin_Read: "Expanding", Mix_Read: "SUV strong", Risk_Read: "Capacity ceiling",
+      Trigger_Read: "Talegaon plant", Overall_Signal: "Neutral",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY24", Company: "Hyundai", Share_Read: "Stable", Growth_Read: "Behind",
+      Margin_Read: "Expanding", Mix_Read: "SUV + Export improving", Risk_Read: "Capacity ceiling",
+      Trigger_Read: "IPO unlock, Creta facelift", Overall_Signal: "Neutral",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY25", Company: "Hyundai", Share_Read: "Losing", Growth_Read: "Behind",
+      Margin_Read: "Flat", Mix_Read: "SUV richer; volume soft", Risk_Read: "Sub-Rs10L weakness",
+      Trigger_Read: "Creta EV, Talegaon ramp", Overall_Signal: "Negative",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
 
-    // M&M
-    { FY: "FY23", Company: "M&M",
-      Share_Read: "Gaining",  Growth_Read: "Ahead of industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV-only mix richer",
-      Risk_Read: "Wait-times unwinding", Trigger_Read: "Scorpio-N, XUV700 ramp",
-      Overall_Signal: "Positive", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY24", Company: "M&M",
-      Share_Read: "Gaining",  Growth_Read: "Ahead of industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV improving",
-      Risk_Read: "EV portfolio gap", Trigger_Read: "Thar 5-door, XUV 3XO",
-      Overall_Signal: "Positive", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY25", Company: "M&M",
-      Share_Read: "Gaining",  Growth_Read: "Ahead of industry",
-      Margin_Read: "Expanding", Mix_Read: "SUV + EV improving",
-      Risk_Read: "EV ramp execution", Trigger_Read: "BE 6 / XEV 9e launches",
-      Overall_Signal: "Positive", Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY23", Company: "M&M", Share_Read: "Gaining", Growth_Read: "Ahead",
+      Margin_Read: "Expanding", Mix_Read: "SUV-only mix richer", Risk_Read: "Wait-times unwinding",
+      Trigger_Read: "Scorpio-N, XUV700 ramp", Overall_Signal: "Positive",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY24", Company: "M&M", Share_Read: "Gaining", Growth_Read: "Ahead",
+      Margin_Read: "Expanding", Mix_Read: "SUV improving", Risk_Read: "EV portfolio gap",
+      Trigger_Read: "Thar 5-door, XUV 3XO", Overall_Signal: "Positive",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY25", Company: "M&M", Share_Read: "Gaining", Growth_Read: "Ahead",
+      Margin_Read: "Expanding", Mix_Read: "SUV + EV improving", Risk_Read: "EV ramp execution",
+      Trigger_Read: "BE 6 / XEV 9e launches", Overall_Signal: "Positive",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
 
-    // Tata
-    { FY: "FY23", Company: "Tata Motors PV",
-      Share_Read: "Gaining",  Growth_Read: "Ahead of industry",
-      Margin_Read: "Expanding", Mix_Read: "EV + SUV strong",
-      Risk_Read: "Sedan absent", Trigger_Read: "Punch, Nexon EV scale",
-      Overall_Signal: "Positive", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY24", Company: "Tata Motors PV",
-      Share_Read: "Stable",   Growth_Read: "In line with industry",
-      Margin_Read: "Flat",    Mix_Read: "EV softening, SUV improving",
-      Risk_Read: "EV demand cooling", Trigger_Read: "Curvv, Harrier EV",
-      Overall_Signal: "Neutral", Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY25", Company: "Tata Motors PV",
-      Share_Read: "Losing",   Growth_Read: "Behind industry",
-      Margin_Read: "Under pressure", Mix_Read: "EV slowing, hatch eroding",
-      Risk_Read: "EV competition (M&M, Hyundai)", Trigger_Read: "Punch EV ramp, new platform",
-      Overall_Signal: "Negative", Source: "Placeholder", Last_Updated: STALE_ISO },
+    { FY: "FY23", Company: "Tata Motors PV", Share_Read: "Gaining", Growth_Read: "Ahead",
+      Margin_Read: "Expanding", Mix_Read: "EV + SUV strong", Risk_Read: "Sedan absent",
+      Trigger_Read: "Punch, Nexon EV scale", Overall_Signal: "Positive",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY24", Company: "Tata Motors PV", Share_Read: "Stable", Growth_Read: "In line",
+      Margin_Read: "Flat", Mix_Read: "EV softening, SUV up", Risk_Read: "EV demand cooling",
+      Trigger_Read: "Curvv, Harrier EV", Overall_Signal: "Neutral",
+      Source: "Placeholder", Last_Updated: TODAY_ISO },
+    { FY: "FY25", Company: "Tata Motors PV", Share_Read: "Losing", Growth_Read: "Behind",
+      Margin_Read: "Pressure", Mix_Read: "EV slowing, hatch eroding", Risk_Read: "EV competition",
+      Trigger_Read: "Punch EV ramp, new platform", Overall_Signal: "Negative",
+      Source: "Placeholder", Last_Updated: STALE_ISO },
   ];
 
   /* =========================================================
@@ -372,7 +467,7 @@ window.PV_DATA = (function () {
     { FY: "FY25", Company: "Maruti", CEO: "Hisashi Takeuchi", CFO: "Rahul Bharti",
       COO: "Kenichi Ayukawa", Credit_Rating: "CRISIL AAA / Stable",
       Employees: 18500, Dealers: 4000, Source: "Placeholder", Last_Updated: TODAY_ISO },
-    { FY: "FY25", Company: "Hyundai", CEO: "Unsoo Kim", CFO: "P.B. Balaji (placeholder)",
+    { FY: "FY25", Company: "Hyundai", CEO: "Unsoo Kim", CFO: "P.B. Balaji",
       COO: "Tarun Garg", Credit_Rating: "CRISIL AAA / Stable",
       Employees: 9000, Dealers: 1366, Source: "Placeholder", Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "M&M", CEO: "Anish Shah", CFO: "Amarjyoti Barua",
@@ -382,7 +477,6 @@ window.PV_DATA = (function () {
       COO: "—", Credit_Rating: "CRISIL AA+ / Positive",
       Employees: 12000, Dealers: 1500, Source: "Placeholder", Last_Updated: STALE_ISO },
 
-    // Earlier FYs — sparse seed
     { FY: "FY24", Company: "Maruti", CEO: "Hisashi Takeuchi", CFO: "Rahul Bharti",
       COO: "Kenichi Ayukawa", Credit_Rating: "CRISIL AAA / Stable",
       Employees: 17800, Dealers: 3845, Source: "Placeholder", Last_Updated: TODAY_ISO },
@@ -392,7 +486,7 @@ window.PV_DATA = (function () {
   ];
 
   /* =========================================================
-     Table 5 — Industry_FY_Metrics
+     Table 5 — Industry_FY_Metrics (FY23-FY25 actual + history)
      ========================================================= */
   const Industry_FY_Metrics = [];
   ([
@@ -414,8 +508,34 @@ window.PV_DATA = (function () {
     });
   });
 
+  /* Industry history: anchor (FY16, FY23) for each metric, generate FY16-FY22. */
+  const INDUSTRY_HISTORY = {
+    "Total PV Volume":      [2790000, 3890000],
+    "PV Volume Growth %":   [7.5, 27.0],
+    "SUV Share %":          [22.0, 42.0],
+    "EV Share %":           [0.0, 1.4],
+    "Export Share %":       [10.0, 12.5],
+    "Top Gaining OEM":      [null, null],
+  };
+  Object.entries(INDUSTRY_HISTORY).forEach(([metric, [v0, v7]]) => {
+    if (v0 === null || v7 === null) return;
+    HIST_FYS.forEach((fy, i) => {
+      const t = (i + 1) / 8;
+      let linear = v0 + (v7 - v0) * t;
+      if (metric === "PV Volume Growth %" && fy === "FY21") linear = -10;     // covid
+      if (metric === "Total PV Volume"    && fy === "FY21") linear *= 0.78;
+      const noise = wobble("Industry" + metric, i, Math.abs(v7 - v0) * 0.04);
+      let value = linear + noise;
+      value = Math.abs(value) >= 100 ? Math.round(value) : Math.round(value * 10) / 10;
+      Industry_FY_Metrics.push({
+        FY: fy, Metric: metric, Value: value, YoY_Change: null, Signal: "Neutral",
+        Source: "Placeholder", Last_Updated: TODAY_ISO,
+      });
+    });
+  });
+
   return {
-    COMPANIES, FYS, OEM_KPIS, INDUSTRY_KPIS, DEFAULT_VEHICLES,
+    COMPANIES, FYS, FYS_FULL, OEM_KPIS, INDUSTRY_KPIS, TREND_METRICS, DEFAULT_VEHICLES,
     Company_FY_Metrics, Vehicle_FY_Metrics, BuySide_Signals,
     Company_Info, Industry_FY_Metrics,
   };

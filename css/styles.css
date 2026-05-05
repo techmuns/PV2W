@@ -1,48 +1,146 @@
-/* Institutional Light theme — minimal additions on top of Tailwind */
+/* Institutional Light theme — depth + interaction polish */
 
-html, body { background: #F6F7F9; }
+html, body { background: #F5F7FA; }
 
-/* Subtle scrollbar for tab bar overflow */
-#tab-bar::-webkit-scrollbar { height: 0; }
+/* === KPI cards: thin top accent + clickable affordance === */
+.kpi-card {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0B1F33 0%, #2563EB 60%, #0F766E 100%);
+  opacity: 0.85;
+}
+.kpi-card:hover {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  transform: translateY(-1px);
+  border-color: #DCE3EE;
+}
+.kpi-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: #EAF0FE;
+  color: #2563EB;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.kpi-icon svg { width: 14px; height: 14px; stroke-width: 1.7; }
 
-/* Chart svg defaults */
+/* === Vehicle cards === */
+.veh-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+  cursor: pointer;
+}
+.veh-card:hover {
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+  transform: translateY(-1px);
+  border-color: #DCE3EE;
+}
+.veh-image-slot {
+  height: 44px;
+  background: linear-gradient(135deg, #F5F7FA 0%, #EEF1F5 100%);
+  border: 1px dashed #E5E7EB;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* === Charts === */
 .chart-svg { width: 100%; height: 220px; display: block; }
-.chart-svg .grid line { stroke: #EEF0F3; stroke-width: 1; }
 .chart-svg .axis text { font-size: 10px; fill: #6B7280; font-family: Inter, sans-serif; }
 .chart-svg .axis line { stroke: #E5E7EB; }
+.chart-svg .grid line { stroke: #EEF1F5; stroke-width: 1; }
 .chart-svg .bar { transition: opacity 0.15s ease; }
 .chart-svg .bar:hover { opacity: 0.85; }
 .chart-svg .line-path { fill: none; stroke-width: 2; }
 .chart-svg .dot { stroke: #fff; stroke-width: 1.5; }
+.chart-svg .area { opacity: 0.10; }
 
-/* Signal pills — semantics; colors set via classes in JS */
-.signal-pos { background: #E6F1EB; color: #2F6A52; }
-.signal-neg { background: #F6E6E4; color: #8C3D36; }
-.signal-neu { background: #EEF0F3; color: #4B5563; }
-.signal-warn{ background: #F6EEE0; color: #8A6A36; }
+/* Drawer chart is taller */
+#drawer-chart .chart-svg { height: 240px; }
 
-/* KPI card delta */
-.delta-up   { color: #4A8B6F; }
-.delta-down { color: #B5524A; }
-.delta-flat { color: #6B7280; }
+/* === Signal pills === */
+.signal-pos  { background: #E4F2EA; color: #0F5F2E; }
+.signal-neg  { background: #FBE8E8; color: #8C1818; }
+.signal-neu  { background: #EEF1F5; color: #475569; }
+.signal-warn { background: #FBEFDC; color: #7C3A07; }
+.signal-blue { background: #EAF0FE; color: #1E40AF; }
 
-/* Tab buttons */
+.delta-up   { color: #15803D; }
+.delta-down { color: #B91C1C; }
+.delta-flat { color: #64748B; }
+
+/* === Buy-side Signal box rows === */
+.bsr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(37, 99, 235, 0.10);
+}
+.bsr:last-child { border-bottom: none; }
+.bsr-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+  font-weight: 500;
+  width: 60px;
+  flex-shrink: 0;
+}
+.bsr-pill {
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+  background: #FFFFFF;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  color: #1F2937;
+  white-space: nowrap;
+}
+
+/* === Tabs === */
 .tab-btn {
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1.1rem;
   font-size: 0.8125rem;
-  color: #4B5563;
+  color: #475569;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
   cursor: pointer;
   font-weight: 500;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
-.tab-btn:hover { color: #0B2545; }
+.tab-btn:hover { color: #0B1F33; }
 .tab-btn.active {
-  color: #0B2545;
-  border-bottom-color: #4A6FA5;
+  color: #0B1F33;
+  border-bottom-color: #2563EB;
 }
 
-/* Drilldown table */
+/* === Drilldown table === */
 .dd-table { width: 100%; font-size: 0.8125rem; border-collapse: collapse; }
 .dd-table th {
   text-align: left;
@@ -56,8 +154,42 @@ html, body { background: #F6F7F9; }
 }
 .dd-table td {
   padding: 0.625rem 0.75rem;
-  border-bottom: 1px solid #EEF0F3;
-  color: #1F2937;
+  border-bottom: 1px solid #EEF1F5;
+  color: #111827;
 }
 .dd-table tr:last-child td { border-bottom: none; }
 .dd-table td.num { font-variant-numeric: tabular-nums; }
+
+.dd-table tr.clickable { cursor: pointer; transition: background 0.15s ease; }
+.dd-table tr.clickable:hover { background: #F3F7FE; }
+
+/* === Drawer === */
+#drawer.open { transform: translateX(0); }
+#drawer-overlay.open { opacity: 1; }
+#drawer-overlay { opacity: 0; }
+
+/* === Stat tiles inside drawer === */
+.stat-tile {
+  background: #F5F7FA;
+  border: 1px solid #EEF1F5;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.stat-tile-label {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6B7280;
+  font-weight: 500;
+}
+.stat-tile-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0B1F33;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+/* === Scrollbars === */
+#tab-bar::-webkit-scrollbar { height: 0; }
