@@ -1,0 +1,32 @@
+{
+  "_notes": "Per-(Company, Metric) source citation overrides. When a data agent verifies a metric value against a primary source, populate { source, source_url, last_updated } here and the dashboard automatically overlays it onto the matching row. Until populated, the dashboard shows 'Pending' on that metric.",
+  "_acceptable_sources": [
+    "NSE filings (https://www.nseindia.com)",
+    "BSE filings (https://www.bseindia.com)",
+    "Company annual report",
+    "Company investor presentation",
+    "Company quarterly results",
+    "Screener (https://www.screener.in) — only where source attribution is clear",
+    "Official company website investor section"
+  ],
+  "_disallowed_sources": [
+    "Random blogs",
+    "Aggregator news sites without primary citation",
+    "Social media",
+    "Unverified third-party data scrapers"
+  ],
+  "_example": {
+    "Maruti": {
+      "Market Share %": {
+        "source": "SIAM monthly data via Maruti Q4FY25 result presentation",
+        "source_url": "https://www.marutisuzuki.com/.../q4fy25-results.pdf#page=12",
+        "last_updated": "2025-04-30"
+      }
+    }
+  },
+  "Maruti":         {},
+  "Hyundai":        {},
+  "M&M":            {},
+  "Tata Motors PV": {},
+  "Industry":       {}
+}

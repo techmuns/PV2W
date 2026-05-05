@@ -1,0 +1,37 @@
+{
+  "_notes": "Default vehicle list per OEM — top 6 models on the dashboard's model-driver row.",
+  "default_vehicles": {
+    "Maruti": [
+      "Swift",
+      "Brezza",
+      "Fronx",
+      "Grand Vitara",
+      "Ertiga",
+      "Baleno"
+    ],
+    "Hyundai": [
+      "Creta",
+      "Venue",
+      "Exter",
+      "i20",
+      "Verna",
+      "Alcazar"
+    ],
+    "M&M": [
+      "Scorpio-N",
+      "XUV700",
+      "Thar",
+      "XUV 3XO",
+      "Bolero",
+      "XUV400"
+    ],
+    "Tata Motors PV": [
+      "Nexon",
+      "Punch",
+      "Harrier",
+      "Safari",
+      "Tiago",
+      "Altroz"
+    ]
+  }
+}

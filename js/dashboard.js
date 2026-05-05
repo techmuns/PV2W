@@ -3,7 +3,14 @@
    Reads exclusively from window.PV_DATA tables.
    ================================================================= */
 (function () {
-  const D = window.PV_DATA;
+  /* D, BRAND, TABS_OEM and TABS_INDUSTRY are populated from the
+     async data layer (see init() at the bottom). They are left
+     as `let` rather than `const` because the IIFE has to construct
+     them after PV_LOADER resolves. */
+  let D = null;
+  let BRAND = null;
+  let TABS_OEM = null;
+  let TABS_INDUSTRY = null;
 
   const COLOR = {
     blue:    "#2563EB",
@@ -17,16 +24,6 @@
     warn:    "#B45309",
     amber:   "#F59E0B",
     neu:     "#64748B",
-  };
-
-  /* Brand colors per company. Used in: logo mark, brand box, header
-     dropdown dot. Never used to recolor the rest of the dashboard. */
-  const BRAND = {
-    "Maruti":         { color: "#C95A5A", label: "OEM",       initials: "MS" },
-    "Hyundai":        { color: "#0F3D75", label: "OEM",       initials: "HM" },
-    "M&M":            { color: "#7A2E3A", label: "OEM",       initials: "M&M" },
-    "Tata Motors PV": { color: "#1E4E8C", label: "OEM",       initials: "TM" },
-    "Industry":       { color: "#334E68", label: "Aggregate", initials: "PV" },
   };
 
   const state = {
@@ -643,21 +640,9 @@
     }).join("");
   }
 
-  /* ---------- tabs ---------- */
-  const TABS_OEM = {
-    "Growth":     ["Revenue Growth %", "Volume Growth %", "Realisation Growth %"],
-    "Margins":    ["Gross Margin %", "EBITDA Margin %"],
-    "Mix":        ["SUV Volume %", "SUV Revenue %", "EV Volume %", "EV Revenue %", "Export Volume %", "Export Revenue %"],
-    "Operations": ["Capacity (units)", "Capacity Utilisation %", "Capex (Rs Cr)", "Working Capital Days"],
-    "Product":    ["New Model Launches", "Facelift Launches", "Top Selling Model"],
-    "Governance": [],
-  };
-  const TABS_INDUSTRY = {
-    "Demand":      ["Total PV Volume", "PV Volume Growth %"],
-    "Mix":         ["SUV Share %", "EV Share %", "Export Share %"],
-    "Competition": ["Top Gaining OEM"],
-  };
-
+  /* ---------- tabs ----------
+     TABS_OEM and TABS_INDUSTRY are sourced from
+     data/config/company_config.json at boot time (see init). */
   function renderTabs() {
     const isIndustry = state.company === "Industry";
     const tabs = isIndustry ? TABS_INDUSTRY : TABS_OEM;
@@ -1053,8 +1038,40 @@
     });
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  /* ---------- boot ----------
+     Async load via PV_LOADER. The boot loader overlay stays visible
+     until data resolves; on failure we show the boot-error card and
+     never render — the dashboard with no data would be misleading. */
+  async function init() {
+    const loader = $("#boot-loader");
+    const errEl  = $("#boot-error");
+    const errMsg = $("#boot-error-msg");
+
+    if (!window.PV_LOADER) {
+      if (loader) loader.classList.add("hidden");
+      if (errEl)  errEl.classList.remove("hidden");
+      if (errMsg) errMsg.textContent = "Data loader script failed to register.";
+      return;
+    }
+
+    const result = await window.PV_LOADER.loadAll();
+    if (!result.ok) {
+      if (loader) loader.classList.add("hidden");
+      if (errEl)  errEl.classList.remove("hidden");
+      if (errMsg) errMsg.textContent = (result.error && result.error.message) || "Cached configs were not reachable.";
+      return;
+    }
+
+    D = result.data;
+    window.PV_DATA = D;
+    BRAND = D.BRANDS;
+    TABS_OEM      = D.TABS && D.TABS.oem      ? D.TABS.oem      : {};
+    TABS_INDUSTRY = D.TABS && D.TABS.industry ? D.TABS.industry : {};
+
     wire();
     renderAll();
-  });
+    if (loader) loader.remove();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
 })();

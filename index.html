@@ -53,6 +53,28 @@
 </head>
 <body class="bg-bg text-ink font-sans antialiased min-h-screen">
 
+  <!-- ============== BOOT LOADER ============== -->
+  <div id="boot-loader" class="fixed inset-0 z-[100] bg-bg flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-10 h-10 border-2 border-line border-t-blue rounded-full animate-spin mx-auto mb-3"></div>
+      <div class="text-sm text-inkSoft font-medium tracking-tight">Loading dashboard data…</div>
+      <div class="text-[11px] text-inkMuted mt-1">Fetching cached configs from data/config/</div>
+    </div>
+  </div>
+
+  <!-- ============== BOOT ERROR ============== -->
+  <div id="boot-error" class="hidden fixed inset-0 z-[100] bg-bg flex items-center justify-center p-6">
+    <div class="bg-card rounded-2xl border border-line shadow-card p-7 max-w-md text-center">
+      <div class="w-12 h-12 rounded-full bg-warnSoft text-warn flex items-center justify-center text-2xl mx-auto mb-3">⚠</div>
+      <h3 class="text-navy font-semibold text-[15px] mb-1.5">Could not load dashboard data</h3>
+      <p class="text-[12.5px] text-inkSoft" id="boot-error-msg">Cached configs were not reachable.</p>
+      <p class="text-[11px] text-inkMuted mt-2">All metrics will display as "Data pending" until the data layer is available.</p>
+      <button onclick="location.reload()" class="mt-5 px-4 py-1.5 bg-blue hover:bg-blue/90 text-white rounded-md text-sm font-semibold transition-colors">
+        Retry
+      </button>
+    </div>
+  </div>
+
   <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-navyDeep to-navy/0 -z-10"></div>
 
   <!-- ============== TOP HEADER ============== -->
@@ -273,7 +295,7 @@
     </div>
   </div>
 
-  <script src="data/backend-tables.js"></script>
+  <script src="js/data-loader.js"></script>
   <script src="js/dashboard.js"></script>
 </body>
 </html>

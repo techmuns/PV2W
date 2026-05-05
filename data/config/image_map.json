@@ -1,0 +1,41 @@
+{
+  "_notes": "Vehicle image URLs. Source verified URLs only from official OEM product/media pages — never random blogs or unverified third-party galleries. Each entry: { url, source, source_url, last_updated }. Null url = the dashboard renders an 'Image pending' state. Replace one model at a time as URLs are verified.",
+  "_preferred_endpoints": {
+    "Maruti":         "https://www.marutisuzuki.com/.../<model>/gallery",
+    "Hyundai":        "https://www.hyundai.com/in/.../<model>",
+    "M&M":            "https://auto.mahindra.com/.../<model>",
+    "Tata Motors PV": "https://cars.tatamotors.com/.../<model>"
+  },
+  "Maruti": {
+    "Swift":        { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Brezza":       { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Fronx":        { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Grand Vitara": { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Ertiga":       { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Baleno":       { "url": null, "source": null, "source_url": null, "last_updated": null }
+  },
+  "Hyundai": {
+    "Creta":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Venue":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Exter":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "i20":     { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Verna":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Alcazar": { "url": null, "source": null, "source_url": null, "last_updated": null }
+  },
+  "M&M": {
+    "Scorpio-N": { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "XUV700":    { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Thar":      { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "XUV 3XO":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Bolero":    { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "XUV400":    { "url": null, "source": null, "source_url": null, "last_updated": null }
+  },
+  "Tata Motors PV": {
+    "Nexon":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Punch":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Harrier": { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Safari":  { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Tiago":   { "url": null, "source": null, "source_url": null, "last_updated": null },
+    "Altroz":  { "url": null, "source": null, "source_url": null, "last_updated": null }
+  }
+}
