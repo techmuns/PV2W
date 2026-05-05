@@ -472,25 +472,29 @@ html, body { background: #F4F7FB; }
 }
 .sparkline-svg .spark-dot   { fill: #F59E0B; stroke: #FFFFFF; stroke-width: 1.4; }
 
-/* Trend (modal) chart */
-#modal-chart .chart-svg { height: 320px; }
-#modal-chart .trend-line {
+/* Trend chart styling — applies inside any .chart-svg, so the same
+   polished palette is shared between #modal-chart (KPI 10-yr trend)
+   and #vmodal-chart (vehicle volume trend). */
+#modal-chart .chart-svg,
+#vmodal-chart .chart-svg { height: 320px; }
+
+.chart-svg .trend-line {
   fill: none;
   stroke: #2563EB;
-  stroke-width: 2.6;
+  stroke-width: 2.8;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
-#modal-chart .trend-bench {
+.chart-svg .trend-bench {
   fill: none;
   stroke: #94A3B8;
   stroke-width: 1.6;
   stroke-dasharray: 4 4;
 }
-#modal-chart .trend-dot      { stroke: #FFFFFF; stroke-width: 1.8; transition: r 0.15s ease; }
-#modal-chart .trend-dot-current { stroke: #FFFFFF; stroke-width: 2.2; }
-#modal-chart .trend-halo     { fill: #F59E0B; opacity: 0.18; }
-#modal-chart .hover-target   { fill: transparent; cursor: crosshair; }
+.chart-svg .trend-dot         { stroke: #FFFFFF; stroke-width: 1.8; transition: r 0.15s ease; }
+.chart-svg .trend-dot-current { stroke: #FFFFFF; stroke-width: 2.4; }
+.chart-svg .trend-halo        { fill: #F59E0B; opacity: 0.26; }
+.chart-svg .hover-target      { fill: transparent; cursor: crosshair; }
 
 /* ====================================================
    Signal pills
@@ -612,11 +616,15 @@ html, body { background: #F4F7FB; }
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
 }
-.stat-tile-pos .stat-tile-value { color: #2E7D32; }
-.stat-tile-neg .stat-tile-value { color: #C62828; }
+.stat-tile-pos .stat-tile-value { color: #16A34A; }
+.stat-tile-neg .stat-tile-value { color: #DC2626; }
 .stat-tile-amber {
   background: linear-gradient(180deg, #FEF3C7 0%, #FFFFFF 100%);
   border-color: #FCD34D;
+}
+.stat-tile-blue {
+  background: linear-gradient(180deg, #EAF2FF 0%, #FFFFFF 100%);
+  border-color: #93B4F4;
 }
 
 #tab-bar::-webkit-scrollbar { height: 0; }

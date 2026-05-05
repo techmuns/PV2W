@@ -1126,7 +1126,7 @@
       statTile("Latest YoY", yoyValue, { cls: yoyClass }),
       statTile("Segment rank",
                current && current.Segment_Rank ? `#${current.Segment_Rank} ${current.Segment || ""}`.trim() : null),
-      statTile("Demand",   current ? current.Demand_Read   : null),
+      statTile("Demand",   current ? current.Demand_Read   : null, { cls: "stat-tile stat-tile-blue" }),
       statTile("Launch",   current ? current.Launch_Status : null),
       statTile("Facelift", current ? current.Facelift_Status : null),
       statTile("Key driver", current ? current.Key_Driver : null),
