@@ -540,7 +540,10 @@ html, body { background: #F4F7FB; }
 .chart-svg .trend-dot         { stroke: #FFFFFF; stroke-width: 1.8; transition: r 0.15s ease; }
 .chart-svg .trend-dot-current { stroke: #FFFFFF; stroke-width: 2.4; }
 .chart-svg .trend-halo        { fill: #F59E0B; opacity: 0.26; }
-.chart-svg .hover-target      { fill: transparent; cursor: crosshair; }
+/* Invisible column overlays (line / trend charts) — bars keep their
+   own inline fill via :not(.bar). */
+.chart-svg .hover-target:not(.bar) { fill: transparent; cursor: crosshair; }
+.chart-svg .bar.hover-target       { cursor: pointer; }
 
 /* ====================================================
    Signal pills

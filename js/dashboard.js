@@ -413,8 +413,6 @@
         deltaClass = yoy > 0 ? "delta-up" : yoy < 0 ? "delta-down" : "delta-flat";
       }
 
-      const history = getMetricHistory(state.company, metric, 10, state.fy);
-      const sparkValues = history.map(r => typeof r.Value === "number" ? r.Value : null);
       const tinted = idx % 2 === 1 ? "tinted" : "";
 
       return `
@@ -430,7 +428,6 @@
             <span class="text-[10px] text-inkMuted">YoY</span>
             ${stalePending ? '<span class="ml-auto text-[9px] text-warn bg-warnSoft px-1.5 py-0.5 rounded font-medium">Pending</span>' : ''}
           </div>
-          <div class="kpi-spark">${typeof val === "string" ? `<div class="kpi-spark-empty">—</div>` : sparkline(sparkValues)}</div>
         </div>`;
     }).join("");
 
