@@ -1,28 +1,28 @@
 {
-  "_notes": "OEM logo URLs. Use Clearbit's public logo endpoint as a best-effort default; data agents should replace each entry with a verified URL from the official OEM media kit when available. The dashboard falls back to a 'Logo pending' UI state on null/load-error.",
+  "_notes": "Logo_URL is intentionally null for all entries: the dashboard renders an original abstract brand badge inline (see brandBadge() in js/dashboard.js) instead of fetching real OEM logos. To replace with a verified official logo later, drop the URL into the matching entry — the renderer will pick it up.",
   "Maruti": {
-    "url": "https://logo.clearbit.com/marutisuzuki.com",
-    "source": "Clearbit Logo API",
-    "source_url": "https://clearbit.com/logo",
-    "last_updated": "2026-04-20"
+    "url": null,
+    "source": null,
+    "source_url": null,
+    "last_updated": null
   },
   "Hyundai": {
-    "url": "https://logo.clearbit.com/hyundai.com",
-    "source": "Clearbit Logo API",
-    "source_url": "https://clearbit.com/logo",
-    "last_updated": "2026-04-20"
+    "url": null,
+    "source": null,
+    "source_url": null,
+    "last_updated": null
   },
   "M&M": {
-    "url": "https://logo.clearbit.com/mahindra.com",
-    "source": "Clearbit Logo API",
-    "source_url": "https://clearbit.com/logo",
-    "last_updated": "2026-04-20"
+    "url": null,
+    "source": null,
+    "source_url": null,
+    "last_updated": null
   },
   "Tata Motors PV": {
-    "url": "https://logo.clearbit.com/tatamotors.com",
-    "source": "Clearbit Logo API",
-    "source_url": "https://clearbit.com/logo",
-    "last_updated": "2026-04-20"
+    "url": null,
+    "source": null,
+    "source_url": null,
+    "last_updated": null
   },
   "Industry": {
     "url": null,

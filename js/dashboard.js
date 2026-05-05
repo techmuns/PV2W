@@ -185,39 +185,99 @@
     }
   }
 
-  /* ---------- identity row ---------- */
-  function logoMarkHTML(company, sizeClass = "") {
-    const brand = BRAND[company];
-    const info  = getCompanyInfo(state.fy, company);
-    const url   = info ? info.Logo_URL : null;
-    const isIndustry = company === "Industry";
-    if (isIndustry) {
-      return {
-        cls: `logo-mark logo-mark-aggregate ${sizeClass}`.trim(),
-        style: `--brand:${brand.color}`,
-        inner: `<span class="logo-initials">${brand.initials}</span>`,
-      };
-    }
-    if (url) {
-      return {
-        cls: `logo-mark ${sizeClass}`.trim(),
-        style: `--brand:${brand.color}`,
-        inner: `<img src="${url}" alt="${company} logo"
-                     onerror="this.parentElement.classList.add('logo-mark-pending');this.parentElement.innerHTML='&lt;span class=&quot;logo-pending-text&quot;&gt;Logo pending&lt;/span&gt;';">`,
-      };
-    }
-    return {
-      cls: `logo-mark logo-mark-pending ${sizeClass}`.trim(),
-      style: `--brand:${brand.color}`,
-      inner: `<span class="logo-pending-text">Logo pending</span>`,
-    };
+  /* ---------- identity row ----------
+     Brand badges are intentionally abstract geometric marks built from
+     primitives (rectangles, circles, chevrons, network dots). They take
+     their colour cue from each OEM's palette but do not reproduce any
+     real logo, wordmark, or trademarked shape. Each card has its own
+     visual motif so the five companies remain visually distinct. */
+  const BRAND_BADGE = {
+    "Maruti": (c) => `
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="${c}"/>
+        <rect x="6"  y="20" width="4.4" height="6"  rx="1" fill="#FFFFFF" opacity="0.55"/>
+        <rect x="13.5" y="14" width="4.4" height="12" rx="1" fill="#FFFFFF" opacity="0.78"/>
+        <rect x="21" y="9"  width="4.4" height="17" rx="1" fill="#FFFFFF"/>
+      </svg>`,
+    "Hyundai": (c) => `
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="${c}"/>
+        <circle cx="16" cy="16" r="9" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.45"/>
+        <line x1="9" y1="22" x2="22" y2="11" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="22" cy="11" r="1.6" fill="#FFFFFF"/>
+      </svg>`,
+    "Tata Motors PV": (c) => `
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="${c}"/>
+        <path d="M9 22 L16 11 L23 22" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <line x1="11" y1="23.6" x2="21" y2="23.6" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round" opacity="0.7"/>
+      </svg>`,
+    "M&M": (c) => `
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="${c}"/>
+        <circle cx="13" cy="16" r="5.5" fill="none" stroke="#FFFFFF" stroke-width="1.6" opacity="0.7"/>
+        <circle cx="19" cy="16" r="5.5" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
+      </svg>`,
+    "Industry": (c) => `
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="${c}"/>
+        <line x1="9" y1="22" x2="16" y2="13" stroke="#FFFFFF" stroke-width="1.4" opacity="0.5"/>
+        <line x1="16" y1="13" x2="23" y2="11" stroke="#FFFFFF" stroke-width="1.4" opacity="0.5"/>
+        <circle cx="9"  cy="22" r="2.2" fill="#FFFFFF" opacity="0.6"/>
+        <circle cx="16" cy="13" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+        <circle cx="23" cy="11" r="2.2" fill="#FFFFFF"/>
+      </svg>`,
+  };
+  function brandBadge(company) {
+    const brand = BRAND[company] || { color: "#334E68" };
+    const fn = BRAND_BADGE[company] || BRAND_BADGE["Industry"];
+    return fn(brand.color);
   }
 
   function applyLogoMark(el, company, sizeClass = "") {
-    const spec = logoMarkHTML(company, sizeClass);
-    el.className = spec.cls;
-    el.setAttribute("style", spec.style);
-    el.innerHTML = spec.inner;
+    el.className = `logo-mark logo-mark-badge ${sizeClass}`.trim();
+    el.removeAttribute("style");
+    el.innerHTML = brandBadge(company);
+  }
+
+  /* Vehicle art — original abstract side-view silhouettes built from
+     SVG primitives (paths, circles). Two body forms keep cards visually
+     consistent while distinguishing tall (SUV / Sub-SUV / Utility) from
+     low (Hatch / Sedan / MPV / EV) segments. They do not replicate any
+     specific model's photograph or render. */
+  function vehicleArt(segment) {
+    const seg = (segment || "").toLowerCase();
+    const tall = seg === "suv" || seg === "sub-suv" || seg === "utility";
+
+    const body = tall
+      ? `M14 40 L22 22 L40 18 L82 18 L100 22 L108 40 L108 42 L14 42 Z`
+      : `M10 40 L22 28 L46 22 Q68 20 88 24 L102 30 L110 40 L110 42 L10 42 Z`;
+    const window_ = tall
+      ? `M26 22 L42 19 L82 19 L94 22 L94 30 L26 30 Z`
+      : `M28 28 L46 23 Q66 21 84 24 L84 30 L28 30 Z`;
+    const wheelL = tall ? 32 : 32;
+    const wheelR = tall ? 92 : 92;
+
+    return `
+      <svg viewBox="0 0 120 50" preserveAspectRatio="xMidYMid meet" class="vehicle-art" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="va-bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#EAF2FF"/>
+            <stop offset="100%" stop-color="#DCEBFF"/>
+          </linearGradient>
+          <linearGradient id="va-body" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#3D7AE8"/>
+            <stop offset="100%" stop-color="#1E4FB8"/>
+          </linearGradient>
+        </defs>
+        <rect width="120" height="50" fill="url(#va-bg)"/>
+        <path d="${body}" fill="url(#va-body)"/>
+        <path d="${window_}" fill="#FFFFFF" opacity="0.42"/>
+        <circle cx="${wheelL}" cy="42" r="5" fill="#0B1F33"/>
+        <circle cx="${wheelL}" cy="42" r="2.2" fill="#94A3B8"/>
+        <circle cx="${wheelR}" cy="42" r="5" fill="#0B1F33"/>
+        <circle cx="${wheelR}" cy="42" r="2.2" fill="#94A3B8"/>
+      </svg>`;
   }
 
   function renderIdentityRow() {
@@ -390,9 +450,16 @@
         }
       }
       lines += `<path class="line-path" d="${path}" stroke="${s.color}"/>`;
-      points.forEach((p) => {
+      points.forEach((p, i) => {
         if (!p) return;
         lines += `<circle class="dot" cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${s.color}"/>`;
+        if (idx === 0 && options.showLabels !== false) {
+          const v = s.values[i];
+          const lbl = options.yUnit === "%"
+            ? v.toFixed(1) + "%"
+            : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString("en-IN") : v.toFixed(1));
+          lines += `<text x="${p[0]}" y="${p[1] - 8}" text-anchor="middle" font-size="9.5" fill="#0B1F33" font-weight="600">${lbl}</text>`;
+        }
       });
     });
 
@@ -429,10 +496,13 @@
         const yBot = yScale(cum);
         const hh = Math.max(0, yBot - yTop);
         bars += `<rect class="bar" x="${cx - barW/2}" y="${yTop}" width="${barW}" height="${hh}" fill="${s.color}" rx="2"/>`;
+        if (hh >= 18 && v > 0) {
+          bars += `<text x="${cx}" y="${yTop + hh / 2 + 3.5}" text-anchor="middle" font-size="9" fill="#FFFFFF" font-weight="600">${v.toFixed(1)}${options.yUnit||""}</text>`;
+        }
         cum += v;
       });
       bars += `<text x="${cx}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
-      bars += `<text x="${cx}" y="${yScale(cum) - 4}" text-anchor="middle" font-size="10" fill="#102A43" font-weight="500">${cum.toFixed(0)}${options.yUnit||""}</text>`;
+      bars += `<text x="${cx}" y="${yScale(cum) - 5}" text-anchor="middle" font-size="10.5" fill="#0B1F33" font-weight="700">${cum.toFixed(1)}${options.yUnit||""}</text>`;
     });
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
   }
@@ -465,7 +535,12 @@
         const yy = yScale(v);
         const hh = Math.abs(yy - zeroY);
         const yTop = v >= 0 ? yy : zeroY;
+        const labelY = v >= 0 ? yTop - 4 : yTop + hh + 11;
+        const lbl = options.yUnit === "%"
+          ? (v >= 0 ? "+" : "") + v.toFixed(1) + "%"
+          : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString("en-IN") : v.toFixed(1));
         bars += `<rect class="bar" x="${startX + si*barW}" y="${yTop}" width="${barW - 2}" height="${hh}" fill="${s.color}" rx="2"/>`;
+        bars += `<text x="${startX + si*barW + (barW-2)/2}" y="${labelY}" text-anchor="middle" font-size="9" fill="#0B1F33" font-weight="600">${lbl}</text>`;
       });
       bars += `<text x="${cx}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
     });
@@ -615,12 +690,10 @@
       const sigLabel = sig === "Positive" ? "Gain" : sig === "Negative" ? "Loss" : "Stable";
       const fresh = r ? freshness(r.Last_Updated) : "Missing";
 
-      /* Image area: rendered only when Image_URL exists. On <img>
-         load error the slot removes itself entirely (no placeholder). */
-      const imageSlot = (r && r.Image_URL)
-        ? `<div class="veh-image-slot"><img class="veh-image" src="${r.Image_URL}" alt="${name}"
-             onerror="this.parentElement.remove();"></div>`
-        : "";
+      /* Abstract vehicle art (SVG silhouette by segment). Real
+         photos / Image_URL aren't used in the visible UI — the
+         field stays in the schema for a future replacement layer. */
+      const imageSlot = `<div class="veh-image-slot is-art">${vehicleArt(r ? r.Segment : null)}</div>`;
 
       /* Expand rows — only those with real values are kept. */
       const expandRows = !placeholder ? [
@@ -1072,16 +1145,10 @@
                 || allRows[allRows.length - 1]
                 || null;
 
-    /* Header image */
+    /* Header art — abstract vehicle silhouette by segment. */
     const imgEl = $("#vmodal-image");
-    if (current && current.Image_URL) {
-      imgEl.className = "vmod-image has-image";
-      imgEl.innerHTML = `<img src="${current.Image_URL}" alt="${vehicleName}"
-        onerror="this.parentElement.classList.remove('has-image');this.parentElement.innerHTML='Image pending';">`;
-    } else {
-      imgEl.className = "vmod-image";
-      imgEl.innerHTML = "Image pending";
-    }
+    imgEl.className = "vmod-image is-art";
+    imgEl.innerHTML = vehicleArt(current ? current.Segment : null);
 
     $("#vmodal-title").textContent   = `${vehicleName} — ${company}`;
     const segLabel = current && current.Segment ? current.Segment : "Segment pending";
