@@ -588,18 +588,14 @@
   }
 
   /* ---------- vehicle cards ---------- */
-  /* Render a hover-reveal row. value is null/undefined → "Pending". */
-  function revealRow(label, value) {
-    const isPending = value === null || value === undefined || value === "";
-    return `<div class="veh-reveal-row">
-      <span class="veh-reveal-key">${label}</span>
-      <span class="veh-reveal-val ${isPending ? "pending" : ""}">${isPending ? "Pending" : value}</span>
+  /* Build an expand-row only if the field has a real value.
+     Returns "" for null/undefined/empty so the row is skipped. */
+  function vehRow(label, value) {
+    if (value === null || value === undefined || value === "") return "";
+    return `<div class="veh-row">
+      <span class="veh-row-key">${label}</span>
+      <span class="veh-row-val">${value}</span>
     </div>`;
-  }
-
-  function rankLabel(r) {
-    if (!r || r.Segment_Rank === null || r.Segment_Rank === undefined) return null;
-    return `#${r.Segment_Rank}${r.Segment ? " " + r.Segment : ""}`;
   }
 
   function renderVehicleCards() {
@@ -618,23 +614,36 @@
       const sig = r ? r.Signal : "Neutral";
       const sigLabel = sig === "Positive" ? "Gain" : sig === "Negative" ? "Loss" : "Stable";
       const fresh = r ? freshness(r.Last_Updated) : "Missing";
-      const imgUrl = r ? r.Image_URL : null;
 
-      const imageSlot = imgUrl
-        ? `<div class="veh-image-slot has-image"><img class="veh-image" src="${imgUrl}" alt="${name}"
-              onerror="this.parentElement.classList.remove('has-image');this.parentElement.innerHTML='Image pending';"></div>`
-        : `<div class="veh-image-slot">Image pending</div>`;
+      /* Image area: rendered only when Image_URL exists. On <img>
+         load error the slot removes itself entirely (no placeholder). */
+      const imageSlot = (r && r.Image_URL)
+        ? `<div class="veh-image-slot"><img class="veh-image" src="${r.Image_URL}" alt="${name}"
+             onerror="this.parentElement.remove();"></div>`
+        : "";
 
-      const insight = r && r.Vehicle_Insight ? r.Vehicle_Insight : null;
-      const reveal = `
-        <div class="veh-reveal">
-          ${revealRow("Demand",   r ? r.Demand_Read : null)}
-          ${revealRow("Launch",   r ? r.Launch_Status : null)}
-          ${revealRow("Facelift", r ? r.Facelift_Status : null)}
-          ${revealRow("Segment rank", rankLabel(r))}
-          ${revealRow("Key driver", r ? r.Key_Driver : null)}
-          <div class="veh-reveal-insight ${insight ? "" : "pending"}">${insight || "Insight pending — populate Vehicle_Insight from primary sources."}</div>
-          <div class="veh-reveal-cta">View detail →</div>
+      /* Expand rows — only those with real values are kept. */
+      const expandRows = !placeholder ? [
+        vehRow("Demand",       r.Demand_Read),
+        vehRow("Launch",       r.Launch_Status),
+        vehRow("Facelift",     r.Facelift_Status),
+        vehRow("Segment rank", r.Segment_Rank ? `#${r.Segment_Rank}${r.Segment ? " " + r.Segment : ""}` : null),
+        vehRow("Key driver",   r.Key_Driver),
+      ].filter(Boolean) : [];
+
+      const insightHtml = (!placeholder && r.Vehicle_Insight)
+        ? `<div class="veh-insight-box">${r.Vehicle_Insight}</div>`
+        : "";
+
+      const dividerHtml = (expandRows.length || insightHtml)
+        ? `<div class="veh-divider"></div>` : "";
+
+      const expandSection = `
+        <div class="veh-expand">
+          ${dividerHtml}
+          ${expandRows.join("")}
+          ${insightHtml}
+          <div class="veh-cta">View detail →</div>
         </div>`;
 
       return `
@@ -663,8 +672,8 @@
               : (fresh === "Stale"
                   ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Stale</div>`
                   : "")}
+            ${expandSection}
           </div>
-          ${reveal}
         </div>`;
     }).join("");
 

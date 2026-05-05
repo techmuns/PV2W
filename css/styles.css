@@ -260,10 +260,10 @@ html, body { background: #F4F7FB; }
 /* ====================================================
    Vehicle cards
    ==================================================== */
-/* Vehicle card wrapper holds the visible body + the hover-reveal
-   panel. The wrapper itself doesn't transform — only the inner body
-   scales — so the reveal panel appears in absolute position below
-   without distortion. */
+/* Vehicle card wrapper holds the visible body. The .veh-expand block
+   is part of the card body (in-flow); its max-height grows on hover
+   so the row's actual height grows and the section below pushes down
+   naturally. items-start on the grid keeps unhovered cards short. */
 .veh-card-wrap {
   position: relative;
   z-index: 1;
@@ -277,117 +277,98 @@ html, body { background: #F4F7FB; }
   border-radius: 12px;
   padding: 12px;
   box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
-  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+  transition: box-shadow 260ms ease, border-color 260ms ease, transform 260ms ease;
   cursor: pointer;
-  will-change: transform;
-  transform-origin: top center;
 }
 .veh-card-wrap:hover .veh-card {
-  transform: scale(1.06);
-  box-shadow: 0 18px 40px rgba(11, 31, 51, 0.16), 0 4px 10px rgba(11, 31, 51, 0.06);
-  border-color: #6F9AE0;
+  transform: translateY(-2px);
+  box-shadow: 0 22px 48px rgba(11, 31, 51, 0.18), 0 6px 14px rgba(11, 31, 51, 0.08);
+  border-color: #2563EB;
 }
 
-/* Reveal panel: sits below the card and overlays the row beneath
-   on hover. It does not push neighbouring cards. */
-.veh-reveal {
-  position: absolute;
-  left: 0; right: 0;
-  top: 100%;
-  margin-top: -2px;
-  background: #FFFFFF;
-  border: 1px solid #6F9AE0;
-  border-top: none;
-  border-radius: 0 0 12px 12px;
-  padding: 10px 12px 12px;
-  box-shadow: 0 18px 40px rgba(11, 31, 51, 0.14);
-  opacity: 0;
-  pointer-events: none;
-  transform: scaleY(0.92);
-  transform-origin: top center;
-  transition: opacity 200ms ease, transform 200ms ease;
-  z-index: 28;
-}
-.veh-card-wrap:hover .veh-reveal {
-  opacity: 1;
-  transform: scaleY(1);
-  pointer-events: auto;
-}
-.veh-reveal-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 10.5px;
-  padding: 3px 0;
-  border-bottom: 1px dashed #EEF1F5;
-}
-.veh-reveal-row:last-child { border-bottom: none; }
-.veh-reveal-key {
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #6B7280;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-.veh-reveal-val {
-  color: #102A43;
-  font-weight: 500;
-  text-align: right;
-  font-size: 11px;
-}
-.veh-reveal-val.pending { color: #94A3B8; font-style: italic; font-weight: 400; }
-.veh-reveal-insight {
-  margin-top: 8px;
-  padding: 8px 10px;
-  background: #EAF2FF;
-  border-radius: 6px;
-  font-size: 11px;
-  color: #102A43;
-  line-height: 1.4;
-  border-left: 2px solid #2563EB;
-}
-.veh-reveal-insight.pending { color: #94A3B8; font-style: italic; border-left-color: #CBD5E1; }
-.veh-reveal-cta {
-  text-align: right;
-  font-size: 10px;
-  color: #2563EB;
-  font-weight: 600;
-  margin-top: 6px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* Image slot inside vehicle card */
+/* Image slot — only rendered when an Image_URL is present. */
 .veh-image-slot {
   position: relative;
   height: 64px;
-  background: linear-gradient(135deg, #F4F7FB 0%, #EEF4FB 100%);
-  border: 1px dashed #D9E2EC;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #94A3B8;
-  font-size: 9.5px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-weight: 600;
-  overflow: hidden;
-}
-.veh-image-slot.has-image {
   background: #FFFFFF;
   border: 1px solid #E5EAF1;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: height 260ms ease;
 }
+.veh-card-wrap:hover .veh-image-slot { height: 100px; }
 .veh-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 240ms ease;
+  transition: transform 260ms ease;
   display: block;
 }
-.veh-card-wrap:hover .veh-image { transform: scale(1.08); }
+.veh-card-wrap:hover .veh-image { transform: scale(1.06); }
+
+/* In-flow expansion block — height grows on hover, layout reflows. */
+.veh-expand {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition: max-height 280ms ease, opacity 220ms ease 60ms, margin-top 260ms ease;
+}
+.veh-card-wrap:hover .veh-expand {
+  max-height: 320px;
+  opacity: 1;
+  margin-top: 8px;
+}
+.veh-divider {
+  height: 1px;
+  margin: 0 0 8px;
+  background: linear-gradient(90deg, transparent 0%, #DBEAFE 22%, #DBEAFE 78%, transparent 100%);
+}
+.veh-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #EEF1F5;
+  font-size: 11px;
+}
+.veh-row:last-of-type { border-bottom: none; }
+.veh-row-key {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+  font-weight: 600;
+  font-size: 9.5px;
+  flex-shrink: 0;
+}
+.veh-row-val {
+  color: #102A43;
+  font-weight: 500;
+  text-align: right;
+}
+.veh-insight-box {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #EAF2FF;
+  border-left: 2px solid #2563EB;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #102A43;
+  line-height: 1.45;
+}
+.veh-cta {
+  text-align: right;
+  font-size: 10px;
+  font-weight: 600;
+  color: #2563EB;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed #DBEAFE;
+}
 
 /* Vehicle modal logo / image area in header */
 .vmod-image {
