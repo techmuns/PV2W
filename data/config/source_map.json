@@ -15,6 +15,14 @@
     "Social media",
     "Unverified third-party data scrapers"
   ],
+  "_vehicle_field_sources": {
+    "Image_URL":       "Official OEM website / media kit / product gallery",
+    "Demand_Read":     "Monthly SIAM data, OEM dispatch press releases, segment trackers",
+    "Launch_Status":   "OEM press releases, official launch announcements",
+    "Facelift_Status": "OEM press releases, refresh announcements",
+    "Key_Driver":      "Investor presentation segment commentary, annual report MD&A",
+    "Vehicle_Insight": "Buy-side analyst note based on the above primary sources"
+  },
   "_example": {
     "Maruti": {
       "Market Share %": {

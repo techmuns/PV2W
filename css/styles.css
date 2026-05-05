@@ -260,6 +260,16 @@ html, body { background: #F4F7FB; }
 /* ====================================================
    Vehicle cards
    ==================================================== */
+/* Vehicle card wrapper holds the visible body + the hover-reveal
+   panel. The wrapper itself doesn't transform — only the inner body
+   scales — so the reveal panel appears in absolute position below
+   without distortion. */
+.veh-card-wrap {
+  position: relative;
+  z-index: 1;
+}
+.veh-card-wrap:hover { z-index: 30; }
+
 .veh-card {
   position: relative;
   background: #FFFFFF;
@@ -270,14 +280,85 @@ html, body { background: #F4F7FB; }
   transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
   cursor: pointer;
   will-change: transform;
+  transform-origin: top center;
 }
-.veh-card:hover {
+.veh-card-wrap:hover .veh-card {
+  transform: scale(1.06);
+  box-shadow: 0 18px 40px rgba(11, 31, 51, 0.16), 0 4px 10px rgba(11, 31, 51, 0.06);
+  border-color: #6F9AE0;
+}
+
+/* Reveal panel: sits below the card and overlays the row beneath
+   on hover. It does not push neighbouring cards. */
+.veh-reveal {
+  position: absolute;
+  left: 0; right: 0;
+  top: 100%;
+  margin-top: -2px;
   background: #FFFFFF;
-  transform: scale(1.03);
-  box-shadow: 0 14px 32px rgba(11, 31, 51, 0.14), 0 3px 8px rgba(11, 31, 51, 0.06);
-  border-color: #93B4F4;
-  z-index: 2;
+  border: 1px solid #6F9AE0;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 10px 12px 12px;
+  box-shadow: 0 18px 40px rgba(11, 31, 51, 0.14);
+  opacity: 0;
+  pointer-events: none;
+  transform: scaleY(0.92);
+  transform-origin: top center;
+  transition: opacity 200ms ease, transform 200ms ease;
+  z-index: 28;
 }
+.veh-card-wrap:hover .veh-reveal {
+  opacity: 1;
+  transform: scaleY(1);
+  pointer-events: auto;
+}
+.veh-reveal-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10.5px;
+  padding: 3px 0;
+  border-bottom: 1px dashed #EEF1F5;
+}
+.veh-reveal-row:last-child { border-bottom: none; }
+.veh-reveal-key {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.veh-reveal-val {
+  color: #102A43;
+  font-weight: 500;
+  text-align: right;
+  font-size: 11px;
+}
+.veh-reveal-val.pending { color: #94A3B8; font-style: italic; font-weight: 400; }
+.veh-reveal-insight {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #EAF2FF;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #102A43;
+  line-height: 1.4;
+  border-left: 2px solid #2563EB;
+}
+.veh-reveal-insight.pending { color: #94A3B8; font-style: italic; border-left-color: #CBD5E1; }
+.veh-reveal-cta {
+  text-align: right;
+  font-size: 10px;
+  color: #2563EB;
+  font-weight: 600;
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Image slot inside vehicle card */
 .veh-image-slot {
   position: relative;
   height: 64px;
@@ -303,10 +384,53 @@ html, body { background: #F4F7FB; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 220ms ease;
+  transition: transform 240ms ease;
   display: block;
 }
-.veh-card:hover .veh-image { transform: scale(1.06); }
+.veh-card-wrap:hover .veh-image { transform: scale(1.08); }
+
+/* Vehicle modal logo / image area in header */
+.vmod-image {
+  width: 64px; height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #F4F7FB 0%, #EEF4FB 100%);
+  border: 1px dashed #D9E2EC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.vmod-image.has-image { background: #FFFFFF; border: 1px solid #E5EAF1; padding: 0; }
+.vmod-image img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Peer comparison table inside vehicle modal */
+.vmod-peer-table { width: 100%; font-size: 12.5px; border-collapse: collapse; }
+.vmod-peer-table th {
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-bottom: 1px solid #E5EAF1;
+}
+.vmod-peer-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #EEF1F5;
+  color: #102A43;
+}
+.vmod-peer-table tr.is-current td { background: #EAF2FF; font-weight: 600; }
+.vmod-peer-table td.num { font-variant-numeric: tabular-nums; }
+
+#vmodal-overlay.open { opacity: 1; }
+#vmodal-overlay.open #vmodal { transform: scale(1); opacity: 1; }
 
 /* ====================================================
    Chart panels

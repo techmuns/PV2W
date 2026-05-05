@@ -22,6 +22,11 @@
       "Segment_Rank",
       "Signal",
       "Image_URL",
+      "Demand_Read",
+      "Launch_Status",
+      "Facelift_Status",
+      "Key_Driver",
+      "Vehicle_Insight",
       "Source",
       "Source_URL",
       "Last_Updated"
@@ -6724,7 +6729,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -6738,7 +6748,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -6752,7 +6767,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -6766,7 +6786,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -6780,7 +6805,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -6794,7 +6824,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -6808,7 +6843,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -6822,7 +6862,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -6836,7 +6881,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -6850,7 +6900,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -6864,7 +6919,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -6878,7 +6938,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -6892,7 +6957,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -6906,7 +6976,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -6920,7 +6995,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -6934,7 +7014,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -6948,7 +7033,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -6962,7 +7052,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -6976,7 +7071,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -6990,7 +7090,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7004,7 +7109,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7018,7 +7128,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7032,7 +7147,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7046,7 +7166,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7060,7 +7185,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7074,7 +7204,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7088,7 +7223,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7102,7 +7242,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7116,7 +7261,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7130,7 +7280,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7144,7 +7299,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7158,7 +7318,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7172,7 +7337,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7186,7 +7356,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7200,7 +7375,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7214,7 +7394,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7228,7 +7413,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7242,7 +7432,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7256,7 +7451,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7270,7 +7470,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7284,7 +7489,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7298,7 +7508,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7312,7 +7527,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7326,7 +7546,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7340,7 +7565,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7354,7 +7584,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7368,7 +7603,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7382,7 +7622,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7396,7 +7641,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7410,7 +7660,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7424,7 +7679,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7438,7 +7698,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7452,7 +7717,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7466,7 +7736,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7480,7 +7755,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7494,7 +7774,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7508,7 +7793,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Last_Updated": "2025-12-01",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7522,7 +7812,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7536,7 +7831,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7550,7 +7850,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Last_Updated": "2025-12-01",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7564,7 +7869,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7578,7 +7888,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7592,7 +7907,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Last_Updated": "2025-12-01",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7606,7 +7926,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7620,7 +7945,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7634,7 +7964,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Last_Updated": "2025-12-01",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7648,7 +7983,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7662,7 +8002,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7676,7 +8021,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Last_Updated": "2025-12-01",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY23",
@@ -7690,7 +8040,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY24",
@@ -7704,7 +8059,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Last_Updated": "2026-04-20",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     },
     {
       "FY": "FY25",
@@ -7718,7 +8078,12 @@
       "Image_URL": null,
       "Source": "Pending",
       "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Last_Updated": "2025-12-01",
+      "Demand_Read": null,
+      "Launch_Status": null,
+      "Facelift_Status": null,
+      "Key_Driver": null,
+      "Vehicle_Insight": null
     }
   ],
   "buyside_signals": [

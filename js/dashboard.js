@@ -588,6 +588,20 @@
   }
 
   /* ---------- vehicle cards ---------- */
+  /* Render a hover-reveal row. value is null/undefined → "Pending". */
+  function revealRow(label, value) {
+    const isPending = value === null || value === undefined || value === "";
+    return `<div class="veh-reveal-row">
+      <span class="veh-reveal-key">${label}</span>
+      <span class="veh-reveal-val ${isPending ? "pending" : ""}">${isPending ? "Pending" : value}</span>
+    </div>`;
+  }
+
+  function rankLabel(r) {
+    if (!r || r.Segment_Rank === null || r.Segment_Rank === undefined) return null;
+    return `#${r.Segment_Rank}${r.Segment ? " " + r.Segment : ""}`;
+  }
+
   function renderVehicleCards() {
     const section = $("#vehicle-section");
     if (state.company === "Industry") { section.style.display = "none"; return; }
@@ -611,33 +625,52 @@
               onerror="this.parentElement.classList.remove('has-image');this.parentElement.innerHTML='Image pending';"></div>`
         : `<div class="veh-image-slot">Image pending</div>`;
 
+      const insight = r && r.Vehicle_Insight ? r.Vehicle_Insight : null;
+      const reveal = `
+        <div class="veh-reveal">
+          ${revealRow("Demand",   r ? r.Demand_Read : null)}
+          ${revealRow("Launch",   r ? r.Launch_Status : null)}
+          ${revealRow("Facelift", r ? r.Facelift_Status : null)}
+          ${revealRow("Segment rank", rankLabel(r))}
+          ${revealRow("Key driver", r ? r.Key_Driver : null)}
+          <div class="veh-reveal-insight ${insight ? "" : "pending"}">${insight || "Insight pending — populate Vehicle_Insight from primary sources."}</div>
+          <div class="veh-reveal-cta">View detail →</div>
+        </div>`;
+
       return `
-        <div class="veh-card">
-          ${imageSlot}
-          <div class="flex items-start justify-between mb-1">
-            <div>
-              <div class="text-sm font-semibold text-navy leading-tight">${name}</div>
-              <div class="text-[10.5px] text-inkMuted mt-0.5">${r ? r.Segment : "—"}</div>
+        <div class="veh-card-wrap" data-vehicle="${name}">
+          <div class="veh-card">
+            ${imageSlot}
+            <div class="flex items-start justify-between mb-1">
+              <div>
+                <div class="text-sm font-semibold text-navy leading-tight">${name}</div>
+                <div class="text-[10.5px] text-inkMuted mt-0.5">${r ? r.Segment : "—"}</div>
+              </div>
+              <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded ${signalClass(sig)}">${sigLabel}</span>
             </div>
-            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded ${signalClass(sig)}">${sigLabel}</span>
+            <div class="text-[18px] font-semibold text-ink tabular-nums leading-tight">
+              ${placeholder ? "—" : fmtNum(r.Volume)}
+            </div>
+            <div class="flex items-center justify-between mt-1">
+              <span class="text-[10.5px] text-inkMuted">${state.fy} units</span>
+              <span class="text-[11px] tabular-nums ${
+                !placeholder && r.YoY_Growth > 0 ? "delta-up" :
+                !placeholder && r.YoY_Growth < 0 ? "delta-down" : "delta-flat"
+              }">${placeholder || r.YoY_Growth === null ? "—" : fmtDelta(r.YoY_Growth, "%")}</span>
+            </div>
+            ${placeholder
+              ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Data pending</div>`
+              : (fresh === "Stale"
+                  ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Stale</div>`
+                  : "")}
           </div>
-          <div class="text-[18px] font-semibold text-ink tabular-nums leading-tight">
-            ${placeholder ? "—" : fmtNum(r.Volume)}
-          </div>
-          <div class="flex items-center justify-between mt-1">
-            <span class="text-[10.5px] text-inkMuted">${state.fy} units</span>
-            <span class="text-[11px] tabular-nums ${
-              !placeholder && r.YoY_Growth > 0 ? "delta-up" :
-              !placeholder && r.YoY_Growth < 0 ? "delta-down" : "delta-flat"
-            }">${placeholder || r.YoY_Growth === null ? "—" : fmtDelta(r.YoY_Growth, "%")}</span>
-          </div>
-          ${placeholder
-            ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Data pending</div>`
-            : (fresh === "Stale"
-                ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Stale</div>`
-                : "")}
+          ${reveal}
         </div>`;
     }).join("");
+
+    grid.querySelectorAll(".veh-card-wrap").forEach(el => {
+      el.addEventListener("click", () => openVehicleModal(state.company, el.dataset.vehicle));
+    });
   }
 
   /* ---------- tabs ----------
@@ -994,6 +1027,155 @@
     $("#trend-tooltip").classList.add("hidden");
   }
 
+  /* ====================================================
+     VEHICLE DETAIL MODAL
+     ==================================================== */
+  function openVMod() {
+    const overlay = $("#vmodal-overlay");
+    overlay.classList.remove("hidden");
+    requestAnimationFrame(() => overlay.classList.add("open"));
+  }
+  function closeVMod() {
+    const overlay = $("#vmodal-overlay");
+    overlay.classList.remove("open");
+    setTimeout(() => overlay.classList.add("hidden"), 220);
+    $("#trend-tooltip").classList.add("hidden");
+  }
+
+  function statTile(label, value, opts = {}) {
+    const pending = value === null || value === undefined || value === "";
+    const cls = pending ? "stat-tile" : (opts.cls || "stat-tile");
+    return `<div class="${cls}">
+      <div class="stat-tile-label">${label}</div>
+      <div class="stat-tile-value" style="${pending ? "color:#94A3B8;font-style:italic;font-weight:500;font-size:14px;" : ""}">
+        ${pending ? "Pending" : value}
+      </div>
+    </div>`;
+  }
+
+  function openVehicleModal(company, vehicleName) {
+    const brand = BRAND[company] || {};
+    const allRows = D.Vehicle_FY_Metrics
+      .filter(r => r.Company === company && r.Vehicle === vehicleName)
+      .sort((a, b) => D.FYS_FULL.indexOf(a.FY) - D.FYS_FULL.indexOf(b.FY));
+
+    const current = allRows.find(r => r.FY === state.fy)
+                || allRows[allRows.length - 1]
+                || null;
+
+    /* Header image */
+    const imgEl = $("#vmodal-image");
+    if (current && current.Image_URL) {
+      imgEl.className = "vmod-image has-image";
+      imgEl.innerHTML = `<img src="${current.Image_URL}" alt="${vehicleName}"
+        onerror="this.parentElement.classList.remove('has-image');this.parentElement.innerHTML='Image pending';">`;
+    } else {
+      imgEl.className = "vmod-image";
+      imgEl.innerHTML = "Image pending";
+    }
+
+    $("#vmodal-title").textContent   = `${vehicleName} — ${company}`;
+    const segLabel = current && current.Segment ? current.Segment : "Segment pending";
+    const rankLbl  = current && current.Segment_Rank ? `· #${current.Segment_Rank} in segment` : "";
+    $("#vmodal-context").textContent = `${segLabel} ${rankLbl} · Selected FY ${state.fy}`;
+
+    /* Volume trend chart — uses the trendChart renderer */
+    const labels = allRows.map(r => r.FY);
+    const values = allRows.map(r => (typeof r.Volume === "number" ? r.Volume : null));
+    const valued = values.filter(v => typeof v === "number");
+
+    if (!valued.length) {
+      $("#vmodal-chart").innerHTML = `<div class="text-sm text-inkMuted py-8 text-center">Volume history pending.</div>`;
+      $("#vmodal-chart-sub").textContent = "";
+      $("#vmodal-chart-legend").innerHTML = "";
+    } else {
+      $("#vmodal-chart").innerHTML = trendChart(values, labels, { yUnit: "" });
+      $("#vmodal-chart-sub").textContent =
+        `${labels[0]} – ${labels[labels.length-1]} · ${labels.length} year${labels.length>1?"s":""}` +
+        (valued.length < 3 ? " · limited history" : "");
+      $("#vmodal-chart-legend").innerHTML = [
+        `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-4 h-[3px] rounded-sm" style="background:${COLOR.blue}"></span>${vehicleName} units</span>`,
+        `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:${COLOR.pos}"></span>YoY up</span>`,
+        `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:${COLOR.neg}"></span>YoY down</span>`,
+        `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background:${COLOR.amber}"></span>Current FY</span>`,
+      ].join("");
+      bindTrendHover($("#vmodal-chart"), labels, values, "Volume", null);
+    }
+
+    /* Stat tiles */
+    const yoyClass = current && typeof current.YoY_Growth === "number"
+      ? (current.YoY_Growth > 0 ? "stat-tile stat-tile-pos"
+        : current.YoY_Growth < 0 ? "stat-tile stat-tile-neg"
+        : "stat-tile")
+      : "stat-tile";
+    const yoyValue = current && typeof current.YoY_Growth === "number"
+      ? fmtDelta(current.YoY_Growth, "%") : null;
+
+    $("#vmodal-stats").innerHTML = [
+      statTile(`Volume (${state.fy})`, current && typeof current.Volume === "number" ? fmtNum(current.Volume) : null,
+               { cls: "stat-tile stat-tile-amber" }),
+      statTile("Latest YoY", yoyValue, { cls: yoyClass }),
+      statTile("Segment rank",
+               current && current.Segment_Rank ? `#${current.Segment_Rank} ${current.Segment || ""}`.trim() : null),
+      statTile("Demand",   current ? current.Demand_Read   : null),
+      statTile("Launch",   current ? current.Launch_Status : null),
+      statTile("Facelift", current ? current.Facelift_Status : null),
+      statTile("Key driver", current ? current.Key_Driver : null),
+      statTile("Signal",
+               current ? `<span class="inline-flex items-center gap-1.5 text-[12px] px-2.5 py-1 rounded-full ${signalClass(current.Signal)} font-semibold">${signalDot(current.Signal)}${current.Signal}</span>` : null),
+    ].join("");
+
+    /* Segment peer comparison */
+    const segment = current && current.Segment;
+    let peerHTML = `<div class="text-xs text-inkMuted py-3 text-center">No peers available for this segment / FY.</div>`;
+    if (segment) {
+      const peers = D.Vehicle_FY_Metrics
+        .filter(r => r.FY === state.fy && r.Segment === segment && typeof r.Volume === "number")
+        .sort((a, b) => b.Volume - a.Volume);
+      if (peers.length) {
+        const rows = peers.map((p, i) => `
+          <tr class="${p.Vehicle === vehicleName && p.Company === company ? "is-current" : ""}">
+            <td class="num text-inkMuted">#${i + 1}</td>
+            <td>${p.Vehicle}</td>
+            <td class="text-[11px] text-inkMuted">${p.Company}</td>
+            <td class="num">${fmtNum(p.Volume)}</td>
+            <td class="num ${typeof p.YoY_Growth === "number" && p.YoY_Growth > 0 ? "delta-up"
+                          : typeof p.YoY_Growth === "number" && p.YoY_Growth < 0 ? "delta-down" : "delta-flat"}">
+              ${typeof p.YoY_Growth === "number" ? fmtDelta(p.YoY_Growth, "%") : "—"}
+            </td>
+          </tr>`).join("");
+        peerHTML = `
+          <table class="vmod-peer-table">
+            <thead><tr><th>Rank</th><th>Vehicle</th><th>OEM</th><th>${state.fy} units</th><th>YoY</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      }
+    }
+    $("#vmodal-peer-fy").textContent = state.fy;
+    $("#vmodal-peers").innerHTML = peerHTML;
+
+    /* Insight */
+    const insight = current && current.Vehicle_Insight ? current.Vehicle_Insight : null;
+    const ie = $("#vmodal-insight");
+    if (insight) {
+      ie.classList.remove("text-inkMuted");
+      ie.style.fontStyle = "";
+      ie.textContent = insight;
+    } else {
+      ie.classList.add("text-inkMuted");
+      ie.style.fontStyle = "italic";
+      ie.textContent = "Buy-side insight pending — populate Vehicle_Insight from primary sources (OEM investor presentations, annual report MD&A, or sales disclosures).";
+    }
+
+    /* Source / updated */
+    $("#vmodal-source").textContent = current && current.Source && current.Source !== "Pending" ? current.Source : "Pending";
+    $("#vmodal-updated").textContent = current && current.Last_Updated
+      ? new Date(current.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
+      : "—";
+
+    openVMod();
+  }
+
   /* ---------- KPI hover tooltip ---------- */
   function attachHoverTip(el) {
     const tip = $("#hover-tip");
@@ -1033,8 +1215,12 @@
     $("#modal-overlay").addEventListener("click", (e) => {
       if (e.target.id === "modal-overlay") closeModal();
     });
+    $("#vmodal-close").addEventListener("click", closeVMod);
+    $("#vmodal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "vmodal-overlay") closeVMod();
+    });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
+      if (e.key === "Escape") { closeModal(); closeVMod(); }
     });
   }
 
