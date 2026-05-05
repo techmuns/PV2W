@@ -15,7 +15,7 @@
   const COLOR = {
     blue:    "#2563EB",
     blueSft: "#93B4F4",
-    teal:    "#0F766E",
+    teal:    "#14B8A6",
     navy:    "#0B1F33",
     grey:    "#94A3B8",
     greySft: "#CBD5E1",
@@ -25,6 +25,14 @@
     amber:   "#F59E0B",
     neu:     "#64748B",
   };
+
+  /* #RRGGBB → "r, g, b" string for use in CSS rgba(var(--x), …) */
+  function hexToRgb(hex) {
+    const m = String(hex || "").replace("#", "").match(/.{2}/g);
+    return m && m.length >= 3
+      ? `${parseInt(m[0],16)}, ${parseInt(m[1],16)}, ${parseInt(m[2],16)}`
+      : "37, 99, 235";
+  }
 
   const state = {
     fy:        "FY25",
@@ -436,7 +444,15 @@
     });
   }
 
-  /* ---------- main-page chart helpers ---------- */
+  /* ---------- main-page chart helpers ----------
+     Numbers no longer render inline; each bar / stack segment / line
+     point gets a `class="bar hover-target"` (or invisible overlay rect
+     for line charts) carrying data-fy / data-series / data-value /
+     data-unit / data-color. bindChartHovers() wires those into the
+     shared #chart-tooltip element after the SVG is mounted. */
+
+  const ATTR = (s) => String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/"/g,"&quot;");
+
   function lineChart(series, options = {}) {
     const w = 480, h = options.height || 220, padL = 44, padR = 16, padT = 14, padB = 28;
     const labels = options.xLabels || [];
@@ -474,24 +490,30 @@
         }
       }
       lines += `<path class="line-path" d="${path}" stroke="${s.color}"/>`;
-      points.forEach((p, i) => {
+      points.forEach((p) => {
         if (!p) return;
         lines += `<circle class="dot" cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${s.color}"/>`;
-        if (idx === 0 && options.showLabels !== false) {
-          const v = s.values[i];
-          const lbl = options.yUnit === "%"
-            ? v.toFixed(1) + "%"
-            : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString("en-IN") : v.toFixed(1));
-          lines += `<text x="${p[0]}" y="${p[1] - 8}" text-anchor="middle" font-size="9.5" fill="#0B1F33" font-weight="600">${lbl}</text>`;
-        }
       });
     });
 
     const xAxis = labels.map((l, i) =>
       `<text x="${x(i)}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${l}</text>`).join("");
 
+    /* Hover targets: invisible column rects covering each FY's vertical
+       slice. Always tied to the primary (idx=0) series — secondary
+       series are typically benchmarks displayed alongside. */
+    const colW = (w - padL - padR) / Math.max(labels.length - 1, 1);
+    const primary = series[0] || {};
+    const hovers = labels.map((l, i) => {
+      const v = primary.values && primary.values[i];
+      if (v === null || v === undefined) return "";
+      return `<rect class="hover-target" x="${x(i) - colW/2}" y="${padT}" width="${colW}" height="${h - padT - padB}" fill="transparent"
+        data-fy="${ATTR(l)}" data-series="${ATTR(primary.name||"")}" data-value="${ATTR(v)}"
+        data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(primary.color||"#2563EB")}"/>`;
+    }).join("");
+
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
-      <g class="grid">${grid}</g>${lines}<g class="axis">${xAxis}</g>
+      <g class="grid">${grid}</g>${lines}<g class="axis">${xAxis}</g>${hovers}
     </svg>`;
   }
 
@@ -502,6 +524,7 @@
     const totals = labels.map((_, i) => series.reduce((s, ss) => s + (ss.values[i] || 0), 0));
     const yMax = Math.max(...totals, 1) * 1.18;
     const yScale = (v) => padT + (1 - v / yMax) * (h - padT - padB);
+    const MIN_SEG_PX = 5;   // minimum visible thickness for tiny non-zero segments (e.g. 0.4% EV)
 
     const grid = [0,0.25,0.5,0.75,1].map(t => {
       const yy = padT + t * (h - padT - padB);
@@ -516,17 +539,17 @@
       const cx = padL + groupW * (i + 0.5);
       series.forEach((s) => {
         const v = s.values[i] || 0;
-        const yTop = yScale(cum + v);
+        if (v <= 0) { /* skip exact-zero segments — no forced bar */ cum += v; return; }
         const yBot = yScale(cum);
-        const hh = Math.max(0, yBot - yTop);
-        bars += `<rect class="bar" x="${cx - barW/2}" y="${yTop}" width="${barW}" height="${hh}" fill="${s.color}" rx="2"/>`;
-        if (hh >= 18 && v > 0) {
-          bars += `<text x="${cx}" y="${yTop + hh / 2 + 3.5}" text-anchor="middle" font-size="9" fill="#FFFFFF" font-weight="600">${v.toFixed(1)}${options.yUnit||""}</text>`;
-        }
+        let yTop  = yScale(cum + v);
+        let hh = Math.max(0, yBot - yTop);
+        if (hh < MIN_SEG_PX) { hh = MIN_SEG_PX; yTop = yBot - MIN_SEG_PX; }
+        bars += `<rect class="bar hover-target" x="${cx - barW/2}" y="${yTop}" width="${barW}" height="${hh}" fill="${s.color}" rx="2"
+          data-fy="${ATTR(label)}" data-series="${ATTR(s.name)}" data-value="${ATTR(v)}"
+          data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(s.color)}"/>`;
         cum += v;
       });
       bars += `<text x="${cx}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
-      bars += `<text x="${cx}" y="${yScale(cum) - 5}" text-anchor="middle" font-size="10.5" fill="#0B1F33" font-weight="700">${cum.toFixed(1)}${options.yUnit||""}</text>`;
     });
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
   }
@@ -559,16 +582,48 @@
         const yy = yScale(v);
         const hh = Math.abs(yy - zeroY);
         const yTop = v >= 0 ? yy : zeroY;
-        const labelY = v >= 0 ? yTop - 4 : yTop + hh + 11;
-        const lbl = options.yUnit === "%"
-          ? (v >= 0 ? "+" : "") + v.toFixed(1) + "%"
-          : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString("en-IN") : v.toFixed(1));
-        bars += `<rect class="bar" x="${startX + si*barW}" y="${yTop}" width="${barW - 2}" height="${hh}" fill="${s.color}" rx="2"/>`;
-        bars += `<text x="${startX + si*barW + (barW-2)/2}" y="${labelY}" text-anchor="middle" font-size="9" fill="#0B1F33" font-weight="600">${lbl}</text>`;
+        bars += `<rect class="bar hover-target" x="${startX + si*barW}" y="${yTop}" width="${barW - 2}" height="${hh}" fill="${s.color}" rx="2"
+          data-fy="${ATTR(label)}" data-series="${ATTR(s.name)}" data-value="${ATTR(v)}"
+          data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(s.color)}"/>`;
       });
       bars += `<text x="${cx}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
     });
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
+  }
+
+  /* Bind hover-only tooltips to any chart container's hover targets. */
+  function bindChartHovers(rootEl) {
+    if (!rootEl) return;
+    const tip = $("#chart-tooltip");
+    rootEl.querySelectorAll(".hover-target").forEach(el => {
+      el.addEventListener("mouseenter", (e) => showChartTip(e, el));
+      el.addEventListener("mousemove",  (e) => positionTip(tip, e));
+      el.addEventListener("mouseleave", () => tip.classList.add("hidden"));
+    });
+  }
+  function showChartTip(e, el) {
+    const tip = $("#chart-tooltip");
+    const fy   = el.dataset.fy || "";
+    const name = el.dataset.series || "";
+    const raw  = parseFloat(el.dataset.value);
+    const unit = el.dataset.unit || "";
+    const colour = el.dataset.color || "#2563EB";
+    let formatted;
+    if (Number.isNaN(raw)) {
+      formatted = "—";
+    } else if (unit === "%") {
+      formatted = (raw >= 0 ? "+" : "") + raw.toFixed(1) + "%";
+    } else if (Math.abs(raw) >= 1000) {
+      formatted = Math.round(raw).toLocaleString("en-IN");
+    } else {
+      formatted = raw.toFixed(1);
+    }
+    $("#cht-fy").textContent     = fy;
+    $("#cht-series").textContent = name;
+    $("#cht-value").textContent  = formatted;
+    $("#cht-swatch").style.background = colour;
+    tip.classList.remove("hidden");
+    positionTip(tip, e);
   }
 
   const legendChip = (color, label) =>
@@ -641,6 +696,9 @@
         legendChip(COLOR.teal, "EV revenue %") +
         legendChip(COLOR.warn, "Export revenue %");
     }
+
+    bindChartHovers($("#chart1"));
+    bindChartHovers($("#chart2"));
   }
 
   /* ---------- buy-side signal box ---------- */
@@ -703,6 +761,13 @@
     section.style.display = "";
 
     const grid = $("#vehicle-grid");
+    /* Drive the brand-tinted accent + hover state through a CSS var
+       on the grid container — read by .veh-card / .veh-card::before
+       via rgba(var(--veh-rgb), …). Defaults to primary blue if the
+       brand color is missing. */
+    const brand = BRAND[state.company] || {};
+    grid.style.setProperty("--veh-rgb", hexToRgb(brand.color));
+
     const defaults = D.DEFAULT_VEHICLES[state.company] || [];
     const data = getVehicles(state.fy, state.company);
     const byName = Object.fromEntries(data.map(r => [r.Vehicle, r]));

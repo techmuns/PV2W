@@ -79,12 +79,12 @@
 
   <!-- ============== TOP HEADER ============== -->
   <header class="bg-navy text-white sticky top-0 z-30 shadow-md">
-    <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-5 flex-wrap">
+    <div class="max-w-[1480px] mx-auto px-8 py-4 flex items-center gap-6 flex-wrap">
       <div class="flex items-center gap-3 mr-2">
-        <div class="w-9 h-9 rounded-md bg-blue flex items-center justify-center font-bold text-sm tracking-tight">PV</div>
+        <div class="w-10 h-10 rounded-md bg-blue flex items-center justify-center font-bold text-[15px] tracking-tight">PV</div>
         <div class="leading-tight">
-          <div class="text-white font-semibold text-[15px] tracking-tight">PV Industry Dashboard</div>
-          <div class="text-[11px] text-white/55">Buy-side research view</div>
+          <div class="text-white font-semibold text-[16px] tracking-tight">PV Industry Dashboard</div>
+          <div class="text-[11.5px] text-white/60">Buy-side research view</div>
         </div>
       </div>
 
@@ -251,6 +251,16 @@
     <div id="trend-tt-fy" class="text-[10px] text-white/65 uppercase tracking-wider font-medium"></div>
     <div id="trend-tt-val" class="font-semibold text-[13px] tabular-nums"></div>
     <div id="trend-tt-yoy" class="text-[10.5px] text-white/75 mt-0.5 tabular-nums"></div>
+  </div>
+
+  <!-- Dashboard chart hover tooltip — white-on-navy, compact -->
+  <div id="chart-tooltip" class="hidden pointer-events-none fixed z-[60] bg-white border border-line shadow-modal rounded-lg px-3 py-2 min-w-[148px]">
+    <div id="cht-fy" class="text-[10px] text-inkMuted uppercase tracking-wider font-semibold"></div>
+    <div class="flex items-center gap-2 mt-1">
+      <span id="cht-swatch" class="inline-block w-2.5 h-2.5 rounded-sm"></span>
+      <span id="cht-series" class="text-[11.5px] text-inkSoft"></span>
+      <span id="cht-value" class="text-[13px] font-semibold text-navy tabular-nums ml-auto"></span>
+    </div>
   </div>
 
   <!-- ============== TREND MODAL ============== -->

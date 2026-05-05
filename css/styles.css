@@ -19,11 +19,11 @@ html, body { background: #F4F7FB; }
   font-weight: 600;
   font-size: 13.5px;
   border: 1px solid rgba(255,255,255,0.30);
-  border-radius: 8px;
-  padding: 7px 34px 7px 14px;
+  border-radius: 9px;
+  padding: 9px 38px 9px 16px;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23102A43' stroke-width='2.4'><path stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 9px center;
+  background-position: right 11px center;
   background-size: 14px;
   cursor: pointer;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
@@ -34,14 +34,14 @@ html, body { background: #F4F7FB; }
   border-color: #2563EB;
   box-shadow: 0 0 0 3px rgba(37,99,235,0.30);
 }
-.hdr-select-fy      { min-width: 96px; }
-.hdr-select-company { min-width: 200px; padding-left: 28px; }
+.hdr-select-fy      { min-width: 110px; }
+.hdr-select-company { min-width: 232px; padding-left: 30px; }
 .hdr-brand-dot {
   position: absolute;
-  left: 11px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 9px; height: 9px; border-radius: 999px;
+  width: 10px; height: 10px; border-radius: 999px;
   background: #334E68;
   box-shadow: 0 0 0 2px rgba(255,255,255,0.85);
   pointer-events: none;
@@ -55,18 +55,20 @@ html, body { background: #F4F7FB; }
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  padding: 0 4px 10px;
+  padding: 2px 4px 12px;
 }
 .section-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.10em;
+  font-size: 11.5px;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: #334E68;
-  font-weight: 700;
+  color: #0B1F33;
+  font-weight: 600;
+  font-feature-settings: "ss01";
 }
 .section-hint {
   font-size: 11px;
   color: #6B7280;
+  letter-spacing: 0.01em;
 }
 
 /* ====================================================
@@ -272,15 +274,30 @@ html, body { background: #F4F7FB; }
   background: #FFFFFF;
   border: 1px solid #E5EAF1;
   border-radius: 12px;
-  padding: 12px;
+  padding: 14px 12px 12px;
   box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
-  transition: box-shadow 260ms ease, border-color 260ms ease, transform 260ms ease;
+  transition: background 260ms ease, box-shadow 260ms ease, border-color 260ms ease, transform 260ms ease;
   cursor: pointer;
+  overflow: hidden;
+}
+/* Brand-color accent strip — driven by --veh-rgb on the parent grid.
+   Defaults to primary blue when no OEM is selected (Industry view). */
+.veh-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: rgba(var(--veh-rgb, 37, 99, 235), 0.55);
+  transition: background 220ms ease;
 }
 .veh-card-wrap:hover .veh-card {
   transform: translateY(-2px);
+  background: rgba(var(--veh-rgb, 37, 99, 235), 0.03);
   box-shadow: 0 22px 48px rgba(11, 31, 51, 0.18), 0 6px 14px rgba(11, 31, 51, 0.08);
-  border-color: #2563EB;
+  border-color: rgba(var(--veh-rgb, 37, 99, 235), 0.4);
+}
+.veh-card-wrap:hover .veh-card::before {
+  background: rgba(var(--veh-rgb, 37, 99, 235), 0.85);
 }
 
 /* Vehicle image inside the expand-on-hover panel.
@@ -461,15 +478,16 @@ html, body { background: #F4F7FB; }
   border-bottom: 1px solid #EEF1F5;
 }
 .chart-panel-title {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: #0B1F33;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
 }
 .chart-panel-sub {
   font-size: 11.5px;
   color: #6B7280;
-  margin-top: 2px;
+  margin-top: 3px;
+  letter-spacing: 0.01em;
 }
 .chart-panel-body { padding: 16px 18px 18px; }
 
