@@ -19,12 +19,14 @@
     neu:     "#64748B",
   };
 
+  /* Brand colors per company. Used in: logo mark, brand box, header
+     dropdown dot. Never used to recolor the rest of the dashboard. */
   const BRAND = {
-    "Maruti":         { color: "#C95A5A", label: "OEM" },
-    "Hyundai":        { color: "#0F3D75", label: "OEM" },
-    "M&M":            { color: "#7A2E3A", label: "OEM" },
-    "Tata Motors PV": { color: "#1E4E8C", label: "OEM" },
-    "Industry":       { color: "#334E68", label: "Aggregate" },
+    "Maruti":         { color: "#C95A5A", label: "OEM",       initials: "MS" },
+    "Hyundai":        { color: "#0F3D75", label: "OEM",       initials: "HM" },
+    "M&M":            { color: "#7A2E3A", label: "OEM",       initials: "M&M" },
+    "Tata Motors PV": { color: "#1E4E8C", label: "OEM",       initials: "TM" },
+    "Industry":       { color: "#334E68", label: "Aggregate", initials: "PV" },
   };
 
   const state = {
@@ -99,13 +101,18 @@
   const getVehicles = (fy, company) =>
     D.Vehicle_FY_Metrics.filter(r => r.FY === fy && r.Company === company);
 
-  function getMetricHistory(company, metric, maxYears = 10) {
+  function getMetricHistory(company, metric, maxYears = 10, untilFY = null) {
     const isIndustry = company === "Industry";
     const rows = isIndustry
       ? D.Industry_FY_Metrics.filter(r => r.Metric === metric)
       : D.Company_FY_Metrics.filter(r => r.Company === company && r.Metric === metric);
     const indexOf = (fy) => D.FYS_FULL.indexOf(fy);
-    return rows.slice().sort((a, b) => indexOf(a.FY) - indexOf(b.FY)).slice(-maxYears);
+    let sorted = rows.slice().sort((a, b) => indexOf(a.FY) - indexOf(b.FY));
+    if (untilFY) {
+      const cutoff = indexOf(untilFY);
+      sorted = sorted.filter(r => indexOf(r.FY) <= cutoff);
+    }
+    return sorted.slice(-maxYears);
   }
 
   function computeLastUpdated() {
@@ -145,8 +152,6 @@
   function renderTopBar() {
     $("#fy-select").innerHTML  = D.FYS.map(f => `<option value="${f}" ${f===state.fy?"selected":""}>${f}</option>`).join("");
     $("#company-select").innerHTML = D.COMPANIES.map(c => `<option value="${c}" ${c===state.company?"selected":""}>${c}</option>`).join("");
-
-    /* Brand dot in the header dropdown */
     $("#hdr-brand-dot").style.background = BRAND[state.company].color;
 
     let overall = "Neutral";
@@ -183,22 +188,29 @@
     }
   }
 
-  /* ---------- title band: brand box + title ---------- */
-  function renderTitleBand() {
+  /* ---------- identity row ---------- */
+  function renderIdentityRow() {
     const brand = BRAND[state.company];
     const isIndustry = state.company === "Industry";
 
+    $("#logo-mark").style.setProperty("--brand", brand.color);
+    $("#logo-mark").textContent = brand.initials;
+
     $("#brand-box").innerHTML = `
       <div class="brand-box" style="--brand:${brand.color}">
-        <span class="brand-eyebrow">${brand.label} · ${state.fy}</span>
+        <span class="brand-eyebrow">${brand.label}</span>
         <span class="brand-name">${state.company}</span>
       </div>`;
 
+    $("#fy-chip").innerHTML = `
+      <span class="fy-chip-label">FY</span>
+      <span class="fy-chip-value">${state.fy}</span>`;
+
     if (isIndustry) {
-      $("#view-title").textContent = `Indian PV Industry — ${state.fy}`;
-      $("#view-subtitle").textContent = "Demand, mix, and competitive shifts across OEMs.";
+      $("#view-title").textContent = `Indian PV Industry Cockpit`;
+      $("#view-subtitle").textContent = "Demand · mix · competitive shifts across OEMs.";
     } else {
-      $("#view-title").textContent = `${state.company} — FY ${state.fy.replace("FY","")}`;
+      $("#view-title").textContent = `${state.company} — buy-side snapshot`;
       const info = getCompanyInfo(state.fy, state.company);
       $("#view-subtitle").textContent = info
         ? `CEO ${info.CEO} · CFO ${info.CFO || "—"} · ${info.Credit_Rating}`
@@ -208,13 +220,59 @@
     $("#yoy-base").textContent = prevFY(state.fy) || "—";
   }
 
+  /* ---------- sparkline ---------- */
+  function sparkline(values, options = {}) {
+    const numeric = values.filter(v => typeof v === "number");
+    if (numeric.length < 2) {
+      return `<div class="kpi-spark-empty">Limited history</div>`;
+    }
+    const w = 200, h = 28, padX = 3, padY = 4;
+    let min = Math.min(...numeric), max = Math.max(...numeric);
+    if (min === max) { min -= 1; max += 1; }
+    const x = (i) => padX + i * ((w - padX*2) / Math.max(values.length - 1, 1));
+    const y = (v) => padY + (1 - (v - min) / (max - min)) * (h - padY*2);
+
+    let pts = [];
+    let path = "";
+    values.forEach((v, i) => {
+      if (typeof v !== "number") return;
+      pts.push([i, v]);
+      const cmd = path === "" ? "M" : "L";
+      path += `${cmd}${x(i).toFixed(1)} ${y(v).toFixed(1)} `;
+    });
+    if (!pts.length) return `<div class="kpi-spark-empty">No history</div>`;
+
+    const firstI = pts[0][0], lastI = pts[pts.length-1][0];
+    const lastV = pts[pts.length-1][1];
+    const baseY = h - padY;
+    const areaPath = `${path} L${x(lastI).toFixed(1)} ${baseY.toFixed(1)} L${x(firstI).toFixed(1)} ${baseY.toFixed(1)} Z`;
+
+    let benchPath = "";
+    if (options.bench && options.bench.length === values.length) {
+      let bp = "";
+      options.bench.forEach((v, i) => {
+        if (typeof v !== "number") return;
+        const cmd = bp === "" ? "M" : "L";
+        bp += `${cmd}${x(i).toFixed(1)} ${y(v).toFixed(1)} `;
+      });
+      if (bp) benchPath = `<path class="spark-bench" d="${bp}"/>`;
+    }
+
+    return `<svg class="sparkline-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <path class="spark-area" d="${areaPath}"/>
+      ${benchPath}
+      <path class="spark-line" d="${path}"/>
+      <circle class="spark-dot" cx="${x(lastI).toFixed(1)}" cy="${y(lastV).toFixed(1)}" r="2.5"/>
+    </svg>`;
+  }
+
   /* ---------- KPI strip ---------- */
   function renderKpiStrip() {
     const grid = $("#kpi-strip");
     const isIndustry = state.company === "Industry";
     const list = isIndustry ? D.INDUSTRY_KPIS : D.OEM_KPIS;
 
-    grid.innerHTML = list.map(metric => {
+    grid.innerHTML = list.map((metric, idx) => {
       const r = isIndustry
         ? getIndustryMetric(state.fy, metric)
         : getCompanyMetric(state.fy, state.company, metric);
@@ -233,19 +291,24 @@
         deltaClass = yoy > 0 ? "delta-up" : yoy < 0 ? "delta-down" : "delta-flat";
       }
 
+      const history = getMetricHistory(state.company, metric, 10, state.fy);
+      const sparkValues = history.map(r => typeof r.Value === "number" ? r.Value : null);
+      const tinted = idx % 2 === 1 ? "tinted" : "";
+
       return `
-        <div class="kpi-card" data-metric="${metric}">
-          <div class="flex items-start justify-between mb-2">
+        <div class="kpi-card ${tinted}" data-metric="${metric}">
+          <div class="flex items-start justify-between mb-1.5">
             <span class="kpi-icon">${iconFor(metric)}</span>
             <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${signalClass(sig)}">${sig}</span>
           </div>
           <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold">${metric}</div>
           <div class="text-[22px] font-semibold text-navy leading-tight tabular-nums mt-0.5">${valDisplay}</div>
-          <div class="flex items-center gap-2 mt-1">
+          <div class="flex items-center gap-2 mt-0.5">
             <span class="text-[11.5px] ${deltaClass} tabular-nums font-semibold">${deltaDisplay}</span>
             <span class="text-[10px] text-inkMuted">YoY</span>
-            ${stalePending ? '<span class="ml-auto text-[9px] text-warn bg-warnSoft px-1.5 py-0.5 rounded">Pending</span>' : ''}
+            ${stalePending ? '<span class="ml-auto text-[9px] text-warn bg-warnSoft px-1.5 py-0.5 rounded font-medium">Pending</span>' : ''}
           </div>
+          <div class="kpi-spark">${typeof val === "string" ? `<div class="kpi-spark-empty">—</div>` : sparkline(sparkValues)}</div>
         </div>`;
     }).join("");
 
@@ -379,9 +442,9 @@
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
   }
 
-  const legendChip = (color, label, dashed = false) =>
+  const legendChip = (color, label) =>
     `<span class="inline-flex items-center gap-1.5">
-       <span class="inline-block w-3 ${dashed ? 'h-0' : 'h-2.5'} rounded-sm" style="background:${dashed ? 'transparent' : color}; ${dashed ? `border-top: 2px dashed ${color};` : ''}"></span>${label}
+       <span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:${color}"></span>${label}
      </span>`;
 
   /* ---------- main-page charts ---------- */
@@ -639,16 +702,11 @@
   }
 
   /* ====================================================
-     TREND MODAL — large chart, gradient, colored dots,
-     amber halo on current FY, hover tooltip.
+     TREND MODAL
      ==================================================== */
-
-  /* SVG renderer specialised for the trend modal. */
   function trendChart(values, labels, options = {}) {
     const benchValues = options.bench || null;
     const w = 720, h = 320, padL = 50, padR = 22, padT = 18, padB = 32;
-    const valid = values.map((v, i) => v === null || v === undefined ? null : { i, v });
-    const benchValid = benchValues ? benchValues.map((v, i) => v === null || v === undefined ? null : { i, v }) : [];
 
     const allVals = [...values, ...(benchValues || [])].filter(v => v !== null && v !== undefined);
     if (!allVals.length) return `<div class="text-sm text-inkMuted py-10 text-center">Data pending from agents.</div>`;
@@ -666,7 +724,6 @@
               <text x="${padL-8}" y="${yy+3}" text-anchor="end" font-size="10.5" fill="#6B7280">${val.toFixed(0)}${options.yUnit||""}</text>`;
     }).join("");
 
-    /* main line + gradient area */
     const points = values.map((v, i) => v === null || v === undefined ? null : [x(i), y(v)]);
     let path = "";
     points.forEach((p, i) => {
@@ -689,7 +746,6 @@
         </linearGradient>
       </defs>`;
 
-    /* benchmark */
     let benchSvg = "";
     if (benchValues) {
       const bp = benchValues.map((v, i) => v === null || v === undefined ? null : [x(i), y(v)]);
@@ -702,7 +758,6 @@
       if (bpath) benchSvg = `<path class="trend-bench" d="${bpath}"/>`;
     }
 
-    /* dots — color by YoY direction; current FY = amber w/ halo */
     let dotsSvg = "";
     points.forEach((p, i) => {
       if (!p) return;
@@ -716,19 +771,15 @@
       else if (curr < prev) dotColor = COLOR.neg;
       else dotColor = COLOR.blue;
 
-      if (isLast) {
-        dotsSvg += `<circle class="trend-halo" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="11"/>`;
-      }
+      if (isLast) dotsSvg += `<circle class="trend-halo" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="11"/>`;
       const r = isLast ? 5.5 : 4;
       const cls = isLast ? "trend-dot-current" : "trend-dot";
       dotsSvg += `<circle class="${cls}" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${r}" fill="${dotColor}"/>`;
     });
 
-    /* x labels */
     const xAxis = labels.map((l, i) =>
       `<text x="${x(i)}" y="${h-10}" text-anchor="middle" font-size="11" fill="#6B7280">${l}</text>`).join("");
 
-    /* invisible hover targets per FY */
     const colW = (w - padL - padR) / Math.max(labels.length, 1);
     const hover = labels.map((l, i) => `
       <rect class="hover-target" data-i="${i}"
@@ -763,14 +814,11 @@
     const fy = labels[i];
     if (v === null || v === undefined) { tip.classList.add("hidden"); return; }
     const prev = i > 0 ? values[i-1] : null;
-    let yoyText = "";
+    let yoyText = "—";
     if (typeof prev === "number") {
       const diff = v - prev;
       const isPct = isPctMetric(metric);
-      const txt = (diff >= 0 ? "+" : "") + diff.toFixed(1) + (isPct ? "pp YoY" : " YoY");
-      yoyText = txt;
-    } else {
-      yoyText = "—";
+      yoyText = (diff >= 0 ? "+" : "") + diff.toFixed(1) + (isPct ? "pp YoY" : " YoY");
     }
     $("#trend-tt-fy").textContent = fy;
     $("#trend-tt-val").textContent = formatMetricValue(metric, v);
@@ -787,14 +835,12 @@
     const isIndustry = state.company === "Industry";
     const company = state.company;
     const brand = BRAND[company];
-    const history = getMetricHistory(company, metric, 10);
+    const history = getMetricHistory(company, metric, 10, state.fy);
     const valued  = history.filter(r => r.Value !== null && r.Value !== undefined && typeof r.Value === "number");
 
-    /* header */
-    $("#modal-brand").style.setProperty("--brand", brand.color);
-    $("#modal-brand").innerHTML = `
-      <span class="brand-eyebrow">${brand.label}</span>
-      <span class="brand-name">${company}</span>`;
+    $("#modal-logo").style.setProperty("--brand", brand.color);
+    $("#modal-logo").textContent = brand.initials;
+
     $("#modal-title").textContent   = `${metric}  |  ${company}  |  10-Year Trend`;
     $("#modal-context").textContent = `Selected FY ${state.fy} · YoY base ${prevFY(state.fy) || "—"}`;
 
@@ -814,7 +860,6 @@
     const labels = valued.map(r => r.FY);
     const values = valued.map(r => r.Value);
 
-    /* benchmark overlay where it makes sense */
     let benchValues = null;
     const benchMetric = !isIndustry && (
       metric === "Volume Growth %" ? "PV Volume Growth %"
@@ -823,7 +868,7 @@
       : null
     );
     if (benchMetric) {
-      const benchHist = getMetricHistory("Industry", benchMetric, 10);
+      const benchHist = getMetricHistory("Industry", benchMetric, 10, state.fy);
       const benchByFY = Object.fromEntries(benchHist.map(r => [r.FY, r.Value]));
       benchValues = labels.map(fy => benchByFY[fy] ?? null);
       if (!benchValues.some(v => v !== null && v !== undefined)) benchValues = null;
@@ -835,13 +880,12 @@
 
     $("#modal-chart-legend").innerHTML = [
       `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-4 h-[3px] rounded-sm" style="background:${COLOR.blue}"></span>${company}</span>`,
-      benchValues ? `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-4 h-0" style="border-top:2px dashed ${COLOR.grey}"></span>PV industry (benchmark)</span>` : "",
+      benchValues ? `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-4 h-0" style="border-top:2px dashed ${COLOR.grey}"></span>PV industry</span>` : "",
       `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:${COLOR.pos}"></span>YoY up</span>`,
       `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:${COLOR.neg}"></span>YoY down</span>`,
       `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background:${COLOR.amber}"></span>Current FY</span>`,
     ].filter(Boolean).join("");
 
-    /* stats */
     const high = Math.max(...values);
     const low  = Math.min(...values);
     const cur  = values[values.length - 1];
@@ -927,7 +971,7 @@
     $("#trend-tooltip").classList.add("hidden");
   }
 
-  /* ---------- hover tooltip on KPI / row ---------- */
+  /* ---------- KPI hover tooltip ---------- */
   function attachHoverTip(el) {
     const tip = $("#hover-tip");
     el.addEventListener("mouseenter", (e) => { tip.classList.remove("hidden"); positionTip(tip, e); });
@@ -942,7 +986,7 @@
   /* ---------- master render ---------- */
   function renderAll() {
     renderTopBar();
-    renderTitleBand();
+    renderIdentityRow();
     renderKpiStrip();
     renderCharts();
     renderSignalBox();
