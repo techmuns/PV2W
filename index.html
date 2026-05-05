@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PV Industry Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg:        '#F6F7F9',
+            card:      '#FFFFFF',
+            ink:       '#1F2937',
+            inkSoft:   '#4B5563',
+            inkMuted:  '#6B7280',
+            navy:      '#0B2545',
+            steel:     '#4A6FA5',
+            steelSoft: '#E3EAF3',
+            pos:       '#4A8B6F',
+            posSoft:   '#E6F1EB',
+            neg:       '#B5524A',
+            negSoft:   '#F6E6E4',
+            warn:      '#B58A4A',
+            warnSoft:  '#F6EEE0',
+            line:      '#E5E7EB',
+            lineSoft:  '#EEF0F3',
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          boxShadow: {
+            card: '0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03)',
+            cardHover: '0 4px 12px rgba(15, 23, 42, 0.06)',
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-bg text-ink font-sans antialiased min-h-screen">
+
+  <!-- ============== TOP STATUS BAR ============== -->
+  <header class="bg-card border-b border-line sticky top-0 z-30">
+    <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-6 flex-wrap">
+      <div class="flex items-center gap-3 mr-2">
+        <div class="w-8 h-8 rounded bg-navy text-white flex items-center justify-center font-semibold text-sm">PV</div>
+        <div class="leading-tight">
+          <div class="text-navy font-semibold text-sm tracking-tight">PV Industry Dashboard</div>
+          <div class="text-[11px] text-inkMuted">Buy-side research view</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <label class="text-[11px] text-inkMuted uppercase tracking-wide">FY</label>
+        <select id="fy-select" class="text-sm bg-bg border border-line rounded px-2 py-1 focus:outline-none focus:border-steel"></select>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <label class="text-[11px] text-inkMuted uppercase tracking-wide">Company</label>
+        <select id="company-select" class="text-sm bg-bg border border-line rounded px-2 py-1 min-w-[160px] focus:outline-none focus:border-steel"></select>
+      </div>
+
+      <div class="flex items-center gap-2 pl-4 border-l border-line">
+        <span class="text-[11px] text-inkMuted uppercase tracking-wide">Signal</span>
+        <span id="overall-signal" class="text-xs font-medium px-2 py-0.5 rounded-full"></span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] text-inkMuted uppercase tracking-wide">Updated</span>
+        <span id="last-updated" class="text-xs text-ink"></span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] text-inkMuted uppercase tracking-wide">Data</span>
+        <span id="freshness-badge" class="text-xs font-medium px-2 py-0.5 rounded-full"></span>
+      </div>
+
+      <div id="stale-warning" class="hidden ml-auto text-[11px] text-warn bg-warnSoft border border-warn/20 px-2 py-1 rounded">
+        ⚠ Some metrics may be out of date
+      </div>
+    </div>
+  </header>
+
+  <!-- ============== MAIN ============== -->
+  <main class="max-w-[1400px] mx-auto px-6 py-6 space-y-6">
+
+    <!-- Subheader -->
+    <div class="flex items-end justify-between">
+      <div>
+        <h1 id="view-title" class="text-2xl font-semibold text-navy tracking-tight"></h1>
+        <p id="view-subtitle" class="text-sm text-inkSoft mt-0.5"></p>
+      </div>
+      <!-- Reserved hero image slot (kept empty per spec) -->
+      <div id="hero-image-slot" class="hidden w-40 h-20 bg-lineSoft rounded border border-dashed border-line"></div>
+    </div>
+
+    <!-- ============== HERO KPI STRIP ============== -->
+    <section id="kpi-strip" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></section>
+
+    <!-- ============== MAIN ROW: 2 CHARTS + SIGNAL BOX ============== -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Chart 1 -->
+      <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
+        <div class="flex items-baseline justify-between mb-3">
+          <h2 id="chart1-title" class="text-sm font-semibold text-navy"></h2>
+          <span id="chart1-sub" class="text-[11px] text-inkMuted"></span>
+        </div>
+        <div id="chart1"></div>
+        <div id="chart1-legend" class="flex gap-4 text-[11px] text-inkSoft mt-2"></div>
+      </div>
+
+      <!-- Chart 2 -->
+      <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
+        <div class="flex items-baseline justify-between mb-3">
+          <h2 id="chart2-title" class="text-sm font-semibold text-navy"></h2>
+          <span id="chart2-sub" class="text-[11px] text-inkMuted"></span>
+        </div>
+        <div id="chart2"></div>
+        <div id="chart2-legend" class="flex gap-4 text-[11px] text-inkSoft mt-2"></div>
+      </div>
+
+      <!-- Buy-side Signal Box -->
+      <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold text-navy">Buy-side Signal</h2>
+          <span class="text-[10px] text-inkMuted uppercase tracking-wide">Primary read</span>
+        </div>
+        <div id="signal-box" class="divide-y divide-lineSoft"></div>
+      </div>
+    </section>
+
+    <!-- ============== VEHICLE CARDS ============== -->
+    <section id="vehicle-section">
+      <div class="flex items-baseline justify-between mb-3">
+        <h2 class="text-sm font-semibold text-navy">Model-level drivers</h2>
+        <span class="text-[11px] text-inkMuted">Top 6 by latest FY volume</span>
+      </div>
+      <div id="vehicle-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+    </section>
+
+    <!-- ============== TABS / DRILLDOWNS ============== -->
+    <section id="tabs-section" class="bg-card rounded-xl shadow-card border border-line">
+      <div id="tab-bar" class="flex border-b border-line overflow-x-auto"></div>
+      <div id="tab-body" class="p-5"></div>
+    </section>
+
+    <footer class="text-[11px] text-inkMuted pt-4 pb-8">
+      Data architecture: <span class="font-mono">Company_FY_Metrics</span>,
+      <span class="font-mono">Vehicle_FY_Metrics</span>,
+      <span class="font-mono">BuySide_Signals</span>,
+      <span class="font-mono">Company_Info</span>,
+      <span class="font-mono">Industry_FY_Metrics</span>.
+      All visuals are bound to these tables — agents populate values without UI changes.
+    </footer>
+  </main>
+
+  <script src="data/backend-tables.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

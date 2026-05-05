@@ -1,0 +1,63 @@
+/* Institutional Light theme — minimal additions on top of Tailwind */
+
+html, body { background: #F6F7F9; }
+
+/* Subtle scrollbar for tab bar overflow */
+#tab-bar::-webkit-scrollbar { height: 0; }
+
+/* Chart svg defaults */
+.chart-svg { width: 100%; height: 220px; display: block; }
+.chart-svg .grid line { stroke: #EEF0F3; stroke-width: 1; }
+.chart-svg .axis text { font-size: 10px; fill: #6B7280; font-family: Inter, sans-serif; }
+.chart-svg .axis line { stroke: #E5E7EB; }
+.chart-svg .bar { transition: opacity 0.15s ease; }
+.chart-svg .bar:hover { opacity: 0.85; }
+.chart-svg .line-path { fill: none; stroke-width: 2; }
+.chart-svg .dot { stroke: #fff; stroke-width: 1.5; }
+
+/* Signal pills — semantics; colors set via classes in JS */
+.signal-pos { background: #E6F1EB; color: #2F6A52; }
+.signal-neg { background: #F6E6E4; color: #8C3D36; }
+.signal-neu { background: #EEF0F3; color: #4B5563; }
+.signal-warn{ background: #F6EEE0; color: #8A6A36; }
+
+/* KPI card delta */
+.delta-up   { color: #4A8B6F; }
+.delta-down { color: #B5524A; }
+.delta-flat { color: #6B7280; }
+
+/* Tab buttons */
+.tab-btn {
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: #4B5563;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight: 500;
+}
+.tab-btn:hover { color: #0B2545; }
+.tab-btn.active {
+  color: #0B2545;
+  border-bottom-color: #4A6FA5;
+}
+
+/* Drilldown table */
+.dd-table { width: 100%; font-size: 0.8125rem; border-collapse: collapse; }
+.dd-table th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6B7280;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #E5E7EB;
+}
+.dd-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid #EEF0F3;
+  color: #1F2937;
+}
+.dd-table tr:last-child td { border-bottom: none; }
+.dd-table td.num { font-variant-numeric: tabular-nums; }
