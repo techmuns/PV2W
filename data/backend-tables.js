@@ -4,25 +4,34 @@
    Future data agents replace the rows below. The UI does not need
    any changes when values are updated — visuals bind to these tables.
 
-   Schemas (per spec):
+   Source rule: only reliable public sources are acceptable —
+   NSE / BSE filings, annual reports, investor presentations,
+   quarterly results, Screener, official company websites.
+   If exact data is unavailable, leave Value: null and Source: "Pending".
+   Do not guess values.
+
+   Schemas:
 
    1) Company_FY_Metrics
-      FY, Company, Metric, Value, YoY_Change, Signal, Source, Last_Updated
+      FY, Company, Metric, Value, YoY_Change, Signal,
+      Source, Source_URL, Last_Updated
 
    2) Vehicle_FY_Metrics
       FY, Company, Vehicle, Segment, Volume, YoY_Growth, Segment_Rank,
-      Signal, Source, Last_Updated
+      Signal, Image_URL, Source, Source_URL, Last_Updated
 
    3) BuySide_Signals
       FY, Company, Share_Read, Growth_Read, Margin_Read, Mix_Read,
-      Risk_Read, Trigger_Read, Overall_Signal, Source, Last_Updated
+      Risk_Read, Trigger_Read, Overall_Signal,
+      Source, Source_URL, Last_Updated
 
    4) Company_Info
       FY, Company, CEO, CFO, COO, Credit_Rating, Employees, Dealers,
-      Source, Last_Updated
+      Logo_URL, Source, Source_URL, Last_Updated
 
    5) Industry_FY_Metrics
-      FY, Metric, Value, YoY_Change, Signal, Source, Last_Updated
+      FY, Metric, Value, YoY_Change, Signal,
+      Source, Source_URL, Last_Updated
 
    Signal values: "Positive" | "Negative" | "Neutral"
    FY format: "FY16" .. "FY25"
@@ -71,7 +80,8 @@ window.PV_DATA = (function () {
 
   const m = (FY, Company, Metric, Value, YoY_Change, Signal, Last_Updated = TODAY_ISO) => ({
     FY, Company, Metric, Value, YoY_Change, Signal,
-    Source: "Placeholder",
+    Source: "Pending",
+    Source_URL: null,
     Last_Updated,
   });
 
@@ -321,7 +331,7 @@ window.PV_DATA = (function () {
         HIST_FYS.forEach(fy => Company_FY_Metrics.push({
           FY: fy, Company: company, Metric: metric,
           Value: null, YoY_Change: null, Signal: "Neutral",
-          Source: "Placeholder", Last_Updated: null,
+          Source: "Pending", Source_URL: null, Last_Updated: null,
         }));
         return;
       }
@@ -343,7 +353,7 @@ window.PV_DATA = (function () {
         Company_FY_Metrics.push({
           FY: fy, Company: company, Metric: metric,
           Value: value, YoY_Change: null, Signal: "Neutral",
-          Source: "Placeholder", Last_Updated: TODAY_ISO,
+          Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO,
         });
       });
     });
@@ -397,7 +407,8 @@ window.PV_DATA = (function () {
         Vehicle_FY_Metrics.push({
           FY: fy, Company: company, Vehicle: vehicle, Segment: info.segment,
           Volume: vol, YoY_Growth: yoy, Segment_Rank: rank,
-          Signal: sig, Source: "Placeholder", Last_Updated: lu,
+          Signal: sig, Image_URL: null,
+          Source: "Pending", Source_URL: null, Last_Updated: lu,
         });
       });
     });
@@ -410,54 +421,54 @@ window.PV_DATA = (function () {
     { FY: "FY23", Company: "Maruti", Share_Read: "Gaining", Growth_Read: "Ahead",
       Margin_Read: "Expanding", Mix_Read: "SUV improving", Risk_Read: "EV gap",
       Trigger_Read: "Brezza/Grand Vitara ramp", Overall_Signal: "Positive",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY24", Company: "Maruti", Share_Read: "Gaining", Growth_Read: "In line",
       Margin_Read: "Expanding", Mix_Read: "SUV + Exports up", Risk_Read: "Hatch weakness",
       Trigger_Read: "Operating leverage, exports", Overall_Signal: "Positive",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "Maruti", Share_Read: "Stable", Growth_Read: "Ahead",
       Margin_Read: "Expanding", Mix_Read: "SUV + Export improving", Risk_Read: "EV gap",
       Trigger_Read: "e-Vitara launch, capacity adds", Overall_Signal: "Positive",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
 
     { FY: "FY23", Company: "Hyundai", Share_Read: "Stable", Growth_Read: "In line",
       Margin_Read: "Expanding", Mix_Read: "SUV strong", Risk_Read: "Capacity ceiling",
       Trigger_Read: "Talegaon plant", Overall_Signal: "Neutral",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY24", Company: "Hyundai", Share_Read: "Stable", Growth_Read: "Behind",
       Margin_Read: "Expanding", Mix_Read: "SUV + Export improving", Risk_Read: "Capacity ceiling",
       Trigger_Read: "IPO unlock, Creta facelift", Overall_Signal: "Neutral",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "Hyundai", Share_Read: "Losing", Growth_Read: "Behind",
       Margin_Read: "Flat", Mix_Read: "SUV richer; volume soft", Risk_Read: "Sub-Rs10L weakness",
       Trigger_Read: "Creta EV, Talegaon ramp", Overall_Signal: "Negative",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
 
     { FY: "FY23", Company: "M&M", Share_Read: "Gaining", Growth_Read: "Ahead",
       Margin_Read: "Expanding", Mix_Read: "SUV-only mix richer", Risk_Read: "Wait-times unwinding",
       Trigger_Read: "Scorpio-N, XUV700 ramp", Overall_Signal: "Positive",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY24", Company: "M&M", Share_Read: "Gaining", Growth_Read: "Ahead",
       Margin_Read: "Expanding", Mix_Read: "SUV improving", Risk_Read: "EV portfolio gap",
       Trigger_Read: "Thar 5-door, XUV 3XO", Overall_Signal: "Positive",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "M&M", Share_Read: "Gaining", Growth_Read: "Ahead",
       Margin_Read: "Expanding", Mix_Read: "SUV + EV improving", Risk_Read: "EV ramp execution",
       Trigger_Read: "BE 6 / XEV 9e launches", Overall_Signal: "Positive",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
 
     { FY: "FY23", Company: "Tata Motors PV", Share_Read: "Gaining", Growth_Read: "Ahead",
       Margin_Read: "Expanding", Mix_Read: "EV + SUV strong", Risk_Read: "Sedan absent",
       Trigger_Read: "Punch, Nexon EV scale", Overall_Signal: "Positive",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY24", Company: "Tata Motors PV", Share_Read: "Stable", Growth_Read: "In line",
       Margin_Read: "Flat", Mix_Read: "EV softening, SUV up", Risk_Read: "EV demand cooling",
       Trigger_Read: "Curvv, Harrier EV", Overall_Signal: "Neutral",
-      Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "Tata Motors PV", Share_Read: "Losing", Growth_Read: "Behind",
       Margin_Read: "Pressure", Mix_Read: "EV slowing, hatch eroding", Risk_Read: "EV competition",
       Trigger_Read: "Punch EV ramp, new platform", Overall_Signal: "Negative",
-      Source: "Placeholder", Last_Updated: STALE_ISO },
+      Source: "Pending", Source_URL: null, Last_Updated: STALE_ISO },
   ];
 
   /* =========================================================
@@ -466,24 +477,37 @@ window.PV_DATA = (function () {
   const Company_Info = [
     { FY: "FY25", Company: "Maruti", CEO: "Hisashi Takeuchi", CFO: "Rahul Bharti",
       COO: "Kenichi Ayukawa", Credit_Rating: "CRISIL AAA / Stable",
-      Employees: 18500, Dealers: 4000, Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Employees: 18500, Dealers: 4000, Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "Hyundai", CEO: "Unsoo Kim", CFO: "P.B. Balaji",
       COO: "Tarun Garg", Credit_Rating: "CRISIL AAA / Stable",
-      Employees: 9000, Dealers: 1366, Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Employees: 9000, Dealers: 1366, Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "M&M", CEO: "Anish Shah", CFO: "Amarjyoti Barua",
       COO: "Rajesh Jejurikar", Credit_Rating: "CRISIL AAA / Stable",
-      Employees: 24500, Dealers: 1500, Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Employees: 24500, Dealers: 1500, Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY25", Company: "Tata Motors PV", CEO: "Shailesh Chandra", CFO: "Dhiman Gupta",
       COO: "—", Credit_Rating: "CRISIL AA+ / Positive",
-      Employees: 12000, Dealers: 1500, Source: "Placeholder", Last_Updated: STALE_ISO },
+      Employees: 12000, Dealers: 1500, Source: "Pending", Source_URL: null, Last_Updated: STALE_ISO },
 
     { FY: "FY24", Company: "Maruti", CEO: "Hisashi Takeuchi", CFO: "Rahul Bharti",
       COO: "Kenichi Ayukawa", Credit_Rating: "CRISIL AAA / Stable",
-      Employees: 17800, Dealers: 3845, Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Employees: 17800, Dealers: 3845, Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
     { FY: "FY23", Company: "Maruti", CEO: "Hisashi Takeuchi", CFO: "Ajay Seth",
       COO: "Kenichi Ayukawa", Credit_Rating: "CRISIL AAA / Stable",
-      Employees: 17000, Dealers: 3680, Source: "Placeholder", Last_Updated: TODAY_ISO },
+      Employees: 17000, Dealers: 3680, Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO },
   ];
+
+  /* Logo_URL is keyed per company (constant across FYs). Best-effort
+     defaults via Clearbit's public logo endpoint; falls back to a
+     "Logo pending" UI state on load error. Data agents should replace
+     these with verified URLs from official OEM media assets. */
+  const COMPANY_LOGO_URL = {
+    "Maruti":         "https://logo.clearbit.com/marutisuzuki.com",
+    "Hyundai":        "https://logo.clearbit.com/hyundai.com",
+    "M&M":            "https://logo.clearbit.com/mahindra.com",
+    "Tata Motors PV": "https://logo.clearbit.com/tatamotors.com",
+    "Industry":       null,
+  };
+  Company_Info.forEach(r => { r.Logo_URL = COMPANY_LOGO_URL[r.Company] || null; });
 
   /* =========================================================
      Table 5 — Industry_FY_Metrics (FY23-FY25 actual + history)
@@ -503,7 +527,7 @@ window.PV_DATA = (function () {
     Object.entries(metrics).forEach(([metric, [val, yoy, sig]]) => {
       Industry_FY_Metrics.push({
         FY: fy, Metric: metric, Value: val, YoY_Change: yoy, Signal: sig,
-        Source: "Placeholder", Last_Updated: TODAY_ISO,
+        Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO,
       });
     });
   });
@@ -529,7 +553,7 @@ window.PV_DATA = (function () {
       value = Math.abs(value) >= 100 ? Math.round(value) : Math.round(value * 10) / 10;
       Industry_FY_Metrics.push({
         FY: fy, Metric: metric, Value: value, YoY_Change: null, Signal: "Neutral",
-        Source: "Placeholder", Last_Updated: TODAY_ISO,
+        Source: "Pending", Source_URL: null, Last_Updated: TODAY_ISO,
       });
     });
   });

@@ -189,12 +189,45 @@
   }
 
   /* ---------- identity row ---------- */
+  function logoMarkHTML(company, sizeClass = "") {
+    const brand = BRAND[company];
+    const info  = getCompanyInfo(state.fy, company);
+    const url   = info ? info.Logo_URL : null;
+    const isIndustry = company === "Industry";
+    if (isIndustry) {
+      return {
+        cls: `logo-mark logo-mark-aggregate ${sizeClass}`.trim(),
+        style: `--brand:${brand.color}`,
+        inner: `<span class="logo-initials">${brand.initials}</span>`,
+      };
+    }
+    if (url) {
+      return {
+        cls: `logo-mark ${sizeClass}`.trim(),
+        style: `--brand:${brand.color}`,
+        inner: `<img src="${url}" alt="${company} logo"
+                     onerror="this.parentElement.classList.add('logo-mark-pending');this.parentElement.innerHTML='&lt;span class=&quot;logo-pending-text&quot;&gt;Logo pending&lt;/span&gt;';">`,
+      };
+    }
+    return {
+      cls: `logo-mark logo-mark-pending ${sizeClass}`.trim(),
+      style: `--brand:${brand.color}`,
+      inner: `<span class="logo-pending-text">Logo pending</span>`,
+    };
+  }
+
+  function applyLogoMark(el, company, sizeClass = "") {
+    const spec = logoMarkHTML(company, sizeClass);
+    el.className = spec.cls;
+    el.setAttribute("style", spec.style);
+    el.innerHTML = spec.inner;
+  }
+
   function renderIdentityRow() {
     const brand = BRAND[state.company];
     const isIndustry = state.company === "Industry";
 
-    $("#logo-mark").style.setProperty("--brand", brand.color);
-    $("#logo-mark").textContent = brand.initials;
+    applyLogoMark($("#logo-mark"), state.company);
 
     $("#brand-box").innerHTML = `
       <div class="brand-box" style="--brand:${brand.color}">
@@ -574,10 +607,16 @@
       const sig = r ? r.Signal : "Neutral";
       const sigLabel = sig === "Positive" ? "Gain" : sig === "Negative" ? "Loss" : "Stable";
       const fresh = r ? freshness(r.Last_Updated) : "Missing";
+      const imgUrl = r ? r.Image_URL : null;
+
+      const imageSlot = imgUrl
+        ? `<div class="veh-image-slot has-image"><img class="veh-image" src="${imgUrl}" alt="${name}"
+              onerror="this.parentElement.classList.remove('has-image');this.parentElement.innerHTML='Image pending';"></div>`
+        : `<div class="veh-image-slot">Image pending</div>`;
 
       return `
         <div class="veh-card">
-          <div class="veh-image-slot">image</div>
+          ${imageSlot}
           <div class="flex items-start justify-between mb-1">
             <div>
               <div class="text-sm font-semibold text-navy leading-tight">${name}</div>
@@ -838,8 +877,7 @@
     const history = getMetricHistory(company, metric, 10, state.fy);
     const valued  = history.filter(r => r.Value !== null && r.Value !== undefined && typeof r.Value === "number");
 
-    $("#modal-logo").style.setProperty("--brand", brand.color);
-    $("#modal-logo").textContent = brand.initials;
+    applyLogoMark($("#modal-logo"), company, "logo-mark-sm");
 
     $("#modal-title").textContent   = `${metric}  |  ${company}  |  10-Year Trend`;
     $("#modal-context").textContent = `Selected FY ${state.fy} · YoY base ${prevFY(state.fy) || "—"}`;
