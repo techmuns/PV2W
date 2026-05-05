@@ -389,16 +389,41 @@ html, body { background: #F4F7FB; }
   color: #102A43;
   line-height: 1.45;
 }
+/* Foot row at the bottom of each expand panel — left side carries
+   an optional source link/icon, right side the View-detail CTA. */
+.veh-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed #DBEAFE;
+}
+.src-link {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6B7280;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s ease;
+}
+.src-link:hover { color: #2563EB; }
 .veh-cta {
-  text-align: right;
   font-size: 10px;
   font-weight: 600;
   color: #2563EB;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px dashed #DBEAFE;
+  margin-left: auto;
 }
 
 /* Vehicle modal image area in header — same blended treatment as

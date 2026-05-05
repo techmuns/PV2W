@@ -785,11 +785,20 @@
              onerror="this.parentElement.remove();"></div>`
         : "";
 
-      /* Expand rows — only those with real values are kept. */
+      /* Expand rows — data-centric. Each row is rendered only when
+         the underlying field has a real value (vehRow returns "" for
+         null), so the panel never shows "Pending" placeholders. */
+      const launchVal = r ? formatVehicleDate(r.Launch_Date) : null;
+      const faceliftVal = (r && r.Facelift_Status)
+        ? (r.Facelift_Date
+            ? `${r.Facelift_Status} · ${formatVehicleDate(r.Facelift_Date)}`
+            : r.Facelift_Status)
+        : null;
+
       const expandRows = !placeholder ? [
         vehRow("Demand",       r.Demand_Read),
-        vehRow("Launch",       r.Launch_Status),
-        vehRow("Facelift",     r.Facelift_Status),
+        vehRow("Launch",       launchVal),
+        vehRow("Facelift",     faceliftVal),
         vehRow("Segment rank", r.Segment_Rank ? `#${r.Segment_Rank}${r.Segment ? " " + r.Segment : ""}` : null),
         vehRow("Key driver",   r.Key_Driver),
       ].filter(Boolean) : [];
@@ -801,13 +810,32 @@
       const dividerHtml = (expandRows.length || insightHtml)
         ? `<div class="veh-divider"></div>` : "";
 
+      /* Source link — small icon + name. Native title carries
+         Source_URL + last-updated for unobtrusive hover detail.
+         Renders only when the row has a real source. */
+      const srcShow = r && r.Source && r.Source !== "Pending";
+      const srcUpdated = r && r.Last_Updated
+        ? new Date(r.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
+        : null;
+      const srcTitle = srcShow
+        ? `${r.Source}${r.Source_URL ? ` — ${r.Source_URL}` : ""}${srcUpdated ? ` — Updated ${srcUpdated}` : ""}`
+        : "";
+      const srcLink = srcShow
+        ? (r.Source_URL
+            ? `<a class="src-link" href="${r.Source_URL}" target="_blank" rel="noopener" title="${ATTR(srcTitle)}" onclick="event.stopPropagation();">ⓘ ${ATTR(r.Source)}</a>`
+            : `<span class="src-link" title="${ATTR(srcTitle)}">ⓘ ${ATTR(r.Source)}</span>`)
+        : "";
+
       const expandSection = `
         <div class="veh-expand">
           ${expandImage}
           ${dividerHtml}
           ${expandRows.join("")}
           ${insightHtml}
-          <div class="veh-cta">View detail →</div>
+          <div class="veh-foot">
+            ${srcLink}
+            <span class="veh-cta">View detail →</span>
+          </div>
         </div>`;
 
       return `
@@ -1214,15 +1242,31 @@
     $("#trend-tooltip").classList.add("hidden");
   }
 
+  /* Tile that renders only when there's a real value. Returns "" for
+     null / undefined / empty so the caller can build a tile array
+     and join the survivors — no "Pending" tiles in the UI. */
   function statTile(label, value, opts = {}) {
-    const pending = value === null || value === undefined || value === "";
-    const cls = pending ? "stat-tile" : (opts.cls || "stat-tile");
+    if (value === null || value === undefined || value === "") return "";
+    const cls = opts.cls || "stat-tile";
     return `<div class="${cls}">
       <div class="stat-tile-label">${label}</div>
-      <div class="stat-tile-value" style="${pending ? "color:#94A3B8;font-style:italic;font-weight:500;font-size:14px;" : ""}">
-        ${pending ? "Pending" : value}
-      </div>
+      <div class="stat-tile-value">${value}</div>
     </div>`;
+  }
+
+  /* "10 Jul 2023" / "Jul 2023" / "2023" depending on input precision. */
+  function formatVehicleDate(s) {
+    if (!s) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+      const d = new Date(s);
+      if (!isNaN(d)) return d.toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
+    }
+    if (/^\d{4}-\d{2}$/.test(s)) {
+      const [y, m] = s.split("-");
+      return new Date(+y, +m - 1, 1).toLocaleDateString("en-GB", { month:"short", year:"numeric" });
+    }
+    if (/^\d{4}$/.test(s)) return s;
+    return s;
   }
 
   function openVehicleModal(company, vehicleName) {
@@ -1292,19 +1336,34 @@
     const yoyValue = current && typeof current.YoY_Growth === "number"
       ? fmtDelta(current.YoY_Growth, "%") : null;
 
+    /* Pre-compute the data-centric tile values. statTile hides any
+       null/empty tile so the user only sees populated fields — no
+       repeated "Pending" placeholders. Volume / YoY / Signal still
+       render in the card itself, so hiding them in the modal is fine
+       when the source row is missing. */
+    const launchVal = current ? formatVehicleDate(current.Launch_Date) : null;
+    const faceliftVal = (current && current.Facelift_Status)
+      ? (current.Facelift_Date
+          ? `${current.Facelift_Status} · ${formatVehicleDate(current.Facelift_Date)}`
+          : current.Facelift_Status)
+      : null;
+    const signalPill = (current && current.Signal)
+      ? `<span class="inline-flex items-center gap-1.5 text-[12px] px-2.5 py-1 rounded-full ${signalClass(current.Signal)} font-semibold">${signalDot(current.Signal)}${current.Signal}</span>`
+      : null;
+
     $("#vmodal-stats").innerHTML = [
-      statTile(`Volume (${state.fy})`, current && typeof current.Volume === "number" ? fmtNum(current.Volume) : null,
+      statTile(`Volume (${state.fy})`,
+               current && typeof current.Volume === "number" ? fmtNum(current.Volume) : null,
                { cls: "stat-tile stat-tile-amber" }),
       statTile("Latest YoY", yoyValue, { cls: yoyClass }),
       statTile("Segment rank",
                current && current.Segment_Rank ? `#${current.Segment_Rank} ${current.Segment || ""}`.trim() : null),
-      statTile("Demand",   current ? current.Demand_Read   : null, { cls: "stat-tile stat-tile-blue" }),
-      statTile("Launch",   current ? current.Launch_Status : null),
-      statTile("Facelift", current ? current.Facelift_Status : null),
+      statTile("Demand",   current ? current.Demand_Read : null, { cls: "stat-tile stat-tile-blue" }),
+      statTile("Launch",   launchVal),
+      statTile("Facelift", faceliftVal),
       statTile("Key driver", current ? current.Key_Driver : null),
-      statTile("Signal",
-               current ? `<span class="inline-flex items-center gap-1.5 text-[12px] px-2.5 py-1 rounded-full ${signalClass(current.Signal)} font-semibold">${signalDot(current.Signal)}${current.Signal}</span>` : null),
-    ].join("");
+      statTile("Signal",   signalPill),
+    ].filter(Boolean).join("");
 
     /* Segment peer comparison */
     const segment = current && current.Segment;
@@ -1348,8 +1407,15 @@
       ie.textContent = "Buy-side insight pending — populate Vehicle_Insight from primary sources (OEM investor presentations, annual report MD&A, or sales disclosures).";
     }
 
-    /* Source / updated */
-    $("#vmodal-source").textContent = current && current.Source && current.Source !== "Pending" ? current.Source : "Pending";
+    /* Source / updated — render as a real link when Source_URL exists,
+       so a click opens the citation page. Plain text otherwise. */
+    const srcOk  = current && current.Source && current.Source !== "Pending";
+    const srcEl  = $("#vmodal-source");
+    if (srcOk && current.Source_URL) {
+      srcEl.innerHTML = `<a href="${current.Source_URL}" target="_blank" rel="noopener" class="text-blue hover:underline">${current.Source}</a>`;
+    } else {
+      srcEl.textContent = srcOk ? current.Source : "Pending";
+    }
     $("#vmodal-updated").textContent = current && current.Last_Updated
       ? new Date(current.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
       : "—";
