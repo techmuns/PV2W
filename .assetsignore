@@ -1,0 +1,13 @@
+wrangler.toml
+package.json
+package-lock.json
+bun.lock
+bun.lockb
+yarn.lock
+node_modules/
+.git/
+.gitignore
+.assetsignore
+.dev.vars
+.wrangler/
+.DS_Store

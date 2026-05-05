@@ -1,3 +1,7 @@
 name = "pv-dashboard"
 compatibility_date = "2025-01-01"
-pages_build_output_dir = "."
+
+# Static-only Worker: no `main` script, just serve the files in this repo.
+[assets]
+directory = "."
+not_found_handling = "single-page-application"

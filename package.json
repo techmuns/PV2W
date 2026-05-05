@@ -2,12 +2,12 @@
   "name": "pv-dashboard",
   "version": "0.1.0",
   "private": true,
-  "description": "PV industry buy-side dashboard — static site for Cloudflare Pages",
+  "description": "PV industry buy-side dashboard — static site served by a Cloudflare Worker with Static Assets",
   "scripts": {
-    "dev": "npx wrangler pages dev .",
-    "deploy": "npx wrangler pages deploy . --project-name=pv-dashboard"
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy"
   },
   "devDependencies": {
-    "wrangler": "^3.90.0"
+    "wrangler": "^4.0.0"
   }
 }
