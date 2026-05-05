@@ -714,11 +714,12 @@
       const sigLabel = sig === "Positive" ? "Gain" : sig === "Negative" ? "Loss" : "Stable";
       const fresh = r ? freshness(r.Last_Updated) : "Missing";
 
-      /* Vehicle image: render Image_URL when present; on <img> load
-         error remove the slot entirely (no "Image pending" state).
-         The slot grows from compact → larger on hover via CSS. */
-      const imageSlot = (r && r.Image_URL)
-        ? `<div class="veh-image-slot has-image"><img class="veh-image" src="${r.Image_URL}" alt="${name}"
+      /* Vehicle image only appears inside the hover-expand panel —
+         never on the default card. Fades in via CSS once the expand
+         panel opens. On <img> load error the entire image block is
+         removed so the expand layout closes up cleanly. */
+      const expandImage = (r && r.Image_URL)
+        ? `<div class="veh-expand-image"><img src="${r.Image_URL}" alt="${name}"
              onerror="this.parentElement.remove();"></div>`
         : "";
 
@@ -740,6 +741,7 @@
 
       const expandSection = `
         <div class="veh-expand">
+          ${expandImage}
           ${dividerHtml}
           ${expandRows.join("")}
           ${insightHtml}
@@ -749,7 +751,6 @@
       return `
         <div class="veh-card-wrap" data-vehicle="${name}">
           <div class="veh-card">
-            ${imageSlot}
             <div class="flex items-start justify-between mb-1">
               <div>
                 <div class="text-sm font-semibold text-navy leading-tight">${name}</div>
@@ -1172,14 +1173,15 @@
                 || allRows[allRows.length - 1]
                 || null;
 
-    /* Header image — uses the same Image_URL the card uses; on load
-       error the slot collapses to its empty box (no fallback art). */
+    /* Header image — Image_URL with smooth fade-in (is-loaded class
+       added on load), and silent collapse on error. */
     const imgEl = $("#vmodal-image");
     if (current && current.Image_URL) {
       imgEl.className = "vmod-image has-image";
       imgEl.innerHTML = "";
       const img = document.createElement("img");
       img.alt = vehicleName;
+      img.onload = () => img.classList.add("is-loaded");
       img.onerror = () => {
         imgEl.className = "vmod-image";
         imgEl.innerHTML = "";

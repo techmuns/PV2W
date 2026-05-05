@@ -72,15 +72,12 @@ html, body { background: #F4F7FB; }
 /* ====================================================
    Identity row — logo, brand box, FY chip
    ==================================================== */
-/* Logo box — white with subtle border by default. Holds the actual
-   OEM logo image when Logo_URL is set; falls back to a small
-   "Logo pending" label on null/error. The aggregate variant
-   (used for Industry) uses the brand color with letter-mark. */
+/* Logo box — premium rounded container, ~25% larger than before. */
 .logo-mark {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: #FFFFFF;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFD 100%);
   border: 1px solid #D9E2EC;
   display: inline-flex;
   align-items: center;
@@ -88,14 +85,14 @@ html, body { background: #F4F7FB; }
   flex-shrink: 0;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 2px 8px rgba(11, 31, 51, 0.06);
+  box-shadow: 0 6px 14px rgba(11, 31, 51, 0.08), 0 1px 2px rgba(11, 31, 51, 0.04);
 }
 .logo-mark img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 6px;
+  padding: 8px;
 }
 .logo-mark-pending .logo-pending-text {
   font-size: 9px;
@@ -125,9 +122,9 @@ html, body { background: #F4F7FB; }
   letter-spacing: -0.01em;
   position: relative;
 }
-.logo-mark-sm { width: 38px; height: 38px; border-radius: 10px; }
-.logo-mark-sm.logo-mark-aggregate .logo-initials { font-size: 13px; }
-.logo-mark-sm img { padding: 5px; }
+.logo-mark-sm { width: 44px; height: 44px; border-radius: 11px; }
+.logo-mark-sm.logo-mark-aggregate .logo-initials { font-size: 14px; }
+.logo-mark-sm img { padding: 6px; }
 
 .brand-box {
   position: relative;
@@ -286,26 +283,43 @@ html, body { background: #F4F7FB; }
   border-color: #2563EB;
 }
 
-/* Image slot — only rendered when an Image_URL is present. */
-.veh-image-slot {
+/* Vehicle image inside the expand-on-hover panel.
+   Image_URL only renders here — never in the default card.
+   Fades in with a 320ms transition + 100ms delay so it cascades
+   after the rest of the expand content. A soft white-blue gradient
+   overlay (::after) blends the image into the institutional theme. */
+.veh-expand-image {
   position: relative;
-  height: 64px;
-  background: #FFFFFF;
-  border: 1px solid #E5EAF1;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  height: 78px;
+  border-radius: 12px;
   overflow: hidden;
-  transition: height 260ms ease;
+  background: #F4F7FB;
+  border: 1px solid #D9E2EC;
+  margin-bottom: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45), 0 1px 2px rgba(11,31,51,0.04);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 320ms ease 100ms, transform 320ms ease 100ms;
 }
-.veh-card-wrap:hover .veh-image-slot { height: 100px; }
-.veh-image {
+.veh-card-wrap:hover .veh-expand-image {
+  opacity: 1;
+  transform: translateY(0);
+}
+.veh-expand-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 260ms ease;
   display: block;
+  filter: saturate(0.9) brightness(1.02);
 }
-.veh-card-wrap:hover .veh-image { transform: scale(1.06); }
+.veh-expand-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(234,242,255,0.22) 0%, rgba(255,255,255,0.40) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
 
 /* In-flow expansion block — height grows on hover, layout reflows. */
 .veh-expand {
@@ -316,7 +330,7 @@ html, body { background: #F4F7FB; }
   transition: max-height 280ms ease, opacity 220ms ease 60ms, margin-top 260ms ease;
 }
 .veh-card-wrap:hover .veh-expand {
-  max-height: 320px;
+  max-height: 420px;
   opacity: 1;
   margin-top: 8px;
 }
@@ -370,25 +384,39 @@ html, body { background: #F4F7FB; }
   border-top: 1px dashed #DBEAFE;
 }
 
-/* Vehicle modal logo / image area in header */
+/* Vehicle modal image area in header — same blended treatment as
+   the hover-expand image: light bg, soft border, gradient overlay
+   via ::after, slight desaturation. */
 .vmod-image {
-  width: 64px; height: 48px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #F4F7FB 0%, #EEF4FB 100%);
-  border: 1px dashed #D9E2EC;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #94A3B8;
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-weight: 600;
+  position: relative;
+  width: 76px; height: 56px;
+  border-radius: 10px;
+  background: #F4F7FB;
+  border: 1px solid #D9E2EC;
   overflow: hidden;
   flex-shrink: 0;
 }
-.vmod-image.has-image { background: #FFFFFF; border: 1px solid #E5EAF1; padding: 0; }
-.vmod-image img { width: 100%; height: 100%; object-fit: cover; }
+.vmod-image.has-image {
+  background: #F4F7FB;
+  border-color: #D9E2EC;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45), 0 1px 2px rgba(11,31,51,0.04);
+}
+.vmod-image.has-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) brightness(1.02);
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+.vmod-image.has-image img.is-loaded { opacity: 1; }
+.vmod-image.has-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(234,242,255,0.20) 0%, rgba(255,255,255,0.36) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
 
 /* Peer comparison table inside vehicle modal */
 .vmod-peer-table { width: 100%; font-size: 12.5px; border-collapse: collapse; }
