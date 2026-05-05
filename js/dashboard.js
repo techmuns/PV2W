@@ -5,7 +5,6 @@
 (function () {
   const D = window.PV_DATA;
 
-  /* ---------- visual constants ---------- */
   const COLOR = {
     blue:    "#2563EB",
     blueSft: "#93B4F4",
@@ -13,13 +12,21 @@
     navy:    "#0B1F33",
     grey:    "#94A3B8",
     greySft: "#CBD5E1",
-    pos:     "#15803D",
-    neg:     "#B91C1C",
+    pos:     "#16A34A",
+    neg:     "#DC2626",
     warn:    "#B45309",
+    amber:   "#F59E0B",
     neu:     "#64748B",
   };
 
-  /* ---------- state ---------- */
+  const BRAND = {
+    "Maruti":         { color: "#C95A5A", label: "OEM" },
+    "Hyundai":        { color: "#0F3D75", label: "OEM" },
+    "M&M":            { color: "#7A2E3A", label: "OEM" },
+    "Tata Motors PV": { color: "#1E4E8C", label: "OEM" },
+    "Industry":       { color: "#334E68", label: "Aggregate" },
+  };
+
   const state = {
     fy:        "FY25",
     company:   "Maruti",
@@ -52,7 +59,7 @@
     "Neutral":  "signal-neu",
   }[s] || "signal-neu");
   const signalDot = (s) => {
-    const colour = { "Positive": COLOR.pos, "Negative": COLOR.neg, "Neutral": COLOR.neu }[s] || COLOR.neu;
+    const colour = { "Positive": "#2E7D32", "Negative": "#C62828", "Neutral": "#64748B" }[s] || "#64748B";
     return `<span class="inline-block w-1.5 h-1.5 rounded-full" style="background:${colour}"></span>`;
   };
   const daysSince = (iso) => {
@@ -67,9 +74,7 @@
     return days <= 30 ? "Fresh" : "Stale";
   };
   const isPctMetric = (m) => m.includes("%") || m.includes("Margin") || m.includes("Share");
-  const isLevelMetric = (m) => isPctMetric(m) && !m.includes("Growth");
 
-  /* Format a single value depending on metric. */
   function formatMetricValue(metric, v) {
     if (v === null || v === undefined) return "—";
     if (typeof v === "string") return v;
@@ -100,8 +105,7 @@
       ? D.Industry_FY_Metrics.filter(r => r.Metric === metric)
       : D.Company_FY_Metrics.filter(r => r.Company === company && r.Metric === metric);
     const indexOf = (fy) => D.FYS_FULL.indexOf(fy);
-    const sorted  = rows.slice().sort((a, b) => indexOf(a.FY) - indexOf(b.FY));
-    return sorted.slice(-maxYears);
+    return rows.slice().sort((a, b) => indexOf(a.FY) - indexOf(b.FY)).slice(-maxYears);
   }
 
   function computeLastUpdated() {
@@ -120,7 +124,7 @@
     return latest;
   }
 
-  /* ---------- KPI icons (inline SVG) ---------- */
+  /* ---------- KPI icons ---------- */
   const ICON = {
     "Market Share %":      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l7 4"/></svg>`,
     "Volume Growth %":     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/><path d="M14 6h7v7"/></svg>`,
@@ -137,10 +141,13 @@
   };
   const iconFor = (m) => ICON[m] || `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/></svg>`;
 
-  /* ---------- top status bar ---------- */
+  /* ---------- top header ---------- */
   function renderTopBar() {
     $("#fy-select").innerHTML  = D.FYS.map(f => `<option value="${f}" ${f===state.fy?"selected":""}>${f}</option>`).join("");
     $("#company-select").innerHTML = D.COMPANIES.map(c => `<option value="${c}" ${c===state.company?"selected":""}>${c}</option>`).join("");
+
+    /* Brand dot in the header dropdown */
+    $("#hdr-brand-dot").style.background = BRAND[state.company].color;
 
     let overall = "Neutral";
     if (state.company === "Industry") {
@@ -151,7 +158,7 @@
       overall = bs ? bs.Overall_Signal : "Neutral";
     }
     const sigEl = $("#overall-signal");
-    sigEl.className = `text-xs font-medium px-2 py-0.5 rounded-full ${signalClass(overall)}`;
+    sigEl.className = `text-xs font-semibold px-2.5 py-0.5 rounded-full ${signalClass(overall)}`;
     sigEl.textContent = overall;
 
     const lu = computeLastUpdated();
@@ -162,7 +169,7 @@
     const fresh = freshness(lu);
     const fEl = $("#freshness-badge");
     fEl.textContent = fresh;
-    fEl.className = "text-xs font-medium px-2 py-0.5 rounded-full " +
+    fEl.className = "text-xs font-semibold px-2.5 py-0.5 rounded-full " +
       (fresh === "Fresh" ? "signal-pos" : fresh === "Stale" ? "signal-warn" : "signal-neg");
 
     const warn = $("#stale-warning");
@@ -174,18 +181,31 @@
     } else {
       warn.classList.add("hidden");
     }
+  }
 
-    if (state.company === "Industry") {
+  /* ---------- title band: brand box + title ---------- */
+  function renderTitleBand() {
+    const brand = BRAND[state.company];
+    const isIndustry = state.company === "Industry";
+
+    $("#brand-box").innerHTML = `
+      <div class="brand-box" style="--brand:${brand.color}">
+        <span class="brand-eyebrow">${brand.label} · ${state.fy}</span>
+        <span class="brand-name">${state.company}</span>
+      </div>`;
+
+    if (isIndustry) {
       $("#view-title").textContent = `Indian PV Industry — ${state.fy}`;
-      $("#view-subtitle").textContent = "Demand, mix, and competitive shifts";
+      $("#view-subtitle").textContent = "Demand, mix, and competitive shifts across OEMs.";
     } else {
-      $("#view-title").textContent = `${state.company} — ${state.fy}`;
+      $("#view-title").textContent = `${state.company} — FY ${state.fy.replace("FY","")}`;
       const info = getCompanyInfo(state.fy, state.company);
-      const yoyBase = prevFY(state.fy);
       $("#view-subtitle").textContent = info
-        ? `CEO ${info.CEO} · ${info.Credit_Rating} · YoY base: ${yoyBase || "—"}`
-        : `YoY base: ${yoyBase || "—"}`;
+        ? `CEO ${info.CEO} · CFO ${info.CFO || "—"} · ${info.Credit_Rating}`
+        : "Company governance info pending.";
     }
+
+    $("#yoy-base").textContent = prevFY(state.fy) || "—";
   }
 
   /* ---------- KPI strip ---------- */
@@ -206,7 +226,6 @@
       const stalePending = !r || val === null || freshness(lu) === "Missing";
 
       const valDisplay = formatMetricValue(metric, val);
-
       let deltaDisplay = "—", deltaClass = "delta-flat";
       if (typeof yoy === "number") {
         const suffix = isPctMetric(metric) ? "pp" : (metric === "Stock Price (31-Mar)" ? "%" : "");
@@ -214,47 +233,38 @@
         deltaClass = yoy > 0 ? "delta-up" : yoy < 0 ? "delta-down" : "delta-flat";
       }
 
-      const clickable = !isIndustry || (isIndustry && metric !== "Top Gaining OEM");
       return `
-        <div class="kpi-card" data-metric="${metric}" ${clickable ? '' : 'style="cursor:default"'}>
+        <div class="kpi-card" data-metric="${metric}">
           <div class="flex items-start justify-between mb-2">
             <span class="kpi-icon">${iconFor(metric)}</span>
-            <span class="text-[10px] font-medium px-1.5 py-0.5 rounded-full ${signalClass(sig)}">${sig}</span>
+            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${signalClass(sig)}">${sig}</span>
           </div>
-          <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-medium">${metric}</div>
+          <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold">${metric}</div>
           <div class="text-[22px] font-semibold text-navy leading-tight tabular-nums mt-0.5">${valDisplay}</div>
           <div class="flex items-center gap-2 mt-1">
-            <span class="text-[11px] ${deltaClass} tabular-nums font-medium">${deltaDisplay}</span>
+            <span class="text-[11.5px] ${deltaClass} tabular-nums font-semibold">${deltaDisplay}</span>
             <span class="text-[10px] text-inkMuted">YoY</span>
             ${stalePending ? '<span class="ml-auto text-[9px] text-warn bg-warnSoft px-1.5 py-0.5 rounded">Pending</span>' : ''}
           </div>
         </div>`;
     }).join("");
 
-    /* Bind clicks for trend drawer */
     grid.querySelectorAll(".kpi-card").forEach(el => {
       const metric = el.dataset.metric;
-      if (!D.TREND_METRICS.has(metric)) {
-        // Industry KPIs / non-trendable: still allow drawer for ones with history
-        if (state.company === "Industry" && metric !== "Top Gaining OEM") {
-          el.addEventListener("click", () => openTrendDrawer(metric));
-          attachHoverTip(el);
-        }
-        return;
-      }
-      el.addEventListener("click", () => openTrendDrawer(metric));
+      const trendable = D.TREND_METRICS.has(metric)
+        || (state.company === "Industry" && metric !== "Top Gaining OEM");
+      if (!trendable) { el.style.cursor = "default"; return; }
+      el.addEventListener("click", () => openTrendModal(metric));
       attachHoverTip(el);
     });
   }
 
-  /* ---------- Chart helpers ---------- */
-  function lineChart(svgId, series, options = {}) {
+  /* ---------- main-page chart helpers ---------- */
+  function lineChart(series, options = {}) {
     const w = 480, h = options.height || 220, padL = 44, padR = 16, padT = 14, padB = 28;
     const labels = options.xLabels || [];
     const allVals = series.flatMap(s => s.values).filter(v => v !== null && v !== undefined);
-    if (!allVals.length) {
-      return `<div class="text-xs text-inkMuted py-6 text-center">No data available</div>`;
-    }
+    if (!allVals.length) return `<div class="text-xs text-inkMuted py-6 text-center">No data available</div>`;
     let yMin = Math.min(...allVals, 0), yMax = Math.max(...allVals, 1);
     const span = yMax - yMin || 1;
     yMin -= span * 0.1; yMax += span * 0.18;
@@ -262,7 +272,7 @@
     const x = (i) => padL + i * ((w - padL - padR) / Math.max(labels.length - 1, 1));
     const y = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (h - padT - padB);
 
-    const grid = [0, 0.25, 0.5, 0.75, 1].map(t => {
+    const grid = [0,0.25,0.5,0.75,1].map(t => {
       const yy = padT + t * (h - padT - padB);
       const val = yMax - t * (yMax - yMin);
       return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#EEF1F5"/>
@@ -309,7 +319,7 @@
     const yMax = Math.max(...totals, 1) * 1.18;
     const yScale = (v) => padT + (1 - v / yMax) * (h - padT - padB);
 
-    const grid = [0, 0.25, 0.5, 0.75, 1].map(t => {
+    const grid = [0,0.25,0.5,0.75,1].map(t => {
       const yy = padT + t * (h - padT - padB);
       const val = yMax * (1 - t);
       return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#EEF1F5"/>
@@ -329,9 +339,8 @@
         cum += v;
       });
       bars += `<text x="${cx}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
-      bars += `<text x="${cx}" y="${yScale(cum) - 4}" text-anchor="middle" font-size="10" fill="#111827" font-weight="500">${cum.toFixed(0)}${options.yUnit||""}</text>`;
+      bars += `<text x="${cx}" y="${yScale(cum) - 4}" text-anchor="middle" font-size="10" fill="#102A43" font-weight="500">${cum.toFixed(0)}${options.yUnit||""}</text>`;
     });
-
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
   }
 
@@ -346,7 +355,7 @@
     const yScale = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (h - padT - padB);
     const zeroY = yScale(0);
 
-    const grid = [0, 0.25, 0.5, 0.75, 1].map(t => {
+    const grid = [0,0.25,0.5,0.75,1].map(t => {
       const yy = padT + t * (h - padT - padB);
       const val = yMax - t * (yMax - yMin);
       return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#EEF1F5"/>
@@ -370,32 +379,34 @@
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
   }
 
-  const legendChip = (color, label) =>
+  const legendChip = (color, label, dashed = false) =>
     `<span class="inline-flex items-center gap-1.5">
-       <span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:${color}"></span>${label}
+       <span class="inline-block w-3 ${dashed ? 'h-0' : 'h-2.5'} rounded-sm" style="background:${dashed ? 'transparent' : color}; ${dashed ? `border-top: 2px dashed ${color};` : ''}"></span>${label}
      </span>`;
 
-  /* ---------- Charts ---------- */
+  /* ---------- main-page charts ---------- */
   function renderCharts() {
     const isIndustry = state.company === "Industry";
     const fyHistory = D.FYS;
 
     if (isIndustry) {
       $("#chart1-title").textContent = "PV industry volume trend";
-      $("#chart1-sub").textContent   = "Lakhs · units";
       $("#chart1-help").textContent  = "Aggregate domestic PV demand across FYs.";
+      $("#chart1-sub").textContent   = "Lakhs · units";
+
       const indVol = fyHistory.map(fy => {
         const r = getIndustryMetric(fy, "Total PV Volume");
         return r ? r.Value / 100000 : null;
       });
-      $("#chart1").innerHTML = lineChart("c1", [
+      $("#chart1").innerHTML = lineChart([
         { name: "Industry volume", color: COLOR.navy, values: indVol },
       ], { xLabels: fyHistory, area: true });
       $("#chart1-legend").innerHTML = legendChip(COLOR.navy, "PV industry volume (lakh units)");
 
       $("#chart2-title").textContent = "OEM market share";
-      $("#chart2-sub").textContent   = state.fy + " · %";
       $("#chart2-help").textContent  = "Selected FY share alongside the prior FY.";
+      $("#chart2-sub").textContent   = state.fy + " · %";
+
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
       const sharesPrev = oems.map(o => (getCompanyMetric(prevFY(state.fy) || state.fy, o, "Market Share %")||{}).Value || 0);
       const sharesCurr = oems.map(o => (getCompanyMetric(state.fy, o, "Market Share %")||{}).Value || 0);
@@ -408,8 +419,8 @@
 
     } else {
       $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
-      $("#chart1-sub").textContent   = "Volume growth %";
       $("#chart1-help").textContent  = "Are we outperforming the industry?";
+      $("#chart1-sub").textContent   = "Volume growth %";
 
       const oemVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Volume Growth %")||{}).Value ?? null);
       const indVals = fyHistory.map(fy => (getIndustryMetric(fy, "PV Volume Growth %")||{}).Value ?? null);
@@ -421,8 +432,8 @@
         legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
 
       $("#chart2-title").textContent = "Mix shift";
-      $("#chart2-sub").textContent   = "Revenue mix · %";
       $("#chart2-help").textContent  = "Quality of growth — SUV / EV / Export contribution.";
+      $("#chart2-sub").textContent   = "Revenue mix · %";
 
       const suvVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "SUV Revenue %")||{}).Value || 0);
       const evVals  = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "EV Revenue %")||{}).Value  || 0);
@@ -440,7 +451,7 @@
     }
   }
 
-  /* ---------- Buy-side signal box ---------- */
+  /* ---------- buy-side signal box ---------- */
   function renderSignalBox() {
     const box = $("#signal-box");
     if (state.company === "Industry") {
@@ -453,7 +464,6 @@
 
       const demand = !volR ? "—" :
         volR.Value > 10 ? "Improving" : volR.Value > 4 ? "Stable" : "Slowing";
-
       const mixBits = [];
       if (suvR && suvR.YoY_Change > 0) mixBits.push("SUV improving");
       if (evR  && evR.YoY_Change  > 0) mixBits.push("EV improving");
@@ -468,34 +478,23 @@
         ["Trigger",     "Festive demand, EV launches"],
       ];
       box.innerHTML = rows.map(([k, v]) => `
-        <div class="bsr">
-          <span class="bsr-label">${k}</span>
-          <span class="bsr-pill">${v}</span>
-        </div>`).join("");
+        <div class="bsr"><span class="bsr-label">${k}</span><span class="bsr-pill">${v}</span></div>`).join("");
       return;
     }
-
     const bs = getBuySide(state.fy, state.company);
     if (!bs) {
       box.innerHTML = `<div class="text-xs text-inkMuted py-6 text-center">Data pending for ${state.company} — ${state.fy}</div>`;
       return;
     }
     const rows = [
-      ["Share",   bs.Share_Read],
-      ["Growth",  bs.Growth_Read],
-      ["Margin",  bs.Margin_Read],
-      ["Mix",     bs.Mix_Read],
-      ["Risk",    bs.Risk_Read],
-      ["Trigger", bs.Trigger_Read],
+      ["Share", bs.Share_Read], ["Growth", bs.Growth_Read], ["Margin", bs.Margin_Read],
+      ["Mix", bs.Mix_Read], ["Risk", bs.Risk_Read], ["Trigger", bs.Trigger_Read],
     ];
     box.innerHTML = rows.map(([k, v]) => `
-      <div class="bsr">
-        <span class="bsr-label">${k}</span>
-        <span class="bsr-pill">${v}</span>
-      </div>`).join("");
+      <div class="bsr"><span class="bsr-label">${k}</span><span class="bsr-pill">${v}</span></div>`).join("");
   }
 
-  /* ---------- Vehicle cards ---------- */
+  /* ---------- vehicle cards ---------- */
   function renderVehicleCards() {
     const section = $("#vehicle-section");
     if (state.company === "Industry") { section.style.display = "none"; return; }
@@ -521,7 +520,7 @@
               <div class="text-sm font-semibold text-navy leading-tight">${name}</div>
               <div class="text-[10.5px] text-inkMuted mt-0.5">${r ? r.Segment : "—"}</div>
             </div>
-            <span class="text-[10px] font-medium px-1.5 py-0.5 rounded ${signalClass(sig)}">${sigLabel}</span>
+            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded ${signalClass(sig)}">${sigLabel}</span>
           </div>
           <div class="text-[18px] font-semibold text-ink tabular-nums leading-tight">
             ${placeholder ? "—" : fmtNum(r.Volume)}
@@ -534,15 +533,15 @@
             }">${placeholder || r.YoY_Growth === null ? "—" : fmtDelta(r.YoY_Growth, "%")}</span>
           </div>
           ${placeholder
-            ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block">Data pending</div>`
+            ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Data pending</div>`
             : (fresh === "Stale"
-                ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block">Stale</div>`
+                ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Stale</div>`
                 : "")}
         </div>`;
     }).join("");
   }
 
-  /* ---------- Tabs / drilldowns ---------- */
+  /* ---------- tabs ---------- */
   const TABS_OEM = {
     "Growth":     ["Revenue Growth %", "Volume Growth %", "Realisation Growth %"],
     "Margins":    ["Gross Margin %", "EBITDA Margin %"],
@@ -566,7 +565,6 @@
     $("#tab-bar").innerHTML = tabNames.map(t =>
       `<button class="tab-btn ${t === state.activeTab ? "active" : ""}" data-tab="${t}">${t}</button>`
     ).join("");
-
     document.querySelectorAll(".tab-btn").forEach(btn =>
       btn.addEventListener("click", () => { state.activeTab = btn.dataset.tab; renderTabs(); })
     );
@@ -591,7 +589,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4">
           ${fields.map(([k,v]) => `
             <div>
-              <div class="text-[10.5px] uppercase tracking-wider text-inkMuted">${k}</div>
+              <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold">${k}</div>
               <div class="text-sm text-ink mt-0.5">${v ?? "—"}</div>
             </div>`).join("")}
         </div>
@@ -613,7 +611,7 @@
         <tr class="${isClickable ? "clickable" : ""}" ${isClickable ? `data-metric="${metric}"` : ""}>
           <td>${metric}${isClickable ? ' <span class="text-[10px] text-blue ml-1">↗</span>' : ''}</td>
           <td class="num">${formatMetricValue(metric, rPrior ? rPrior.Value : null)}</td>
-          <td class="num font-medium text-navy">${formatMetricValue(metric, r ? r.Value : null)}</td>
+          <td class="num font-semibold text-navy">${formatMetricValue(metric, r ? r.Value : null)}</td>
           <td class="num ${yoy > 0 ? "delta-up" : yoy < 0 ? "delta-down" : "delta-flat"}">
             ${yoy === null || yoy === undefined ? "—" : fmtDelta(yoy, isPctMetric(metric) ? "pp" : "")}
           </td>
@@ -629,121 +627,264 @@
     body.innerHTML = `
       <table class="dd-table">
         <thead>
-          <tr>
-            <th>Metric</th><th>${fyPrior || "Prev FY"}</th><th>${fyCurrent}</th>
-            <th>YoY</th><th>Signal</th><th>Source</th>
-          </tr>
+          <tr><th>Metric</th><th>${fyPrior || "Prev FY"}</th><th>${fyCurrent}</th>
+              <th>YoY</th><th>Signal</th><th>Source</th></tr>
         </thead>
         <tbody>${rows || `<tr><td colspan="6" class="text-inkMuted">No metrics defined</td></tr>`}</tbody>
       </table>`;
-
     document.querySelectorAll(".dd-table tr.clickable").forEach(tr => {
-      tr.addEventListener("click", () => openTrendDrawer(tr.dataset.metric));
+      tr.addEventListener("click", () => openTrendModal(tr.dataset.metric));
       attachHoverTip(tr);
     });
   }
 
-  /* ---------- Trend drawer ---------- */
-  function openTrendDrawer(metric) {
+  /* ====================================================
+     TREND MODAL — large chart, gradient, colored dots,
+     amber halo on current FY, hover tooltip.
+     ==================================================== */
+
+  /* SVG renderer specialised for the trend modal. */
+  function trendChart(values, labels, options = {}) {
+    const benchValues = options.bench || null;
+    const w = 720, h = 320, padL = 50, padR = 22, padT = 18, padB = 32;
+    const valid = values.map((v, i) => v === null || v === undefined ? null : { i, v });
+    const benchValid = benchValues ? benchValues.map((v, i) => v === null || v === undefined ? null : { i, v }) : [];
+
+    const allVals = [...values, ...(benchValues || [])].filter(v => v !== null && v !== undefined);
+    if (!allVals.length) return `<div class="text-sm text-inkMuted py-10 text-center">Data pending from agents.</div>`;
+    let yMin = Math.min(...allVals, 0), yMax = Math.max(...allVals, 1);
+    const span = yMax - yMin || 1;
+    yMin -= span * 0.10; yMax += span * 0.18;
+
+    const x = (i) => padL + i * ((w - padL - padR) / Math.max(labels.length - 1, 1));
+    const y = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (h - padT - padB);
+
+    const grid = [0,0.25,0.5,0.75,1].map(t => {
+      const yy = padT + t * (h - padT - padB);
+      const val = yMax - t * (yMax - yMin);
+      return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#EEF1F5"/>
+              <text x="${padL-8}" y="${yy+3}" text-anchor="end" font-size="10.5" fill="#6B7280">${val.toFixed(0)}${options.yUnit||""}</text>`;
+    }).join("");
+
+    /* main line + gradient area */
+    const points = values.map((v, i) => v === null || v === undefined ? null : [x(i), y(v)]);
+    let path = "";
+    points.forEach((p, i) => {
+      if (!p) return;
+      const cmd = path === "" ? "M" : (points[i-1] ? "L" : "M");
+      path += `${cmd} ${p[0].toFixed(1)} ${p[1].toFixed(1)} `;
+    });
+
+    const firstIdx = points.findIndex(Boolean);
+    const lastIdx  = points.length - 1 - points.slice().reverse().findIndex(Boolean);
+    const areaPath = firstIdx >= 0
+      ? `${path} L ${x(lastIdx).toFixed(1)} ${y(yMin).toFixed(1)} L ${x(firstIdx).toFixed(1)} ${y(yMin).toFixed(1)} Z`
+      : "";
+
+    const defs = `
+      <defs>
+        <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="#DBEAFE" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#DBEAFE" stop-opacity="0"/>
+        </linearGradient>
+      </defs>`;
+
+    /* benchmark */
+    let benchSvg = "";
+    if (benchValues) {
+      const bp = benchValues.map((v, i) => v === null || v === undefined ? null : [x(i), y(v)]);
+      let bpath = "";
+      bp.forEach((p, i) => {
+        if (!p) return;
+        const cmd = bpath === "" ? "M" : (bp[i-1] ? "L" : "M");
+        bpath += `${cmd} ${p[0].toFixed(1)} ${p[1].toFixed(1)} `;
+      });
+      if (bpath) benchSvg = `<path class="trend-bench" d="${bpath}"/>`;
+    }
+
+    /* dots — color by YoY direction; current FY = amber w/ halo */
+    let dotsSvg = "";
+    points.forEach((p, i) => {
+      if (!p) return;
+      const isLast = i === lastIdx;
+      const prev = i > 0 && points[i-1] ? values[i-1] : null;
+      const curr = values[i];
+      let dotColor;
+      if (isLast) dotColor = "#F59E0B";
+      else if (prev === null || prev === undefined) dotColor = COLOR.blue;
+      else if (curr > prev) dotColor = COLOR.pos;
+      else if (curr < prev) dotColor = COLOR.neg;
+      else dotColor = COLOR.blue;
+
+      if (isLast) {
+        dotsSvg += `<circle class="trend-halo" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="11"/>`;
+      }
+      const r = isLast ? 5.5 : 4;
+      const cls = isLast ? "trend-dot-current" : "trend-dot";
+      dotsSvg += `<circle class="${cls}" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${r}" fill="${dotColor}"/>`;
+    });
+
+    /* x labels */
+    const xAxis = labels.map((l, i) =>
+      `<text x="${x(i)}" y="${h-10}" text-anchor="middle" font-size="11" fill="#6B7280">${l}</text>`).join("");
+
+    /* invisible hover targets per FY */
+    const colW = (w - padL - padR) / Math.max(labels.length, 1);
+    const hover = labels.map((l, i) => `
+      <rect class="hover-target" data-i="${i}"
+            x="${(padL + i * (w - padL - padR) / Math.max(labels.length-1,1)) - colW/2}"
+            y="${padT}" width="${colW}" height="${h - padT - padB}"/>`).join("");
+
+    return `
+      <svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+        ${defs}
+        <g class="grid">${grid}</g>
+        ${areaPath ? `<path d="${areaPath}" fill="url(#trendGrad)"/>` : ""}
+        ${benchSvg}
+        <path class="trend-line" d="${path}"/>
+        ${dotsSvg}
+        <g class="axis">${xAxis}</g>
+        ${hover}
+      </svg>`;
+  }
+
+  function bindTrendHover(rootEl, labels, values, metric, benchValues) {
+    const tip = $("#trend-tooltip");
+    rootEl.querySelectorAll(".hover-target").forEach(el => {
+      el.addEventListener("mouseenter", (e) => showTrendTip(e, el, labels, values, metric, benchValues));
+      el.addEventListener("mousemove",  (e) => showTrendTip(e, el, labels, values, metric, benchValues));
+      el.addEventListener("mouseleave", () => tip.classList.add("hidden"));
+    });
+  }
+  function showTrendTip(e, el, labels, values, metric, benchValues) {
+    const tip = $("#trend-tooltip");
+    const i = +el.dataset.i;
+    const v = values[i];
+    const fy = labels[i];
+    if (v === null || v === undefined) { tip.classList.add("hidden"); return; }
+    const prev = i > 0 ? values[i-1] : null;
+    let yoyText = "";
+    if (typeof prev === "number") {
+      const diff = v - prev;
+      const isPct = isPctMetric(metric);
+      const txt = (diff >= 0 ? "+" : "") + diff.toFixed(1) + (isPct ? "pp YoY" : " YoY");
+      yoyText = txt;
+    } else {
+      yoyText = "—";
+    }
+    $("#trend-tt-fy").textContent = fy;
+    $("#trend-tt-val").textContent = formatMetricValue(metric, v);
+    $("#trend-tt-yoy").textContent = yoyText;
+    if (benchValues && typeof benchValues[i] === "number") {
+      $("#trend-tt-yoy").textContent += `  ·  Industry: ${formatMetricValue(metric, benchValues[i])}`;
+    }
+    tip.classList.remove("hidden");
+    tip.style.left = (e.clientX + 14) + "px";
+    tip.style.top  = (e.clientY + 14) + "px";
+  }
+
+  function openTrendModal(metric) {
     const isIndustry = state.company === "Industry";
     const company = state.company;
+    const brand = BRAND[company];
     const history = getMetricHistory(company, metric, 10);
     const valued  = history.filter(r => r.Value !== null && r.Value !== undefined && typeof r.Value === "number");
 
-    $("#drawer-eyebrow").textContent  = "10-year trend";
-    $("#drawer-title").textContent    = metric;
-    $("#drawer-context").textContent  = `${company} · current FY ${state.fy}`;
+    /* header */
+    $("#modal-brand").style.setProperty("--brand", brand.color);
+    $("#modal-brand").innerHTML = `
+      <span class="brand-eyebrow">${brand.label}</span>
+      <span class="brand-name">${company}</span>`;
+    $("#modal-title").textContent   = `${metric}  |  ${company}  |  10-Year Trend`;
+    $("#modal-context").textContent = `Selected FY ${state.fy} · YoY base ${prevFY(state.fy) || "—"}`;
 
     if (!valued.length) {
-      $("#drawer-chart").innerHTML = `<div class="text-sm text-inkMuted py-10 text-center">Data pending from agents.</div>`;
-      $("#drawer-chart-title").textContent = "";
-      $("#drawer-chart-sub").textContent   = "";
-      $("#drawer-chart-legend").innerHTML  = "";
-      $("#drawer-stats").innerHTML         = "";
-      $("#drawer-insight").textContent     = "No history available yet for this metric.";
-      $("#drawer-source").textContent      = "—";
-      $("#drawer-updated").textContent     = "—";
-      slideDrawerOpen();
+      $("#modal-chart").innerHTML = `<div class="text-sm text-inkMuted py-10 text-center">Data pending from agents.</div>`;
+      $("#modal-chart-title").textContent = "";
+      $("#modal-chart-sub").textContent   = "";
+      $("#modal-chart-legend").innerHTML  = "";
+      $("#modal-stats").innerHTML         = "";
+      $("#modal-insight").textContent     = "No history available yet for this metric.";
+      $("#modal-source").textContent      = "—";
+      $("#modal-updated").textContent     = "—";
+      openModal();
       return;
     }
 
     const labels = valued.map(r => r.FY);
     const values = valued.map(r => r.Value);
 
-    const series = [{ name: company, color: COLOR.blue, values }];
-
-    /* Optionally overlay the industry benchmark for share/growth metrics */
-    const benchmarkable = !isIndustry && (
-      metric === "Volume Growth %" || metric === "SUV Revenue %" || metric === "EV Revenue %"
+    /* benchmark overlay where it makes sense */
+    let benchValues = null;
+    const benchMetric = !isIndustry && (
+      metric === "Volume Growth %" ? "PV Volume Growth %"
+      : metric === "SUV Revenue %" ? "SUV Share %"
+      : metric === "EV Revenue %"  ? "EV Share %"
+      : null
     );
-    if (benchmarkable) {
-      const benchMetric = metric === "Volume Growth %" ? "PV Volume Growth %"
-        : metric === "SUV Revenue %" ? "SUV Share %"
-        : metric === "EV Revenue %"  ? "EV Share %" : null;
-      if (benchMetric) {
-        const benchHist = getMetricHistory("Industry", benchMetric, 10);
-        const benchByFY = Object.fromEntries(benchHist.map(r => [r.FY, r.Value]));
-        const benchVals = labels.map(fy => benchByFY[fy] ?? null);
-        if (benchVals.some(v => v !== null)) {
-          series.push({ name: "PV industry", color: COLOR.greySft, values: benchVals });
-        }
-      }
+    if (benchMetric) {
+      const benchHist = getMetricHistory("Industry", benchMetric, 10);
+      const benchByFY = Object.fromEntries(benchHist.map(r => [r.FY, r.Value]));
+      benchValues = labels.map(fy => benchByFY[fy] ?? null);
+      if (!benchValues.some(v => v !== null && v !== undefined)) benchValues = null;
     }
 
-    $("#drawer-chart-title").textContent = company + (benchmarkable ? " vs PV industry" : "");
-    $("#drawer-chart-sub").textContent   = `${labels[0]} – ${labels[labels.length-1]}`;
-    $("#drawer-chart").innerHTML = lineChart("dchart", series, {
-      xLabels: labels, height: 240, area: true,
-      yUnit: isPctMetric(metric) ? "%" : "",
-    });
-    $("#drawer-chart-legend").innerHTML =
-      series.map(s => legendChip(s.color, s.name)).join("");
+    $("#modal-chart-title").textContent = company + (benchValues ? " vs PV industry" : "");
+    $("#modal-chart-sub").textContent   = `${labels[0]} – ${labels[labels.length-1]} · ${labels.length} year${labels.length>1?"s":""}` + (valued.length < 10 ? " · limited history available" : "");
+    $("#modal-chart").innerHTML = trendChart(values, labels, { bench: benchValues, yUnit: isPctMetric(metric) ? "%" : "" });
 
-    /* Stats */
+    $("#modal-chart-legend").innerHTML = [
+      `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-4 h-[3px] rounded-sm" style="background:${COLOR.blue}"></span>${company}</span>`,
+      benchValues ? `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-4 h-0" style="border-top:2px dashed ${COLOR.grey}"></span>PV industry (benchmark)</span>` : "",
+      `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:${COLOR.pos}"></span>YoY up</span>`,
+      `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:${COLOR.neg}"></span>YoY down</span>`,
+      `<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background:${COLOR.amber}"></span>Current FY</span>`,
+    ].filter(Boolean).join("");
+
+    /* stats */
     const high = Math.max(...values);
     const low  = Math.min(...values);
     const cur  = values[values.length - 1];
-    const yoy  = (history[history.length-1].YoY_Change !== null && history[history.length-1].YoY_Change !== undefined)
-      ? history[history.length-1].YoY_Change
+    const lastRow = history[history.length-1];
+    const yoy  = (typeof lastRow.YoY_Change === "number")
+      ? lastRow.YoY_Change
       : (values.length >= 2 ? +(values[values.length-1] - values[values.length-2]).toFixed(2) : null);
-    const sig  = history[history.length-1].Signal || "Neutral";
+    const sig  = lastRow.Signal || "Neutral";
     const yoySuffix = isPctMetric(metric) ? "pp" : (metric === "Stock Price (31-Mar)" ? "" : "");
+    const yoyClass  = (typeof yoy === "number") ? (yoy > 0 ? "stat-tile-pos" : yoy < 0 ? "stat-tile-neg" : "") : "";
 
-    const tiles = [
-      ["Current",     formatMetricValue(metric, cur)],
-      ["10y high",    formatMetricValue(metric, high)],
-      ["10y low",     formatMetricValue(metric, low)],
-      ["Latest YoY",  yoy === null ? "—" : fmtDelta(yoy, yoySuffix)],
-    ];
-    $("#drawer-stats").innerHTML = tiles.map(([k, v]) => `
+    $("#modal-stats").innerHTML = `
+      <div class="stat-tile stat-tile-amber">
+        <div class="stat-tile-label">Current (${state.fy})</div>
+        <div class="stat-tile-value">${formatMetricValue(metric, cur)}</div>
+      </div>
       <div class="stat-tile">
-        <div class="stat-tile-label">${k}</div>
-        <div class="stat-tile-value">${v}</div>
-      </div>`).join("") +
-      `<div class="stat-tile col-span-2 flex items-center gap-3">
-         <div>
-           <div class="stat-tile-label">Latest signal</div>
-           <span class="inline-flex items-center gap-1.5 text-[11px] mt-1 px-2 py-0.5 rounded-full ${signalClass(sig)}">
-             ${signalDot(sig)}${sig}
-           </span>
-         </div>
-         <div class="ml-auto text-right">
-           <div class="stat-tile-label">Years</div>
-           <div class="stat-tile-value">${labels.length}</div>
-         </div>
-       </div>`;
+        <div class="stat-tile-label">10y high</div>
+        <div class="stat-tile-value">${formatMetricValue(metric, high)}</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-label">10y low</div>
+        <div class="stat-tile-value">${formatMetricValue(metric, low)}</div>
+      </div>
+      <div class="stat-tile ${yoyClass}">
+        <div class="stat-tile-label">Latest YoY</div>
+        <div class="stat-tile-value">${typeof yoy === "number" ? fmtDelta(yoy, yoySuffix) : "—"}</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-label">Signal</div>
+        <span class="inline-flex items-center gap-1.5 text-[12px] mt-1.5 px-2.5 py-1 rounded-full ${signalClass(sig)} font-semibold">
+          ${signalDot(sig)}${sig}
+        </span>
+      </div>`;
 
-    /* Auto-insight */
-    $("#drawer-insight").textContent = generateInsight(metric, values, labels, valued.length < 10);
-
-    /* Source / updated */
-    const last = history[history.length-1];
-    $("#drawer-source").textContent  = last.Source || "—";
-    $("#drawer-updated").textContent = last.Last_Updated
-      ? new Date(last.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
+    $("#modal-insight").textContent = generateInsight(metric, values, labels, valued.length < 10);
+    $("#modal-source").textContent  = lastRow.Source || "—";
+    $("#modal-updated").textContent = lastRow.Last_Updated
+      ? new Date(lastRow.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
       : "—";
 
-    slideDrawerOpen();
+    openModal();
+    bindTrendHover($("#modal-chart"), labels, values, metric, benchValues);
   }
 
   function generateInsight(metric, values, labels, limited) {
@@ -756,9 +897,9 @@
 
     const flavors = {
       "Market Share %":         d => `Market share has ${d} between ${period}${limitedNote}, reflecting ${d === "improved" ? "share gains, especially in SUV" : d === "declined" ? "competitive pressure" : "a steady competitive position"}.`,
-      "Volume Growth %":        d => `Volume growth has ${d} over ${period}${limitedNote}; volatility around the FY21 base was driven by COVID-related demand disruption.`,
+      "Volume Growth %":        d => `Volume growth has ${d} over ${period}${limitedNote}; volatility around the FY21 base reflects COVID-related demand disruption.`,
       "Revenue Growth %":       d => `Revenue growth has ${d} over ${period}${limitedNote}, ${d === "improved" ? "supported by mix and pricing" : d === "declined" ? "with mix and price gains tapering" : "tracking volume closely"}.`,
-      "EBITDA Margin %":        d => `EBITDA margin has ${d} over ${period}${limitedNote}, ${d === "improved" ? "indicating better operating leverage and mix" : d === "declined" ? "reflecting cost or pricing headwinds" : "with operating leverage broadly intact"}.`,
+      "EBITDA Margin %":        d => `EBITDA margin has ${d} over ${period}${limitedNote}, ${d === "improved" ? "indicating better operating leverage and mix improvement" : d === "declined" ? "reflecting cost or pricing headwinds" : "with operating leverage broadly intact"}.`,
       "SUV Revenue %":          d => `SUV revenue mix has ${d} over ${period}${limitedNote}, ${d === "improved" ? "improving the quality of growth" : d === "declined" ? "a sign of mix erosion" : "showing a stable structural mix"}.`,
       "Stock Price (31-Mar)":   d => `Stock has ${d} between ${period}${limitedNote}; year-end values move with earnings momentum and share trajectory.`,
       "Gross Margin %":         d => `Gross margin has ${d} over ${period}${limitedNote}, signalling ${d === "improved" ? "RM tailwinds and richer mix" : d === "declined" ? "input-cost or discount pressure" : "broadly steady unit economics"}.`,
@@ -770,46 +911,38 @@
       "Realisation Growth %":   d => `Realisation growth has ${d} over ${period}${limitedNote}, ${d === "improved" ? "reflecting pricing and mix tailwinds" : d === "declined" ? "with weak pricing power" : "tracking inflation broadly"}.`,
     };
     const fn = flavors[metric];
-    return fn ? fn(direction)
-              : `${metric} has ${direction} over ${period}${limitedNote}.`;
+    return fn ? fn(direction) : `${metric} has ${direction} over ${period}${limitedNote}.`;
   }
 
-  function slideDrawerOpen() {
-    const drawer  = $("#drawer");
-    const overlay = $("#drawer-overlay");
+  /* ---------- modal open/close ---------- */
+  function openModal() {
+    const overlay = $("#modal-overlay");
     overlay.classList.remove("hidden");
-    requestAnimationFrame(() => {
-      drawer.classList.add("open");
-      overlay.classList.add("open");
-    });
+    requestAnimationFrame(() => overlay.classList.add("open"));
   }
-  function slideDrawerClose() {
-    const drawer  = $("#drawer");
-    const overlay = $("#drawer-overlay");
-    drawer.classList.remove("open");
+  function closeModal() {
+    const overlay = $("#modal-overlay");
     overlay.classList.remove("open");
-    setTimeout(() => overlay.classList.add("hidden"), 300);
+    setTimeout(() => overlay.classList.add("hidden"), 220);
+    $("#trend-tooltip").classList.add("hidden");
   }
 
-  /* ---------- hover tooltip ---------- */
+  /* ---------- hover tooltip on KPI / row ---------- */
   function attachHoverTip(el) {
     const tip = $("#hover-tip");
-    el.addEventListener("mouseenter", (e) => {
-      tip.classList.remove("hidden");
-      positionTip(tip, e);
-    });
+    el.addEventListener("mouseenter", (e) => { tip.classList.remove("hidden"); positionTip(tip, e); });
     el.addEventListener("mousemove", (e) => positionTip(tip, e));
     el.addEventListener("mouseleave", () => tip.classList.add("hidden"));
   }
   function positionTip(tip, e) {
-    const x = e.clientX + 12, y = e.clientY + 14;
-    tip.style.left = x + "px";
-    tip.style.top  = y + "px";
+    tip.style.left = (e.clientX + 12) + "px";
+    tip.style.top  = (e.clientY + 14) + "px";
   }
 
   /* ---------- master render ---------- */
   function renderAll() {
     renderTopBar();
+    renderTitleBand();
     renderKpiStrip();
     renderCharts();
     renderSignalBox();
@@ -829,14 +962,15 @@
       if (!Object.keys(tabs).includes(state.activeTab)) state.activeTab = Object.keys(tabs)[0];
       renderAll();
     });
-    $("#drawer-close").addEventListener("click", slideDrawerClose);
-    $("#drawer-overlay").addEventListener("click", slideDrawerClose);
+    $("#modal-close").addEventListener("click", closeModal);
+    $("#modal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "modal-overlay") closeModal();
+    });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") slideDrawerClose();
+      if (e.key === "Escape") closeModal();
     });
   }
 
-  /* ---------- boot ---------- */
   document.addEventListener("DOMContentLoaded", () => {
     wire();
     renderAll();

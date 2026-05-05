@@ -5,41 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            bg:       '#F5F7FA',
-            card:     '#FFFFFF',
-            ink:      '#111827',
-            inkSoft:  '#374151',
-            inkMuted: '#6B7280',
-            navy:     '#0B1F33',
-            navyDeep: '#081827',
-            blue:     '#2563EB',
-            blueSoft: '#EAF0FE',
-            blueTint: '#F3F7FE',
-            teal:     '#0F766E',
-            tealSoft: '#E2F1EE',
-            pos:      '#15803D',
-            posSoft:  '#E4F2EA',
-            neg:      '#B91C1C',
-            negSoft:  '#FBE8E8',
-            warn:     '#B45309',
-            warnSoft: '#FBEFDC',
-            neu:      '#64748B',
-            neuSoft:  '#EEF1F5',
-            line:     '#E5E7EB',
-            lineSoft: '#EEF1F5',
+            bg:        '#F4F7FB',
+            bgSoft:    '#EEF4FB',
+            card:      '#FFFFFF',
+            tint:      '#EAF2FF',
+            tintSoft:  '#DCEBFF',
+            ink:       '#102A43',
+            inkSoft:   '#334E68',
+            inkMuted:  '#6B7280',
+            navy:      '#0B1F33',
+            navyDeep:  '#061321',
+            blue:      '#2563EB',
+            blueSoft:  '#DBEAFE',
+            teal:      '#0F766E',
+            tealSoft:  '#CCFBF1',
+            pos:       '#2E7D32',
+            posSoft:   '#E1F0E2',
+            neg:       '#C62828',
+            negSoft:   '#FBE3E3',
+            warn:      '#B45309',
+            warnSoft:  '#FBEFDC',
+            amber:     '#F59E0B',
+            amberSoft: '#FEF3C7',
+            neu:       '#64748B',
+            neuSoft:   '#EEF1F5',
+            line:      '#D9E2EC',
+            lineSoft:  '#E5EAF1',
           },
           fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
           boxShadow: {
             card:      '0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03)',
-            cardHover: '0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04)',
-            drawer:    '-12px 0 32px rgba(15, 23, 42, 0.12)',
+            cardHover: '0 10px 28px rgba(11, 31, 51, 0.08), 0 2px 6px rgba(11, 31, 51, 0.05)',
+            modal:     '0 24px 60px rgba(11, 31, 51, 0.22), 0 4px 12px rgba(11, 31, 51, 0.10)',
+            brand:     '0 6px 18px rgba(11, 31, 51, 0.12)',
           },
         },
       },
@@ -48,93 +53,114 @@
 </head>
 <body class="bg-bg text-ink font-sans antialiased min-h-screen">
 
-  <!-- Subtle navy gradient band behind the header -->
-  <div class="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-navyDeep via-navy/95 to-navy/0 -z-10"></div>
+  <!-- Subtle navy strip behind the header -->
+  <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-navyDeep to-navy/0 -z-10"></div>
 
-  <!-- ============== TOP STATUS BAR ============== -->
+  <!-- ============== TOP HEADER ============== -->
   <header class="bg-navy text-white sticky top-0 z-30 shadow-md">
-    <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-6 flex-wrap">
+    <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-5 flex-wrap">
       <div class="flex items-center gap-3 mr-2">
-        <div class="w-9 h-9 rounded-md bg-blue/90 flex items-center justify-center font-semibold text-sm tracking-tight">PV</div>
+        <div class="w-9 h-9 rounded-md bg-blue flex items-center justify-center font-bold text-sm tracking-tight">PV</div>
         <div class="leading-tight">
           <div class="text-white font-semibold text-[15px] tracking-tight">PV Industry Dashboard</div>
           <div class="text-[11px] text-white/55">Buy-side research view</div>
         </div>
       </div>
 
+      <!-- FY selector -->
       <div class="flex items-center gap-2">
-        <label class="text-[10px] text-white/55 uppercase tracking-wider">FY</label>
-        <select id="fy-select" class="text-sm bg-white/10 hover:bg-white/15 text-white border border-white/20 rounded px-2 py-1 focus:outline-none focus:border-blue"></select>
+        <label class="text-[10px] text-white/55 uppercase tracking-wider font-medium">FY</label>
+        <div class="hdr-select-wrap">
+          <select id="fy-select" class="hdr-select hdr-select-fy"></select>
+        </div>
       </div>
 
+      <!-- Company selector with brand dot -->
       <div class="flex items-center gap-2">
-        <label class="text-[10px] text-white/55 uppercase tracking-wider">Company</label>
-        <select id="company-select" class="text-sm bg-white/10 hover:bg-white/15 text-white border border-white/20 rounded px-2 py-1 min-w-[160px] focus:outline-none focus:border-blue"></select>
+        <label class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Company</label>
+        <div class="hdr-select-wrap">
+          <span id="hdr-brand-dot" class="hdr-brand-dot"></span>
+          <select id="company-select" class="hdr-select hdr-select-company"></select>
+        </div>
       </div>
 
       <div class="flex items-center gap-2 pl-4 border-l border-white/15">
-        <span class="text-[10px] text-white/55 uppercase tracking-wider">Signal</span>
-        <span id="overall-signal" class="text-xs font-medium px-2 py-0.5 rounded-full"></span>
+        <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Signal</span>
+        <span id="overall-signal" class="text-xs font-semibold px-2.5 py-0.5 rounded-full"></span>
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-[10px] text-white/55 uppercase tracking-wider">Updated</span>
-        <span id="last-updated" class="text-xs text-white/85"></span>
+        <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Updated</span>
+        <span id="last-updated" class="text-xs text-white/85 font-medium"></span>
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-[10px] text-white/55 uppercase tracking-wider">Data</span>
-        <span id="freshness-badge" class="text-xs font-medium px-2 py-0.5 rounded-full"></span>
+        <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Data</span>
+        <span id="freshness-badge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full"></span>
       </div>
 
-      <div id="stale-warning" class="hidden ml-auto text-[11px] text-warn bg-warnSoft border border-warn/20 px-2 py-1 rounded">
+      <div id="stale-warning" class="hidden ml-auto text-[11px] text-amber bg-amberSoft border border-amber/20 px-2.5 py-1 rounded-md font-medium">
         ⚠ Some metrics may be out of date
       </div>
     </div>
   </header>
 
   <!-- ============== MAIN ============== -->
-  <main class="max-w-[1400px] mx-auto px-6 py-7 space-y-6">
+  <main class="max-w-[1400px] mx-auto px-6 py-7 space-y-7">
 
-    <!-- Subheader -->
-    <div class="flex items-end justify-between flex-wrap gap-3">
-      <div>
-        <h1 id="view-title" class="text-[26px] font-semibold text-navy tracking-tight leading-tight"></h1>
-        <p id="view-subtitle" class="text-sm text-inkSoft mt-1"></p>
+    <!-- ============== TITLE BAND ============== -->
+    <section class="rounded-2xl bg-gradient-to-r from-tint to-bgSoft border border-line/60 px-6 py-5">
+      <div class="flex items-center gap-5 flex-wrap">
+        <div id="brand-box"></div>
+        <div class="flex-1 min-w-[200px]">
+          <h1 id="view-title" class="text-[24px] font-semibold text-navy tracking-tight leading-tight"></h1>
+          <p id="view-subtitle" class="text-[13px] text-inkSoft mt-1.5"></p>
+        </div>
+        <div class="hidden sm:flex flex-col items-end text-right">
+          <div class="text-[10px] uppercase tracking-wider text-inkMuted font-medium">YoY Base</div>
+          <div id="yoy-base" class="text-sm font-semibold text-navy mt-0.5"></div>
+        </div>
       </div>
-      <div id="hero-image-slot" class="hidden w-44 h-20 bg-lineSoft rounded-md border border-dashed border-line"></div>
-    </div>
+    </section>
 
     <!-- ============== HERO KPI STRIP ============== -->
     <section id="kpi-strip" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></section>
 
     <!-- ============== MAIN ROW: 2 CHARTS + SIGNAL BOX ============== -->
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
-        <div class="flex items-baseline justify-between mb-1">
-          <h2 id="chart1-title" class="text-[13px] font-semibold text-navy"></h2>
-          <span id="chart1-sub" class="text-[11px] text-inkMuted"></span>
+      <div class="chart-panel lg:col-span-1">
+        <div class="chart-panel-head">
+          <div>
+            <h2 id="chart1-title" class="chart-panel-title"></h2>
+            <p id="chart1-help" class="chart-panel-sub"></p>
+          </div>
+          <span id="chart1-sub" class="text-[11px] text-inkMuted font-medium"></span>
         </div>
-        <p id="chart1-help" class="text-[11px] text-inkMuted mb-3"></p>
-        <div id="chart1"></div>
-        <div id="chart1-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
+        <div class="chart-panel-body">
+          <div id="chart1"></div>
+          <div id="chart1-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
+        </div>
       </div>
 
-      <div class="bg-card rounded-xl shadow-card border border-line p-5 lg:col-span-1">
-        <div class="flex items-baseline justify-between mb-1">
-          <h2 id="chart2-title" class="text-[13px] font-semibold text-navy"></h2>
-          <span id="chart2-sub" class="text-[11px] text-inkMuted"></span>
+      <div class="chart-panel lg:col-span-1">
+        <div class="chart-panel-head">
+          <div>
+            <h2 id="chart2-title" class="chart-panel-title"></h2>
+            <p id="chart2-help" class="chart-panel-sub"></p>
+          </div>
+          <span id="chart2-sub" class="text-[11px] text-inkMuted font-medium"></span>
         </div>
-        <p id="chart2-help" class="text-[11px] text-inkMuted mb-3"></p>
-        <div id="chart2"></div>
-        <div id="chart2-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
+        <div class="chart-panel-body">
+          <div id="chart2"></div>
+          <div id="chart2-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
+        </div>
       </div>
 
-      <!-- Buy-side Signal Box: pale blue tint, table-like -->
-      <div class="rounded-xl shadow-card border border-blue/15 lg:col-span-1 overflow-hidden bg-blueTint">
-        <div class="flex items-center justify-between px-5 py-3 border-b border-blue/15 bg-white/60">
-          <h2 class="text-[13px] font-semibold text-navy">Buy-side Signal</h2>
-          <span class="text-[10px] text-inkMuted uppercase tracking-wider">Primary read</span>
+      <!-- Buy-side Signal Box -->
+      <div class="rounded-xl shadow-card border border-blue/15 lg:col-span-1 overflow-hidden bg-tint">
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-blue/15 bg-white/70">
+          <h2 class="text-[13.5px] font-semibold text-navy tracking-tight">Buy-side Signal</h2>
+          <span class="text-[10px] text-inkMuted uppercase tracking-wider font-medium">Primary read</span>
         </div>
         <div id="signal-box" class="px-5 py-2"></div>
       </div>
@@ -143,7 +169,7 @@
     <!-- ============== VEHICLE CARDS ============== -->
     <section id="vehicle-section">
       <div class="flex items-baseline justify-between mb-3">
-        <h2 class="text-[13px] font-semibold text-navy">Model-level drivers</h2>
+        <h2 class="text-[13.5px] font-semibold text-navy tracking-tight">Model-level drivers</h2>
         <span class="text-[11px] text-inkMuted">Top 6 by latest FY volume</span>
       </div>
       <div id="vehicle-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
@@ -151,11 +177,11 @@
 
     <!-- ============== TABS / DRILLDOWNS ============== -->
     <section id="tabs-section" class="bg-card rounded-xl shadow-card border border-line">
-      <div id="tab-bar" class="flex border-b border-line overflow-x-auto"></div>
+      <div id="tab-bar" class="flex border-b border-line overflow-x-auto bg-bgSoft/60 rounded-t-xl"></div>
       <div id="tab-body" class="p-5"></div>
     </section>
 
-    <footer class="text-[11px] text-inkMuted pt-4 pb-8">
+    <footer class="text-[11px] text-inkMuted pt-2 pb-8">
       Data architecture: <span class="font-mono">Company_FY_Metrics</span>,
       <span class="font-mono">Vehicle_FY_Metrics</span>,
       <span class="font-mono">BuySide_Signals</span>,
@@ -165,51 +191,58 @@
     </footer>
   </main>
 
-  <!-- ============== TOOLTIP ============== -->
+  <!-- ============== HOVER TOOLTIPS ============== -->
   <div id="hover-tip" class="hidden pointer-events-none fixed z-40 bg-navy text-white text-[11px] px-2 py-1 rounded shadow-lg">
     Click to view 10-year trend
   </div>
 
-  <!-- ============== DRAWER (10-Y trend) ============== -->
-  <div id="drawer-overlay" class="hidden fixed inset-0 bg-navyDeep/30 backdrop-blur-[1px] z-40 transition-opacity"></div>
-  <aside id="drawer"
-         class="fixed right-0 top-0 h-full w-full sm:w-[520px] bg-card border-l border-line shadow-drawer z-50
-                transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
-    <!-- header -->
-    <header class="px-6 pt-5 pb-4 border-b border-line">
-      <div class="flex items-start justify-between">
-        <div>
-          <div class="text-[10px] text-inkMuted uppercase tracking-wider" id="drawer-eyebrow">10-year trend</div>
-          <h3 id="drawer-title" class="text-[18px] font-semibold text-navy mt-0.5 leading-tight"></h3>
-          <div class="text-xs text-inkSoft mt-1" id="drawer-context"></div>
+  <div id="trend-tooltip" class="hidden pointer-events-none fixed z-[60] bg-navy text-white px-3 py-2 rounded-md shadow-lg">
+    <div id="trend-tt-fy" class="text-[10px] text-white/65 uppercase tracking-wider font-medium"></div>
+    <div id="trend-tt-val" class="font-semibold text-[13px] tabular-nums"></div>
+    <div id="trend-tt-yoy" class="text-[10.5px] text-white/75 mt-0.5 tabular-nums"></div>
+  </div>
+
+  <!-- ============== TREND MODAL ============== -->
+  <div id="modal-overlay"
+       class="hidden fixed inset-0 bg-navyDeep/45 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-200">
+    <div id="modal"
+         class="bg-card rounded-2xl shadow-modal border border-line/70 w-full max-w-[980px] max-h-[92vh] flex flex-col overflow-hidden transform scale-95 opacity-0 transition-all duration-200">
+      <header class="flex items-start justify-between gap-4 px-7 py-5 border-b border-line bg-gradient-to-r from-tint to-bgSoft">
+        <div class="flex items-center gap-4">
+          <div id="modal-brand" class="brand-box brand-box-sm"></div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-inkMuted font-medium">10-year trend</div>
+            <h3 id="modal-title" class="text-[20px] font-semibold text-navy tracking-tight leading-tight mt-0.5"></h3>
+            <div id="modal-context" class="text-[12.5px] text-inkSoft mt-1"></div>
+          </div>
         </div>
-        <button id="drawer-close"
-                class="w-8 h-8 rounded-md hover:bg-lineSoft flex items-center justify-center text-inkSoft text-lg leading-none">
+        <button id="modal-close"
+                class="w-9 h-9 rounded-lg hover:bg-white/70 flex items-center justify-center text-inkSoft text-2xl leading-none">
           ×
         </button>
-      </div>
-    </header>
+      </header>
 
-    <!-- body -->
-    <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
-      <div>
-        <div class="flex items-baseline justify-between mb-2">
-          <span class="text-[12px] font-medium text-ink" id="drawer-chart-title"></span>
-          <span class="text-[11px] text-inkMuted" id="drawer-chart-sub"></span>
+      <div class="flex-1 overflow-y-auto px-7 py-6 space-y-5">
+        <div id="modal-chart-wrap" class="bg-white rounded-xl border border-line p-5">
+          <div class="flex items-baseline justify-between mb-3">
+            <span id="modal-chart-title" class="text-[13px] font-semibold text-navy"></span>
+            <span id="modal-chart-sub" class="text-[11px] text-inkMuted"></span>
+          </div>
+          <div id="modal-chart"></div>
+          <div id="modal-chart-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
         </div>
-        <div id="drawer-chart"></div>
-        <div id="drawer-chart-legend" class="flex gap-4 text-[11px] text-inkSoft mt-2"></div>
-      </div>
 
-      <div id="drawer-stats" class="grid grid-cols-2 gap-3"></div>
+        <div id="modal-stats" class="grid grid-cols-2 sm:grid-cols-5 gap-3"></div>
 
-      <div id="drawer-insight" class="rounded-lg bg-blueTint border border-blue/15 px-4 py-3 text-[12.5px] text-ink leading-relaxed"></div>
+        <div id="modal-insight"
+             class="rounded-xl bg-tint border border-blue/15 px-5 py-4 text-[13px] text-ink leading-relaxed"></div>
 
-      <div class="text-[10.5px] text-inkMuted pt-2 border-t border-lineSoft">
-        Source: <span id="drawer-source">Placeholder</span> · Last updated <span id="drawer-updated">—</span>
+        <div class="text-[10.5px] text-inkMuted pt-1 border-t border-lineSoft">
+          Source: <span id="modal-source">Placeholder</span> · Last updated <span id="modal-updated">—</span>
+        </div>
       </div>
     </div>
-  </aside>
+  </div>
 
   <script src="data/backend-tables.js"></script>
   <script src="js/dashboard.js"></script>

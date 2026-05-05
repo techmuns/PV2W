@@ -1,15 +1,114 @@
-/* Institutional Light theme — depth + interaction polish */
+/* Institutional Light theme — premium refinement */
 
-html, body { background: #F5F7FA; }
+html, body { background: #F4F7FB; }
 
-/* === KPI cards: thin top accent + clickable affordance === */
+/* ====================================================
+   Header dropdowns: visible bordered chips on dark navy
+   ==================================================== */
+.hdr-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.hdr-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #FFFFFF;
+  color: #102A43;
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid rgba(255,255,255,0.30);
+  border-radius: 8px;
+  padding: 6px 32px 6px 12px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23102A43' stroke-width='2.2'><path stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.hdr-select:hover { border-color: rgba(255,255,255,0.55); }
+.hdr-select:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.30);
+}
+.hdr-select-fy      { min-width: 92px; }
+.hdr-select-company { min-width: 184px; padding-left: 26px; }
+.hdr-brand-dot {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px; height: 8px; border-radius: 999px;
+  background: #334E68;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.85);
+  pointer-events: none;
+}
+
+/* ====================================================
+   Brand box (company identity)
+   ==================================================== */
+.brand-box {
+  position: relative;
+  background: var(--brand, #334E68);
+  color: #FFFFFF;
+  padding: 14px 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+  box-shadow: 0 6px 18px rgba(11, 31, 51, 0.12);
+  overflow: hidden;
+}
+.brand-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, transparent 55%);
+  pointer-events: none;
+}
+.brand-box::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.30);
+}
+.brand-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.80;
+  position: relative;
+}
+.brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  position: relative;
+}
+.brand-box-sm {
+  padding: 10px 14px;
+  min-width: 132px;
+}
+.brand-box-sm .brand-name { font-size: 17px; }
+.brand-box-sm .brand-eyebrow { font-size: 9.5px; }
+
+/* ====================================================
+   KPI cards — white with soft blue top accent
+   ==================================================== */
 .kpi-card {
   position: relative;
   background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 12px;
+  border: 1px solid #E5EAF1;
+  border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
   transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
   cursor: pointer;
   overflow: hidden;
@@ -18,60 +117,98 @@ html, body { background: #F5F7FA; }
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #0B1F33 0%, #2563EB 60%, #0F766E 100%);
-  opacity: 0.85;
+  height: 3px;
+  background: linear-gradient(90deg, #2563EB 0%, #60A5FA 100%);
+  opacity: 0.95;
 }
 .kpi-card:hover {
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 10px 28px rgba(11, 31, 51, 0.08), 0 2px 6px rgba(11, 31, 51, 0.05);
   transform: translateY(-1px);
-  border-color: #DCE3EE;
+  border-color: #BFD3EE;
 }
 .kpi-icon {
-  width: 28px; height: 28px;
-  border-radius: 8px;
-  background: #EAF0FE;
-  color: #2563EB;
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: #DBEAFE;
+  color: #1D4ED8;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 .kpi-icon svg { width: 14px; height: 14px; stroke-width: 1.7; }
 
-/* === Vehicle cards === */
+/* ====================================================
+   Vehicle cards
+   ==================================================== */
 .veh-card {
   background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #E5EAF1;
   border-radius: 12px;
   padding: 12px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
   cursor: pointer;
 }
 .veh-card:hover {
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+  background: #EAF2FF;
+  box-shadow: 0 6px 18px rgba(11, 31, 51, 0.08);
   transform: translateY(-1px);
-  border-color: #DCE3EE;
+  border-color: #BFD3EE;
 }
 .veh-image-slot {
   height: 44px;
-  background: linear-gradient(135deg, #F5F7FA 0%, #EEF1F5 100%);
-  border: 1px dashed #E5E7EB;
-  border-radius: 6px;
+  background: linear-gradient(135deg, #F4F7FB 0%, #EEF4FB 100%);
+  border: 1px dashed #D9E2EC;
+  border-radius: 8px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #94A3B8;
   font-size: 9.5px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  font-weight: 500;
 }
 
-/* === Charts === */
+/* ====================================================
+   Chart panels
+   ==================================================== */
+.chart-panel {
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid #E5EAF1;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
+  overflow: hidden;
+}
+.chart-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(180deg, #F4F8FE 0%, #FFFFFF 100%);
+  border-bottom: 1px solid #EEF1F5;
+}
+.chart-panel-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0B1F33;
+  letter-spacing: -0.01em;
+}
+.chart-panel-sub {
+  font-size: 11.5px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+.chart-panel-body { padding: 16px 18px 18px; }
+
+/* ====================================================
+   Charts (SVG)
+   ==================================================== */
 .chart-svg { width: 100%; height: 220px; display: block; }
 .chart-svg .axis text { font-size: 10px; fill: #6B7280; font-family: Inter, sans-serif; }
-.chart-svg .axis line { stroke: #E5E7EB; }
+.chart-svg .axis line { stroke: #D9E2EC; }
 .chart-svg .grid line { stroke: #EEF1F5; stroke-width: 1; }
 .chart-svg .bar { transition: opacity 0.15s ease; }
 .chart-svg .bar:hover { opacity: 0.85; }
@@ -79,51 +216,89 @@ html, body { background: #F5F7FA; }
 .chart-svg .dot { stroke: #fff; stroke-width: 1.5; }
 .chart-svg .area { opacity: 0.10; }
 
-/* Drawer chart is taller */
-#drawer-chart .chart-svg { height: 240px; }
+/* Trend (modal) chart — more "popping" */
+#modal-chart .chart-svg { height: 320px; }
+#modal-chart .trend-line {
+  fill: none;
+  stroke: #2563EB;
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+#modal-chart .trend-bench {
+  fill: none;
+  stroke: #94A3B8;
+  stroke-width: 1.6;
+  stroke-dasharray: 4 4;
+}
+#modal-chart .trend-dot {
+  stroke: #FFFFFF;
+  stroke-width: 1.8;
+  transition: r 0.15s ease;
+}
+#modal-chart .trend-dot-current {
+  stroke: #FFFFFF;
+  stroke-width: 2.2;
+}
+#modal-chart .trend-halo {
+  fill: #F59E0B;
+  opacity: 0.18;
+}
+#modal-chart .hover-target { fill: transparent; cursor: crosshair; }
+#modal-chart .hover-target.active + .hover-line {
+  stroke: #2563EB; stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.5;
+}
+#modal-chart .hover-line { stroke: transparent; }
 
-/* === Signal pills === */
-.signal-pos  { background: #E4F2EA; color: #0F5F2E; }
-.signal-neg  { background: #FBE8E8; color: #8C1818; }
+/* ====================================================
+   Signal pills
+   ==================================================== */
+.signal-pos  { background: #E1F0E2; color: #1F5C28; }
+.signal-neg  { background: #FBE3E3; color: #8E1818; }
 .signal-neu  { background: #EEF1F5; color: #475569; }
 .signal-warn { background: #FBEFDC; color: #7C3A07; }
-.signal-blue { background: #EAF0FE; color: #1E40AF; }
+.signal-blue { background: #DBEAFE; color: #1E40AF; }
 
-.delta-up   { color: #15803D; }
-.delta-down { color: #B91C1C; }
+.delta-up   { color: #2E7D32; }
+.delta-down { color: #C62828; }
 .delta-flat { color: #64748B; }
 
-/* === Buy-side Signal box rows === */
+/* ====================================================
+   Buy-side Signal box rows
+   ==================================================== */
 .bsr {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 0;
+  padding: 11px 0;
   border-bottom: 1px solid rgba(37, 99, 235, 0.10);
 }
 .bsr:last-child { border-bottom: none; }
 .bsr-label {
   font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   color: #475569;
-  font-weight: 500;
-  width: 60px;
+  font-weight: 600;
+  width: 64px;
   flex-shrink: 0;
 }
 .bsr-pill {
   font-size: 11.5px;
-  padding: 2px 8px;
+  padding: 3px 11px;
   border-radius: 999px;
   font-weight: 500;
   background: #FFFFFF;
-  border: 1px solid rgba(37, 99, 235, 0.18);
-  color: #1F2937;
+  border: 1px solid rgba(37, 99, 235, 0.20);
+  color: #102A43;
   white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
 }
 
-/* === Tabs === */
+/* ====================================================
+   Tabs
+   ==================================================== */
 .tab-btn {
   padding: 0.85rem 1.1rem;
   font-size: 0.8125rem;
@@ -132,64 +307,84 @@ html, body { background: #F5F7FA; }
   white-space: nowrap;
   cursor: pointer;
   font-weight: 500;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
-.tab-btn:hover { color: #0B1F33; }
+.tab-btn:hover { color: #0B1F33; background: rgba(255,255,255,0.6); }
 .tab-btn.active {
   color: #0B1F33;
   border-bottom-color: #2563EB;
+  background: #FFFFFF;
 }
 
-/* === Drilldown table === */
+/* ====================================================
+   Drilldown table
+   ==================================================== */
 .dd-table { width: 100%; font-size: 0.8125rem; border-collapse: collapse; }
 .dd-table th {
   text-align: left;
   font-weight: 500;
   font-size: 0.6875rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: #6B7280;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #E5E7EB;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #E5EAF1;
 }
 .dd-table td {
-  padding: 0.625rem 0.75rem;
+  padding: 0.65rem 0.75rem;
   border-bottom: 1px solid #EEF1F5;
-  color: #111827;
+  color: #102A43;
 }
 .dd-table tr:last-child td { border-bottom: none; }
 .dd-table td.num { font-variant-numeric: tabular-nums; }
 
 .dd-table tr.clickable { cursor: pointer; transition: background 0.15s ease; }
-.dd-table tr.clickable:hover { background: #F3F7FE; }
+.dd-table tr.clickable:hover { background: #EAF2FF; }
 
-/* === Drawer === */
-#drawer.open { transform: translateX(0); }
-#drawer-overlay.open { opacity: 1; }
-#drawer-overlay { opacity: 0; }
+/* ====================================================
+   Modal
+   ==================================================== */
+#modal-overlay.open { opacity: 1; }
+#modal-overlay.open #modal {
+  transform: scale(1);
+  opacity: 1;
+}
 
-/* === Stat tiles inside drawer === */
+/* ====================================================
+   Stat tiles inside modal
+   ==================================================== */
 .stat-tile {
-  background: #F5F7FA;
-  border: 1px solid #EEF1F5;
-  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5EAF1;
+  border-radius: 12px;
   padding: 12px 14px;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.03);
 }
 .stat-tile-label {
   font-size: 10px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #6B7280;
-  font-weight: 500;
+  font-weight: 600;
 }
 .stat-tile-value {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 600;
   color: #0B1F33;
-  margin-top: 2px;
+  margin-top: 3px;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
 }
+.stat-tile-pos .stat-tile-value { color: #2E7D32; }
+.stat-tile-neg .stat-tile-value { color: #C62828; }
+.stat-tile-amber {
+  background: linear-gradient(180deg, #FEF3C7 0%, #FFFFFF 100%);
+  border-color: #FCD34D;
+}
 
-/* === Scrollbars === */
+/* ====================================================
+   Misc
+   ==================================================== */
 #tab-bar::-webkit-scrollbar { height: 0; }
+
+#hover-tip { font-weight: 500; letter-spacing: 0.01em; }
