@@ -65,33 +65,23 @@ const today = () => new Date().toISOString().slice(0, 10);
    For the March release, YTD-current = full FY total. */
 function parseSales(text) {
   const out = { total: null, suv: null, exports: null };
-  const lines = text.split(/\r?\n/).map(l => l.trim());
 
-  function tableRowNums(rx, lookahead = 6) {
-    for (let i = 0; i < lines.length; i++) {
-      if (!rx.test(lines[i])) continue;
-      const buf = [];
-      for (let j = i; j < Math.min(i + lookahead, lines.length); j++) {
-        for (const m of lines[j].matchAll(/(\d{1,3}(?:,\d{2,3})+|\d{4,})/g)) {
-          const n = parseIndianInt(m[0]);
-          if (n != null && n >= 100) buf.push(n);
-        }
-      }
-      if (buf.length >= 3) return buf;
-    }
-    return null;
-  }
+  /* Mahindra's most reliable signal is the narrative line —
+     verified from the saved text dump:
+       FY25: "The company closed the year with 551487 SUVs ... 20% growth"
+     The SUV YTD count is the number we want for the dashboard's
+     M&M row (M&M's PV business is essentially SUVs). */
+  const suvYtd = text.match(/closed\s+the\s+(?:financial\s+)?year\s+with\s+([0-9][0-9,]*)\s+SUVs?/i);
+  if (suvYtd) out.suv = parseIndianInt(suvYtd[1]);
 
-  /* Total auto = "Total Auto / Total Vehicles" rows in the table */
-  const total = tableRowNums(/^(?:Total\s+(?:Auto|Vehicles|Domestic\s*\+\s*Exports))/i);
-  if (total) out.total = total[2] ?? total[1] ?? null;   // YTD-current column
+  /* "We also exported X vehicles in FY25" or similar — best-effort */
+  const exp = text.match(/exported\s+([0-9][0-9,]*)\s+(?:vehicles?|units?)\s+in\s+(?:the\s+)?(?:financial\s+)?(?:year|FY)/i);
+  if (exp) out.exports = parseIndianInt(exp[1]);
 
-  /* SUV / "Utility Vehicles" or "Passenger Vehicles" row */
-  const suv = tableRowNums(/^(?:Passenger\s+Vehicles|Utility\s+Vehicles|UV[s]?|SUV[s]?)\b/i);
-  if (suv) out.suv = suv[2] ?? suv[1] ?? null;
-
-  const exp = tableRowNums(/^Exports?\b/i);
-  if (exp) out.exports = exp[2] ?? exp[1] ?? null;
+  /* Total auto for the FY can sometimes be inferred from "X total
+     vehicles in FY25" — best-effort, often only March-month is given. */
+  const total = text.match(/total\s+(?:vehicles?|volumes?)\s+of\s+([0-9][0-9,]*)\s+(?:in\s+)?(?:FY|the\s+(?:financial\s+)?year)/i);
+  if (total) out.total = parseIndianInt(total[1]);
 
   return out;
 }
@@ -121,13 +111,27 @@ function parseResults(text) {
   const groupPat = text.match(/F2\d\s+Consolidated\s+PAT\s+at\s+Rs\.?\s*([0-9,]{4,})\s*cr/i);
   if (groupPat) out.consol_pat = parseIndianInt(groupPat[1]);
 
-  /* Sector block — first occurrence in document order is Auto.
-     "Consolidated F25 Revenue Rs 90,825 cr., up 19%, PAT Rs 5,907 cr., up 25%" */
-  const sectorRx = /Consolidated\s+F2\d\s+Revenue\s+Rs\.?\s*([0-9,]{4,})\s*cr\.?,?\s*up\s+\d+(?:\.\d+)?\s*%?,?\s*PAT\s+Rs\.?\s*([0-9,]{3,})\s*cr/i;
-  const autoFy = text.match(sectorRx);
-  if (autoFy) {
-    out.auto_revenue = parseIndianInt(autoFy[1]);
-    out.auto_pat     = parseIndianInt(autoFy[2]);
+  /* Auto-sector block — Mahindra's first sector in document order.
+     Two phrasings observed across FY24 vs FY25 releases:
+       FY25:  "Consolidated F25 Revenue Rs 90,825 cr., up 19%, PAT Rs 5,907 cr., up 25%"
+       FY24:  "Consolidated Q4 Revenue Rs 20,908 cr., up 22%; FY24 Revenue Rs 76,156 cr., up 24%"
+              "Consolidated Q4 PAT Rs 1,345 cr., up 3.0x; FY24 PAT Rs 4,714 cr., up 2.5x"
+     Try the FY-explicit phrasing first; fall back to the F2N-prefix
+     phrasing. First match wins → Auto sector since it's listed first. */
+  const sectorFy24Rx = /Consolidated\s+Q4\s+Revenue\s+Rs\.?\s*[0-9,]+\s*cr[^;]*;\s*FY2\d\s+Revenue\s+Rs\.?\s*([0-9,]{4,})\s*cr/i;
+  const sectorFy25Rx = /Consolidated\s+F2\d\s+Revenue\s+Rs\.?\s*([0-9,]{4,})\s*cr\.?,?\s*up\s+\d+(?:\.\d+)?\s*%?,?\s*PAT\s+Rs\.?\s*([0-9,]{3,})\s*cr/i;
+  const autoFy24 = text.match(sectorFy24Rx);
+  const autoFy25 = text.match(sectorFy25Rx);
+  if (autoFy25) {
+    out.auto_revenue = parseIndianInt(autoFy25[1]);
+    out.auto_pat     = parseIndianInt(autoFy25[2]);
+  } else if (autoFy24) {
+    out.auto_revenue = parseIndianInt(autoFy24[1]);
+  }
+  /* Auto FY PAT in the FY24 phrasing */
+  if (out.auto_pat == null) {
+    const autoPat = text.match(/Consolidated\s+Q4\s+PAT\s+Rs\.?\s*[0-9,]+\s*cr[^;]*;\s*FY2\d\s+PAT\s+Rs\.?\s*([0-9,]{3,})\s*cr/i);
+    if (autoPat) out.auto_pat = parseIndianInt(autoPat[1]);
   }
 
   /* Auto EBITDA margin — when the press release breaks it out.
