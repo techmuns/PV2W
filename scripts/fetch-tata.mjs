@@ -116,11 +116,23 @@ function parseResults(text) {
     }
     return buf;
   }
-  function collectPcts(startIdx, count = 4, lookahead = 18) {
+  /* Margin rows can appear two ways across releases:
+       FY25 PR: "14.0%" each on its own line
+       FY24 PR: bare decimal "14.3" (no %), with "X bps" change marker
+                following on the next line.
+     We accept either format: capture standalone decimals (with or
+     without trailing %), skip lines containing "bps" (those are the
+     change markers), and stop at the next text label. */
+  function collectPcts(startIdx, count = 4, lookahead = 30) {
     if (startIdx < 0) return null;
     const buf = [];
-    for (let j = startIdx; j < Math.min(startIdx + lookahead, lines.length); j++) {
-      for (const m of lines[j].matchAll(/(\d+(?:\.\d+)?)\s*%/g)) buf.push(parseFloat(m[1]));
+    for (let j = startIdx + 1; j < Math.min(startIdx + lookahead, lines.length); j++) {
+      const line = lines[j].trim();
+      if (!line) continue;
+      if (/\bbps\b/i.test(line)) continue;                     // change-marker line — skip
+      if (/^[A-Za-z]/.test(line) && !/^\(/.test(line)) break;  // hit next row label
+      const m = line.match(/^[(\s]*(\d+(?:\.\d+)?)\s*%?\s*[)\s]*$/);
+      if (m) buf.push(parseFloat(m[1]));
       if (buf.length >= count) break;
     }
     return buf;

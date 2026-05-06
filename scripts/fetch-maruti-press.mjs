@@ -36,6 +36,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchAsText } from './lib/fetch-text.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_PATH = path.join(__dirname, '..', 'data', 'config', 'placeholder_data.json');
@@ -201,30 +202,43 @@ async function main() {
   const pdfParse = await loadPdfParse();
   const extracted = {};
 
+  /* HTML-first then PDF-fallback. The Azure blob CDN has been
+     intermittently 4xx-ing for GitHub Actions runners; the
+     marutisuzuki.com HTML page is more reachable and often
+     carries the same headline numbers in the body. */
+  async function fetchWithFallback(label, urls) {
+    for (const url of urls) {
+      try {
+        const r = await fetchAsText(url);
+        if (r.text && r.text.length > 800) {
+          console.log(`  ${label}: sourced from ${url} (${r.kind}, ${r.bytes}b)`);
+          return { text: r.text, url };
+        }
+        console.log(`  ${label}: ${url} returned only ${r.text?.length || 0}c — too thin, trying next`);
+      } catch (e) {
+        console.warn(`  ${label}: ${url} → ${e.message}`);
+      }
+    }
+    return null;
+  }
+
   for (const fy of ['FY24', 'FY25']) {
     console.log(`\n=== ${fy} ===`);
     const src = SOURCES[fy];
     extracted[fy] = { src, sales: { total:null, domestic:null, export:null },
                             fin:   { net_sales:null, revenue:null, ebitda:null, pat:null } };
 
-    /* sales PDF */
-    try {
-      const text = await fetchPdfText(src.sales_pdf, pdfParse);
-      fs.writeFileSync(path.join(TEXT_DIR, `sales_${fy}.txt`), text);
-      extracted[fy].sales = parseSales(text);
-      console.log(`  sales:`, extracted[fy].sales);
-    } catch (e) {
-      console.warn(`  sales fetch/parse failed: ${e.message}`);
+    const sales = await fetchWithFallback('sales', [src.sales_page, src.sales_pdf]);
+    if (sales) {
+      fs.writeFileSync(path.join(TEXT_DIR, `sales_${fy}.txt`), sales.text);
+      extracted[fy].sales = parseSales(sales.text);
+      console.log(`  sales parsed:`, extracted[fy].sales);
     }
-
-    /* financials PDF */
-    try {
-      const text = await fetchPdfText(src.financials_pdf, pdfParse);
-      fs.writeFileSync(path.join(TEXT_DIR, `financials_${fy}.txt`), text);
-      extracted[fy].fin = parseFinancials(text);
-      console.log(`  financials:`, extracted[fy].fin);
-    } catch (e) {
-      console.warn(`  financials fetch/parse failed: ${e.message}`);
+    const fin = await fetchWithFallback('financials', [src.financials_page, src.financials_pdf]);
+    if (fin) {
+      fs.writeFileSync(path.join(TEXT_DIR, `financials_${fy}.txt`), fin.text);
+      extracted[fy].fin = parseFinancials(fin.text);
+      console.log(`  financials parsed:`, extracted[fy].fin);
     }
   }
 
