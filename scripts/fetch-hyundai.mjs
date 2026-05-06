@@ -77,10 +77,15 @@ function parseIndianInt(s) {
   return Number.isFinite(n) ? n : null;
 }
 
-/* Pull rows from the standalone results PR. Indian results PRs
-   conventionally print current-FY numbers BEFORE prior-FY numbers
-   (left-to-right in the table). We grab the first 2 large numeric
-   tokens on each row and assign [FY25, FY24] in that order. */
+/* Pull rows from the standalone results PR.
+   HMIL's PR layout (verified from the saved text dump):
+     - Numbers reported in INR Mn. (1 Cr = 10 Mn → divide by 10)
+     - Five-column financial table: Q4-cur | Q4-prev | Q3-cur | FY-cur | FY-prev
+       i.e. for FY25/FY24 we want the 4th and 5th tokens on the row
+     - EBITDA% row similarly has 5 percent values
+     - Volumes appear in narrative form only ("Domestic volumes
+       stood at 599K", "Export volumes sustained at 163K"), FY25 only
+     - SUV Contribution narrative: "domestic SUV Contribution at 68.5%" */
 function parseStandalone(text) {
   const out = {
     FY25: { revenue:null, ebitda:null, ebitda_margin:null, pat:null, domestic:null, export:null, suv_pct:null },
@@ -88,67 +93,64 @@ function parseStandalone(text) {
   };
   const lines = text.split(/\r?\n/).map(l => l.trim());
 
-  /* Find a row by label, then collect numeric tokens from that line and
-     the next few. Filters tokens by minimum magnitude to skip stray
-     digits (e.g. footnote markers, percentages elsewhere). */
-  function nums(rx, opts = {}) {
-    const min = opts.min ?? 100;
-    const lookahead = opts.lookahead ?? 4;
+  /* Detect unit. HMIL writes "(INR Mn.)" near the table header. */
+  const isMillion = /\(\s*INR\s*Mn|in\s*Mn\.?\s*\)/i.test(text);
+  const cr = (mn) => mn == null ? null : (isMillion ? Math.round(mn / 10) : mn);
+
+  /* Walk forward from a row label, collecting numeric tokens until we
+     have at least N. Returns the FY-cur (idx 3) and FY-prev (idx 4)
+     when a 5-col row, or first 2 when only 2 are found (narrative). */
+  function tableRowNums(rx, lookahead = 14, minCount = 5, magMin = 100) {
     for (let i = 0; i < lines.length; i++) {
       if (!rx.test(lines[i])) continue;
       const buf = [];
       for (let j = i; j < Math.min(i + lookahead, lines.length); j++) {
-        const matches = lines[j].matchAll(/(\d{1,3}(?:,\d{2,3})+|\d{3,})/g);
-        for (const m of matches) {
+        for (const m of lines[j].matchAll(/(\d{1,3}(?:,\d{2,3})+|\d{4,})/g)) {
           const n = parseIndianInt(m[0]);
-          if (n != null && n >= min) buf.push(n);
+          if (n != null && n >= magMin) buf.push(n);
         }
+        if (buf.length >= minCount) break;
       }
-      if (buf.length >= 2) return buf;
+      if (buf.length >= 5) return { cur: buf[3], prev: buf[4] };
+      if (buf.length >= 2) return { cur: buf[0], prev: buf[1] };
     }
     return null;
   }
-  function pcts(rx) {
-    for (const line of lines) {
-      if (!rx.test(line)) continue;
-      const arr = [...line.matchAll(/(\d+(?:\.\d+)?)\s*%/g)].map(m => parseFloat(m[1]));
-      if (arr.length >= 1) return arr;
+  function tableRowPcts(rx, lookahead = 12) {
+    for (let i = 0; i < lines.length; i++) {
+      if (!rx.test(lines[i])) continue;
+      const buf = [];
+      for (let j = i; j < Math.min(i + lookahead, lines.length); j++) {
+        for (const m of lines[j].matchAll(/(\d+(?:\.\d+)?)\s*%/g)) buf.push(parseFloat(m[1]));
+        if (buf.length >= 5) break;
+      }
+      if (buf.length >= 5) return { cur: buf[3], prev: buf[4] };
+      if (buf.length >= 2) return { cur: buf[0], prev: buf[1] };
     }
     return null;
   }
 
-  /* ---- Revenue ---- */
-  const rev = nums(/Revenue\s+from\s+operations/i, { min: 1000 })
-           || nums(/Total\s+income/i, { min: 1000 })
-           || nums(/Net\s+Sales/i, { min: 1000 });
-  if (rev) { out.FY25.revenue = rev[0]; out.FY24.revenue = rev[1]; }
+  const rev = tableRowNums(/^Revenue\b/i, 14, 5, 1000);
+  if (rev) { out.FY25.revenue = cr(rev.cur); out.FY24.revenue = cr(rev.prev); }
 
-  /* ---- EBITDA ---- */
-  const eb = nums(/EBITDA\b/i, { min: 100 });
-  if (eb) { out.FY25.ebitda = eb[0]; out.FY24.ebitda = eb[1]; }
+  const eb = tableRowNums(/^EBITDA(?!\s*%)\*?\b/i, 14, 5, 100);
+  if (eb) { out.FY25.ebitda = cr(eb.cur); out.FY24.ebitda = cr(eb.prev); }
 
-  const ebMarg = pcts(/EBITDA\s*(?:Margin|%)/i);
-  if (ebMarg && ebMarg.length >= 2) {
-    out.FY25.ebitda_margin = ebMarg[0];
-    out.FY24.ebitda_margin = ebMarg[1];
-  }
+  const ebM = tableRowPcts(/^EBITDA\s*%/i);
+  if (ebM) { out.FY25.ebitda_margin = ebM.cur; out.FY24.ebitda_margin = ebM.prev; }
 
-  /* ---- PAT ---- */
-  const pat = nums(/Profit\s+(?:After\s+Tax|for\s+the\s+(?:Year|period))/i, { min: 100 })
-           || nums(/Net\s+Profit/i, { min: 100 });
-  if (pat) { out.FY25.pat = pat[0]; out.FY24.pat = pat[1]; }
+  const pat = tableRowNums(/^PAT\b/i, 14, 5, 100);
+  if (pat) { out.FY25.pat = cr(pat.cur); out.FY24.pat = cr(pat.prev); }
 
-  /* ---- Volumes ---- */
-  const dom = nums(/Domestic\s+(?:sales|volumes?)/i, { min: 1000 });
-  if (dom) { out.FY25.domestic = dom[0]; out.FY24.domestic = dom[1]; }
+  /* Volume narrative — FY25 only in HMIL's standalone PR */
+  const dom = text.match(/Domestic\s+volumes?\s+(?:stood\s+at|at)\s+(\d+(?:\.\d+)?)\s*K\b/i);
+  if (dom) out.FY25.domestic = Math.round(parseFloat(dom[1]) * 1000);
+  const exp = text.match(/Export\s+volumes?\s+(?:sustained\s+at|stood\s+at|at)\s+(\d+(?:\.\d+)?)\s*K\b/i);
+  if (exp) out.FY25.export = Math.round(parseFloat(exp[1]) * 1000);
 
-  const exp = nums(/Export\s+(?:sales|volumes?)/i, { min: 100 });
-  if (exp) { out.FY25.export = exp[0]; out.FY24.export = exp[1]; }
-
-  /* ---- SUV mix ---- */
-  const suv = pcts(/SUV\s+(?:contribution|share|mix)/i);
-  if (suv && suv.length >= 2) { out.FY25.suv_pct = suv[0]; out.FY24.suv_pct = suv[1]; }
-  else if (suv && suv.length === 1) { out.FY25.suv_pct = suv[0]; }
+  /* SUV mix narrative — FY25 only */
+  const suv = text.match(/SUV\s+Contribution\s+at\s+(\d+(?:\.\d+)?)\s*%/i);
+  if (suv) out.FY25.suv_pct = parseFloat(suv[1]);
 
   return out;
 }

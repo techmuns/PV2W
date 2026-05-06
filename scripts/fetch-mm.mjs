@@ -97,9 +97,14 @@ function parseSales(text) {
 }
 
 /* ---------- results-page parser ----------
-   M&M's FY results press release reports both consolidated and
-   auto-segment numbers. We extract both and surface them with
-   distinct scopes. */
+   M&M's FY results press release (verified from the saved text dump)
+   uses two distinct phrasings for group vs sector:
+     Group total:
+       "F25 Consolidated Revenue at Rs 1,59,211 cr., up 14%"
+       "F25 Consolidated PAT at Rs 12,929 cr., up 20%"
+     Per sector (Auto first, then Farm, then Services, etc.):
+       "Consolidated F25 Revenue Rs 90,825 cr., up 19%, PAT Rs 5,907 cr., up 25%"
+   First sector-pattern match in document order = Auto sector. */
 function parseResults(text) {
   const out = {
     consol_revenue: null,
@@ -107,33 +112,34 @@ function parseResults(text) {
     auto_revenue:   null,
     auto_pat:       null,
     auto_ebitda_margin: null,
-    fy_total_volume: null,
   };
 
-  function pull(rxs) {
-    for (const rx of rxs) {
-      const m = text.match(rx);
-      if (m) {
-        const v = parseIndianInt(m[1]);
-        if (v != null && v > 100) return v;
-      }
-    }
-    return null;
+  /* Group consolidated — different phrasing ("at Rs X cr.") */
+  const groupRev = text.match(/F2\d\s+Consolidated\s+Revenue\s+at\s+Rs\.?\s*([0-9,]{4,})\s*cr/i);
+  if (groupRev) out.consol_revenue = parseIndianInt(groupRev[1]);
+
+  const groupPat = text.match(/F2\d\s+Consolidated\s+PAT\s+at\s+Rs\.?\s*([0-9,]{4,})\s*cr/i);
+  if (groupPat) out.consol_pat = parseIndianInt(groupPat[1]);
+
+  /* Sector block — first occurrence in document order is Auto.
+     "Consolidated F25 Revenue Rs 90,825 cr., up 19%, PAT Rs 5,907 cr., up 25%" */
+  const sectorRx = /Consolidated\s+F2\d\s+Revenue\s+Rs\.?\s*([0-9,]{4,})\s*cr\.?,?\s*up\s+\d+(?:\.\d+)?\s*%?,?\s*PAT\s+Rs\.?\s*([0-9,]{3,})\s*cr/i;
+  const autoFy = text.match(sectorRx);
+  if (autoFy) {
+    out.auto_revenue = parseIndianInt(autoFy[1]);
+    out.auto_pat     = parseIndianInt(autoFy[2]);
   }
 
-  out.consol_revenue = pull([
-    /Consolidated\s+(?:Revenue|Total\s+Revenue|Revenue\s+from\s+Operations)\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.consol_pat = pull([
-    /Consolidated\s+(?:PAT|Profit\s+After\s+Tax|Net\s+Profit)\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.auto_revenue = pull([
-    /Auto(?:motive)?\s+(?:Segment|Sector|Business)?\s*Revenue\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.auto_ebitda_margin = (() => {
-    const m = text.match(/Auto(?:motive)?\s+(?:Segment|Sector|Business)?\s*(?:EBITDA|Operating)\s*Margin\D{0,30}(\d+(?:\.\d+)?)\s*%/i);
-    return m ? parseFloat(m[1]) : null;
-  })();
+  /* Auto EBITDA margin — when the press release breaks it out.
+     Phrasings vary: "Auto EBITDA at X%", "Automotive Operating margin at X%". */
+  const autoMargRx = [
+    /Auto(?:motive)?\s+(?:Segment\s+)?(?:Standalone\s+)?EBITDA\s*(?:at|of|margin)?\s*(\d+(?:\.\d+)?)\s*%/i,
+    /Auto(?:motive)?\s+(?:Segment\s+)?Operating\s*Margin\s*(?:at|of)?\s*(\d+(?:\.\d+)?)\s*%/i,
+  ];
+  for (const rx of autoMargRx) {
+    const m = text.match(rx);
+    if (m) { out.auto_ebitda_margin = parseFloat(m[1]); break; }
+  }
   return out;
 }
 

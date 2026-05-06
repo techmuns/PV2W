@@ -59,52 +59,28 @@ const RESULTS_LABEL = 'Tata Motors Q4/FY results PR';
 const today = () => new Date().toISOString().slice(0, 10);
 
 /* ---------- sales-page parser ----------
-   Tata's sales press releases break out:
-     - Q4 sales (current vs prior)
-     - FY sales (current vs prior)
-     - Within each, CV (Commercial Vehicles) and PV (Passenger Vehicles)
-   We want the PV / "Passenger Vehicles" row's FY-current column. */
+   Verified from the saved text dump: Tata's PR has narrative line
+   "Tata Motors Passenger Vehicles achieved wholesales of 5,56,263
+   units, including 64,726 units of EVs" — the cleanest signal for
+   the FY-cumulative PV total. */
 function parseSales(text) {
   const out = { pv_fy_total: null, pv_q4: null };
-  const lines = text.split(/\r?\n/).map(l => l.trim());
 
-  /* Look for an "FY" or "Annual" section, then within it find the
-     PV row. Fallback: any "Passenger Vehicles" row, take the largest
-     numeric token (typically the FY total in a quarterly+annual table). */
-  const candidates = [];
-  for (let i = 0; i < lines.length; i++) {
-    if (!/^\s*(?:Tata\s+)?Passenger\s+Vehicles?\b/i.test(lines[i])) continue;
-    const buf = [];
-    for (let j = i; j < Math.min(i + 4, lines.length); j++) {
-      for (const m of lines[j].matchAll(/(\d{1,3}(?:,\d{2,3})+|\d{4,})/g)) {
-        const n = parseIndianInt(m[0]);
-        if (n != null && n >= 1000) buf.push(n);
-      }
-    }
-    if (buf.length) candidates.push(buf);
-  }
+  const wholesale = text.match(
+    /(?:Tata\s+Motors\s+)?Passenger\s+Vehicles?\s+(?:achieved|recorded|posted)?\s*wholesales\s+of\s+([0-9][0-9,]{4,})\s*units?/i
+  );
+  if (wholesale) out.pv_fy_total = parseIndianInt(wholesale[1]);
 
-  if (candidates.length) {
-    /* Pick the row group with the most numbers (likely the full
-       Q4-cur / Q4-prior / FY-cur / FY-prior row). FY-current is
-       typically the largest of the four and last in reading order. */
-    const best = candidates.reduce((a, b) => b.length > a.length ? b : a);
-    if (best.length >= 4) {
-      out.pv_q4 = best[0];
-      out.pv_fy_total = best[2] ?? best[best.length - 1];
-    } else if (best.length >= 2) {
-      out.pv_fy_total = best[best.length - 1];
-    } else {
-      out.pv_fy_total = best[0];
-    }
-  }
   return out;
 }
 
 /* ---------- results-page parser ----------
-   Tata Motors' results PRs separate Tata Motors India PV from JLR + CV.
-   Look for "Tata Motors Passenger Vehicles" segment block with revenue,
-   EBITDA margin, EBIT margin. Also pull consolidated for raw audit. */
+   Verified from the saved text dump: Tata's results page has a
+   four-segment table (Group | JLR-£m | Tata CV | Tata PV) repeated
+   twice — first under a "Q4 FY25" header, then under a "FY25" header.
+   PV is the 4th numeric token on each row. We need the SECOND
+   occurrence of each row label (Revenue / EBITDA (%) / EBIT (%)) —
+   those are the FY rows. */
 function parseResults(text) {
   const out = {
     pv_revenue:        null,
@@ -113,47 +89,80 @@ function parseResults(text) {
     consol_revenue:    null,
     consol_pat:        null,
   };
-  function pullInt(rxs) {
-    for (const rx of rxs) {
-      const m = text.match(rx);
-      if (m) {
-        const v = parseIndianInt(m[1]);
-        if (v != null && v > 100) return v;
+  const lines = text.split(/\r?\n/).map(l => l.trim());
+
+  /* Find the n-th line index matching rx (1-based: nth=2 = second occurrence). */
+  function nthIndex(rx, nth = 1) {
+    let count = 0;
+    for (let i = 0; i < lines.length; i++) {
+      if (rx.test(lines[i])) {
+        count++;
+        if (count === nth) return i;
       }
     }
-    return null;
+    return -1;
   }
-  function pullPct(rxs) {
-    for (const rx of rxs) {
-      const m = text.match(rx);
-      if (m) {
-        const v = parseFloat(m[1]);
-        if (Number.isFinite(v)) return v;
+  /* From a starting index, collect numeric tokens (Indian-formatted)
+     looking ahead until we have at least N. Returns the array. */
+  function collectInts(startIdx, count = 4, lookahead = 18, magMin = 100) {
+    if (startIdx < 0) return null;
+    const buf = [];
+    for (let j = startIdx; j < Math.min(startIdx + lookahead, lines.length); j++) {
+      for (const m of lines[j].matchAll(/(\d{1,3}(?:,\d{2,3})+|\d{4,})/g)) {
+        const n = parseIndianInt(m[0]);
+        if (n != null && n >= magMin) buf.push(n);
       }
+      if (buf.length >= count) break;
     }
-    return null;
+    return buf;
+  }
+  function collectPcts(startIdx, count = 4, lookahead = 18) {
+    if (startIdx < 0) return null;
+    const buf = [];
+    for (let j = startIdx; j < Math.min(startIdx + lookahead, lines.length); j++) {
+      for (const m of lines[j].matchAll(/(\d+(?:\.\d+)?)\s*%/g)) buf.push(parseFloat(m[1]));
+      if (buf.length >= count) break;
+    }
+    return buf;
   }
 
-  out.pv_revenue = pullInt([
-    /Tata\s+Motors\s+Passenger\s+Vehicles?\D{0,80}Revenue\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-    /TMPV\D{0,40}Revenue\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-    /Passenger\s+Vehicles?\s+(?:Segment|Business)\D{0,40}Revenue\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.pv_ebitda_margin = pullPct([
-    /Tata\s+Motors\s+Passenger\s+Vehicles?\D{0,200}EBITDA\s*Margin\D{0,30}(\d+(?:\.\d+)?)\s*%/i,
-    /TMPV\D{0,80}EBITDA\s*Margin\D{0,30}(\d+(?:\.\d+)?)\s*%/i,
-    /Passenger\s+Vehicles?\s+(?:Segment|Business)\D{0,80}EBITDA\s*Margin\D{0,30}(\d+(?:\.\d+)?)\s*%/i,
-  ]);
-  out.pv_ebit_margin = pullPct([
-    /Tata\s+Motors\s+Passenger\s+Vehicles?\D{0,200}EBIT\s*Margin\D{0,30}(\d+(?:\.\d+)?)\s*%/i,
-    /TMPV\D{0,80}EBIT\s*Margin\D{0,30}(\d+(?:\.\d+)?)\s*%/i,
-  ]);
-  out.consol_revenue = pullInt([
-    /(?:Tata\s+Motors\s+)?Consolidated\s+(?:Revenue|Total\s+Revenue|Revenue\s+from\s+Operations)\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.consol_pat = pullInt([
-    /Consolidated\s+(?:PAT|Profit\s+After\s+Tax|Net\s+Profit)\D{0,40}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
+  /* PV revenue = 4th numeric on the SECOND "Revenue" row (FY block).
+     If only one Revenue row appears (some PR variants), take the 4th
+     number from the first one. */
+  let revIdx = nthIndex(/^\s*Revenue\s*$/i, 2);
+  if (revIdx < 0) revIdx = nthIndex(/^\s*Revenue\s*$/i, 1);
+  const revNums = collectInts(revIdx, 4);
+  if (revNums && revNums.length >= 4) {
+    out.consol_revenue = revNums[0];   // group, ₹ Cr
+    out.pv_revenue     = revNums[3];   // PV, ₹ Cr
+  }
+
+  /* PV EBITDA % = 4th percent on the SECOND "EBITDA (%)" row */
+  let ebMIdx = nthIndex(/^\s*EBITDA\s*\(%\)\s*$/i, 2);
+  if (ebMIdx < 0) ebMIdx = nthIndex(/^\s*EBITDA\s*\(%\)\s*$/i, 1);
+  const ebMPcts = collectPcts(ebMIdx, 4);
+  if (ebMPcts && ebMPcts.length >= 4) out.pv_ebitda_margin = ebMPcts[3];
+
+  /* PV EBIT % = 4th percent on the SECOND "EBIT (%)" row */
+  let ebitIdx = nthIndex(/^\s*EBIT\s*\(%\)\s*$/i, 2);
+  if (ebitIdx < 0) ebitIdx = nthIndex(/^\s*EBIT\s*\(%\)\s*$/i, 1);
+  const ebitPcts = collectPcts(ebitIdx, 4);
+  if (ebitPcts && ebitPcts.length >= 4) out.pv_ebit_margin = ebitPcts[3];
+
+  /* Consol revenue narrative — "TML reported record revenues of ₹439.7K Cr"
+     (₹ K Cr → multiply by 1000 to get ₹ Cr). Fallback to table value above. */
+  const consolNarrative = text.match(/revenues?\s+of\s+₹\s*([0-9,]+(?:\.\d+)?)\s*K\s*Cr/i);
+  if (consolNarrative) {
+    const v = parseFloat(consolNarrative[1].replace(/,/g, ''));
+    if (Number.isFinite(v)) out.consol_revenue = Math.round(v * 1000);
+  }
+
+  /* Consol net profit narrative — "net profit of ₹28.1K Cr" */
+  const consolPat = text.match(/net\s+profit\s+of\s+₹\s*([0-9,]+(?:\.\d+)?)\s*K\s*Cr/i);
+  if (consolPat) {
+    const v = parseFloat(consolPat[1].replace(/,/g, ''));
+    if (Number.isFinite(v)) out.consol_pat = Math.round(v * 1000);
+  }
 
   return out;
 }
