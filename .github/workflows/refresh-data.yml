@@ -34,6 +34,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
       # ────────── fetchers ──────────
       # Each script is independent. Add more steps below as we wire up
       # additional sources (BSE quarterly results, SIAM monthly volumes,
@@ -44,6 +47,9 @@ jobs:
 
       - name: Maruti FY24/FY25 financials (Yahoo / NSE filings)
         run: node scripts/fetch-maruti.mjs
+
+      - name: Maruti FY24/FY25 sales + revenue (Maruti press releases)
+        run: node scripts/fetch-maruti-press.mjs
 
       # ────────── commit & push ──────────
       - name: Commit + push if changed
