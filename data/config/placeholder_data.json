@@ -9234,14 +9234,16 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-06T17:43:55.713Z",
+    "last_refresh": "2026-05-06T17:56:16.921Z",
     "status": "partial",
     "fetchers": {
       "stock_prices": "success",
       "maruti_yahoo": "failure",
       "maruti_press": "success",
-      "hyundai": "success"
+      "hyundai": "success",
+      "mm": "success",
+      "tata": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25451446334"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25452014587"
   }
 }

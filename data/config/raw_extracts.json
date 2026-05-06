@@ -49,5 +49,39 @@
         "last_updated": "2026-05-06"
       }
     }
+  },
+  "M&M": {
+    "FY24": {
+      "consol_pat_cr": {
+        "value": 11269,
+        "unit": "₹ Cr",
+        "scope": "Consolidated",
+        "source": "M&M Q4 + FY results PR",
+        "source_url": "https://www.mahindra.com/news-room/press-release/mm-results-q4-fy24-and-fy24",
+        "last_updated": "2026-05-06"
+      }
+    },
+    "FY25": {
+      "consol_revenue_cr": {
+        "value": 159211,
+        "unit": "₹ Cr",
+        "scope": "Consolidated",
+        "source": "M&M Q4 + FY results PR",
+        "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
+        "last_updated": "2026-05-06"
+      },
+      "consol_pat_cr": {
+        "value": 12929,
+        "unit": "₹ Cr",
+        "scope": "Consolidated",
+        "source": "M&M Q4 + FY results PR",
+        "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
+        "last_updated": "2026-05-06"
+      }
+    }
+  },
+  "Tata Motors PV": {
+    "FY24": {},
+    "FY25": {}
   }
 }
