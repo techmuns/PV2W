@@ -53,10 +53,10 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-stock.mjs
 
-      - name: Maruti FY24/FY25 financials (Yahoo / NSE filings)
-        id: maruti_yahoo
-        continue-on-error: true
-        run: node scripts/fetch-maruti.mjs
+      # NOTE: scripts/fetch-maruti.mjs (Yahoo Finance quoteSummary) is
+      # disabled — Yahoo's API rate-limits GitHub Actions runner IPs,
+      # and the press-release fetcher below already covers Net Sales,
+      # PAT, and FY volumes from Maruti's own published numbers.
 
       - name: Maruti FY24/FY25 sales + revenue (Maruti press releases)
         id: maruti_press
@@ -83,7 +83,6 @@ jobs:
         run: node scripts/write-meta.mjs
         env:
           STOCK_OUTCOME:        ${{ steps.stock.outcome }}
-          MARUTI_YAHOO_OUTCOME: ${{ steps.maruti_yahoo.outcome }}
           MARUTI_PRESS_OUTCOME: ${{ steps.maruti_press.outcome }}
           HYUNDAI_OUTCOME:      ${{ steps.hyundai.outcome }}
           MM_OUTCOME:           ${{ steps.mm.outcome }}
