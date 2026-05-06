@@ -3,5 +3,51 @@
   "Maruti": {
     "FY24": {},
     "FY25": {}
+  },
+  "Hyundai": {
+    "FY24": {
+      "ebitda_cr": {
+        "value": 16143,
+        "unit": "₹ Cr",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "export_volume": {
+        "value": 599,
+        "unit": "units",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      }
+    },
+    "FY25": {
+      "ebitda_cr": {
+        "value": 56402,
+        "unit": "₹ Cr",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "export_volume": {
+        "value": 163,
+        "unit": "units",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "suv_mix_pct": {
+        "value": 68.5,
+        "unit": "%",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      }
+    }
   }
 }

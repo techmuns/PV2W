@@ -1268,12 +1268,12 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "SUV Volume %",
-      "Value": 58,
+      "Value": 68.5,
       "YoY_Change": 2,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -9234,13 +9234,14 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-06T16:43:33.904Z",
+    "last_refresh": "2026-05-06T17:43:55.713Z",
     "status": "partial",
     "fetchers": {
       "stock_prices": "success",
       "maruti_yahoo": "failure",
-      "maruti_press": "success"
+      "maruti_press": "success",
+      "hyundai": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25448550417"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25451446334"
   }
 }
