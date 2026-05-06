@@ -15,12 +15,7 @@ body::before {
   transform: translate(-50%, -50%);
   width: 520px;
   height: 160px;
-  background-image:
-    url("../assets/munshot-logo.png"),
-    url("../assets/munshot-logo.svg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
+  background: url("../assets/munshot-logo.png") no-repeat center / contain;
   opacity: 0.06;
   pointer-events: none;
   z-index: 0;
