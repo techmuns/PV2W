@@ -8,6 +8,7 @@
     "deploy": "npx wrangler deploy"
   },
   "devDependencies": {
+    "pdf-parse": "^1.1.1",
     "wrangler": "^4.0.0"
   }
 }
