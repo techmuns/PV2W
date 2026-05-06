@@ -135,12 +135,12 @@
       "FY": "FY23",
       "Company": "Maruti",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 8650,
+      "Value": 8292.15,
       "YoY_Change": 12,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/MARUTI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY23",
@@ -355,12 +355,12 @@
       "FY": "FY24",
       "Company": "Maruti",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 12450,
+      "Value": 12600.35,
       "YoY_Change": 43.9,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/MARUTI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -575,12 +575,12 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 12880,
+      "Value": 11522.15,
       "YoY_Change": 3.5,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/MARUTI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -993,12 +993,12 @@
       "FY": "FY24",
       "Company": "Hyundai",
       "Metric": "EBITDA Margin %",
-      "Value": 13.4,
+      "Value": 13.1,
       "YoY_Change": 0.6,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -1202,23 +1202,23 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "Revenue Growth %",
-      "Value": 5.5,
+      "Value": -0.9,
       "YoY_Change": -4.9,
       "Signal": "Negative",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "EBITDA Margin %",
-      "Value": 13.1,
+      "Value": 12.9,
       "YoY_Change": -0.3,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1235,12 +1235,12 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 1820,
+      "Value": 1707.65,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/HYUNDAI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1268,12 +1268,12 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "SUV Volume %",
-      "Value": 58,
+      "Value": 68.5,
       "YoY_Change": 2,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1301,12 +1301,12 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "Export Volume %",
-      "Value": 25,
+      "Value": 21.4,
       "YoY_Change": 1.5,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1455,12 +1455,12 @@
       "FY": "FY23",
       "Company": "M&M",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 1185,
+      "Value": 1158.7,
       "YoY_Change": 9,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/M%26M.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY23",
@@ -1675,12 +1675,12 @@
       "FY": "FY24",
       "Company": "M&M",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 1956,
+      "Value": 1921.35,
       "YoY_Change": 65,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/M%26M.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -1862,12 +1862,12 @@
       "FY": "FY25",
       "Company": "M&M",
       "Metric": "Revenue Growth %",
-      "Value": 22,
+      "Value": 19.3,
       "YoY_Change": -3,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "M&M Q4 + FY results PR (Auto segment)",
+      "Source_URL": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1895,12 +1895,12 @@
       "FY": "FY25",
       "Company": "M&M",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 2870,
+      "Value": 2665.8,
       "YoY_Change": 46.7,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/M%26M.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -2313,12 +2313,12 @@
       "FY": "FY24",
       "Company": "Tata Motors PV",
       "Metric": "EBITDA Margin %",
-      "Value": 6.8,
+      "Value": 6.5,
       "YoY_Change": 0.3,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Tata Motors Q4/FY results PR (PV segment EBITDA)",
+      "Source_URL": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -2522,23 +2522,23 @@
       "FY": "FY25",
       "Company": "Tata Motors PV",
       "Metric": "Revenue Growth %",
-      "Value": -2,
+      "Value": -7.5,
       "YoY_Change": -12,
       "Signal": "Negative",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Source": "Tata Motors Q4/FY results PR (PV segment)",
+      "Source_URL": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
       "Company": "Tata Motors PV",
       "Metric": "EBITDA Margin %",
-      "Value": 6.4,
+      "Value": 6.9,
       "YoY_Change": -0.4,
       "Signal": "Negative",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Source": "Tata Motors Q4/FY results PR (PV segment EBITDA)",
+      "Source_URL": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -9232,5 +9232,18 @@
       "Source_URL": null,
       "Last_Updated": "2026-04-20"
     }
-  ]
+  ],
+  "_meta": {
+    "last_refresh": "2026-05-06T18:17:26.320Z",
+    "status": "partial",
+    "fetchers": {
+      "stock_prices": "success",
+      "maruti_yahoo": "failure",
+      "maruti_press": "success",
+      "hyundai": "success",
+      "mm": "success",
+      "tata": "success"
+    },
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25453016236"
+  }
 }

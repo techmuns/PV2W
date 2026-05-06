@@ -100,76 +100,75 @@ function parseIndianInt(s) {
    tables across lines. We assume the numbers appear in the same column
    order they printed in the PDF, so the 3rd large number on the row
    line is "YTD current" (i.e. full-FY total). */
+/* Pull sales volumes. Verified from the saved HTML dump — Maruti's
+   marutisuzuki.com press release page narrates:
+     "Highest-ever annual domestic sales of 1,795,259 units"
+     "Highest-ever annual exports of 332,585 units"
+     "registered record total exports of 332,585 units in FY 2024-25"
+   These are clean signals; we don't need the table.  */
 function parseSales(text) {
-  const lines = text.split(/\r?\n/).map(l => l.trim());
   const result = { total: null, domestic: null, export: null };
 
-  function findRow(rx) {
-    for (let i = 0; i < lines.length; i++) {
-      if (!rx.test(lines[i])) continue;
-      const nums = [];
-      for (let j = i; j < Math.min(i + 4, lines.length) && nums.length < 6; j++) {
-        const matches = lines[j].matchAll(/(\d{1,3}(?:,\d{2,3})+|\d{4,})/g);
-        for (const m of matches) {
-          const n = parseIndianInt(m[0]);
-          if (n != null && n >= 1000) nums.push(n);
-        }
-      }
-      if (nums.length >= 3) return { line: lines[i], nums };
-    }
-    return null;
-  }
+  const dom = text.match(/(?:Highest[-\s]?ever\s+)?annual\s+domestic\s+sales\s+of\s+([0-9][0-9,]+)\s+units?/i)
+           || text.match(/domestic\s+sales\s+of\s+([0-9][0-9,]+)\s+units?\s+in\s+FY/i);
+  if (dom) result.domestic = parseIndianInt(dom[1]);
 
-  const total = findRow(/^\s*Total Sales\b/i);
-  if (total) result.total = total.nums[2] ?? total.nums[1] ?? null;
+  const exp = text.match(/(?:Highest[-\s]?ever\s+)?annual\s+exports?\s+of\s+([0-9][0-9,]+)\s+units?/i)
+           || text.match(/(?:record\s+)?total\s+exports?\s+of\s+([0-9][0-9,]+)\s+units?\s+in\s+FY/i);
+  if (exp) result.export = parseIndianInt(exp[1]);
 
-  const domestic = findRow(/^\s*(Total\s+)?Domestic Sales\b/i);
-  if (domestic) result.domestic = domestic.nums[2] ?? domestic.nums[1] ?? null;
-
-  const exp = findRow(/^\s*Export\b/i);
-  if (exp) result.export = exp.nums[2] ?? exp.nums[1] ?? null;
-
-  /* Sanity check: if we have any two of (domestic, export, total),
-     verify they roughly add up. If not, surface the discrepancy
-     (logging only — we still trust the source). */
-  if (result.total && result.domestic && result.export) {
-    const expectedTotal = result.domestic + result.export;
-    if (Math.abs(expectedTotal - result.total) / result.total > 0.02) {
-      console.warn(`  ⚠ sales reconciliation off: domestic ${result.domestic} + export ${result.export} = ${expectedTotal}, but Total reads ${result.total}. Using parsed values as-is; check the source PDF.`);
-    }
-  }
+  if (result.domestic && result.export) result.total = result.domestic + result.export;
   return result;
 }
 
-/* Pull revenue / EBITDA / PAT from a financials press release.
-   Tries the most common Maruti phrasings — multiple regexes to be
-   robust to how the press writer composed the sentence. */
+/* Pull Net Sales / Net Profit from Maruti's HTML financial PR. The
+   page narrates both current and prior FY in one sentence:
+     "Net Sales of INR 1,451,152 million in FY2024-25, a growth of
+      7.5% over the Net Sales of INR 1,349,378 million in FY2023-24"
+   The release we're parsing IS the current-FY release, so the FIRST
+   match in document order is the current FY (the one we want). All
+   values are in INR Million; we convert to ₹ Cr (divide by 10). */
 function parseFinancials(text) {
   const out = { net_sales: null, revenue: null, ebitda: null, pat: null };
 
-  function pull(rxs) {
-    for (const rx of rxs) {
+  /* Returns the first numeric capture from any matching pattern,
+     converted to ₹ Cr. Mn-suffix forms divide by 10; Cr-suffix
+     forms keep the value. */
+  function pullCr(rxsMillion, rxsCrore = []) {
+    for (const rx of rxsMillion) {
       const m = text.match(rx);
       if (m) {
         const v = parseIndianInt(m[1]);
-        if (v != null && v > 1000) return v;   // crore figure, > 1000 = >₹1000 Cr
+        if (v != null) return Math.round(v / 10);
+      }
+    }
+    for (const rx of rxsCrore) {
+      const m = text.match(rx);
+      if (m) {
+        const v = parseIndianInt(m[1]);
+        if (v != null && v > 1000) return v;
       }
     }
     return null;
   }
 
-  out.net_sales = pull([
-    /Net\s+Sales\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.revenue = pull([
-    /(?:Total\s+Revenue|Revenue\s+from\s+Operations|Operating\s+Revenue)\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.ebitda = pull([
-    /EBITDA\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
-  out.pat = pull([
-    /(?:Profit\s+After\s+Tax|Net\s+Profit)\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i,
-  ]);
+  out.net_sales = pullCr(
+    [/Net\s+Sales\s+of\s+INR\s+([0-9,]+)\s+million/i],
+    [/Net\s+Sales\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i]
+  );
+  out.revenue = pullCr(
+    [/(?:Total\s+Revenue|Revenue\s+from\s+Operations|Operating\s+Revenue)\s+of\s+INR\s+([0-9,]+)\s+million/i],
+    [/(?:Total\s+Revenue|Revenue\s+from\s+Operations|Operating\s+Revenue)\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i]
+  );
+  out.ebitda = pullCr(
+    [/EBITDA\s+of\s+INR\s+([0-9,]+)\s+million/i],
+    [/EBITDA\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i]
+  );
+  out.pat = pullCr(
+    [/Net\s+Profit\s+of\s+INR\s+([0-9,]+)\s+million/i,
+     /Profit\s+After\s+Tax\s+of\s+INR\s+([0-9,]+)\s+million/i],
+    [/(?:Profit\s+After\s+Tax|Net\s+Profit)\D{0,30}([0-9,]{4,})\s*(?:crore|Cr\.?|cr\.?)/i]
+  );
 
   return out;
 }
