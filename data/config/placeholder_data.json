@@ -135,12 +135,12 @@
       "FY": "FY23",
       "Company": "Maruti",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 8650,
+      "Value": 8292.15,
       "YoY_Change": 12,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/MARUTI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY23",
@@ -355,12 +355,12 @@
       "FY": "FY24",
       "Company": "Maruti",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 12450,
+      "Value": 12600.35,
       "YoY_Change": 43.9,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/MARUTI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -575,12 +575,12 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 12880,
+      "Value": 11522.15,
       "YoY_Change": 3.5,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/MARUTI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1235,12 +1235,12 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 1820,
+      "Value": 1707.65,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/HYUNDAI.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1455,12 +1455,12 @@
       "FY": "FY23",
       "Company": "M&M",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 1185,
+      "Value": 1158.7,
       "YoY_Change": 9,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/M%26M.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY23",
@@ -1675,12 +1675,12 @@
       "FY": "FY24",
       "Company": "M&M",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 1956,
+      "Value": 1921.35,
       "YoY_Change": 65,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/M%26M.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -1895,12 +1895,12 @@
       "FY": "FY25",
       "Company": "M&M",
       "Metric": "Stock Price (31-Mar)",
-      "Value": 2870,
+      "Value": 2665.8,
       "YoY_Change": 46.7,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/M%26M.NS/history",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -9232,5 +9232,15 @@
       "Source_URL": null,
       "Last_Updated": "2026-04-20"
     }
-  ]
+  ],
+  "_meta": {
+    "last_refresh": "2026-05-06T16:37:51.761Z",
+    "status": "partial",
+    "fetchers": {
+      "stock_prices": "success",
+      "maruti_yahoo": "failure",
+      "maruti_press": "success"
+    },
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25448284434"
+  }
 }

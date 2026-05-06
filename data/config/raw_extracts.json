@@ -1,0 +1,7 @@
+{
+  "_notes": "Raw values fetched from public sources before any calculation. Each entry: { value, unit, source, source_url, last_updated }. placeholder_data.json carries only the calculated dashboard cells; this file is the audit trail.",
+  "Maruti": {
+    "FY24": {},
+    "FY25": {}
+  }
+}
