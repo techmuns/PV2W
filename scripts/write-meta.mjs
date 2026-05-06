@@ -23,6 +23,8 @@ const fetchers = {
   maruti_yahoo:        process.env.MARUTI_YAHOO_OUTCOME || 'unknown',
   maruti_press:        process.env.MARUTI_PRESS_OUTCOME || 'unknown',
   hyundai:             process.env.HYUNDAI_OUTCOME      || 'unknown',
+  mm:                  process.env.MM_OUTCOME           || 'unknown',
+  tata:                process.env.TATA_OUTCOME         || 'unknown',
 };
 
 const outcomes = Object.values(fetchers);
