@@ -1,8 +1,80 @@
 {
   "_notes": "Raw values fetched from public sources before any calculation. Each entry: { value, unit, source, source_url, last_updated }. placeholder_data.json carries only the calculated dashboard cells; this file is the audit trail.",
   "Maruti": {
-    "FY24": {},
-    "FY25": {}
+    "FY24": {
+      "sales_volume_total": {
+        "value": 2076711,
+        "unit": "units",
+        "source": "Maruti monthly sales press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
+        "last_updated": "2026-05-06"
+      },
+      "sales_volume_domestic": {
+        "value": 1793644,
+        "unit": "units",
+        "source": "Maruti monthly sales press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
+        "last_updated": "2026-05-06"
+      },
+      "sales_volume_export": {
+        "value": 283067,
+        "unit": "units",
+        "source": "Maruti monthly sales press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
+        "last_updated": "2026-05-06"
+      },
+      "net_sales_cr": {
+        "value": 134938,
+        "unit": "₹ Cr",
+        "source": "Maruti FY financial results press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-announces-financial-results-for-fy2023-24",
+        "last_updated": "2026-05-06"
+      },
+      "pat_cr": {
+        "value": 13209,
+        "unit": "₹ Cr",
+        "source": "Maruti FY financial results press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-announces-financial-results-for-fy2023-24",
+        "last_updated": "2026-05-06"
+      }
+    },
+    "FY25": {
+      "sales_volume_total": {
+        "value": 2127844,
+        "unit": "units",
+        "source": "Maruti monthly sales press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
+        "last_updated": "2026-05-06"
+      },
+      "sales_volume_domestic": {
+        "value": 1795259,
+        "unit": "units",
+        "source": "Maruti monthly sales press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
+        "last_updated": "2026-05-06"
+      },
+      "sales_volume_export": {
+        "value": 332585,
+        "unit": "units",
+        "source": "Maruti monthly sales press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
+        "last_updated": "2026-05-06"
+      },
+      "net_sales_cr": {
+        "value": 145115,
+        "unit": "₹ Cr",
+        "source": "Maruti FY financial results press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
+        "last_updated": "2026-05-06"
+      },
+      "pat_cr": {
+        "value": 13955,
+        "unit": "₹ Cr",
+        "source": "Maruti FY financial results press release",
+        "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
+        "last_updated": "2026-05-06"
+      }
+    }
   },
   "Hyundai": {
     "FY24": {
