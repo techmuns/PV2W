@@ -1435,6 +1435,45 @@
     tip.style.top  = (e.clientY + 14) + "px";
   }
 
+  /* Render the small "Last refreshed" line in the footer.
+     Reads D._meta written by scripts/write-meta.mjs in the workflow.
+     Shows status colour + per-fetcher tooltip + link to the run. */
+  function renderRefreshStatus() {
+    const el = $("#refresh-status");
+    if (!el || !D || !D._meta) return;
+    const m = D._meta;
+    const ts = m.last_refresh ? new Date(m.last_refresh) : null;
+    if (!ts || isNaN(ts.valueOf())) { el.textContent = ""; return; }
+
+    const mins = Math.max(0, Math.floor((Date.now() - ts.getTime()) / 60000));
+    const ago = mins < 1 ? "just now"
+              : mins < 60 ? `${mins} min ago`
+              : mins < 60 * 24 ? `${Math.floor(mins / 60)}h ago`
+              : `${Math.floor(mins / (60 * 24))}d ago`;
+
+    const colour = m.status === "ok"     ? "#2E7D32"
+                 : m.status === "partial" ? "#B45309"
+                 : m.status === "error"  ? "#C62828"
+                 : "#6B7280";
+    const dot = `<span style="display:inline-block;width:7px;height:7px;border-radius:999px;background:${colour};margin-right:6px;vertical-align:middle"></span>`;
+
+    const fetcherStatus = m.fetchers
+      ? Object.entries(m.fetchers).map(([k, v]) => `${k}: ${v}`).join(" · ")
+      : "";
+    const tip = `Fetcher status — ${fetcherStatus}`;
+
+    const linkPart = m.run_url
+      ? ` · <a href="${m.run_url}" target="_blank" rel="noopener" class="hover:underline" style="color:#2563EB">view run</a>`
+      : "";
+    const errPart = m.status === "error"
+      ? ' <span style="color:#C62828">· refresh failed</span>'
+      : m.status === "partial"
+        ? ' <span style="color:#B45309">· some fetchers errored</span>'
+        : "";
+
+    el.innerHTML = `${dot}<span title="${tip}">Data refreshed ${ago}</span>${errPart}${linkPart}`;
+  }
+
   /* ---------- master render ---------- */
   function renderAll() {
     renderTopBar();
@@ -1444,6 +1483,7 @@
     renderSignalBox();
     renderVehicleCards();
     renderTabs();
+    renderRefreshStatus();
   }
 
   /* ---------- listeners ---------- */
