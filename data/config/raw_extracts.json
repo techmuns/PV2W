@@ -7,7 +7,7 @@
   "Hyundai": {
     "FY24": {
       "ebitda_cr": {
-        "value": 16143,
+        "value": 9133,
         "unit": "₹ Cr",
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
@@ -21,11 +21,35 @@
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
         "last_updated": "2026-05-06"
+      },
+      "revenue_cr": {
+        "value": 69829,
+        "unit": "₹ Cr",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "ebitda_margin_pct": {
+        "value": 13.1,
+        "unit": "%",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "pat_cr": {
+        "value": 6060,
+        "unit": "₹ Cr",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
       }
     },
     "FY25": {
       "ebitda_cr": {
-        "value": 56402,
+        "value": 8954,
         "unit": "₹ Cr",
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
@@ -33,7 +57,7 @@
         "last_updated": "2026-05-06"
       },
       "export_volume": {
-        "value": 163,
+        "value": 163000,
         "unit": "units",
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
@@ -43,6 +67,38 @@
       "suv_mix_pct": {
         "value": 68.5,
         "unit": "%",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "revenue_cr": {
+        "value": 69193,
+        "unit": "₹ Cr",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "ebitda_margin_pct": {
+        "value": 12.9,
+        "unit": "%",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "pat_cr": {
+        "value": 5640,
+        "unit": "₹ Cr",
+        "scope": "Standalone",
+        "source": "Hyundai Q4 audited standalone results PR",
+        "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+        "last_updated": "2026-05-06"
+      },
+      "domestic_volume": {
+        "value": 599000,
+        "unit": "units",
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
@@ -77,11 +133,93 @@
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
         "last_updated": "2026-05-06"
+      },
+      "auto_revenue_cr": {
+        "value": 90825,
+        "unit": "₹ Cr",
+        "scope": "Auto segment",
+        "source": "M&M Q4 + FY results PR",
+        "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
+        "last_updated": "2026-05-06"
       }
     }
   },
   "Tata Motors PV": {
-    "FY24": {},
-    "FY25": {}
+    "FY24": {
+      "pv_revenue_cr": {
+        "value": 52353,
+        "unit": "₹ Cr",
+        "scope": "Tata PV segment",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
+        "last_updated": "2026-05-06"
+      },
+      "consol_revenue_cr": {
+        "value": 437900,
+        "unit": "₹ Cr",
+        "scope": "Consolidated",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
+        "last_updated": "2026-05-06"
+      },
+      "consol_pat_cr": {
+        "value": 31800,
+        "unit": "₹ Cr",
+        "scope": "Consolidated",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
+        "last_updated": "2026-05-06"
+      }
+    },
+    "FY25": {
+      "pv_volume_fy_total": {
+        "value": 556263,
+        "unit": "units",
+        "scope": "Tata PV segment",
+        "source": "Tata Motors Q4/FY sales PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-registered-total-sales-of-252642-units-in-q4-fy25/",
+        "last_updated": "2026-05-06"
+      },
+      "pv_revenue_cr": {
+        "value": 48445,
+        "unit": "₹ Cr",
+        "scope": "Tata PV segment",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+        "last_updated": "2026-05-06"
+      },
+      "pv_ebitda_margin": {
+        "value": 6.9,
+        "unit": "%",
+        "scope": "Tata PV segment",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+        "last_updated": "2026-05-06"
+      },
+      "pv_ebit_margin": {
+        "value": 0.9,
+        "unit": "%",
+        "scope": "Tata PV segment",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+        "last_updated": "2026-05-06"
+      },
+      "consol_revenue_cr": {
+        "value": 439700,
+        "unit": "₹ Cr",
+        "scope": "Consolidated",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+        "last_updated": "2026-05-06"
+      },
+      "consol_pat_cr": {
+        "value": 28100,
+        "unit": "₹ Cr",
+        "scope": "Consolidated",
+        "source": "Tata Motors Q4/FY results PR",
+        "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+        "last_updated": "2026-05-06"
+      }
+    }
   }
 }

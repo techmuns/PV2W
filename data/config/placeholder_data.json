@@ -993,12 +993,12 @@
       "FY": "FY24",
       "Company": "Hyundai",
       "Metric": "EBITDA Margin %",
-      "Value": 13.4,
+      "Value": 13.1,
       "YoY_Change": 0.6,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -1202,23 +1202,23 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "Revenue Growth %",
-      "Value": 5.5,
+      "Value": -0.9,
       "YoY_Change": -4.9,
       "Signal": "Negative",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "EBITDA Margin %",
-      "Value": 13.1,
+      "Value": 12.9,
       "YoY_Change": -0.3,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -1301,12 +1301,12 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "Export Volume %",
-      "Value": 25,
+      "Value": 21.4,
       "YoY_Change": 1.5,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -2522,23 +2522,23 @@
       "FY": "FY25",
       "Company": "Tata Motors PV",
       "Metric": "Revenue Growth %",
-      "Value": -2,
+      "Value": -7.5,
       "YoY_Change": -12,
       "Signal": "Negative",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Source": "Tata Motors Q4/FY results PR (PV segment)",
+      "Source_URL": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
       "Company": "Tata Motors PV",
       "Metric": "EBITDA Margin %",
-      "Value": 6.4,
+      "Value": 6.9,
       "YoY_Change": -0.4,
       "Signal": "Negative",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Source": "Tata Motors Q4/FY results PR (PV segment EBITDA)",
+      "Source_URL": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -9234,7 +9234,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-06T17:56:16.921Z",
+    "last_refresh": "2026-05-06T18:07:15.459Z",
     "status": "partial",
     "fetchers": {
       "stock_prices": "success",
@@ -9244,6 +9244,6 @@
       "mm": "success",
       "tata": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25452014587"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25452535847"
   }
 }
