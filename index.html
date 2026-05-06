@@ -75,16 +75,16 @@
     </div>
   </div>
 
-  <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-navyDeep to-navy/0 -z-10"></div>
+  <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#3730A3]/40 to-transparent -z-10"></div>
 
   <!-- ============== TOP HEADER ============== -->
-  <header class="bg-navy text-white sticky top-0 z-30 shadow-md">
+  <header class="bg-gradient-to-r from-[#4F46E5] via-[#6D28D9] to-[#7C3AED] text-white sticky top-0 z-30 shadow-md">
     <div class="max-w-[1480px] mx-auto px-8 py-4 flex items-center gap-6 flex-wrap">
       <div class="flex items-center gap-3 mr-2">
-        <div class="w-10 h-10 rounded-md bg-blue flex items-center justify-center font-bold text-[15px] tracking-tight">PV</div>
+        <div class="w-10 h-10 rounded-md bg-white/15 backdrop-blur-sm flex items-center justify-center font-bold text-[15px] tracking-tight border border-white/20">PV</div>
         <div class="leading-tight">
           <div class="text-white font-semibold text-[16px] tracking-tight">PV Industry Dashboard</div>
-          <div class="text-[11.5px] text-white/60">Buy-side research view</div>
+          <div class="text-[11.5px] text-white/65">Buy-side research view</div>
         </div>
       </div>
 
@@ -237,8 +237,9 @@
       </div>
     </section>
 
-    <footer class="text-[11px] text-inkMuted pt-2 pb-8">
-      Buy-side research view · Sources: NSE / BSE filings · Annual reports · Quarterly results · Investor presentations
+    <footer class="text-[11px] text-inkMuted pt-2 pb-8 flex items-center justify-between gap-4">
+      <span>Buy-side research view · Sources: NSE / BSE filings · Annual reports · Quarterly results · Investor presentations</span>
+      <img src="assets/munshot-logo.svg" alt="Munshot" class="h-5 opacity-50 flex-shrink-0">
     </footer>
   </main>
 

@@ -2,6 +2,24 @@
 
 html, body { background: #F4F7FB; }
 
+/* Munshot watermark — fixed bottom-right of viewport, very low
+   opacity, behind everything. Pointer-events disabled so it never
+   blocks chart hovers, dropdowns, or KPI clicks. Replace
+   /assets/munshot-logo.svg with the actual logo file at the same
+   path and the watermark will pick it up automatically. */
+body::before {
+  content: "";
+  position: fixed;
+  right: 28px;
+  bottom: 24px;
+  width: 280px;
+  height: 80px;
+  background: url("../assets/munshot-logo.svg") no-repeat center / contain;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ====================================================
    Header dropdowns — visible white-on-navy chips
    ==================================================== */
