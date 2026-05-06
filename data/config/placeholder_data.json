@@ -1862,12 +1862,12 @@
       "FY": "FY25",
       "Company": "M&M",
       "Metric": "Revenue Growth %",
-      "Value": 22,
+      "Value": 19.3,
       "YoY_Change": -3,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "M&M Q4 + FY results PR (Auto segment)",
+      "Source_URL": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -2313,12 +2313,12 @@
       "FY": "FY24",
       "Company": "Tata Motors PV",
       "Metric": "EBITDA Margin %",
-      "Value": 6.8,
+      "Value": 6.5,
       "YoY_Change": 0.3,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Tata Motors Q4/FY results PR (PV segment EBITDA)",
+      "Source_URL": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -9234,7 +9234,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-06T18:07:15.459Z",
+    "last_refresh": "2026-05-06T18:17:26.320Z",
     "status": "partial",
     "fetchers": {
       "stock_prices": "success",
@@ -9244,6 +9244,6 @@
       "mm": "success",
       "tata": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25452535847"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25453016236"
   }
 }
