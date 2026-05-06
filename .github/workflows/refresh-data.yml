@@ -63,6 +63,11 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-maruti-press.mjs
 
+      - name: Hyundai FY24/FY25 financials + volumes (HMIL standalone PR)
+        id: hyundai
+        continue-on-error: true
+        run: node scripts/fetch-hyundai.mjs
+
       # ────────── stamp refresh status ──────────
       - name: Write _meta block (last refresh + per-fetcher status)
         run: node scripts/write-meta.mjs
@@ -70,6 +75,7 @@ jobs:
           STOCK_OUTCOME:        ${{ steps.stock.outcome }}
           MARUTI_YAHOO_OUTCOME: ${{ steps.maruti_yahoo.outcome }}
           MARUTI_PRESS_OUTCOME: ${{ steps.maruti_press.outcome }}
+          HYUNDAI_OUTCOME:      ${{ steps.hyundai.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────

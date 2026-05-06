@@ -22,6 +22,7 @@ const fetchers = {
   stock_prices:        process.env.STOCK_OUTCOME        || 'unknown',
   maruti_yahoo:        process.env.MARUTI_YAHOO_OUTCOME || 'unknown',
   maruti_press:        process.env.MARUTI_PRESS_OUTCOME || 'unknown',
+  hyundai:             process.env.HYUNDAI_OUTCOME      || 'unknown',
 };
 
 const outcomes = Object.values(fetchers);
