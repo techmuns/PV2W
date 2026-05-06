@@ -1,0 +1,56 @@
+# Live data refresh for the PV dashboard.
+#
+# Runs each fetcher script in turn. If any script changes a tracked file
+# in data/config/, the workflow commits + pushes; Cloudflare Pages then
+# auto-rebuilds the dashboard so the new numbers are live within minutes.
+#
+# Schedule: 18:30 IST on weekdays (after NSE market close at 15:30 IST).
+# Manual:   Actions tab → "Refresh dashboard data" → "Run workflow".
+#
+# Add new fetchers as separate steps below. Each script is self-contained
+# and only edits its own rows in placeholder_data.json — they don't fight.
+
+name: Refresh dashboard data
+
+on:
+  schedule:
+    - cron: '0 13 * * 1-5'   # 13:00 UTC = 18:30 IST, Mon-Fri
+  workflow_dispatch:           # manual trigger from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # ────────── fetchers ──────────
+      # Each script is independent. Add more steps below as we wire up
+      # additional sources (BSE quarterly results, SIAM monthly volumes,
+      # etc.). Use --dry-run during development.
+
+      - name: Stock prices (Yahoo Finance / NSE)
+        run: node scripts/fetch-stock.mjs
+
+      # ────────── commit & push ──────────
+      - name: Commit + push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/config/
+          if git diff --staged --quiet; then
+            echo "No data changes — nothing to commit."
+            exit 0
+          fi
+          git commit -m "data: auto-refresh ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+          git push
