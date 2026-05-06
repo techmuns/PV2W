@@ -1480,7 +1480,6 @@
     renderIdentityRow();
     renderKpiStrip();
     renderCharts();
-    renderSignalBox();
     renderVehicleCards();
     renderTabs();
     renderRefreshStatus();
