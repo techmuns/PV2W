@@ -152,6 +152,7 @@
       BuySide_Signals:     buysideSignals,
       Company_Info:        companyInfo,
       Industry_FY_Metrics: industryMetrics,
+      _meta:               placeholder._meta || null,
     };
 
     return {

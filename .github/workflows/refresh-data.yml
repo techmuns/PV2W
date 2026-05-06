@@ -1,21 +1,28 @@
 # Live data refresh for the PV dashboard.
 #
-# Runs each fetcher script in turn. If any script changes a tracked file
-# in data/config/, the workflow commits + pushes; Cloudflare Pages then
-# auto-rebuilds the dashboard so the new numbers are live within minutes.
+# Triggers (zero manual action required):
+#   - Every push to main (skipping the bot's own commits to avoid loops)
+#   - Daily cron at 09:00 IST (03:30 UTC)
+#   - Manual: Actions tab → "Run workflow"
 #
-# Schedule: 18:30 IST on weekdays (after NSE market close at 15:30 IST).
-# Manual:   Actions tab → "Refresh dashboard data" → "Run workflow".
-#
-# Add new fetchers as separate steps below. Each script is self-contained
-# and only edits its own rows in placeholder_data.json — they don't fight.
+# Each fetcher step uses continue-on-error so one source failing doesn't
+# kill the whole refresh. The final write-meta step records every step's
+# outcome and the timestamp into placeholder_data.json under _meta, so
+# the dashboard can show "Last refreshed: 5 min ago" / "fetcher X
+# failed" without the user opening GitHub.
 
 name: Refresh dashboard data
 
 on:
   schedule:
-    - cron: '0 13 * * 1-5'   # 13:00 UTC = 18:30 IST, Mon-Fri
-  workflow_dispatch:           # manual trigger from the Actions tab
+    - cron: '30 3 * * *'           # 03:30 UTC = 09:00 IST, every day
+  workflow_dispatch:                 # manual trigger
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/config/placeholder_data.json'   # don't loop on the bot's own data writes
+      - 'data/config/raw_extracts.json'
+      - 'data/config/press_text/**'
 
 permissions:
   contents: write
@@ -23,6 +30,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,18 +46,31 @@ jobs:
         run: npm install --no-audit --no-fund
 
       # ────────── fetchers ──────────
-      # Each script is independent. Add more steps below as we wire up
-      # additional sources (BSE quarterly results, SIAM monthly volumes,
-      # etc.). Use --dry-run during development.
+      # continue-on-error: failures recorded into _meta, not fatal.
 
       - name: Stock prices (Yahoo Finance / NSE)
+        id: stock
+        continue-on-error: true
         run: node scripts/fetch-stock.mjs
 
       - name: Maruti FY24/FY25 financials (Yahoo / NSE filings)
+        id: maruti_yahoo
+        continue-on-error: true
         run: node scripts/fetch-maruti.mjs
 
       - name: Maruti FY24/FY25 sales + revenue (Maruti press releases)
+        id: maruti_press
+        continue-on-error: true
         run: node scripts/fetch-maruti-press.mjs
+
+      # ────────── stamp refresh status ──────────
+      - name: Write _meta block (last refresh + per-fetcher status)
+        run: node scripts/write-meta.mjs
+        env:
+          STOCK_OUTCOME:        ${{ steps.stock.outcome }}
+          MARUTI_YAHOO_OUTCOME: ${{ steps.maruti_yahoo.outcome }}
+          MARUTI_PRESS_OUTCOME: ${{ steps.maruti_press.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────
       - name: Commit + push if changed
