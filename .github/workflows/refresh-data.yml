@@ -42,6 +42,9 @@ jobs:
       - name: Stock prices (Yahoo Finance / NSE)
         run: node scripts/fetch-stock.mjs
 
+      - name: Maruti FY24/FY25 financials (Yahoo / NSE filings)
+        run: node scripts/fetch-maruti.mjs
+
       # ────────── commit & push ──────────
       - name: Commit + push if changed
         run: |
