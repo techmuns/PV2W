@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507b" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507c" />
   <script>
     tailwind.config = {
       theme: {
@@ -200,10 +200,16 @@
               <div id="chart2-toggle" class="hidden inline-flex rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
                 <button data-mix="product" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
                 <button data-mix="export"  class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
-                <button data-mix="suv"     class="mix-btn px-2.5 py-1 rounded-md font-semibold">SUV</button>
                 <button data-mix="ev"      class="mix-btn px-2.5 py-1 rounded-md font-semibold">EV</button>
               </div>
               <span id="chart2-sub" class="text-[11px] text-inkMuted font-medium"></span>
+            </div>
+          </div>
+          <div id="chart2-product-sub" class="hidden flex items-center gap-2 -mt-1">
+            <span class="text-[10.5px] text-inkMuted uppercase tracking-wider">Product view</span>
+            <div class="inline-flex rounded-md bg-canvas border border-line p-0.5 text-[11px]">
+              <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-semibold">Segment Mix</button>
+              <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-semibold">SUV / Non-SUV</button>
             </div>
           </div>
           <p id="chart2-toggle-help" class="hidden text-[11px] text-inkMuted -mt-1 mb-1"></p>
@@ -359,7 +365,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507b"></script>
-  <script src="js/dashboard.js?v=20260507b"></script>
+  <script src="js/data-loader.js?v=20260507c"></script>
+  <script src="js/dashboard.js?v=20260507c"></script>
 </body>
 </html>
