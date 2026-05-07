@@ -936,7 +936,7 @@
       });
       legendItems = legendChip(COLOR.teal, "CNG") + legendChip(COLOR.amber, "Hybrid") +
                     legendChip("#22D3EE", "BEV") + legendChip(COLOR.greySft, "Petrol / Diesel / Other ICE");
-      footnote = "Powertrain split per Maruti company disclosures (Q4 IP / AR). FY23 CNG not separately broken out; bundled with the residual ICE bucket.";
+      footnote = "";
     } else if (view === "product") {
       /* Product mix from Maruti's monthly sales press releases. Six
          product buckets plus a residual that catches exports +
@@ -994,10 +994,8 @@
 
       if (state.productView === "suv") {
         legendItems = legendChip(COLOR.greySft, "Non-SUV") + legendChip(COLOR.navy, "SUV");
-        footnote = "SUV bucket here is the UV / SUV product segment (Brezza, Ertiga, Grand Vitara, Invicto, Jimny, XL6) regrouped from the same product mix data. Non-SUV is everything else.";
       } else {
         legendItems = segDef.map(sd => legendChip(sd.color, sd.label)).join("");
-        footnote = "Product split per Maruti's monthly sales press release. Exports + OEM supplies grouped as the residual to tie to total volume per Q4 Investor Presentation.";
       }
     }
 
