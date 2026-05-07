@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507v" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507w" />
   <script>
     tailwind.config = {
       theme: {
@@ -243,10 +243,16 @@
         <div id="tab-body" class="p-5"></div>
       </div>
 
-      <!-- OEM view: grouped metric table on the left, click-to-show
-           single trend chart on the right. -->
+      <!-- OEM view: category dropdown + filtered table on the left,
+           multi-line trend chart on the right (one chart per category,
+           one line per metric in that category). -->
       <div id="oem-hub" class="space-y-4">
-        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-4 items-start">
+        <div class="flex items-center gap-3">
+          <label for="cat-select" class="text-[11px] uppercase tracking-wider text-inkMuted font-semibold">Category</label>
+          <select id="cat-select"
+                  class="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-line bg-card text-navy focus:outline-none focus:ring-2 focus:ring-blue/30 cursor-pointer"></select>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-4 items-start">
           <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden">
             <div id="metric-table"></div>
           </div>
@@ -258,6 +264,7 @@
             </div>
             <p id="metric-chart-help" class="text-[11px] text-inkMuted mb-3"></p>
             <div id="metric-chart" style="min-height:200px"></div>
+            <div id="metric-chart-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-2"></div>
             <p id="metric-chart-foot" class="text-[10px] text-inkMuted mt-2 leading-snug"></p>
           </div>
         </div>
@@ -387,7 +394,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507v"></script>
-  <script src="js/dashboard.js?v=20260507v"></script>
+  <script src="js/data-loader.js?v=20260507w"></script>
+  <script src="js/dashboard.js?v=20260507w"></script>
 </body>
 </html>
