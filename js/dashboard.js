@@ -677,11 +677,11 @@
 
       $("#chart2-title").textContent = "Mix shift";
       $("#chart2-help").textContent  = "Quality of growth — SUV / EV / Export contribution.";
-      $("#chart2-sub").textContent   = "Revenue mix · %";
+      $("#chart2-sub").textContent   = "Volume mix · %";
 
-      const suvVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "SUV Revenue %")||{}).Value || 0);
-      const evVals  = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "EV Revenue %")||{}).Value  || 0);
-      const expVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Export Revenue %")||{}).Value || 0);
+      const suvVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "SUV Volume %")||{}).Value || 0);
+      const evVals  = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "EV Volume %")||{}).Value  || 0);
+      const expVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Export Volume %")||{}).Value || 0);
 
       $("#chart2").innerHTML = stackedBarChart([
         { name: "SUV",    color: COLOR.blue,    values: suvVals },
@@ -689,9 +689,9 @@
         { name: "Export", color: COLOR.warn,    values: expVals },
       ], fyHistory, { yUnit: "%" });
       $("#chart2-legend").innerHTML =
-        legendChip(COLOR.blue, "SUV revenue %") +
-        legendChip(COLOR.teal, "EV revenue %") +
-        legendChip(COLOR.warn, "Export revenue %");
+        legendChip(COLOR.blue, "SUV volume %") +
+        legendChip(COLOR.teal, "EV volume %") +
+        legendChip(COLOR.warn, "Export volume %");
     }
 
     bindChartHovers($("#chart1"));
