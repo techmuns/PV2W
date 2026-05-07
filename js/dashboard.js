@@ -335,7 +335,9 @@
       $("#view-title").textContent = `Indian PV Industry Cockpit`;
       $("#view-subtitle").textContent = "Demand · mix · competitive shifts across OEMs.";
     } else {
-      $("#view-title").textContent = `${state.company} — buy-side snapshot`;
+      /* Logo + brand-box already convey the company; drop the
+         "Maruti — " prefix so the snapshot title stays clean. */
+      $("#view-title").textContent = `Buy-side snapshot`;
       const info = getCompanyInfo(state.fy, state.company);
       $("#view-subtitle").textContent = info
         ? `CEO ${info.CEO} · CFO ${info.CFO || "—"} · ${info.Credit_Rating}`
