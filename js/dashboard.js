@@ -825,8 +825,8 @@
         : "Split of total sales volume by product segment";
     } else if (view === "export") {
       helpText = "Split of total sales volume into domestic and exports";
-    } else if (view === "ev") {
-      helpText = "Split of total sales volume into EV and non-EV";
+    } else if (view === "powertrain") {
+      helpText = "Split of sales volume by powertrain type";
     }
     const helpEl = $("#chart2-toggle-help");
     helpEl.textContent = helpText;
@@ -850,7 +850,9 @@
     /* Source line (bottom-left, beneath legend & footnote). */
     const sourceEl = $("#chart2-source");
     if (state.company === "Maruti") {
-      sourceEl.textContent = "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report. Segment split from company sales disclosures.";
+      sourceEl.textContent = view === "powertrain"
+        ? "Source: Maruti Suzuki Annual Reports / Q4 Investor Presentations; powertrain split based on company disclosures where available."
+        : "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report. Segment split from company sales disclosures.";
       sourceEl.classList.remove("hidden");
     } else {
       sourceEl.textContent = "";
@@ -875,20 +877,66 @@
         };
       });
       legendItems = legendChip(COLOR.blue, "Domestic") + legendChip(COLOR.warn, "Export");
-    } else if (view === "ev") {
+    } else if (view === "powertrain") {
+      /* Powertrain split — CNG / Hybrid / BEV / Petrol-Diesel-Other ICE.
+         Volumes are in absolute units, sourced from Maruti AR + Q4 IP
+         disclosures. The residual bucket absorbs whatever isn't
+         explicitly disclosed (so for FY23, where CNG isn't broken
+         out separately, the residual carries CNG too — bucket
+         relabelled accordingly). */
+      const POWERTRAIN_MIX = {
+        Maruti: {
+          /* CNG / Hybrid / BEV in absolute units; null = not
+             separately disclosed. */
+          FY23: { cng: null,    hybrid: 10405,  bev: 0, cngBasis: null },
+          FY24: { cng: 482717,  hybrid: 16219,  bev: 0, cngBasis: "Maruti Q4 FY24 IP — actual disclosed CNG units" },
+          FY25: { cng: null,    hybrid: 20672,  bev: 0,
+                  cngFromDomesticPct: 33.3,
+                  cngBasis: "Maruti FY25 disclosure: ~1 in every 3 domestic cars sold was CNG → ~33.3% of domestic volume" },
+        },
+      };
+      const mix = POWERTRAIN_MIX[company];
       bars = data.map(d => {
-        if (d.total == null || d.evP == null) return { fy: d.fy, total: null, segments: [] };
+        const m = mix && mix[d.fy];
+        if (!m || d.total == null) return { fy: d.fy, total: null, segments: [] };
         const totalLakh = TO_LAKH(d.total);
-        const evLakh    = totalLakh * d.evP / 100;
-        const nonEvLakh = totalLakh - evLakh;
+
+        /* Resolve CNG: explicit units > %-of-domestic > null */
+        let cngLakh = null;
+        if (m.cng != null) {
+          cngLakh = TO_LAKH(m.cng);
+        } else if (m.cngFromDomesticPct != null && d.exportP != null) {
+          const domLakh = totalLakh * (100 - d.exportP) / 100;
+          cngLakh = domLakh * (m.cngFromDomesticPct / 100);
+        }
+        const hybridLakh = m.hybrid != null ? TO_LAKH(m.hybrid) : 0;
+        const bevLakh    = m.bev    != null ? TO_LAKH(m.bev)    : 0;
+
+        const segments = [];
+        if (cngLakh != null) {
+          segments.push({ label: "CNG",    value: cngLakh,    color: COLOR.teal });
+        }
+        segments.push({ label: "Hybrid", value: hybridLakh, color: COLOR.amber });
+        segments.push({ label: "BEV",    value: bevLakh,    color: "#22D3EE" });
+
+        const accountedFor = (cngLakh || 0) + hybridLakh + bevLakh;
+        const residualLakh = Math.max(0, totalLakh - accountedFor);
+        const residualLabel = cngLakh == null
+          ? "Petrol / Diesel / CNG / Other ICE"
+          : "Petrol / Diesel / Other ICE";
+        segments.push({ label: residualLabel, value: residualLakh, color: COLOR.greySft });
+
+        const segWithPct = segments.map(s => ({ ...s, pct: (s.value / totalLakh) * 100 }))
+                                   .filter(s => s.value > 0 || s.label === "BEV");
+
         return {
-          fy: d.fy, total: totalLakh, segments: [
-            { label: "Non-EV", value: nonEvLakh, pct: 100 - d.evP, color: COLOR.greySft },
-            { label: "EV",     value: evLakh,    pct: d.evP,        color: COLOR.teal },
-          ],
+          fy: d.fy, total: totalLakh, segments: segWithPct,
+          basisNote: m.cngBasis || (cngLakh == null ? "CNG not separately disclosed for this FY — captured within the residual ICE bucket" : null),
         };
       });
-      legendItems = legendChip(COLOR.greySft, "Non-EV") + legendChip(COLOR.teal, "EV");
+      legendItems = legendChip(COLOR.teal, "CNG") + legendChip(COLOR.amber, "Hybrid") +
+                    legendChip("#22D3EE", "BEV") + legendChip(COLOR.greySft, "Petrol / Diesel / Other ICE");
+      footnote = "Powertrain split per Maruti company disclosures (Q4 IP / AR). FY23 CNG not separately broken out; bundled with the residual ICE bucket.";
     } else if (view === "product" && state.productView === "suv") {
       /* SUV / UV % is reported on a *domestic* sales basis (Maruti
          Q4 IP "domestic segment mix"). Convert SUV share back to
