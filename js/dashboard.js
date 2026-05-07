@@ -839,16 +839,19 @@
 
     if (isIndustry) {
       $("#chart1-title").textContent = "PV industry volume trend";
-      $("#chart1-help").textContent  = "Aggregate domestic PV demand across FYs.";
+      $("#chart1-help").textContent  = "Aggregate domestic PV demand · 10-year history";
       $("#chart1-sub").textContent   = "Lakhs · units";
 
-      const indVol = fyHistory.map(fy => {
+      /* Full FY16-FY25 history for the industry trend (D.FYS is the
+         3-FY selector window; D.FYS_FULL is the 10-year span). */
+      const fyTrend = D.FYS_FULL;
+      const indVol = fyTrend.map(fy => {
         const r = getIndustryMetric(fy, "Total PV Volume");
         return r ? r.Value / 100000 : null;
       });
       $("#chart1").innerHTML = lineChart([
         { name: "Industry volume", color: COLOR.navy, values: indVol },
-      ], { xLabels: fyHistory, area: true });
+      ], { xLabels: fyTrend, area: true });
       $("#chart1-legend").innerHTML = legendChip(COLOR.navy, "PV industry volume (lakh units)");
       $("#chart1-source").textContent = "Source: SIAM domestic PV dispatches.";
 
