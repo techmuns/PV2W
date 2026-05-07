@@ -231,21 +231,39 @@
       </svg>`,
     "Industry": (c) => `
       <svg viewBox="0 0 96 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-        <!-- Stylised premium-sedan side silhouette: roof curve, beltline,
-             grounded wheels. White on the panel's purple-aggregate
-             gradient — buy-side flavour without clipart vibe. -->
-        <path d="M14 20.5 L20 13.5 Q22.5 11 26 11 L42 11 L48 7 Q50 6 53 6 L66 6 Q69 6 71 9 L78 17 L84 18.5"
-              fill="rgba(255,255,255,0.12)"
-              stroke="#FFFFFF" stroke-width="1.6"
-              stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
-        <line x1="13" y1="20.5" x2="84" y2="20.5"
-              stroke="#FFFFFF" stroke-width="1.4"
-              stroke-linecap="round" opacity="0.55"/>
-        <!-- Wheels -->
-        <circle cx="29" cy="22" r="3.6" fill="rgba(0,0,0,0.18)" stroke="#FFFFFF" stroke-width="1.5"/>
-        <circle cx="69" cy="22" r="3.6" fill="rgba(0,0,0,0.18)" stroke="#FFFFFF" stroke-width="1.5"/>
-        <circle cx="29" cy="22" r="1.3" fill="#FFFFFF" opacity="0.92"/>
-        <circle cx="69" cy="22" r="1.3" fill="#FFFFFF" opacity="0.92"/>
+        <!-- Cockpit-intelligence motif: speedometer gauge (left) +
+             analytics trend with nodes (right). Premium analytics
+             feel, not a literal car. -->
+        <!-- Gauge: faint full arc + bright partial sweep + needle -->
+        <path d="M 16 24 A 12 12 0 0 1 40 24"
+              fill="none" stroke="#FFFFFF" stroke-width="1.3"
+              opacity="0.28"/>
+        <path d="M 16 24 A 12 12 0 0 1 32.8 14.2"
+              fill="none" stroke="#FFFFFF" stroke-width="1.9"
+              stroke-linecap="round" opacity="0.95"/>
+        <!-- Tick marks at gauge endpoints -->
+        <line x1="16" y1="24"   x2="14.5" y2="24"   stroke="#FFFFFF" stroke-width="1.1" opacity="0.45"/>
+        <line x1="40" y1="24"   x2="41.5" y2="24"   stroke="#FFFFFF" stroke-width="1.1" opacity="0.45"/>
+        <line x1="28" y1="12"   x2="28"   y2="10.5" stroke="#FFFFFF" stroke-width="1.1" opacity="0.45"/>
+        <!-- Needle + hub -->
+        <line x1="28" y1="24" x2="35" y2="14.5"
+              stroke="#FFFFFF" stroke-width="1.7"
+              stroke-linecap="round" opacity="0.95"/>
+        <circle cx="28" cy="24" r="1.9" fill="#FFFFFF"/>
+
+        <!-- Analytics trend with nodes -->
+        <path d="M52 21 L60 17 L68 18.5 L76 12 L84 9"
+              fill="none" stroke="#FFFFFF" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+        <circle cx="52" cy="21"   r="1.4" fill="#FFFFFF" opacity="0.65"/>
+        <circle cx="60" cy="17"   r="1.4" fill="#FFFFFF" opacity="0.78"/>
+        <circle cx="68" cy="18.5" r="1.4" fill="#FFFFFF" opacity="0.88"/>
+        <circle cx="76" cy="12"   r="1.4" fill="#FFFFFF" opacity="0.95"/>
+        <circle cx="84" cy="9"    r="1.8" fill="#FFFFFF"/>
+
+        <!-- Hairline baseline tying the two halves together -->
+        <line x1="14" y1="26.5" x2="86" y2="26.5"
+              stroke="#FFFFFF" stroke-width="0.9" opacity="0.22"/>
       </svg>`,
   };
   function brandBadge(company) {
