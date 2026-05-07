@@ -46,7 +46,7 @@
       "Growth":     ["Revenue Growth %", "Volume Growth %", "Realisation Growth %"],
       "Margins":    ["Gross Margin %", "EBITDA Margin %"],
       "Mix":        ["SUV Volume %", "EV Volume %", "Export Volume %"],
-      "Operations": ["Capacity (units)", "Capacity Utilisation %", "Capex (Rs Cr)", "Working Capital Days"],
+      "Operations": ["Capacity Utilisation %", "Capex (Rs Cr)", "Working Capital Days"],
       "Product":    ["New Model Launches", "Facelift Launches", "Top Selling Model"],
       "Governance": []
     },
