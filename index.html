@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507z" />
+  <link rel="stylesheet" href="css/styles.css?v=20260508a" />
   <script>
     tailwind.config = {
       theme: {
@@ -278,10 +278,11 @@
     Click to view 10-year trend
   </div>
 
-  <div id="trend-tooltip" class="hidden pointer-events-none fixed z-[60] bg-navy text-white px-3 py-2 rounded-md shadow-lg">
+  <div id="trend-tooltip" class="hidden pointer-events-none fixed z-[60] bg-navy text-white px-3 py-2 rounded-md shadow-lg min-w-[160px]">
     <div id="trend-tt-fy" class="text-[10px] text-white/65 uppercase tracking-wider font-medium"></div>
-    <div id="trend-tt-val" class="font-semibold text-[13px] tabular-nums"></div>
-    <div id="trend-tt-yoy" class="text-[10.5px] text-white/75 mt-0.5 tabular-nums"></div>
+    <div id="trend-tt-val" class="font-semibold text-[13px] tabular-nums mt-0.5"></div>
+    <div id="trend-tt-growth" class="text-[10.5px] text-white/80 mt-0.5 tabular-nums"></div>
+    <div id="trend-tt-yoy" class="text-[10.5px] text-white/75 tabular-nums"></div>
   </div>
 
   <!-- Dashboard chart hover tooltip — white-on-navy, compact -->
@@ -386,7 +387,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507z"></script>
-  <script src="js/dashboard.js?v=20260507z"></script>
+  <script src="js/data-loader.js?v=20260508a"></script>
+  <script src="js/dashboard.js?v=20260508a"></script>
 </body>
 </html>
