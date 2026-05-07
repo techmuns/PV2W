@@ -501,16 +501,27 @@
       `<text x="${x(i)}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${l}</text>`).join("");
 
     /* Hover targets: invisible column rects covering each FY's vertical
-       slice. Always tied to the primary (idx=0) series — secondary
-       series are typically benchmarks displayed alongside. */
+       slice. Each rect carries a *multi-line* payload — every series'
+       value at that FY — so the tooltip can show all lines together
+       instead of just the primary series. */
     const colW = (w - padL - padR) / Math.max(labels.length - 1, 1);
-    const primary = series[0] || {};
     const hovers = labels.map((l, i) => {
-      const v = primary.values && primary.values[i];
-      if (v === null || v === undefined) return "";
+      const segments = series
+        .map(s => {
+          const v = s.values[i];
+          if (v === null || v === undefined) return null;
+          return { label: s.name || "", value: v, color: s.color || "#2563EB" };
+        })
+        .filter(Boolean);
+      if (!segments.length) return "";
+      const payload = JSON.stringify({
+        kind: "multi-line",
+        fy: l,
+        unit: options.yUnit || "",
+        segments,
+      });
       return `<rect class="hover-target" x="${x(i) - colW/2}" y="${padT}" width="${colW}" height="${h - padT - padB}" fill="transparent"
-        data-fy="${ATTR(l)}" data-series="${ATTR(primary.name||"")}" data-value="${ATTR(v)}"
-        data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(primary.color||"#2563EB")}"/>`;
+        data-fy="${ATTR(l)}" data-rich="${ATTR(payload)}"/>`;
     }).join("");
 
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
@@ -671,9 +682,34 @@
     const simple = $("#cht-simple");
     const rich   = $("#cht-rich");
 
-    /* Rich payload — multi-row tooltip with total + segments. */
+    /* Rich payload — multi-row tooltip. Two flavours:
+         kind === 'multi-line' (line charts): FY title + one row per
+                                              series with signed value
+         default / 'volume-mix' (mix bars):   FY + total + segments
+                                              with units + pct + basis  */
     if (el.dataset.rich) {
       let p; try { p = JSON.parse(el.dataset.rich); } catch { p = null; }
+      if (p && p.kind === "multi-line") {
+        $("#cht-fy").textContent = p.fy;
+        simple.classList.add("hidden");
+        const unit = p.unit || "";
+        const fmtVal = (v) => {
+          const sign = v > 0 ? "+" : "";          // negatives carry their own '-'
+          const body = unit === "%" ? v.toFixed(1) : (Math.abs(v) >= 100 ? Math.round(v).toString() : v.toFixed(1));
+          return `${sign}${body}${unit}`;
+        };
+        const segs = p.segments.map(s => `
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
+            <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
+            <span class="text-[12px] tabular-nums ml-auto font-semibold whitespace-nowrap" style="color:#1F2A37;">${fmtVal(s.value)}</span>
+          </div>`).join("");
+        rich.innerHTML = `<div class="space-y-1.5 mt-1">${segs}</div>`;
+        rich.classList.remove("hidden");
+        tip.classList.remove("hidden");
+        positionTip(tip, e);
+        return;
+      }
       if (p) {
         $("#cht-fy").textContent = p.fy;
         simple.classList.add("hidden");
