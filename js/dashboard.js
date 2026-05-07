@@ -1255,15 +1255,41 @@
      its categories (Demand / Mix / Competition) don't fit the
      hub model. */
 
-  const HUB_METRICS = [
-    "Revenue Growth %", "Volume Growth %", "Realisation Growth %",
-    "Gross Margin %", "EBITDA Margin %",
-    "Export Volume %", "SUV Volume %",
-    "Capacity Utilisation %", "Market Share %",
-    "Capex (Rs Cr)", "Working Capital Days",
-    "Stock Price (31-Mar)",
+  /* Single grouped table layout. Categories are banner rows
+     inside the same <tbody>; each leaf entry is a metric row.
+     `trend: true` means a sparkline + click opens the 10-yr modal;
+     `kind: 'info'` pulls from company_info instead of fy_metrics. */
+  const METRIC_TABLE_GROUPS = [
+    { cat: "Growth", rows: [
+      { metric: "Revenue Growth %",     trend: true },
+      { metric: "Volume Growth %",      trend: true },
+      { metric: "Realisation Growth %", trend: true },
+    ]},
+    { cat: "Margins", rows: [
+      { metric: "Gross Margin %",  trend: true },
+      { metric: "EBITDA Margin %", trend: true },
+    ]},
+    { cat: "Mix", rows: [
+      { metric: "Export Volume %", trend: true },
+      { metric: "SUV Volume %",    trend: true },
+    ]},
+    { cat: "Scale", rows: [
+      { metric: "Capacity Utilisation %", trend: true },
+      { metric: "Market Share %",         trend: true },
+    ]},
+    { cat: "Capital", rows: [
+      { metric: "Capex (Rs Cr)",      trend: true },
+      { metric: "Working Capital Days", trend: true },
+    ]},
+    { cat: "Network", rows: [
+      { metric: "Dealers / Sales Outlets", trend: false, kind: "info", field: "Dealers" },
+    ]},
+    { cat: "Product Facts", rows: [
+      { metric: "New Model Launches", trend: false },
+      { metric: "Facelift Launches",  trend: false },
+      { metric: "Top Selling Model",  trend: false },
+    ]},
   ];
-  const PRODUCT_FACTS = ["New Model Launches", "Facelift Launches", "Top Selling Model"];
 
   /* Tiny sparkline for hub cards. Returns SVG string or empty if
      fewer than 2 numeric points. */
@@ -1292,8 +1318,7 @@
     if (isIndustry) {
       renderIndustryTabs();
     } else {
-      renderMetricHub();
-      renderProductFacts();
+      renderMetricTable();
       renderGovernanceCard();
     }
   }
@@ -1345,82 +1370,120 @@
       </table>`;
   }
 
-  function renderMetricHub() {
+  function renderMetricTable() {
     const fyCurrent = state.fy;
-    const fyPrior   = prevFY(state.fy);
+    const fyPrior   = prevFY(state.fy) || "FY24";
     const fyHistory = D.FYS;
+    const company   = state.company;
 
-    const cards = HUB_METRICS.map(metric => {
-      const rCurr  = getCompanyMetric(fyCurrent, state.company, metric);
-      const rPrior = fyPrior ? getCompanyMetric(fyPrior, state.company, metric) : null;
-      const values = fyHistory.map(fy => {
-        const r = getCompanyMetric(fy, state.company, metric);
-        return r && r.Value !== null && r.Value !== undefined ? r.Value : null;
-      });
-      const yoy = rCurr ? rCurr.YoY_Change : null;
-      const sig = rCurr ? rCurr.Signal : "Neutral";
-      const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending";
-      const sparkColor = sig === "Positive" ? "#16A34A" : sig === "Negative" ? "#DC2626" : "#94A3B8";
-      const isTrend = D.TREND_METRICS.has(metric);
-
-      return `
-        <div class="metric-card" ${isTrend ? `data-metric="${metric}"` : ""} title="${ATTR(sourceText)}">
-          <div class="metric-source-icon" title="${ATTR(sourceText)}">i</div>
-          <div class="metric-name">${metric}${isTrend ? '<span class="text-[9px] text-blue ml-0.5">↗</span>' : ''}</div>
-          <div class="metric-current">${formatMetricValue(metric, rCurr ? rCurr.Value : null)}</div>
-          <div class="metric-row">
-            <span class="metric-prior">${fyPrior || "prev"}: ${formatMetricValue(metric, rPrior ? rPrior.Value : null)}</span>
-            <span class="metric-yoy ${yoy > 0 ? "delta-up" : yoy < 0 ? "delta-down" : "delta-flat"}">
-              ${yoy === null || yoy === undefined ? "—" : fmtDelta(yoy, isPctMetric(metric) ? "pp" : "")}
-            </span>
-          </div>
-          <div class="metric-spark">${miniSparkline(values, sparkColor)}</div>
-          <div class="flex items-center justify-between">
-            <span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full ${signalClass(sig)}">
-              ${signalDot(sig)}${sig}
-            </span>
-          </div>
-        </div>`;
-    }).join("");
-
-    $("#metric-hub").innerHTML = cards;
-    document.querySelectorAll("#metric-hub .metric-card[data-metric]").forEach(card => {
-      card.addEventListener("click", () => openTrendModal(card.dataset.metric));
-    });
-  }
-
-  function renderProductFacts() {
-    const fyCurrent = state.fy;
-    const fyPrior   = prevFY(state.fy);
-
-    const cards = PRODUCT_FACTS.map(metric => {
-      const rCurr  = getCompanyMetric(fyCurrent, state.company, metric);
-      const rPrior = fyPrior ? getCompanyMetric(fyPrior, state.company, metric) : null;
-      const curr   = rCurr  ? rCurr.Value  : null;
-      const prior  = rPrior ? rPrior.Value : null;
-      const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending";
-      const fmt = (v) => v == null ? "—" : (typeof v === "string" ? v : fmtNum(v));
-      let note = "";
-      if (metric === "Top Selling Model") {
-        note = curr === prior ? "Unchanged YoY" : (prior ? `Switched from ${prior}` : "");
-      } else {
-        const delta = (typeof curr === "number" && typeof prior === "number") ? curr - prior : null;
-        note = delta == null ? "" : (delta > 0 ? `+${delta} vs ${fyPrior}` : delta < 0 ? `${delta} vs ${fyPrior}` : `Unchanged vs ${fyPrior}`);
+    /* Resolve a row from the row spec — covers fy_metrics and
+       company_info-backed entries (e.g. Dealers). */
+    function pull(spec, fy) {
+      if (spec.kind === "info") {
+        const info = getCompanyInfo(fy, company);
+        return info ? { Value: info[spec.field], Source: info.Source } : null;
       }
+      return getCompanyMetric(fy, company, spec.metric);
+    }
 
-      return `
-        <div class="fact-card" title="${ATTR(sourceText)}">
-          <div class="fact-label">${metric}</div>
-          <div class="fact-row">
-            <span class="fact-prior">${fmt(prior)}</span>
-            <span class="fact-arrow">→</span>
-            <span class="fact-current">${fmt(curr)}</span>
-          </div>
-          <div class="fact-meta">${note || "—"}</div>
-        </div>`;
-    }).join("");
+    function readPill(sig) {
+      const cls = signalClass(sig || "Neutral");
+      return `<span class="inline-flex items-center gap-1 text-[10.5px] px-2 py-0.5 rounded-full ${cls}">${signalDot(sig||"Neutral")}${sig || "Neutral"}</span>`;
+    }
 
-    $("#facts-strip").innerHTML = cards;
+    const rows = [];
+    METRIC_TABLE_GROUPS.forEach((group, gi) => {
+      group.rows.forEach((spec, idx) => {
+        const catLabel = idx === 0
+          ? `<span class="text-[10px] uppercase tracking-wider font-semibold" style="color:#475569;letter-spacing:0.06em;">${group.cat}</span>`
+          : "";
+        const groupStart = (idx === 0 && gi > 0) ? "group-start" : "";
+        const rCurr  = pull(spec, fyCurrent);
+        const rPrior = pull(spec, fyPrior);
+        const curr   = rCurr  ? rCurr.Value  : null;
+        const prior  = rPrior ? rPrior.Value : null;
+        const yoy    = (rCurr && rCurr.YoY_Change != null) ? rCurr.YoY_Change : null;
+        const sig    = rCurr && rCurr.Signal ? rCurr.Signal : "Neutral";
+
+        const fmt = (v) => {
+          if (v == null) return "—";
+          if (typeof v === "string") return v;
+          if (spec.metric === "Stock Price (31-Mar)") return "₹" + fmtNum(v);
+          if (spec.metric === "Capex (Rs Cr)") return "₹" + fmtNum(v) + " Cr";
+          if (isPctMetric(spec.metric)) return v.toFixed(1) + "%";
+          if (/Days/.test(spec.metric)) return v.toFixed(0) + " d";
+          if (/Launches/.test(spec.metric)) return String(v);
+          return fmtNum(v);
+        };
+
+        let changeCell;
+        if (typeof curr === "string" || typeof prior === "string") {
+          changeCell = `<td class="num change ${curr === prior ? 'flat' : 'up'}">${curr === prior ? "Unchanged" : (prior ? "→" : "—")}</td>`;
+        } else if (yoy != null) {
+          const dir = yoy > 0 ? "up" : yoy < 0 ? "down" : "flat";
+          const suffix = isPctMetric(spec.metric) ? "pp" : (/Days/.test(spec.metric) ? "d" : (/Launches|Capex|Stock|Dealers/.test(spec.metric) ? "" : "%"));
+          changeCell = `<td class="num change ${dir}">${fmtDelta(yoy, suffix)}</td>`;
+        } else if (typeof curr === "number" && typeof prior === "number") {
+          const d = curr - prior;
+          const dir = d > 0 ? "up" : d < 0 ? "down" : "flat";
+          changeCell = `<td class="num change ${dir}">${d > 0 ? "+" : ""}${d}</td>`;
+        } else {
+          changeCell = `<td class="num change flat">—</td>`;
+        }
+
+        let trendCell;
+        if (spec.trend) {
+          const values = fyHistory.map(fy => {
+            const r = pull(spec, fy);
+            const v = r ? r.Value : null;
+            return (typeof v === "number") ? v : null;
+          });
+          const sparkColor = sig === "Positive" ? "#16A34A" : sig === "Negative" ? "#DC2626" : "#94A3B8";
+          const spark = miniSparkline(values, sparkColor);
+          trendCell = `<td class="trend">${spark || '<span class="text-[10.5px]">View trend</span>'}</td>`;
+        } else if (spec.metric === "Top Selling Model") {
+          trendCell = `<td class="trend"><span class="text-[10.5px] text-inkMuted">—</span></td>`;
+        } else {
+          trendCell = `<td class="trend"><span class="text-[10.5px] text-inkMuted">—</span></td>`;
+        }
+
+        const trendable = spec.trend && D.TREND_METRICS.has(spec.metric);
+        const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending";
+
+        rows.push(`<tr class="${trendable ? 'trendable' : ''} ${groupStart}" ${trendable ? `data-metric="${spec.metric}"` : ''} title="${ATTR(sourceText)}">
+          <td>${catLabel}</td>
+          <td class="metric">${spec.metric}</td>
+          <td class="num prior">${fmt(prior)}</td>
+          <td class="num curr">${fmt(curr)}</td>
+          ${changeCell}
+          <td>${readPill(sig)}</td>
+          ${trendCell}
+        </tr>`);
+      });
+    });
+
+    $("#metric-table").innerHTML = `
+      <table class="mtbl">
+        <thead>
+          <tr>
+            <th style="width:120px">Category</th>
+            <th>Metric</th>
+            <th class="num">${fyPrior}</th>
+            <th class="num">${fyCurrent}</th>
+            <th class="num">Change</th>
+            <th>Read</th>
+            <th class="center">Trend</th>
+          </tr>
+        </thead>
+        <tbody>${rows.join("")}</tbody>
+      </table>
+      <div class="mtbl-foot">Source: ${company === "Maruti"
+        ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations; SIAM (market share / industry); Maruti monthly sales press releases (segment volumes)."
+        : "Company filings; Yahoo Finance (NSE close)."}</div>`;
+
+    document.querySelectorAll("#metric-table tr.trendable").forEach(tr => {
+      tr.addEventListener("click", () => openTrendModal(tr.dataset.metric));
+    });
   }
 
   function renderGovernanceCard() {
