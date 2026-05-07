@@ -327,35 +327,23 @@
   }
 
   function renderIdentityRow() {
-    const brand = BRAND[state.company];
     const isIndustry = state.company === "Industry";
 
     applyLogoMark($("#logo-mark"), state.company);
-
-    $("#brand-box").innerHTML = `
-      <div class="brand-box" style="--brand:${brand.color}">
-        <span class="brand-eyebrow">${brand.label}</span>
-        <span class="brand-name">${state.company}</span>
-      </div>`;
 
     $("#fy-chip").innerHTML = `
       <span class="fy-chip-label">FY</span>
       <span class="fy-chip-value">${state.fy}</span>`;
 
+    /* Two-line text stack: company / "Buy-side snapshot".
+       Industry is its own headline. */
     if (isIndustry) {
-      $("#view-title").textContent = `Indian PV Industry Cockpit`;
-      $("#view-subtitle").textContent = "Demand · mix · competitive shifts across OEMs.";
+      $("#view-title").textContent    = "Indian PV Industry Cockpit";
+      $("#view-subtitle").textContent = "Demand · mix · competitive shifts across OEMs";
     } else {
-      /* Logo + brand-box already convey the company; drop the
-         "Maruti — " prefix so the snapshot title stays clean. */
-      $("#view-title").textContent = `Buy-side snapshot`;
-      const info = getCompanyInfo(state.fy, state.company);
-      $("#view-subtitle").textContent = info
-        ? `CEO ${info.CEO} · CFO ${info.CFO || "—"} · ${info.Credit_Rating}`
-        : "Company governance info pending.";
+      $("#view-title").textContent    = state.company;
+      $("#view-subtitle").textContent = "Buy-side snapshot";
     }
-
-    $("#yoy-base").textContent = prevFY(state.fy) || "—";
   }
 
   /* ---------- sparkline ---------- */

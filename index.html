@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260508n" />
+  <link rel="stylesheet" href="css/styles.css?v=20260508o" />
   <script>
     tailwind.config = {
       theme: {
@@ -126,37 +126,15 @@
 
     <!-- ============== IDENTITY ROW ============== -->
     <section class="rounded-2xl bg-gradient-to-r from-tint via-bgSoft to-tint border border-line/60 shadow-card overflow-hidden">
-      <div class="px-6 py-5 flex items-center gap-5 flex-wrap">
-        <div id="logo-mark" class="logo-mark logo-mark-header"></div>
-        <div id="brand-box-wrap" class="flex items-center gap-3">
-          <div id="brand-box"></div>
-          <div id="fy-chip" class="fy-chip"></div>
+      <div class="px-7 py-6 flex items-center gap-6">
+        <div id="logo-mark" class="logo-mark logo-mark-header flex-shrink-0"></div>
+
+        <div class="flex-1 min-w-0">
+          <h1 id="view-title" class="text-[26px] font-semibold text-navy tracking-tight leading-[1.1]"></h1>
+          <p id="view-subtitle" class="text-[13px] text-inkSoft mt-1.5 tracking-wide"></p>
         </div>
 
-        <div class="flex-1 min-w-[200px]">
-          <h1 id="view-title" class="text-[20px] font-semibold text-navy tracking-tight leading-tight"></h1>
-          <p id="view-subtitle" class="text-[12.5px] text-inkSoft mt-1.5"></p>
-        </div>
-
-        <div class="hidden sm:flex flex-col items-end text-right pl-3">
-          <div class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold">YoY Base</div>
-          <div id="yoy-base" class="text-sm font-semibold text-navy mt-0.5"></div>
-        </div>
-
-        <!-- Subtle decorative growth-line ornament -->
-        <div class="hidden lg:block w-32 h-12 opacity-70">
-          <svg viewBox="0 0 130 50" class="w-full h-full">
-            <defs>
-              <linearGradient id="ornGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#DBEAFE" stop-opacity="0.9"/>
-                <stop offset="100%" stop-color="#DBEAFE" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path d="M5 42 L25 32 L45 36 L65 22 L85 28 L105 12 L125 18 L125 50 L5 50 Z" fill="url(#ornGrad)"/>
-            <path d="M5 42 L25 32 L45 36 L65 22 L85 28 L105 12 L125 18" stroke="#2563EB" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="105" cy="12" r="3" fill="#F59E0B" stroke="#FFFFFF" stroke-width="1.4"/>
-          </svg>
-        </div>
+        <div id="fy-chip" class="fy-chip flex-shrink-0"></div>
       </div>
     </section>
 
@@ -387,7 +365,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260508n"></script>
-  <script src="js/dashboard.js?v=20260508n"></script>
+  <script src="js/data-loader.js?v=20260508o"></script>
+  <script src="js/dashboard.js?v=20260508o"></script>
 </body>
 </html>
