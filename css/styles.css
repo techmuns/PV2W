@@ -832,6 +832,9 @@ body::before {
 }
 .mtbl-transposed tbody td.curr  { font-weight: 600; }
 .mtbl-transposed tbody td.prior { color: #94A3B8; }
+/* Override the default .mtbl .num right-align — transposed table
+   centers every metric/value/status cell horizontally. */
+.mtbl-transposed tbody td.num { text-align: center; }
 .mtbl-transposed tbody td.trend svg {
   display: inline-block;
   vertical-align: middle;
@@ -867,7 +870,7 @@ body::before {
 
 /* Governance & Network info chips — pill-shaped read-only cards
    that present a single labelled fact each (CEO, CFO, Sales Outlets,
-   Employees, etc). Visually button-like but not interactive. */
+   Employees, etc). Soft purple tint matches the top-header palette. */
 .info-chip-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -876,8 +879,8 @@ body::before {
 @media (min-width: 720px)  { .info-chip-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1100px) { .info-chip-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 .info-chip {
-  background: #F8FAFC;
-  border: 1px solid #E5EAF0;
+  background: #F5F0FB;
+  border: 1px solid #DDD0F2;
   border-radius: 10px;
   padding: 14px 16px;
   display: flex;
@@ -887,12 +890,12 @@ body::before {
   min-height: 64px;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.info-chip:hover { border-color: #C9D2DF; background: #FFFFFF; }
+.info-chip:hover { border-color: #B9A3E5; background: #FAF7FE; }
 .info-chip-label {
   font-size: 9.5px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #6B7280;
+  color: #6D28D9;
   font-weight: 600;
 }
 .info-chip-value {
