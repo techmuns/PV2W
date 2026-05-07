@@ -1,4 +1,4 @@
-name = "pv-dashboard"
+name = "neha"
 compatibility_date = "2025-01-01"
 
 # Static-only Worker: no `main` script, just serve the files in this repo.
