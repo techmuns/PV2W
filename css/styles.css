@@ -154,15 +154,16 @@ body::before {
   width: 200px;
   height: 60px;
   border-radius: 12px;
-  /* Slightly whiter than the lavender header strip so the panel
-     stays distinct without breaking the purple-theme harmony. */
-  background: linear-gradient(135deg, #FFFFFF 0%, #FBFAFE 100%);
-  border: 1px solid rgba(204, 191, 230, 0.55);
+  /* Soft purple overlay over a white base — keeps the panel
+     bright enough for the logo to read while blending into the
+     #F5F0FB / #DDD0F2 footer-chip purple of the header strip. */
+  background:
+    linear-gradient(135deg, rgba(245, 240, 251, 0.55) 0%, rgba(232, 221, 247, 0.55) 100%),
+    #FFFFFF;
+  border: 1px solid #DDD0F2;
   box-shadow:
     0 1px 2px rgba(76, 29, 149, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
   position: relative;
 }
 .logo-mark-header img {
