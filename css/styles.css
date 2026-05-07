@@ -655,15 +655,22 @@ body::before {
   background: #FFFFFF;
 }
 
-.mix-btn {
+.mix-btn,
+.prod-btn {
   color: #475569;
   cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease;
 }
-.mix-btn:hover { color: #0B1F33; }
+.mix-btn:hover,
+.prod-btn:hover { color: #0B1F33; }
 .mix-btn.active {
   color: #FFFFFF;
   background: #2563EB;
+}
+.prod-btn.active {
+  color: #0B1F33;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.06);
 }
 
 /* ====================================================

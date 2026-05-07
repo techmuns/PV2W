@@ -38,7 +38,8 @@
     fy:        "FY25",
     company:   "Maruti",
     activeTab: "Growth",
-    mixView:   "export",   // export | suv | ev | product — drives chart2 for OEM view
+    mixView:     "product",  // product | export | ev — drives chart2 for OEM view
+    productView: "segment",  // segment | suv — sub-toggle when mixView === 'product'
   };
 
   /* ---------- helpers ---------- */
@@ -813,18 +814,35 @@
       };
     });
 
-    const helpCopy = {
-      product: "Split of total sales volume by product segment",
-      export:  "Split of total sales volume into domestic and exports",
-      ev:      "Split of total sales volume into EV and non-EV",
-      suv:     "Split based on SUV / UV contribution",
-    };
-    $("#chart2-toggle-help").textContent = helpCopy[view] || "";
+    /* Helper text varies by view, and for Product it varies by sub-view. */
+    let helpText = "";
+    if (view === "product") {
+      helpText = state.productView === "suv"
+        ? "Split of volume into SUV and non-SUV"
+        : "Split of total sales volume by product segment";
+    } else if (view === "export") {
+      helpText = "Split of total sales volume into domestic and exports";
+    } else if (view === "ev") {
+      helpText = "Split of total sales volume into EV and non-EV";
+    }
+    $("#chart2-toggle-help").textContent = helpText;
 
-    /* Highlight the active toggle button */
+    /* Highlight the active top-level toggle and show/hide the
+       Product sub-toggle accordingly. */
     document.querySelectorAll("#chart2-toggle .mix-btn").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.mix === view);
     });
+    const subToggle = $("#chart2-product-sub");
+    if (view === "product") {
+      subToggle.classList.remove("hidden");
+      subToggle.classList.add("flex");
+      document.querySelectorAll("#chart2-product-sub .prod-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.productView === state.productView);
+      });
+    } else {
+      subToggle.classList.add("hidden");
+      subToggle.classList.remove("flex");
+    }
 
     const TO_LAKH = (n) => n / 1e5;
 
@@ -858,7 +876,7 @@
         };
       });
       legendItems = legendChip(COLOR.greySft, "Non-EV") + legendChip(COLOR.teal, "EV");
-    } else if (view === "suv") {
+    } else if (view === "product" && state.productView === "suv") {
       /* SUV / UV % is reported on a *domestic* sales basis (Maruti
          Q4 IP "domestic segment mix"). Convert SUV share back to
          absolute lakh units against domestic vol, with the rest of
@@ -868,25 +886,24 @@
         const totalLakh = TO_LAKH(d.total);
         const domLakh   = totalLakh * (100 - d.exportP) / 100;
         const suvLakh   = domLakh * d.suvP / 100;
-        const otherLakh = totalLakh - suvLakh;
+        const nonSuvLakh = totalLakh - suvLakh;
         const suvOfTotal = (suvLakh / totalLakh) * 100;
         return {
           fy: d.fy, total: totalLakh, segments: [
-            { label: "Non-UV / Non-SUV", value: otherLakh, pct: 100 - suvOfTotal, color: COLOR.greySft },
-            { label: "UV / SUV",         value: suvLakh,   pct: suvOfTotal,        color: COLOR.blue },
+            { label: "Non-SUV", value: nonSuvLakh, pct: 100 - suvOfTotal, color: COLOR.greySft },
+            { label: "SUV",     value: suvLakh,    pct: suvOfTotal,        color: COLOR.blue },
           ],
-          basisNote: `${d.suvP.toFixed(1)}% SUV / UV — share of domestic sales volume`,
+          basisNote: `SUV share: ${d.suvP.toFixed(1)}% — basis: domestic sales volume`,
         };
       });
-      legendItems = legendChip(COLOR.greySft, "Non-UV / Non-SUV") + legendChip(COLOR.blue, "UV / SUV");
-      footnote = "SUV / UV share is a percentage of domestic sales (per company disclosure). Bar segments translate that share to absolute units.";
+      legendItems = legendChip(COLOR.greySft, "Non-SUV") + legendChip(COLOR.blue, "SUV");
+      footnote = "SUV / Non-SUV split is based on domestic sales volume.";
     } else if (view === "product") {
-      /* Product-segment volumes per Maruti's monthly sales press
-         releases (March-end of each FY). Six product buckets plus
-         a residual that catches exports + Toyota OEM supplies, so
-         the bar still sums to the user-disclosed total. Other OEMs
-         render "Data not available" until their input tables are
-         ingested. */
+      /* Product → Segment Mix.
+         Volumes per Maruti's monthly sales press releases. Six
+         product buckets plus a residual that catches exports +
+         Toyota OEM supplies, so the bar still sums to the user-
+         disclosed total. Other OEMs render "Data not available". */
       const PRODUCT_MIX = {
         Maruti: {
           FY23: { Mini: 144517, Compact: 870790, MidSize: 13596, UV: 339640, Vans: 161099, LCV: 30762 },
@@ -1746,10 +1763,17 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") { closeModal(); closeVMod(); }
     });
-    /* Volume + Mix-split chart toggle */
+    /* Volume + Mix-split chart top-level toggle */
     document.querySelectorAll("#chart2-toggle .mix-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         state.mixView = btn.dataset.mix;
+        renderVolumeMixChart();
+      });
+    });
+    /* Product sub-toggle (Segment Mix vs SUV / Non-SUV) */
+    document.querySelectorAll("#chart2-product-sub .prod-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.productView = btn.dataset.productView;
         renderVolumeMixChart();
       });
     });
