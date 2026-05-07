@@ -1102,6 +1102,17 @@
       setTimeout(() => layer.remove(), DUR + 40);
     });
 
+    /* Drop any non-layer children left behind by a prior render
+       path (e.g. the Industry-view groupedBarChart that sets
+       innerHTML directly without wrapping in .mix-chart-layer).
+       Without this, the old SVG stays underneath the new layer
+       when the user toggles between Industry and OEM views. */
+    Array.from(host.children).forEach(node => {
+      if (!node.classList || !node.classList.contains("mix-chart-layer")) {
+        node.remove();
+      }
+    });
+
     host.appendChild(incoming);
     /* Force a paint so the transition fires from opacity 0. */
     incoming.getBoundingClientRect();
