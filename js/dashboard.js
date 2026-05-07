@@ -1622,17 +1622,16 @@
     });
 
     if (!series.length) {
-      chartEl.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">${
+      crossFadeChart(chartEl, `<div class="text-xs text-inkMuted py-12 text-center">${
         cat === "Product Facts"
           ? "Top Selling Model is non-numeric — see the table for FY-by-FY values."
           : "No numeric trends available for this category."
-      }</div>`;
+      }</div>`);
       legendEl.innerHTML = "";
     } else {
       const yUnit = cat === "Network" ? "" : (cat === "Capital" || cat === "Product Facts" ? "" : "%");
-      chartEl.innerHTML = lineChart(series, { xLabels: fyHistory, yUnit, height: 190 });
+      crossFadeChart(chartEl, lineChart(series, { xLabels: fyHistory, yUnit, height: 190 }));
       legendEl.innerHTML = series.map(s => legendChip(s.color, s.name)).join("");
-      bindChartHovers(chartEl);
     }
 
     footEl.textContent = "Source: " + (company === "Maruti"
