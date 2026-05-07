@@ -668,9 +668,10 @@ body::before {
   background: #2563EB;
 }
 .prod-btn.active {
-  color: #0B1F33;
-  background: #FFFFFF;
-  box-shadow: 0 1px 2px rgba(15,23,42,0.06);
+  color: #FFFFFF;
+  background: #173B63;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.18), inset 0 0 0 1px #173B63;
+  font-weight: 600;
 }
 
 /* Cross-fade transition for the volume-mix chart so toggling
