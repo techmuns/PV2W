@@ -1373,9 +1373,11 @@
   }
 
   function renderMetricTable() {
+    /* 'Network' is excluded from the dropdown — coerce away from it. */
+    if (state.selectedCategory === "Network") state.selectedCategory = "Growth";
     const fyCurrent = state.fy;
     const fyPrior   = prevFY(state.fy) || "FY24";
-    const fyHistory = D.FYS;
+    const fyHistory = D.FYS_FULL;     // 10-year history for the side chart
     const company   = state.company;
 
     /* Resolve a row from the row spec — covers fy_metrics and
@@ -1467,10 +1469,14 @@
 
     /* The category selector lives inside the table's top-left corner.
        Wired once on first render. */
+    /* 'Network' is intentionally excluded from the dropdown — its
+       only metric (Dealers / Sales Outlets) is surfaced inside the
+       Governance card instead. */
     function buildCatSelect() {
-      const opts = METRIC_TABLE_GROUPS.map(g =>
-        `<option value="${g.cat}" ${g.cat === state.selectedCategory ? 'selected' : ''}>${g.cat}</option>`
-      ).join("");
+      const opts = METRIC_TABLE_GROUPS
+        .filter(g => g.cat !== "Network")
+        .map(g => `<option value="${g.cat}" ${g.cat === state.selectedCategory ? 'selected' : ''}>${g.cat}</option>`)
+        .join("");
       return `<select id="cat-select-inline" class="cat-select-inline">${opts}</select>`;
     }
 
@@ -1518,7 +1524,7 @@
      so the user can read them apart. */
   function renderCategoryChart(cells) {
     const PALETTE = ["#173B63", "#5B7CFA", "#4DB6AC", "#E7A64A", "#A78BFA", "#94A3B8"];
-    const fyHistory = D.FYS;
+    const fyHistory = D.FYS_FULL;     // full 10-year window on the trend chart
     const company = state.company;
     const cat = state.selectedCategory;
 
@@ -1594,22 +1600,27 @@
       card.innerHTML = `<div class="text-sm text-inkMuted">Governance data pending for ${state.company} — ${state.fy}</div>`;
       return;
     }
-    const fields = [
-      ["CEO", info.CEO], ["CFO", info.CFO], ["COO", info.COO],
-      ["Credit Rating", info.Credit_Rating],
-      ["Employees", fmtNum(info.Employees)],
-      ["Dealers",   fmtNum(info.Dealers)],
+    /* Network metrics (Dealers / Employees) live alongside KMP roles
+       as button-like info chips — purely presentational, not clickable. */
+    const fmtCount = (v) => (v == null ? "—" : fmtNum(v));
+    const chips = [
+      { label: "CEO",            value: info.CEO || "—" },
+      { label: "CFO",            value: info.CFO || "—" },
+      { label: "COO",            value: info.COO || "—" },
+      { label: "Credit Rating",  value: info.Credit_Rating || "—" },
+      { label: "Sales Outlets",  value: fmtCount(info.Dealers) },
+      { label: "Employees",      value: fmtCount(info.Employees) },
     ];
     card.innerHTML = `
       <div class="flex items-end justify-between mb-3">
-        <h3 class="text-[12.5px] font-semibold text-navy">Governance</h3>
-        <span class="text-[10.5px] text-inkMuted">FY25 snapshot</span>
+        <h3 class="text-[12.5px] font-semibold text-navy">Governance & Network</h3>
+        <span class="text-[10.5px] text-inkMuted">${state.fy} snapshot</span>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-3">
-        ${fields.map(([k,v]) => `
-          <div>
-            <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold">${k}</div>
-            <div class="text-sm text-ink mt-0.5">${v ?? "—"}</div>
+      <div class="info-chip-grid">
+        ${chips.map(c => `
+          <div class="info-chip">
+            <div class="info-chip-label">${c.label}</div>
+            <div class="info-chip-value">${c.value}</div>
           </div>`).join("")}
       </div>
       <div class="text-[10.5px] text-inkMuted mt-4">
