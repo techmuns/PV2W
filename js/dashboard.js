@@ -230,13 +230,22 @@
         <circle cx="19" cy="16" r="5.5" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
       </svg>`,
     "Industry": (c) => `
-      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="9" fill="${c}"/>
-        <line x1="9" y1="22" x2="16" y2="13" stroke="#FFFFFF" stroke-width="1.4" opacity="0.5"/>
-        <line x1="16" y1="13" x2="23" y2="11" stroke="#FFFFFF" stroke-width="1.4" opacity="0.5"/>
-        <circle cx="9"  cy="22" r="2.2" fill="#FFFFFF" opacity="0.6"/>
-        <circle cx="16" cy="13" r="2.2" fill="#FFFFFF" opacity="0.85"/>
-        <circle cx="23" cy="11" r="2.2" fill="#FFFFFF"/>
+      <svg viewBox="0 0 96 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <!-- Stylised premium-sedan side silhouette: roof curve, beltline,
+             grounded wheels. White on the panel's purple-aggregate
+             gradient — buy-side flavour without clipart vibe. -->
+        <path d="M14 20.5 L20 13.5 Q22.5 11 26 11 L42 11 L48 7 Q50 6 53 6 L66 6 Q69 6 71 9 L78 17 L84 18.5"
+              fill="rgba(255,255,255,0.12)"
+              stroke="#FFFFFF" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+        <line x1="13" y1="20.5" x2="84" y2="20.5"
+              stroke="#FFFFFF" stroke-width="1.4"
+              stroke-linecap="round" opacity="0.55"/>
+        <!-- Wheels -->
+        <circle cx="29" cy="22" r="3.6" fill="rgba(0,0,0,0.18)" stroke="#FFFFFF" stroke-width="1.5"/>
+        <circle cx="69" cy="22" r="3.6" fill="rgba(0,0,0,0.18)" stroke="#FFFFFF" stroke-width="1.5"/>
+        <circle cx="29" cy="22" r="1.3" fill="#FFFFFF" opacity="0.92"/>
+        <circle cx="69" cy="22" r="1.3" fill="#FFFFFF" opacity="0.92"/>
       </svg>`,
   };
   function brandBadge(company) {
