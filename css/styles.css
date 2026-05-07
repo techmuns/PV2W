@@ -673,6 +673,15 @@ body::before {
   box-shadow: 0 1px 2px rgba(15,23,42,0.06);
 }
 
+/* Soft fade-in for the volume-mix chart so toggling between
+   Detailed and SUV / Non-SUV feels like the same bar reclassifying
+   itself rather than a fresh chart loading. */
+#chart2 svg { animation: chart2-fade 180ms ease-out; }
+@keyframes chart2-fade {
+  from { opacity: 0.45; }
+  to   { opacity: 1; }
+}
+
 /* ====================================================
    Drilldown table
    ==================================================== */
