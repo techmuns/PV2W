@@ -78,6 +78,11 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-tata.mjs
 
+      - name: Governance & Network (KMP / credit rating / dealers / employees)
+        id: governance
+        continue-on-error: true
+        run: node scripts/fetch-governance.mjs
+
       # ────────── stamp refresh status ──────────
       - name: Write _meta block (last refresh + per-fetcher status)
         run: node scripts/write-meta.mjs
@@ -87,6 +92,7 @@ jobs:
           HYUNDAI_OUTCOME:      ${{ steps.hyundai.outcome }}
           MM_OUTCOME:           ${{ steps.mm.outcome }}
           TATA_OUTCOME:         ${{ steps.tata.outcome }}
+          GOVERNANCE_OUTCOME:   ${{ steps.governance.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────

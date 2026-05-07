@@ -24,6 +24,7 @@ const fetchers = {
   hyundai:             process.env.HYUNDAI_OUTCOME      || 'unknown',
   mm:                  process.env.MM_OUTCOME           || 'unknown',
   tata:                process.env.TATA_OUTCOME         || 'unknown',
+  governance:          process.env.GOVERNANCE_OUTCOME   || 'unknown',
 };
 
 const outcomes = Object.values(fetchers);
