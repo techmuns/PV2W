@@ -673,13 +673,17 @@ body::before {
   box-shadow: 0 1px 2px rgba(15,23,42,0.06);
 }
 
-/* Soft fade-in for the volume-mix chart so toggling between
-   Detailed and SUV / Non-SUV feels like the same bar reclassifying
-   itself rather than a fresh chart loading. */
-#chart2 svg { animation: chart2-fade 180ms ease-out; }
-@keyframes chart2-fade {
-  from { opacity: 0.45; }
-  to   { opacity: 1; }
+/* Cross-fade transition for the volume-mix chart so toggling
+   between Product / Export / Powertrain (and Detailed / SUV-Non-SUV)
+   feels like the same bar reclassifying itself rather than a
+   hard reload. The crossFadeChart() helper layers an incoming
+   SVG over the outgoing one and tweens opacity in opposite
+   directions over 320ms. */
+.mix-chart-layer { will-change: opacity; }
+.mix-chart-layer svg .bar {
+  transition: y 320ms cubic-bezier(0.4, 0, 0.2, 1),
+              height 320ms cubic-bezier(0.4, 0, 0.2, 1),
+              fill 220ms ease-out;
 }
 
 /* ====================================================
