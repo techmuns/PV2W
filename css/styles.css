@@ -655,6 +655,17 @@ body::before {
   background: #FFFFFF;
 }
 
+.mix-btn {
+  color: #475569;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.mix-btn:hover { color: #0B1F33; }
+.mix-btn.active {
+  color: #FFFFFF;
+  background: #2563EB;
+}
+
 /* ====================================================
    Drilldown table
    ==================================================== */

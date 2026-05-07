@@ -106,6 +106,13 @@ const TABLE = [
   { metric: 'Top Selling Model',
     source: 'Maruti announcements / industry annual model-wise sales',
     values: ['Alto', 'Alto', 'Alto', 'Alto', 'Alto', 'Swift', 'WagonR', 'WagonR', 'WagonR', 'WagonR'] },
+
+  /* Total Sales Volume (units) — from analyst input table for FY23-FY25.
+     FY16-FY22 not provided; rows kept null so the Mix-split chart
+     shows "Data not available" for those FYs. */
+  { metric: 'Total Sales Volume',
+    source: 'Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)',
+    values: [null, null, null, null, null, null, null, 1966000, 2135000, 2234000] },
 ];
 
 /* Governance / FY25 only */

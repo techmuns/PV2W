@@ -38,6 +38,7 @@
     fy:        "FY25",
     company:   "Maruti",
     activeTab: "Growth",
+    mixView:   "export",   // export | suv | ev | product — drives chart2 for OEM view
   };
 
   /* ---------- helpers ---------- */
@@ -588,6 +589,70 @@
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
   }
 
+  /* ---------- Volume + Mix-split bar chart ----------
+     One bar per FY whose total height encodes the FY's total sales
+     volume; the bar is split into mutually exclusive segments
+     (e.g. Domestic vs Export) by the caller. Rich tooltip on hover
+     shows total + every segment with units and percentage. */
+  function volumeMixBarChart(bars, options = {}) {
+    /* bars: [{ fy, total, segments: [{label, value, pct, color}] }]
+       options: { yUnit, yLabel, fmtTotal, basisNote, unavailableMsg } */
+    const w = 480, h = 240, padL = 56, padR = 16, padT = 16, padB = 32;
+    if (!bars.length || bars.every(b => b.total == null)) {
+      return `<div class="flex items-center justify-center text-xs text-inkMuted py-12">${options.unavailableMsg || "Data not available for selected mix"}</div>`;
+    }
+    const groupW = (w - padL - padR) / bars.length;
+    const barW = Math.min(groupW * 0.5, 64);
+    const yMaxRaw = Math.max(...bars.map(b => b.total || 0), 1);
+    const yMax = yMaxRaw * 1.15;
+    const yScale = (v) => padT + (1 - v / yMax) * (h - padT - padB);
+    const fmtVal = options.fmtTotal || (v => v.toFixed(2));
+    const MIN_SEG_PX = 4;
+
+    const grid = [0,0.25,0.5,0.75,1].map(t => {
+      const yy = padT + t * (h - padT - padB);
+      const val = yMax * (1 - t);
+      return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#EEF1F5"/>
+              <text x="${padL-6}" y="${yy+3}" text-anchor="end" font-size="10" fill="#6B7280">${fmtVal(val)}</text>`;
+    }).join("");
+
+    let bodies = "";
+    bars.forEach((b, i) => {
+      const cx = padL + groupW * (i + 0.5);
+      bodies += `<text x="${cx}" y="${h-10}" text-anchor="middle" font-size="11" fill="#475569" font-weight="500">${b.fy}</text>`;
+      if (b.total == null) {
+        bodies += `<text x="${cx}" y="${(h-padB+padT)/2}" text-anchor="middle" font-size="10" fill="#94A3B8">no data</text>`;
+        return;
+      }
+      bodies += `<text x="${cx}" y="${yScale(b.total) - 6}" text-anchor="middle" font-size="11" fill="#0B1F33" font-weight="600" class="tabular-nums">${fmtVal(b.total)}</text>`;
+      const tipPayload = JSON.stringify({
+        fy: b.fy, total: b.total, totalLabel: options.totalLabel || "Total sales volume",
+        unit: options.yUnit || "", basis: b.basisNote || options.basisNote || null,
+        segments: b.segments.map(s => ({ label: s.label, value: s.value, pct: s.pct, color: s.color }))
+      });
+      let cum = 0;
+      b.segments.forEach((s) => {
+        const v = s.value || 0;
+        if (v <= 0) return;
+        const yBot = yScale(cum);
+        let yTop  = yScale(cum + v);
+        let hh = Math.max(0, yBot - yTop);
+        if (hh < MIN_SEG_PX) { hh = MIN_SEG_PX; yTop = yBot - MIN_SEG_PX; }
+        bodies += `<rect class="bar hover-target" x="${cx - barW/2}" y="${yTop}" width="${barW}" height="${hh}" fill="${s.color}" rx="2"
+          data-rich="${ATTR(tipPayload)}"/>`;
+        cum += v;
+      });
+    });
+
+    const yLabel = options.yLabel
+      ? `<text x="14" y="${(h-padB+padT)/2}" transform="rotate(-90 14 ${(h-padB+padT)/2})" text-anchor="middle" font-size="10.5" fill="#475569" font-weight="600">${options.yLabel}</text>`
+      : "";
+
+    return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+      <g class="grid">${grid}</g>${yLabel}${bodies}
+    </svg>`;
+  }
+
   /* Bind hover-only tooltips to any chart container's hover targets. */
   function bindChartHovers(rootEl) {
     if (!rootEl) return;
@@ -599,7 +664,40 @@
     });
   }
   function showChartTip(e, el) {
-    const tip = $("#chart-tooltip");
+    const tip    = $("#chart-tooltip");
+    const simple = $("#cht-simple");
+    const rich   = $("#cht-rich");
+
+    /* Rich payload — multi-row tooltip with total + segments. */
+    if (el.dataset.rich) {
+      let p; try { p = JSON.parse(el.dataset.rich); } catch { p = null; }
+      if (p) {
+        $("#cht-fy").textContent = p.fy;
+        simple.classList.add("hidden");
+        const fmtVol = (v) => `${v.toFixed(2)} lakh units`;
+        const totalLine = `<div class="flex items-center justify-between gap-3">
+          <span class="text-[11px] text-inkMuted">${p.totalLabel}</span>
+          <span class="text-[12.5px] font-semibold text-navy tabular-nums">${fmtVol(p.total)}</span>
+        </div>`;
+        const segs = p.segments.map(s => `
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-sm" style="background:${s.color}"></span>
+            <span class="text-[11.5px] text-inkSoft">${s.label}</span>
+            <span class="text-[12px] font-semibold text-navy tabular-nums ml-auto">${fmtVol(s.value)} <span class="text-inkMuted font-normal">(${s.pct.toFixed(1)}%)</span></span>
+          </div>`).join("");
+        const basis = p.basis ? `<div class="text-[10px] text-inkMuted italic mt-1 pt-1 border-t border-line">${p.basis}</div>` : "";
+        rich.innerHTML = totalLine + `<div class="space-y-0.5 pt-1 border-t border-line">${segs}</div>` + basis;
+        rich.classList.remove("hidden");
+        tip.classList.remove("hidden");
+        positionTip(tip, e);
+        return;
+      }
+    }
+
+    /* Simple single-row tooltip — existing path. */
+    rich.classList.add("hidden");
+    rich.innerHTML = "";
+    simple.classList.remove("hidden");
     const fy   = el.dataset.fy || "";
     const name = el.dataset.series || "";
     const raw  = parseFloat(el.dataset.value);
@@ -651,6 +749,8 @@
       $("#chart2-help").textContent  = "Selected FY share alongside the prior FY.";
       $("#chart2-sub").textContent   = state.fy + " · %";
       $("#chart2-foot").textContent  = "";
+      $("#chart2-toggle").classList.add("hidden");
+      $("#chart2-toggle-help").classList.add("hidden");
 
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
       const sharesPrev = oems.map(o => (getCompanyMetric(prevFY(state.fy) || state.fy, o, "Market Share %")||{}).Value || 0);
@@ -676,40 +776,130 @@
       $("#chart1-legend").innerHTML =
         legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
 
-      $("#chart2-title").textContent = "Mix shift";
-      $("#chart2-help").textContent  = "Quality of growth — SUV / EV / Export volume contribution.";
+      $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
+      $("#chart2-help").textContent  = "Total sales volume, with split by selected mix";
       $("#chart2-sub").textContent   = "Volume mix %";
-
-      /* Three independent volume-share signals — drawn as separate
-         trend lines, NOT stacked. The shares can overlap (an export
-         vehicle can also be an SUV) so summing them is wrong. */
-      const suvVals = fyHistory.map(fy => {
-        const r = getCompanyMetric(fy, state.company, "SUV Volume %");
-        return r && r.Value !== null ? r.Value : null;
-      });
-      const evVals  = fyHistory.map(fy => {
-        const r = getCompanyMetric(fy, state.company, "EV Volume %");
-        return r && r.Value !== null ? r.Value : null;
-      });
-      const expVals = fyHistory.map(fy => {
-        const r = getCompanyMetric(fy, state.company, "Export Volume %");
-        return r && r.Value !== null ? r.Value : null;
-      });
-
-      $("#chart2").innerHTML = lineChart([
-        { name: "SUV / UV", color: COLOR.blue, values: suvVals },
-        { name: "EV",       color: COLOR.teal, values: evVals  },
-        { name: "Export",   color: COLOR.warn, values: expVals },
-      ], { xLabels: fyHistory, yUnit: "%" });
-      $("#chart2-legend").innerHTML =
-        legendChip(COLOR.blue, "SUV / UV volume %") +
-        legendChip(COLOR.teal, "EV volume %") +
-        legendChip(COLOR.warn, "Export volume %");
-      $("#chart2-foot").textContent =
-        "SUV / EV / Export volume shares may overlap, so they are shown as separate trend lines.";
+      $("#chart2-toggle").classList.remove("hidden");
+      $("#chart2-toggle-help").classList.remove("hidden");
+      renderVolumeMixChart();
     }
 
     bindChartHovers($("#chart1"));
+    bindChartHovers($("#chart2"));
+  }
+
+  /* ---------- Volume + Mix-split chart (chart2 for OEM view) ----------
+     Shows a bar per FY whose total height = total sales volume,
+     internally split by the selected mix mode. Chart only renders
+     bars for FYs where Total Sales Volume is available; FYs missing
+     a clean total stay blank rather than fabricated. */
+  const MIX_VIEW_FYS = ["FY23", "FY24", "FY25"];
+  function renderVolumeMixChart() {
+    const view = state.mixView;
+    const company = state.company;
+
+    /* Pull total volume + the relevant share for each FY */
+    const data = MIX_VIEW_FYS.map(fy => {
+      const totalRow = getCompanyMetric(fy, company, "Total Sales Volume");
+      const expRow   = getCompanyMetric(fy, company, "Export Volume %");
+      const evRow    = getCompanyMetric(fy, company, "EV Volume %");
+      const suvRow   = getCompanyMetric(fy, company, "SUV Volume %");
+      return {
+        fy,
+        total:    totalRow && totalRow.Value !== null ? totalRow.Value : null,
+        exportP:  expRow   && expRow.Value   !== null ? expRow.Value   : null,
+        evP:      evRow    && evRow.Value    !== null ? evRow.Value    : null,
+        suvP:     suvRow   && suvRow.Value   !== null ? suvRow.Value   : null,
+      };
+    });
+
+    const helpCopy = {
+      product: "Split of total sales volume by product segment",
+      export:  "Split of total sales volume into domestic and exports",
+      ev:      "Split of total sales volume into EV and non-EV",
+      suv:     "Split based on SUV / UV contribution",
+    };
+    $("#chart2-toggle-help").textContent = helpCopy[view] || "";
+
+    /* Highlight the active toggle button */
+    document.querySelectorAll("#chart2-toggle .mix-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.mix === view);
+    });
+
+    const TO_LAKH = (n) => n / 1e5;
+
+    let bars, legendItems, footnote = "";
+
+    if (view === "export") {
+      bars = data.map(d => {
+        if (d.total == null || d.exportP == null) return { fy: d.fy, total: null, segments: [] };
+        const totalLakh = TO_LAKH(d.total);
+        const expLakh   = totalLakh * d.exportP / 100;
+        const domLakh   = totalLakh - expLakh;
+        return {
+          fy: d.fy, total: totalLakh, segments: [
+            { label: "Domestic", value: domLakh, pct: 100 - d.exportP, color: COLOR.blue },
+            { label: "Export",   value: expLakh, pct: d.exportP,        color: COLOR.warn },
+          ],
+        };
+      });
+      legendItems = legendChip(COLOR.blue, "Domestic") + legendChip(COLOR.warn, "Export");
+    } else if (view === "ev") {
+      bars = data.map(d => {
+        if (d.total == null || d.evP == null) return { fy: d.fy, total: null, segments: [] };
+        const totalLakh = TO_LAKH(d.total);
+        const evLakh    = totalLakh * d.evP / 100;
+        const nonEvLakh = totalLakh - evLakh;
+        return {
+          fy: d.fy, total: totalLakh, segments: [
+            { label: "Non-EV", value: nonEvLakh, pct: 100 - d.evP, color: COLOR.greySft },
+            { label: "EV",     value: evLakh,    pct: d.evP,        color: COLOR.teal },
+          ],
+        };
+      });
+      legendItems = legendChip(COLOR.greySft, "Non-EV") + legendChip(COLOR.teal, "EV");
+    } else if (view === "suv") {
+      /* SUV / UV % is reported on a *domestic* sales basis (Maruti
+         Q4 IP "domestic segment mix"). Convert SUV share back to
+         absolute lakh units against domestic vol, with the rest of
+         the bar (incl. exports) as Non-SUV. */
+      bars = data.map(d => {
+        if (d.total == null || d.suvP == null || d.exportP == null) return { fy: d.fy, total: null, segments: [] };
+        const totalLakh = TO_LAKH(d.total);
+        const domLakh   = totalLakh * (100 - d.exportP) / 100;
+        const suvLakh   = domLakh * d.suvP / 100;
+        const otherLakh = totalLakh - suvLakh;
+        const suvOfTotal = (suvLakh / totalLakh) * 100;
+        return {
+          fy: d.fy, total: totalLakh, segments: [
+            { label: "Non-UV / Non-SUV", value: otherLakh, pct: 100 - suvOfTotal, color: COLOR.greySft },
+            { label: "UV / SUV",         value: suvLakh,   pct: suvOfTotal,        color: COLOR.blue },
+          ],
+          basisNote: `${d.suvP.toFixed(1)}% SUV / UV — share of domestic sales volume`,
+        };
+      });
+      legendItems = legendChip(COLOR.greySft, "Non-UV / Non-SUV") + legendChip(COLOR.blue, "UV / SUV");
+      footnote = "SUV / UV share is a percentage of domestic sales (per company disclosure). Bar segments translate that share to absolute units.";
+    } else if (view === "product") {
+      /* No clean segment-volume input table for product mix yet,
+         so render the unavailable state rather than fabricate. */
+      bars = data.map(d => ({ fy: d.fy, total: null, segments: [] }));
+      legendItems = "";
+      footnote = "";
+    }
+
+    $("#chart2").innerHTML = volumeMixBarChart(bars, {
+      yUnit: " L",
+      yLabel: "Sales volume (lakh units)",
+      totalLabel: "Total sales volume",
+      fmtTotal: (v) => v.toFixed(2),
+      unavailableMsg: view === "product"
+        ? "Data not available for selected mix"
+        : "Data not available for selected mix",
+    });
+    $("#chart2-legend").innerHTML = legendItems;
+    $("#chart2-foot").textContent = footnote;
+
     bindChartHovers($("#chart2"));
   }
 
@@ -1522,6 +1712,13 @@
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") { closeModal(); closeVMod(); }
+    });
+    /* Volume + Mix-split chart toggle */
+    document.querySelectorAll("#chart2-toggle .mix-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.mixView = btn.dataset.mix;
+        renderVolumeMixChart();
+      });
     });
   }
 
