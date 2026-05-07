@@ -676,14 +676,123 @@ body::before {
 /* Cross-fade transition for the volume-mix chart so toggling
    between Product / Export / Powertrain (and Detailed / SUV-Non-SUV)
    feels like the same bar reclassifying itself rather than a
-   hard reload. The crossFadeChart() helper layers an incoming
-   SVG over the outgoing one and tweens opacity in opposite
-   directions over 320ms. */
+   hard reload. */
 .mix-chart-layer { will-change: opacity; }
 .mix-chart-layer svg .bar {
   transition: y 320ms cubic-bezier(0.4, 0, 0.2, 1),
               height 320ms cubic-bezier(0.4, 0, 0.2, 1),
               fill 220ms ease-out;
+}
+
+/* ====================================================
+   Metric Hub
+   Card grid replacing the old drilldown tabs for OEM view.
+   Each card is a clickable trend entry; product-facts panel
+   sits below for non-trend items.
+   ==================================================== */
+.metric-hub {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 768px) { .metric-hub { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .metric-hub { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.metric-card {
+  background: #FFFFFF;
+  border: 1px solid #E5EAF0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+.metric-card:hover {
+  border-color: #C9D2DF;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.05);
+  transform: translateY(-1px);
+}
+.metric-card .metric-name {
+  font-size: 11px;
+  color: #6B7280;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.metric-card .metric-current {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1F2A37;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.metric-card .metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+}
+.metric-card .metric-prior { color: #94A3B8; font-variant-numeric: tabular-nums; }
+.metric-card .metric-yoy   { font-weight: 600; font-variant-numeric: tabular-nums; }
+.metric-card .metric-spark { margin-top: 2px; height: 26px; }
+.metric-card .metric-source-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #F4F6FA;
+  color: #94A3B8;
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Product facts strip — non-trend items */
+.facts-strip {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (min-width: 768px) { .facts-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fact-card {
+  background: #FFFFFF;
+  border: 1px solid #E5EAF0;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.fact-card .fact-label {
+  font-size: 11px;
+  color: #6B7280;
+  font-weight: 500;
+}
+.fact-card .fact-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+}
+.fact-card .fact-prior { color: #94A3B8; font-size: 13px; font-variant-numeric: tabular-nums; }
+.fact-card .fact-arrow { color: #C9D2DF; font-size: 11px; }
+.fact-card .fact-current {
+  color: #1F2A37;
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.fact-card .fact-meta {
+  font-size: 10.5px;
+  color: #6B7280;
+  margin-top: 4px;
 }
 
 /* ====================================================

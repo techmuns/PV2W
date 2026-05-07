@@ -1247,12 +1247,59 @@
     });
   }
 
-  /* ---------- tabs ----------
-     TABS_OEM and TABS_INDUSTRY are sourced from
-     data/config/company_config.json at boot time (see init). */
+  /* ---------- supporting data ----------
+     OEM view shows a 2-layer hub:
+       (a) Metric Hub  — clickable cards for trendable metrics
+       (b) Product Facts — non-trend items + governance card
+     Industry view falls back to the legacy tab structure since
+     its categories (Demand / Mix / Competition) don't fit the
+     hub model. */
+
+  const HUB_METRICS = [
+    "Revenue Growth %", "Volume Growth %", "Realisation Growth %",
+    "Gross Margin %", "EBITDA Margin %",
+    "Export Volume %", "SUV Volume %",
+    "Capacity Utilisation %", "Market Share %",
+    "Capex (Rs Cr)", "Working Capital Days",
+    "Stock Price (31-Mar)",
+  ];
+  const PRODUCT_FACTS = ["New Model Launches", "Facelift Launches", "Top Selling Model"];
+
+  /* Tiny sparkline for hub cards. Returns SVG string or empty if
+     fewer than 2 numeric points. */
+  function miniSparkline(values, color) {
+    const pts = values.map((v, i) => v == null || typeof v === "string" ? null : [i, v]).filter(Boolean);
+    if (pts.length < 2) return "";
+    const w = 100, h = 24, pad = 2;
+    const xs = pts.map(p => p[0]);
+    const ys = pts.map(p => p[1]);
+    const xMin = Math.min(...xs), xMax = Math.max(...xs);
+    const yMin = Math.min(...ys), yMax = Math.max(...ys);
+    const xSpan = xMax - xMin || 1;
+    const ySpan = yMax - yMin || 1;
+    const sx = (x) => pad + ((x - xMin) / xSpan) * (w - 2*pad);
+    const sy = (y) => pad + (1 - (y - yMin) / ySpan) * (h - 2*pad);
+    const d = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${sx(p[0]).toFixed(1)} ${sy(p[1]).toFixed(1)}`).join(" ");
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" class="w-full h-full">
+      <path d="${d}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+    </svg>`;
+  }
+
   function renderTabs() {
     const isIndustry = state.company === "Industry";
-    const tabs = isIndustry ? TABS_INDUSTRY : TABS_OEM;
+    $("#industry-tabs").classList.toggle("hidden", !isIndustry);
+    $("#oem-hub").classList.toggle("hidden", isIndustry);
+    if (isIndustry) {
+      renderIndustryTabs();
+    } else {
+      renderMetricHub();
+      renderProductFacts();
+      renderGovernanceCard();
+    }
+  }
+
+  function renderIndustryTabs() {
+    const tabs = TABS_INDUSTRY;
     const tabNames = Object.keys(tabs);
     if (!tabNames.includes(state.activeTab)) state.activeTab = tabNames[0];
 
@@ -1260,50 +1307,20 @@
       `<button class="tab-btn ${t === state.activeTab ? "active" : ""}" data-tab="${t}">${t}</button>`
     ).join("");
     document.querySelectorAll(".tab-btn").forEach(btn =>
-      btn.addEventListener("click", () => { state.activeTab = btn.dataset.tab; renderTabs(); })
+      btn.addEventListener("click", () => { state.activeTab = btn.dataset.tab; renderIndustryTabs(); })
     );
 
-    const body = $("#tab-body");
     const fyCurrent = state.fy;
     const fyPrior   = prevFY(state.fy);
-
-    if (!isIndustry && state.activeTab === "Governance") {
-      const info = getCompanyInfo(fyCurrent, state.company);
-      if (!info) {
-        body.innerHTML = `<div class="text-sm text-inkMuted">Governance data pending for ${state.company} — ${fyCurrent}</div>`;
-        return;
-      }
-      const fields = [
-        ["CEO", info.CEO], ["CFO", info.CFO], ["COO", info.COO],
-        ["Credit Rating", info.Credit_Rating],
-        ["Employees", fmtNum(info.Employees)],
-        ["Dealers",   fmtNum(info.Dealers)],
-      ];
-      body.innerHTML = `
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4">
-          ${fields.map(([k,v]) => `
-            <div>
-              <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold">${k}</div>
-              <div class="text-sm text-ink mt-0.5">${v ?? "—"}</div>
-            </div>`).join("")}
-        </div>
-        <div class="text-[10.5px] text-inkMuted mt-5">
-          Source: ${(info.Source && info.Source !== "Pending") ? info.Source : "—"} · Last updated ${new Date(info.Last_Updated).toLocaleDateString("en-GB")}
-        </div>`;
-      return;
-    }
-
     const metrics = tabs[state.activeTab];
     const rows = metrics.map(metric => {
-      const r      = isIndustry ? getIndustryMetric(fyCurrent, metric) : getCompanyMetric(fyCurrent, state.company, metric);
-      const rPrior = fyPrior ? (isIndustry ? getIndustryMetric(fyPrior, metric) : getCompanyMetric(fyPrior, state.company, metric)) : null;
+      const r      = getIndustryMetric(fyCurrent, metric);
+      const rPrior = fyPrior ? getIndustryMetric(fyPrior, metric) : null;
       const yoy = r ? r.YoY_Change : null;
       const sig = r ? r.Signal : "Neutral";
-      const isClickable = !isIndustry && D.TREND_METRICS.has(metric);
-
       return `
-        <tr class="${isClickable ? "clickable" : ""}" ${isClickable ? `data-metric="${metric}"` : ""}>
-          <td>${metric}${isClickable ? ' <span class="text-[10px] text-blue ml-1">↗</span>' : ''}</td>
+        <tr>
+          <td>${metric}</td>
           <td class="num">${formatMetricValue(metric, rPrior ? rPrior.Value : null)}</td>
           <td class="num font-semibold text-navy">${formatMetricValue(metric, r ? r.Value : null)}</td>
           <td class="num ${yoy > 0 ? "delta-up" : yoy < 0 ? "delta-down" : "delta-flat"}">
@@ -1318,7 +1335,7 @@
         </tr>`;
     }).join("");
 
-    body.innerHTML = `
+    $("#tab-body").innerHTML = `
       <table class="dd-table">
         <thead>
           <tr><th>Metric</th><th>${fyPrior || "Prev FY"}</th><th>${fyCurrent}</th>
@@ -1326,10 +1343,114 @@
         </thead>
         <tbody>${rows || `<tr><td colspan="6" class="text-inkMuted">No metrics defined</td></tr>`}</tbody>
       </table>`;
-    document.querySelectorAll(".dd-table tr.clickable").forEach(tr => {
-      tr.addEventListener("click", () => openTrendModal(tr.dataset.metric));
-      attachHoverTip(tr);
+  }
+
+  function renderMetricHub() {
+    const fyCurrent = state.fy;
+    const fyPrior   = prevFY(state.fy);
+    const fyHistory = D.FYS;
+
+    const cards = HUB_METRICS.map(metric => {
+      const rCurr  = getCompanyMetric(fyCurrent, state.company, metric);
+      const rPrior = fyPrior ? getCompanyMetric(fyPrior, state.company, metric) : null;
+      const values = fyHistory.map(fy => {
+        const r = getCompanyMetric(fy, state.company, metric);
+        return r && r.Value !== null && r.Value !== undefined ? r.Value : null;
+      });
+      const yoy = rCurr ? rCurr.YoY_Change : null;
+      const sig = rCurr ? rCurr.Signal : "Neutral";
+      const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending";
+      const sparkColor = sig === "Positive" ? "#16A34A" : sig === "Negative" ? "#DC2626" : "#94A3B8";
+      const isTrend = D.TREND_METRICS.has(metric);
+
+      return `
+        <div class="metric-card" ${isTrend ? `data-metric="${metric}"` : ""} title="${ATTR(sourceText)}">
+          <div class="metric-source-icon" title="${ATTR(sourceText)}">i</div>
+          <div class="metric-name">${metric}${isTrend ? '<span class="text-[9px] text-blue ml-0.5">↗</span>' : ''}</div>
+          <div class="metric-current">${formatMetricValue(metric, rCurr ? rCurr.Value : null)}</div>
+          <div class="metric-row">
+            <span class="metric-prior">${fyPrior || "prev"}: ${formatMetricValue(metric, rPrior ? rPrior.Value : null)}</span>
+            <span class="metric-yoy ${yoy > 0 ? "delta-up" : yoy < 0 ? "delta-down" : "delta-flat"}">
+              ${yoy === null || yoy === undefined ? "—" : fmtDelta(yoy, isPctMetric(metric) ? "pp" : "")}
+            </span>
+          </div>
+          <div class="metric-spark">${miniSparkline(values, sparkColor)}</div>
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full ${signalClass(sig)}">
+              ${signalDot(sig)}${sig}
+            </span>
+          </div>
+        </div>`;
+    }).join("");
+
+    $("#metric-hub").innerHTML = cards;
+    document.querySelectorAll("#metric-hub .metric-card[data-metric]").forEach(card => {
+      card.addEventListener("click", () => openTrendModal(card.dataset.metric));
     });
+  }
+
+  function renderProductFacts() {
+    const fyCurrent = state.fy;
+    const fyPrior   = prevFY(state.fy);
+
+    const cards = PRODUCT_FACTS.map(metric => {
+      const rCurr  = getCompanyMetric(fyCurrent, state.company, metric);
+      const rPrior = fyPrior ? getCompanyMetric(fyPrior, state.company, metric) : null;
+      const curr   = rCurr  ? rCurr.Value  : null;
+      const prior  = rPrior ? rPrior.Value : null;
+      const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending";
+      const fmt = (v) => v == null ? "—" : (typeof v === "string" ? v : fmtNum(v));
+      let note = "";
+      if (metric === "Top Selling Model") {
+        note = curr === prior ? "Unchanged YoY" : (prior ? `Switched from ${prior}` : "");
+      } else {
+        const delta = (typeof curr === "number" && typeof prior === "number") ? curr - prior : null;
+        note = delta == null ? "" : (delta > 0 ? `+${delta} vs ${fyPrior}` : delta < 0 ? `${delta} vs ${fyPrior}` : `Unchanged vs ${fyPrior}`);
+      }
+
+      return `
+        <div class="fact-card" title="${ATTR(sourceText)}">
+          <div class="fact-label">${metric}</div>
+          <div class="fact-row">
+            <span class="fact-prior">${fmt(prior)}</span>
+            <span class="fact-arrow">→</span>
+            <span class="fact-current">${fmt(curr)}</span>
+          </div>
+          <div class="fact-meta">${note || "—"}</div>
+        </div>`;
+    }).join("");
+
+    $("#facts-strip").innerHTML = cards;
+  }
+
+  function renderGovernanceCard() {
+    const info = getCompanyInfo(state.fy, state.company);
+    const card = $("#governance-card");
+    if (!info) {
+      card.innerHTML = `<div class="text-sm text-inkMuted">Governance data pending for ${state.company} — ${state.fy}</div>`;
+      return;
+    }
+    const fields = [
+      ["CEO", info.CEO], ["CFO", info.CFO], ["COO", info.COO],
+      ["Credit Rating", info.Credit_Rating],
+      ["Employees", fmtNum(info.Employees)],
+      ["Dealers",   fmtNum(info.Dealers)],
+    ];
+    card.innerHTML = `
+      <div class="flex items-end justify-between mb-3">
+        <h3 class="text-[12.5px] font-semibold text-navy">Governance</h3>
+        <span class="text-[10.5px] text-inkMuted">FY25 snapshot</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-3">
+        ${fields.map(([k,v]) => `
+          <div>
+            <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold">${k}</div>
+            <div class="text-sm text-ink mt-0.5">${v ?? "—"}</div>
+          </div>`).join("")}
+      </div>
+      <div class="text-[10.5px] text-inkMuted mt-4">
+        Source: ${(info.Source && info.Source !== "Pending") ? info.Source : "—"}${info.Last_Updated ? ` · Last updated ${new Date(info.Last_Updated).toLocaleDateString("en-GB")}` : ""}
+      </div>`;
   }
 
   /* ====================================================
