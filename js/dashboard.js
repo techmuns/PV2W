@@ -40,6 +40,7 @@
     activeTab: "Growth",
     mixView:     "product",  // product | export | powertrain — drives chart2 for OEM view
     productView: "segment",  // segment | suv — sub-toggle when mixView === 'product'
+    selectedMetric: "Revenue Growth %",  // metric whose 10-yr trend appears in the side panel
   };
 
   /* ---------- helpers ---------- */
@@ -1449,31 +1450,23 @@
         changeHtml = `<span class="change flat">—</span>`;
       }
 
-      let trendHtml;
-      if (spec.trend) {
-        const values = fyHistory.map(fy => {
-          const r = pull(spec, fy);
-          const v = r ? r.Value : null;
-          return (typeof v === "number") ? v : null;
-        });
-        const sparkColor = sig === "Positive" ? "#16A34A" : sig === "Negative" ? "#DC2626" : "#94A3B8";
-        const spark = miniSparkline(values, sparkColor);
-        trendHtml = spark || '<span class="text-[10.5px]">View</span>';
-      } else {
-        trendHtml = `<span class="text-[10.5px] text-inkMuted">—</span>`;
-      }
-
       return {
         spec, curr, prior, sig,
         currHtml: fmt(spec, curr),
         priorHtml: fmt(spec, prior),
         changeHtml,
         readHtml: readPill(sig),
-        trendHtml,
         trendable: spec.trend && D.TREND_METRICS.has(spec.metric),
         sourceText: rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending",
       };
     });
+
+    /* If the currently-selected side-panel metric isn't in the
+       trendable set anymore, fall back to the first trendable. */
+    if (!cells.find(c => c.spec.metric === state.selectedMetric && c.trendable)) {
+      const first = cells.find(c => c.trendable);
+      if (first) state.selectedMetric = first.spec.metric;
+    }
 
     /* Build header row: a Category cell per group spanning that
        group's metric columns. */
@@ -1482,33 +1475,139 @@
       categoryHeader += `<th class="cat-head ${gi > 0 ? 'group-start-col' : ''}" colspan="${group.rows.length}">${group.cat}</th>`;
     });
 
-    const cellTd = (c, content, extra = "") =>
-      `<td data-metric="${ATTR(c.spec.metric)}" class="${c.trendable ? 'trendable' : ''} ${extra}" title="${ATTR(c.sourceText)}">${content}</td>`;
+    const cellTd = (c, content, extra = "") => {
+      const isSelected = c.spec.metric === state.selectedMetric ? "selected" : "";
+      return `<td data-metric="${ATTR(c.spec.metric)}" class="${c.trendable ? 'trendable' : ''} ${extra} ${isSelected}" title="${ATTR(c.sourceText)}">${content}</td>`;
+    };
 
     const rowMetric = `<tr><th class="row-label">Metric</th>${cells.map(c => cellTd(c, `<span class="metric-name">${c.spec.metric}</span>`)).join("")}</tr>`;
     const rowPrior  = `<tr><th class="row-label">${fyPrior}</th>${cells.map(c => cellTd(c, c.priorHtml, "num prior")).join("")}</tr>`;
     const rowCurr   = `<tr><th class="row-label">${fyCurrent}</th>${cells.map(c => cellTd(c, c.currHtml, "num curr")).join("")}</tr>`;
     const rowChange = `<tr><th class="row-label">Change</th>${cells.map(c => cellTd(c, c.changeHtml, "num")).join("")}</tr>`;
     const rowRead   = `<tr><th class="row-label">Read</th>${cells.map(c => cellTd(c, c.readHtml)).join("")}</tr>`;
-    const rowTrend  = `<tr><th class="row-label">Trend</th>${cells.map(c => cellTd(c, c.trendHtml, "trend")).join("")}</tr>`;
 
     $("#metric-table").innerHTML = `
       <div class="mtbl-scroll">
         <table class="mtbl mtbl-transposed">
           <thead><tr>${categoryHeader}</tr></thead>
           <tbody>
-            ${rowMetric}${rowPrior}${rowCurr}${rowChange}${rowRead}${rowTrend}
+            ${rowMetric}${rowPrior}${rowCurr}${rowChange}${rowRead}
           </tbody>
         </table>
       </div>
-      <div class="mtbl-foot">Source: ${company === "Maruti"
+      <div class="mtbl-foot">Click any metric column to focus its 10-year trend on the right. Source: ${company === "Maruti"
         ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations; SIAM (market share / industry); Maruti monthly sales press releases (segment volumes)."
         : "Company filings; Yahoo Finance (NSE close)."}</div>`;
 
-    /* Click any cell of a trendable metric column to open the modal. */
+    /* Click any cell of a trendable metric column to focus its
+       10-year trend in the side panel. */
     document.querySelectorAll("#metric-table td.trendable").forEach(td => {
-      td.addEventListener("click", () => openTrendModal(td.dataset.metric));
+      td.addEventListener("click", () => {
+        state.selectedMetric = td.dataset.metric;
+        renderMetricTable();      // re-render to update .selected highlighting
+        renderMetricChartSide();  // refresh side panel
+      });
     });
+
+    renderMetricChartSide();
+  }
+
+  /* Side-panel chart for the currently selected metric. Lives next
+     to the Supporting Data table; replaces the per-row sparklines so
+     only ONE trend is visible at a time. */
+  function renderMetricChartSide() {
+    const metric = state.selectedMetric;
+    const company = state.company;
+    const fyHistory = D.FYS;
+
+    const titleEl = $("#metric-chart-title");
+    const helpEl  = $("#metric-chart-help");
+    const currEl  = $("#metric-chart-current");
+    const chartEl = $("#metric-chart");
+    const footEl  = $("#metric-chart-foot");
+    if (!titleEl || !chartEl) return;
+
+    /* Resolve the spec the same way renderMetricTable does so we
+       handle company_info-backed entries (Dealers) too. */
+    let spec = null;
+    METRIC_TABLE_GROUPS.forEach(g => g.rows.forEach(s => { if (s.metric === metric) spec = s; }));
+    if (!spec) {
+      titleEl.textContent = "Select a metric";
+      helpEl.textContent  = "Click any cell in the table to focus its 10-year trend.";
+      currEl.textContent  = "";
+      chartEl.innerHTML   = "";
+      footEl.textContent  = "";
+      return;
+    }
+
+    const pullSide = (fy) => {
+      if (spec.kind === "info") {
+        const info = getCompanyInfo(fy, company);
+        return info ? info[spec.field] : null;
+      }
+      const r = getCompanyMetric(fy, company, spec.metric);
+      return r ? r.Value : null;
+    };
+    const values = fyHistory.map(fy => {
+      const v = pullSide(fy);
+      return typeof v === "number" ? v : null;
+    });
+
+    const rCurr = spec.kind === "info" ? null : getCompanyMetric(state.fy, company, spec.metric);
+    const sig = (rCurr && rCurr.Signal) || "Neutral";
+    const lineColor = sig === "Positive" ? "#1F7A45" : sig === "Negative" ? "#9F1F2E" : "#173B63";
+
+    const fmt = (v) => {
+      if (v == null) return "—";
+      if (typeof v === "string") return v;
+      if (metric === "Stock Price (31-Mar)") return "₹" + fmtNum(v);
+      if (metric === "Capex (Rs Cr)") return "₹" + fmtNum(v) + " Cr";
+      if (isPctMetric(metric)) return v.toFixed(1) + "%";
+      if (/Days/.test(metric)) return v.toFixed(0) + " d";
+      return fmtNum(v);
+    };
+
+    titleEl.textContent = metric;
+    const yUnit = isPctMetric(metric) ? "%" : (/Days/.test(metric) ? "d" : "");
+    const curr = pullSide(state.fy);
+    currEl.textContent = state.fy + ": " + fmt(curr);
+
+    const helpByMetric = {
+      "Revenue Growth %":     "Net sales YoY %.",
+      "Volume Growth %":      "Total sales volume YoY %.",
+      "Realisation Growth %": "Average selling price YoY % (revenue ÷ volume).",
+      "Gross Margin %":       "Approx. 100 − material cost %.",
+      "EBITDA Margin %":      "EBITDA as % of revenue.",
+      "Export Volume %":      "Exports as % of total sales volume.",
+      "SUV Volume %":         "SUV / UV share of domestic volume.",
+      "Capacity Utilisation %": "Sales volume ÷ installed capacity (proxy).",
+      "Market Share %":       "Domestic PV share per SIAM / company data.",
+      "Capex (Rs Cr)":        "Annual capex from cash-flow disclosures.",
+      "Working Capital Days": "Negative = supplier finance funding ops.",
+      "Stock Price (31-Mar)": "NSE close on 31-Mar (Yahoo Finance).",
+      "Dealers / Sales Outlets": "FY-end sales outlet count.",
+      "New Model Launches":   "Count of new launches in the FY.",
+      "Facelift Launches":    "Count of facelifts / refreshes in the FY.",
+      "Top Selling Model":    "Highest-volume model in the FY.",
+    };
+    helpEl.textContent = helpByMetric[metric] || "";
+
+    if (typeof curr === "string") {
+      /* Top Selling Model — render a simple text strip instead of a chart */
+      chartEl.innerHTML = `<div class="text-sm text-ink py-6 text-center">${fyHistory.map(fy => {
+        const v = pullSide(fy);
+        return `<div class="flex items-center justify-between border-b border-line/60 py-1.5"><span class="text-[11px] text-inkMuted">${fy}</span><span class="font-medium">${v ?? "—"}</span></div>`;
+      }).join("")}</div>`;
+    } else {
+      chartEl.innerHTML = lineChart([
+        { name: metric, color: lineColor, values },
+      ], { xLabels: fyHistory, yUnit, area: true, height: 180 });
+      bindChartHovers(chartEl);
+    }
+
+    const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source
+      : (company === "Maruti" ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations." : "Company filings.");
+    footEl.textContent = "Source: " + sourceText;
   }
 
   function renderGovernanceCard() {

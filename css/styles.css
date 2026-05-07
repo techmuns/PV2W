@@ -799,7 +799,12 @@ body::before {
 .mtbl-transposed tbody td .change.down { color: #9F1F2E; font-weight: 600; }
 .mtbl-transposed tbody td .change.flat { color: #94A3B8; }
 .mtbl-transposed tbody td.trendable { cursor: pointer; transition: background 0.12s ease; }
-.mtbl-transposed tbody td.trendable:hover { background: #F8FAFC; }
+.mtbl-transposed tbody td.trendable:hover { background: #F4F7FB; }
+.mtbl-transposed tbody td.selected {
+  background: #EFF4FB;
+  box-shadow: inset 0 -2px 0 #173B63;
+}
+.mtbl-transposed tbody td.selected.trendable:hover { background: #E6EEF8; }
 
 /* Soft Read-column pills — muted, no dot, no border. Used only by
    the Supporting Data table to soften the visual weight of the

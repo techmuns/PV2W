@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507u" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507v" />
   <script>
     tailwind.config = {
       theme: {
@@ -243,10 +243,23 @@
         <div id="tab-body" class="p-5"></div>
       </div>
 
-      <!-- OEM view: single grouped metric table + governance -->
+      <!-- OEM view: grouped metric table on the left, click-to-show
+           single trend chart on the right. -->
       <div id="oem-hub" class="space-y-4">
-        <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden">
-          <div id="metric-table"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-4 items-start">
+          <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden">
+            <div id="metric-table"></div>
+          </div>
+          <div id="metric-chart-panel"
+               class="bg-card rounded-xl shadow-card border border-line p-4 lg:sticky lg:top-24">
+            <div class="flex items-baseline justify-between mb-1">
+              <h3 id="metric-chart-title" class="text-[12.5px] font-semibold text-navy"></h3>
+              <span id="metric-chart-current" class="text-[11px] text-inkMuted tabular-nums"></span>
+            </div>
+            <p id="metric-chart-help" class="text-[11px] text-inkMuted mb-3"></p>
+            <div id="metric-chart" style="min-height:200px"></div>
+            <p id="metric-chart-foot" class="text-[10px] text-inkMuted mt-2 leading-snug"></p>
+          </div>
         </div>
         <div id="governance-card" class="bg-card rounded-xl shadow-card border border-line p-5"></div>
       </div>
@@ -374,7 +387,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507u"></script>
-  <script src="js/dashboard.js?v=20260507u"></script>
+  <script src="js/data-loader.js?v=20260507v"></script>
+  <script src="js/dashboard.js?v=20260507v"></script>
 </body>
 </html>
