@@ -730,6 +730,77 @@ body::before {
 .mtbl tbody tr.trendable td.trend { color: #2563EB; }
 .mtbl tbody tr.group-start td { border-top: 1px solid #DDE4EE; }
 
+/* Transposed layout — metrics-as-columns, fields-as-rows.
+   Triggered by .mtbl-transposed; the wrapping .mtbl-scroll provides
+   horizontal scroll for the wide metric grid, and the first column
+   (row labels) stays sticky-left so the field names remain readable
+   while scrolling. */
+.mtbl-scroll { overflow-x: auto; }
+.mtbl-transposed thead th {
+  text-align: center;
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #475569;
+  background: #F4F6FA;
+  padding: 9px 12px;
+  border-bottom: 1px solid #E5EAF0;
+  white-space: nowrap;
+}
+.mtbl-transposed thead th.row-label-head { background: #FFFFFF; border-bottom: 1px solid #E5EAF0; }
+.mtbl-transposed thead th.group-start-col,
+.mtbl-transposed tbody td.group-start-col { border-left: 1px solid #DDE4EE; }
+.mtbl-transposed tbody th.row-label {
+  position: sticky;
+  left: 0;
+  background: #FFFFFF;
+  z-index: 2;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6B7280;
+  font-weight: 600;
+  border-right: 1px solid #E5EAF0;
+  border-bottom: 1px solid #EEF1F5;
+  min-width: 96px;
+}
+.mtbl-transposed tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #EEF1F5;
+  border-left: none;
+  text-align: center;
+  font-size: 12.5px;
+  color: #1F2A37;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.mtbl-transposed tbody td.metric-name,
+.mtbl-transposed tbody td .metric-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: #475569;
+  white-space: normal;
+  text-align: center;
+  max-width: 130px;
+  display: inline-block;
+  line-height: 1.3;
+}
+.mtbl-transposed tbody td.curr  { font-weight: 600; }
+.mtbl-transposed tbody td.prior { color: #94A3B8; }
+.mtbl-transposed tbody td.trend svg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 70px;
+}
+.mtbl-transposed tbody td .change.up   { color: #1F7A45; font-weight: 600; }
+.mtbl-transposed tbody td .change.down { color: #9F1F2E; font-weight: 600; }
+.mtbl-transposed tbody td .change.flat { color: #94A3B8; }
+.mtbl-transposed tbody td.trendable { cursor: pointer; transition: background 0.12s ease; }
+.mtbl-transposed tbody td.trendable:hover { background: #F8FAFC; }
+
 /* Soft Read-column pills — muted, no dot, no border. Used only by
    the Supporting Data table to soften the visual weight of the
    Signal indicator. */
