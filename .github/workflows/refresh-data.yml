@@ -83,6 +83,11 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-governance.mjs
 
+      - name: Industry totals (SIAM PV volume / mix / top gainer)
+        id: industry
+        continue-on-error: true
+        run: node scripts/fetch-industry.mjs
+
       # ────────── stamp refresh status ──────────
       - name: Write _meta block (last refresh + per-fetcher status)
         run: node scripts/write-meta.mjs
@@ -93,6 +98,7 @@ jobs:
           MM_OUTCOME:           ${{ steps.mm.outcome }}
           TATA_OUTCOME:         ${{ steps.tata.outcome }}
           GOVERNANCE_OUTCOME:   ${{ steps.governance.outcome }}
+          INDUSTRY_OUTCOME:     ${{ steps.industry.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────

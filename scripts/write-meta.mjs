@@ -25,6 +25,7 @@ const fetchers = {
   mm:                  process.env.MM_OUTCOME           || 'unknown',
   tata:                process.env.TATA_OUTCOME         || 'unknown',
   governance:          process.env.GOVERNANCE_OUTCOME   || 'unknown',
+  industry:            process.env.INDUSTRY_OUTCOME     || 'unknown',
 };
 
 const outcomes = Object.values(fetchers);
