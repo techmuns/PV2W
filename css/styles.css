@@ -147,34 +147,24 @@ body::before {
 .logo-mark-sm.logo-mark-aggregate .logo-initials { font-size: 14px; }
 .logo-mark-sm img { padding: 6px; }
 
-/* Snapshot-header variant — wider rectangular logo panel
-   (~18-20% of the identity-row width) with a soft, glass-blended
-   purple surface that integrates with the header gradient. */
+/* Snapshot-header variant — compact rectangular logo panel with
+   a near-neutral glass surface. Quiet enough not to dominate the
+   header, still defined enough to read as a branded panel. */
 .logo-mark-header {
-  width: 240px;
-  height: 92px;
-  border-radius: 16px;
-  background:
-    linear-gradient(135deg, rgba(245,240,251,0.95) 0%, rgba(232,221,247,0.82) 55%, rgba(218,201,242,0.65) 100%);
-  border: 1px solid rgba(192, 168, 230, 0.55);
+  width: 200px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(248,245,253,0.78) 100%);
+  border: 1px solid rgba(218, 211, 234, 0.55);
   box-shadow:
-    0 10px 28px rgba(76, 29, 149, 0.12),
-    0 2px 6px rgba(76, 29, 149, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
+    0 1px 2px rgba(76, 29, 149, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   position: relative;
 }
-.logo-mark-header::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 55%);
-  pointer-events: none;
-}
 .logo-mark-header img {
-  padding: 12px 24px;
+  padding: 8px 18px;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -182,20 +172,23 @@ body::before {
   object-fit: contain;
 }
 .logo-mark-header.logo-mark-aggregate {
-  /* Industry variant — solid brand → purple gradient with the
-     aggregate initials centered in the wider panel. */
-  background: linear-gradient(135deg, var(--brand, #334E68) 0%, #6D28D9 60%, #4F46E5 100%);
+  /* Industry variant — solid brand wash, kept softer than before. */
+  background: linear-gradient(135deg, var(--brand, #334E68) 0%, #4F46E5 100%);
   border-color: transparent;
 }
-.logo-mark-header.logo-mark-aggregate .logo-initials { font-size: 22px; position: relative; z-index: 1; }
+.logo-mark-header.logo-mark-aggregate .logo-initials { font-size: 16px; position: relative; z-index: 1; }
 .logo-mark-header.logo-mark-badge { display: flex; align-items: center; justify-content: center; }
 
-/* Narrow viewports: collapse the wide panel to a square so the
-   header doesn't blow out on mobile. */
+/* Narrow viewports: collapse the wide panel to a square. */
 @media (max-width: 640px) {
-  .logo-mark-header { width: 88px; height: 88px; }
-  .logo-mark-header img { padding: 12px; }
+  .logo-mark-header { width: 64px; height: 60px; }
+  .logo-mark-header img { padding: 8px; }
 }
+
+/* Compact FY chip used inside the snapshot header. */
+.fy-chip-sm { padding: 5px 11px; }
+.fy-chip-sm .fy-chip-label { font-size: 9px; }
+.fy-chip-sm .fy-chip-value { font-size: 14px; }
 
 .brand-box {
   position: relative;
