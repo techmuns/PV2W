@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507m" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507n" />
   <script>
     tailwind.config = {
       theme: {
@@ -230,15 +230,40 @@
       <div id="vehicle-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-start"></div>
     </section>
 
-    <!-- ============== TABS ============== -->
+    <!-- ============== METRIC HUB / DRILLDOWNS ============== -->
     <section>
       <div class="section-head">
         <span class="section-eyebrow">Supporting data</span>
-        <span class="section-hint">Drilldowns · click metrics for trend</span>
+        <span class="section-hint">Click any metric for the 10-year trend</span>
       </div>
-      <div class="bg-card rounded-xl shadow-card border border-line">
+
+      <!-- Industry view falls back to the old tab structure since its
+           categories (Demand / Mix / Competition) don't fit the OEM
+           hub model. -->
+      <div id="industry-tabs" class="hidden bg-card rounded-xl shadow-card border border-line">
         <div id="tab-bar" class="flex border-b border-line overflow-x-auto bg-bgSoft/60 rounded-t-xl"></div>
         <div id="tab-body" class="p-5"></div>
+      </div>
+
+      <!-- OEM view: two-layer hub + facts -->
+      <div id="oem-hub" class="space-y-5">
+        <div>
+          <div class="flex items-end justify-between mb-2.5">
+            <h3 class="text-[12.5px] font-semibold text-navy">Performance metrics</h3>
+            <span class="text-[10.5px] text-inkMuted">Click any card for the 10-year trend</span>
+          </div>
+          <div id="metric-hub" class="metric-hub"></div>
+        </div>
+
+        <div>
+          <div class="flex items-end justify-between mb-2.5">
+            <h3 class="text-[12.5px] font-semibold text-navy">Product facts</h3>
+            <span class="text-[10.5px] text-inkMuted">Event-driven items, not 10-year trends</span>
+          </div>
+          <div id="facts-strip" class="facts-strip"></div>
+        </div>
+
+        <div id="governance-card" class="bg-card rounded-xl shadow-card border border-line p-5"></div>
       </div>
     </section>
 
@@ -364,7 +389,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507m"></script>
-  <script src="js/dashboard.js?v=20260507m"></script>
+  <script src="js/data-loader.js?v=20260507n"></script>
+  <script src="js/dashboard.js?v=20260507n"></script>
 </body>
 </html>
