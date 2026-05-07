@@ -9866,15 +9866,17 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-07T15:05:19.970Z",
+    "last_refresh": "2026-05-07T15:27:20.072Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
       "maruti_press": "success",
       "hyundai": "success",
       "mm": "success",
-      "tata": "success"
+      "tata": "success",
+      "governance": "success",
+      "industry": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25503915718"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25505205013"
   }
 }
