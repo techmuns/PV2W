@@ -421,12 +421,12 @@
       "FY": "FY24",
       "Company": "Maruti",
       "Metric": "Export Volume %",
-      "Value": 13.5,
+      "Value": 13.6,
       "YoY_Change": 1.1,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Maruti monthly sales press release",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY24",
@@ -531,23 +531,23 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Volume Growth %",
-      "Value": 4.7,
+      "Value": 2.5,
       "YoY_Change": -4.3,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Maruti monthly sales press release",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Revenue Growth %",
-      "Value": 8.2,
+      "Value": 7.5,
       "YoY_Change": -4.2,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Maruti FY financial results press release",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -597,12 +597,12 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Realisation Growth %",
-      "Value": 3.5,
+      "Value": 5,
       "YoY_Change": 0.1,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Maruti FY financial results PR + monthly sales PR",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -641,12 +641,12 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Export Volume %",
-      "Value": 15,
+      "Value": 15.6,
       "YoY_Change": 1.5,
       "Signal": "Positive",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Maruti monthly sales press release",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
+      "Last_Updated": "2026-05-06"
     },
     {
       "FY": "FY25",
@@ -9234,16 +9234,15 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-06T18:17:26.320Z",
-    "status": "partial",
+    "last_refresh": "2026-05-06T18:44:20.777Z",
+    "status": "ok",
     "fetchers": {
       "stock_prices": "success",
-      "maruti_yahoo": "failure",
       "maruti_press": "success",
       "hyundai": "success",
       "mm": "success",
       "tata": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25453016236"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25454314319"
   }
 }
