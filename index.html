@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507c" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507d" />
   <script>
     tailwind.config = {
       theme: {
@@ -192,31 +192,29 @@
 
         <div class="chart-panel lg:col-span-1">
           <div class="chart-panel-head">
-            <div>
+            <div class="min-w-0">
               <h2 id="chart2-title" class="chart-panel-title"></h2>
               <p id="chart2-help" class="chart-panel-sub"></p>
             </div>
-            <div class="flex items-center gap-2">
-              <div id="chart2-toggle" class="hidden inline-flex rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
-                <button data-mix="product" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
-                <button data-mix="export"  class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
-                <button data-mix="ev"      class="mix-btn px-2.5 py-1 rounded-md font-semibold">EV</button>
-              </div>
-              <span id="chart2-sub" class="text-[11px] text-inkMuted font-medium"></span>
+            <div id="chart2-toggle" class="hidden inline-flex flex-shrink-0 rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
+              <button data-mix="product" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
+              <button data-mix="export"  class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
+              <button data-mix="ev"      class="mix-btn px-2.5 py-1 rounded-md font-semibold">EV</button>
             </div>
+            <span id="chart2-sub" class="hidden text-[11px] text-inkMuted font-medium flex-shrink-0"></span>
           </div>
-          <div id="chart2-product-sub" class="hidden flex items-center gap-2 -mt-1">
-            <span class="text-[10.5px] text-inkMuted uppercase tracking-wider">Product view</span>
-            <div class="inline-flex rounded-md bg-canvas border border-line p-0.5 text-[11px]">
-              <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-semibold">Segment Mix</button>
-              <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-semibold">SUV / Non-SUV</button>
-            </div>
-          </div>
-          <p id="chart2-toggle-help" class="hidden text-[11px] text-inkMuted -mt-1 mb-1"></p>
           <div class="chart-panel-body">
+            <div id="chart2-product-sub" class="hidden mb-1.5">
+              <div class="inline-flex rounded-md bg-slate-50 p-0.5 text-[10.5px] border border-line/70">
+                <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-medium">Segment Mix</button>
+                <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-medium">SUV / Non-SUV</button>
+              </div>
+            </div>
+            <p id="chart2-toggle-help" class="hidden text-[11px] text-inkMuted mb-3"></p>
             <div id="chart2"></div>
-            <div id="chart2-legend" class="flex flex-wrap gap-3 text-[11px] text-inkSoft mt-3"></div>
-            <p id="chart2-foot" class="text-[10px] text-inkMuted mt-2 italic"></p>
+            <div id="chart2-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3"></div>
+            <p id="chart2-foot"   class="text-[10px] text-inkMuted mt-2 italic leading-snug"></p>
+            <p id="chart2-source" class="hidden text-[10px] text-inkMuted mt-2 leading-snug"></p>
           </div>
         </div>
 
@@ -365,7 +363,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507c"></script>
-  <script src="js/dashboard.js?v=20260507c"></script>
+  <script src="js/data-loader.js?v=20260507d"></script>
+  <script src="js/dashboard.js?v=20260507d"></script>
 </body>
 </html>
