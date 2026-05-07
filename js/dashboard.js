@@ -914,7 +914,7 @@
             </div>`).join("")}
         </div>
         <div class="text-[10.5px] text-inkMuted mt-5">
-          Source: ${info.Source} · Last updated ${new Date(info.Last_Updated).toLocaleDateString("en-GB")}
+          Source: ${(info.Source && info.Source !== "Pending") ? info.Source : "—"} · Last updated ${new Date(info.Last_Updated).toLocaleDateString("en-GB")}
         </div>`;
       return;
     }
@@ -940,7 +940,7 @@
               ${signalDot(sig)}${sig}
             </span>
           </td>
-          <td class="text-[10.5px] text-inkMuted">${r ? r.Source : "—"}</td>
+          <td class="text-[10.5px] text-inkMuted">${(r && r.Source && r.Source !== "Pending") ? r.Source : "—"}</td>
         </tr>`;
     }).join("");
 
@@ -1178,7 +1178,7 @@
       </div>`;
 
     $("#modal-insight").textContent = generateInsight(metric, values, labels, valued.length < 10);
-    $("#modal-source").textContent  = lastRow.Source || "—";
+    $("#modal-source").textContent  = (lastRow.Source && lastRow.Source !== "Pending") ? lastRow.Source : "—";
     $("#modal-updated").textContent = lastRow.Last_Updated
       ? new Date(lastRow.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
       : "—";
@@ -1414,7 +1414,7 @@
     if (srcOk && current.Source_URL) {
       srcEl.innerHTML = `<a href="${current.Source_URL}" target="_blank" rel="noopener" class="text-blue hover:underline">${current.Source}</a>`;
     } else {
-      srcEl.textContent = srcOk ? current.Source : "Pending";
+      srcEl.textContent = srcOk ? current.Source : "—";
     }
     $("#vmodal-updated").textContent = current && current.Last_Updated
       ? new Date(current.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
