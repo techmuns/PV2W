@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507l" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507m" />
   <script>
     tailwind.config = {
       theme: {
@@ -263,14 +263,15 @@
   </div>
 
   <!-- Dashboard chart hover tooltip — white-on-navy, compact -->
-  <div id="chart-tooltip" class="hidden pointer-events-none fixed z-[60] bg-white border border-line shadow-modal rounded-lg px-3 py-2 min-w-[148px] max-w-[280px]">
-    <div id="cht-fy" class="text-[10px] text-inkMuted uppercase tracking-wider font-semibold"></div>
-    <div id="cht-simple" class="flex items-center gap-2 mt-1">
-      <span id="cht-swatch" class="inline-block w-2.5 h-2.5 rounded-sm"></span>
-      <span id="cht-series" class="text-[11.5px] text-inkSoft"></span>
-      <span id="cht-value" class="text-[13px] font-semibold text-navy tabular-nums ml-auto"></span>
+  <div id="chart-tooltip" class="hidden pointer-events-none fixed z-[60] min-w-[200px] max-w-[300px]"
+       style="background:#FFFFFF; border:1px solid #E5EAF0; border-radius:12px; padding:12px 14px; box-shadow:0 6px 20px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04); font-family: inherit;">
+    <div id="cht-fy" class="text-[11px] font-medium" style="color:#374151; letter-spacing:0.01em;"></div>
+    <div id="cht-simple" class="flex items-center gap-2 mt-1.5">
+      <span id="cht-swatch" class="inline-block w-2 h-2 rounded-sm"></span>
+      <span id="cht-series" class="text-[11.5px]" style="color:#6B7280;"></span>
+      <span id="cht-value" class="text-[12.5px] font-semibold tabular-nums ml-auto" style="color:#1F2A37;"></span>
     </div>
-    <div id="cht-rich" class="hidden mt-1.5 space-y-1"></div>
+    <div id="cht-rich" class="hidden mt-2 space-y-1.5"></div>
   </div>
 
   <!-- ============== TREND MODAL ============== -->
@@ -363,7 +364,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507l"></script>
-  <script src="js/dashboard.js?v=20260507l"></script>
+  <script src="js/data-loader.js?v=20260507m"></script>
+  <script src="js/dashboard.js?v=20260507m"></script>
 </body>
 </html>
