@@ -38,8 +38,10 @@
     fy:        "FY25",
     company:   "Maruti",
     activeTab: "Growth",
-    mixView:     "product",  // product | export | ev — drives chart2 for OEM view
+    mixView:     "product",  // product | export | powertrain — Mix lens chart
     productView: "segment",  // segment | suv — sub-toggle when mixView === 'product'
+    activeLens:  "growth",   // growth | share | mix | margin | capital — Investor Lens
+    viewAllOpen: false,      // 'View all metrics' drawer
   };
 
   /* ---------- helpers ---------- */
@@ -393,6 +395,7 @@
   /* ---------- KPI strip ---------- */
   function renderKpiStrip() {
     const grid = $("#kpi-strip");
+    if (!grid) return;   /* KPI strip retired in favour of Investor Lens table */
     const isIndustry = state.company === "Industry";
     const list = isIndustry ? D.INDUSTRY_KPIS : D.OEM_KPIS;
 
@@ -773,28 +776,7 @@
         legendChip(COLOR.greySft, prevFY(state.fy) || "Prev FY") + legendChip(COLOR.blue, state.fy);
 
     } else {
-      $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
-      $("#chart1-help").textContent  = "Volume growth comparison";
-      $("#chart1-sub").textContent   = "";
-
-      const oemVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Volume Growth %")||{}).Value ?? null);
-      const indVals = fyHistory.map(fy => (getIndustryMetric(fy, "PV Volume Growth %")||{}).Value ?? null);
-      $("#chart1").innerHTML = groupedBarChart([
-        { name: "PV industry", color: COLOR.greySft, values: indVals },
-        { name: state.company, color: COLOR.blue,    values: oemVals },
-      ], fyHistory, { yUnit: "%" });
-      $("#chart1-legend").innerHTML =
-        legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
-      $("#chart1-source").textContent = state.company === "Maruti"
-        ? "Source: SIAM (industry); Maruti Suzuki Q4 Investor Presentations / FY25 Annual Report."
-        : "Source: SIAM (industry); company filings (OEM volumes).";
-
-      $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
-      $("#chart2-help").textContent  = "Total sales volume by selected mix";
-      $("#chart2-sub").textContent   = "";
-      $("#chart2-sub").classList.add("hidden");
-      $("#chart2-toggle").classList.remove("hidden");
-      renderVolumeMixChart();
+      renderLensChart();
     }
 
     bindChartHovers($("#chart1"));
@@ -837,6 +819,293 @@
       bev:    "#7DD3FC",
     },
   };
+
+  /* ====================================================
+     INVESTOR LENS — engine, summary table, chart dispatcher
+     ====================================================
+     Each lens reads the live company-FY metrics and produces:
+       - signal   : Positive | Neutral | Weak | Watch | Data unavailable
+       - read     : one-line, computed from the actual movement
+     The read string is composed at render-time from real numbers
+     so it always reflects the selected company + FY.
+
+     Methodology: simple deterministic rules per lens. We compare
+     selected FY to prior FY, with a peak/floor sanity check on
+     Market Share. No ML, no scoring matrix — all transparent. */
+
+  const LENS_DEFS = {
+    growth:  { name: "Growth",  title: "Growth quality",     help: "Shows whether growth is volume-led or pricing-led." },
+    share:   { name: "Share",   title: "Market momentum",    help: "Shows whether the OEM is gaining or losing share versus the industry." },
+    mix:     { name: "Mix",     title: "Mix shift",          help: "Shows where the OEM's sales volume is coming from." },
+    margin:  { name: "Margin",  title: "Margin resilience",  help: "Shows whether profitability is recovering or under pressure." },
+    capital: { name: "Capital", title: "Capital discipline", help: "Shows whether growth is being supported by efficient capital use." },
+  };
+  const LENS_ORDER = ["growth", "share", "mix", "margin", "capital"];
+  const LENS_OPENS = {
+    growth:  "Growth quality trend",
+    share:   "Market share + industry comparison",
+    mix:     "Product / export / powertrain mix",
+    margin:  "Gross margin + EBITDA margin trend",
+    capital: "Capex + utilisation + working capital",
+  };
+
+  function computeLens(lens, company, fy) {
+    const fyPrior = prevFY(fy);
+    const get  = (m) => getCompanyMetric(fy, company, m);
+    const getP = (m) => fyPrior ? getCompanyMetric(fyPrior, company, m) : null;
+    const v    = (r) => (r && r.Value !== null && r.Value !== undefined && typeof r.Value === "number") ? r.Value : null;
+    const fmtPct = (n) => (n >= 0 ? "+" : "") + n.toFixed(1) + "%";
+    const fmtPp  = (n) => (n >= 0 ? "+" : "") + n.toFixed(1) + " pp";
+    const unavailable = { signal: "Data unavailable", read: "Insufficient data for selected FY" };
+
+    if (lens === "growth") {
+      const rev  = v(get("Revenue Growth %"));
+      const vol  = v(get("Volume Growth %"));
+      const real = v(get("Realisation Growth %"));
+      if (rev == null && vol == null) return unavailable;
+      let signal, read;
+      if (rev != null && vol != null && rev > 1 && vol > 1) {
+        signal = "Positive";
+        read = `Broad-based — revenue ${fmtPct(rev)}, volume ${fmtPct(vol)}.`;
+      } else if (rev != null && rev < 0) {
+        signal = "Weak";
+        read = vol != null
+          ? `Revenue contracted (${fmtPct(rev)}) with volume ${fmtPct(vol)}.`
+          : `Revenue contracted ${fmtPct(rev)}.`;
+      } else if (rev != null && vol != null && vol < 0 && real != null && real > 0) {
+        signal = "Neutral";
+        read = `Realisation-led — pricing held (${fmtPct(real)}) while volume slipped (${fmtPct(vol)}).`;
+      } else if (rev != null && vol != null && rev > 0 && vol > 0) {
+        signal = "Neutral";
+        read = `Growth slowing — revenue ${fmtPct(rev)}, volume ${fmtPct(vol)}.`;
+      } else {
+        signal = "Neutral";
+        read = `Mixed growth signals${rev != null ? ` (revenue ${fmtPct(rev)})` : ""}.`;
+      }
+      return { signal, read };
+    }
+
+    if (lens === "share") {
+      const ms     = v(get("Market Share %"));
+      const msPrev = v(getP("Market Share %"));
+      if (ms == null) return unavailable;
+      const fyHistory = D.FYS;
+      const series = fyHistory.map(f => v(getCompanyMetric(f, company, "Market Share %"))).filter(x => x != null);
+      const peak = series.length ? Math.max(...series) : null;
+      const indGrowth = v(getIndustryMetric(fy, "PV Volume Growth %"));
+      const oemGrowth = v(get("Volume Growth %"));
+      let signal, read;
+      const delta = (msPrev != null) ? +(ms - msPrev).toFixed(1) : null;
+      if (delta != null && delta > 0.2) {
+        signal = "Positive";
+        read = `Share expanded ${fmtPp(delta)} to ${ms.toFixed(1)}%`;
+      } else if (delta != null && delta < -0.2) {
+        signal = "Weak";
+        read = `Share slipped ${fmtPp(delta)} to ${ms.toFixed(1)}%`;
+      } else {
+        signal = "Neutral";
+        read = `Share broadly flat at ${ms.toFixed(1)}%`;
+      }
+      if (peak != null && ms < peak - 0.5) {
+        read += `; below ${peak.toFixed(1)}% prior peak`;
+      }
+      if (indGrowth != null && oemGrowth != null) {
+        const gap = +(oemGrowth - indGrowth).toFixed(1);
+        if (Math.abs(gap) >= 1) {
+          read += `; ${gap > 0 ? "outpacing" : "lagging"} industry by ${Math.abs(gap).toFixed(1)} pp`;
+        }
+      }
+      read += ".";
+      return { signal, read };
+    }
+
+    if (lens === "mix") {
+      const suv     = v(get("SUV Volume %"));
+      const suvP    = v(getP("SUV Volume %"));
+      const exp     = v(get("Export Volume %"));
+      const expP    = v(getP("Export Volume %"));
+      if (suv == null && exp == null) return unavailable;
+      const drivers = [];
+      if (suv != null && suvP != null) drivers.push({ name: "SUV", delta: +(suv - suvP).toFixed(1) });
+      if (exp != null && expP != null) drivers.push({ name: "exports", delta: +(exp - expP).toFixed(1) });
+      const ups   = drivers.filter(d => d.delta >  0.2);
+      const downs = drivers.filter(d => d.delta < -0.2);
+      let signal, read;
+      if (ups.length && !downs.length) {
+        signal = "Positive";
+        read = `${ups.map(d => `${d.name} ${fmtPp(d.delta)}`).join(" and ")} — premium mix improving.`;
+      } else if (downs.length && !ups.length) {
+        signal = "Weak";
+        read = `${downs.map(d => `${d.name} ${fmtPp(d.delta)}`).join(" and ")} — mix softening.`;
+      } else if (ups.length && downs.length) {
+        signal = "Neutral";
+        read = `${ups.map(d => `${d.name} ${fmtPp(d.delta)}`).join(", ")}; ${downs.map(d => `${d.name} ${fmtPp(d.delta)}`).join(", ")}.`;
+      } else {
+        signal = "Neutral";
+        read = `Mix broadly stable.`;
+      }
+      return { signal, read };
+    }
+
+    if (lens === "margin") {
+      const eb   = v(get("EBITDA Margin %"));
+      const ebP  = v(getP("EBITDA Margin %"));
+      const gm   = v(get("Gross Margin %"));
+      const gmP  = v(getP("Gross Margin %"));
+      if (eb == null && gm == null) return unavailable;
+      let signal, read;
+      const ebDelta = (eb != null && ebP != null) ? +(eb - ebP).toFixed(1) : null;
+      const gmDelta = (gm != null && gmP != null) ? +(gm - gmP).toFixed(1) : null;
+      if (ebDelta != null && ebDelta > 0.2 && (gmDelta == null || gmDelta >= -0.3)) {
+        signal = "Positive";
+        read = `EBITDA margin ${fmtPp(ebDelta)} to ${eb.toFixed(1)}%`;
+        if (gmDelta != null) read += `; gross margin ${gmDelta >= 0 ? "stable" : "softer"} at ${gm.toFixed(1)}%`;
+      } else if (ebDelta != null && ebDelta < -0.2) {
+        signal = "Weak";
+        read = `EBITDA margin contracted ${fmtPp(ebDelta)} to ${eb.toFixed(1)}%`;
+        if (gmDelta != null) read += `; gross margin ${fmtPp(gmDelta)}`;
+      } else {
+        signal = "Neutral";
+        read = eb != null
+          ? `EBITDA margin broadly flat at ${eb.toFixed(1)}%${gmDelta != null ? `; gross margin ${gmDelta >= 0 ? "+" : ""}${gmDelta.toFixed(1)} pp` : ""}`
+          : `Margin signals mixed`;
+      }
+      read += ".";
+      return { signal, read };
+    }
+
+    if (lens === "capital") {
+      const util   = v(get("Capacity Utilisation %"));
+      const utilP  = v(getP("Capacity Utilisation %"));
+      const capex  = v(get("Capex (Rs Cr)"));
+      const capexP = v(getP("Capex (Rs Cr)"));
+      const wcd    = v(get("Working Capital Days"));
+      const wcdP   = v(getP("Working Capital Days"));
+      if (util == null && capex == null && wcd == null) return unavailable;
+      const utilDelta  = (util != null && utilP != null)   ? +(util - utilP).toFixed(1) : null;
+      const capexPct   = (capex != null && capexP != null && capexP !== 0) ? +(((capex - capexP) / capexP) * 100).toFixed(1) : null;
+      const wcdDelta   = (wcd != null && wcdP != null)     ? +(wcd - wcdP).toFixed(1) : null;
+      let signal, read;
+      if (utilDelta != null && utilDelta > 1 && (wcdDelta == null || wcdDelta <= 0)) {
+        signal = "Positive";
+        read = `Utilisation ${fmtPp(utilDelta)} to ${util.toFixed(1)}%; working capital steady.`;
+      } else if (capexPct != null && capexPct > 20 && utilDelta != null && utilDelta < 0) {
+        signal = "Watch";
+        read = `Capex up ${fmtPct(capexPct)} as utilisation slipped ${fmtPp(utilDelta)} — needs follow-through.`;
+      } else if (utilDelta != null && utilDelta < -2) {
+        signal = "Weak";
+        read = `Utilisation fell ${fmtPp(utilDelta)} to ${util.toFixed(1)}%${capexPct != null ? `; capex ${fmtPct(capexPct)}` : ""}.`;
+      } else if (capexPct != null && capexPct > 15) {
+        signal = "Watch";
+        read = `Capex rising ${fmtPct(capexPct)}; utilisation ${util != null ? `${util.toFixed(1)}%` : "—"}.`;
+      } else {
+        signal = "Neutral";
+        const bits = [];
+        if (util != null) bits.push(`utilisation ${util.toFixed(1)}%`);
+        if (capexPct != null) bits.push(`capex ${fmtPct(capexPct)}`);
+        if (wcd != null) bits.push(`WCD ${wcd.toFixed(0)}d`);
+        read = bits.length ? `${bits.join(", ")}.` : "Capital signals mixed.";
+      }
+      return { signal, read };
+    }
+
+    return unavailable;
+  }
+
+  function pillFor(signal) {
+    const map = { "Positive": "positive", "Neutral": "neutral", "Weak": "weak", "Watch": "watch", "Data unavailable": "unavailable" };
+    const cls = map[signal] || "neutral";
+    return `<span class="lens-pill ${cls}"><span class="dot"></span>${signal}</span>`;
+  }
+
+  function renderLensSummary() {
+    const tbody = $("#lens-tbody");
+    if (!tbody) return;
+    tbody.innerHTML = LENS_ORDER.map(lens => {
+      const def = LENS_DEFS[lens];
+      const { signal, read } = computeLens(lens, state.company, state.fy);
+      const active = lens === state.activeLens ? "active" : "";
+      return `<tr class="${active}" data-lens="${lens}">
+        <td class="lens-name">${def.name}</td>
+        <td class="lens-signal">${pillFor(signal)}</td>
+        <td class="lens-read">${read}</td>
+        <td class="lens-opens">${LENS_OPENS[lens]}</td>
+      </tr>`;
+    }).join("");
+    tbody.querySelectorAll("tr[data-lens]").forEach(tr => {
+      tr.addEventListener("click", () => {
+        state.activeLens = tr.dataset.lens;
+        renderLensSummary();
+        renderLensChart();
+      });
+    });
+  }
+
+  /* Render the chart panel for the currently selected lens.
+     For Mix, defers to renderVolumeMixChart (with toggles).
+     For other lenses, draws a multi-line trend chart. */
+  function renderLensChart() {
+    const lens = state.activeLens;
+    const def  = LENS_DEFS[lens];
+    const fyHistory = D.FYS;
+    const company = state.company;
+
+    $("#chart2-title").textContent = def.title;
+    $("#chart2-help").textContent  = def.help;
+    $("#chart2-sub").textContent = "";
+    $("#chart2-sub").classList.add("hidden");
+    $("#chart2-source").textContent = company === "Maruti"
+      ? "Source: Maruti Suzuki Annual Reports / Q4 Investor Presentations" + (lens === "share" ? "; SIAM (industry / market share)." : ".")
+      : "Source: company filings; SIAM (industry).";
+
+    /* Mix lens uses its own dedicated bar chart with toggles. */
+    if (lens === "mix") {
+      $("#chart2-toggle").classList.remove("hidden");
+      renderVolumeMixChart();
+      return;
+    }
+
+    /* Hide Mix-specific controls for non-Mix lenses. */
+    $("#chart2-toggle").classList.add("hidden");
+    $("#chart2-product-sub").style.visibility = "hidden";
+
+    /* Build the line series per lens. */
+    const seriesByLens = {
+      growth: [
+        { name: "Revenue Growth %",     metric: "Revenue Growth %",     color: "#173B63" },
+        { name: "Volume Growth %",      metric: "Volume Growth %",      color: "#5B7CFA" },
+        { name: "Realisation Growth %", metric: "Realisation Growth %", color: "#4DB6AC" },
+      ],
+      share: [
+        { name: "Market Share %",      metric: "Market Share %",      color: "#173B63" },
+        { name: company + " Vol Gr %", metric: "Volume Growth %",     color: "#5B7CFA" },
+        { name: "Industry Vol Gr %",   metric: "PV Volume Growth %",  color: "#94A3B8", source: "industry" },
+      ],
+      margin: [
+        { name: "Gross Margin %",  metric: "Gross Margin %",  color: "#173B63" },
+        { name: "EBITDA Margin %", metric: "EBITDA Margin %", color: "#4DB6AC" },
+      ],
+      capital: [
+        { name: "Capacity Utilisation %", metric: "Capacity Utilisation %", color: "#173B63" },
+        { name: "Working Capital Days",   metric: "Working Capital Days",   color: "#94A3B8" },
+        { name: "Capex (Rs Cr ÷ 100)",    metric: "Capex (Rs Cr)",          color: "#E7A64A", scale: 0.01 },
+      ],
+    };
+    const series = (seriesByLens[lens] || []).map(s => {
+      const values = fyHistory.map(fy => {
+        const r = s.source === "industry"
+          ? getIndustryMetric(fy, s.metric)
+          : getCompanyMetric(fy, company, s.metric);
+        const val = r && r.Value !== null && typeof r.Value === "number" ? r.Value : null;
+        return val == null ? null : (s.scale ? +(val * s.scale).toFixed(2) : val);
+      });
+      return { name: s.name, color: s.color, values };
+    });
+
+    $("#chart2").innerHTML = lineChart(series, { xLabels: fyHistory, yUnit: lens === "capital" ? "" : "%" });
+    $("#chart2-legend").innerHTML = series.map(s => legendChip(s.color, s.name)).join("");
+    bindChartHovers($("#chart2"));
+  }
 
   function renderVolumeMixChart() {
     const view = state.mixView;
@@ -2036,7 +2305,11 @@
   function renderAll() {
     renderTopBar();
     renderIdentityRow();
-    renderKpiStrip();
+    /* KPI strip is removed for OEM view (Investor Lens replaces it).
+       Industry view hides #lens-section instead. */
+    const isIndustry = state.company === "Industry";
+    $("#lens-section").classList.toggle("hidden", isIndustry);
+    if (!isIndustry) renderLensSummary();
     renderCharts();
     renderVehicleCards();
     renderTabs();
@@ -2080,6 +2353,15 @@
         renderVolumeMixChart();
       });
     });
+    /* "View all metrics" drawer */
+    const viewAllBtn = $("#view-all-toggle");
+    if (viewAllBtn) {
+      viewAllBtn.addEventListener("click", () => {
+        state.viewAllOpen = !state.viewAllOpen;
+        $("#oem-hub-body").classList.toggle("hidden", !state.viewAllOpen);
+        viewAllBtn.textContent = state.viewAllOpen ? "Hide all metrics ↑" : "View all metrics ↓";
+      });
+    }
   }
 
   /* ---------- boot ----------

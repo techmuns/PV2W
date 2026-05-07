@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507o" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507p" />
   <script>
     tailwind.config = {
       theme: {
@@ -160,64 +160,60 @@
       </div>
     </section>
 
-    <!-- ============== KPI STRIP ============== -->
-    <section>
+    <!-- ============== INVESTOR LENS SUMMARY ============== -->
+    <section id="lens-section">
       <div class="section-head">
-        <span class="section-eyebrow">Key Metrics</span>
-        <span class="section-hint">Click any card for the 10-year trend</span>
+        <span class="section-eyebrow">Investor lens</span>
+        <span class="section-hint">Click any row to focus the chart below</span>
       </div>
-      <div id="kpi-strip" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+      <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden">
+        <table id="lens-table" class="lens-tbl">
+          <thead>
+            <tr>
+              <th>Lens</th>
+              <th>Signal</th>
+              <th>One-line read</th>
+              <th class="opens">Opens</th>
+            </tr>
+          </thead>
+          <tbody id="lens-tbody"></tbody>
+        </table>
+      </div>
     </section>
 
-    <!-- ============== ANALYTICS ROW ============== -->
+    <!-- ============== SELECTED LENS CHART ============== -->
     <section>
-      <div class="section-head">
-        <span class="section-eyebrow">Performance</span>
-        <span class="section-hint">Growth · Mix · Buy-side read</span>
+      <div class="chart-panel">
+        <div class="chart-panel-head" style="min-height:64px">
+          <div class="min-w-0">
+            <h2 id="chart2-title" class="chart-panel-title"></h2>
+            <p id="chart2-help" class="chart-panel-sub"></p>
+          </div>
+          <div id="chart2-toggle" class="hidden inline-flex flex-shrink-0 rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
+            <button data-mix="product"    class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
+            <button data-mix="export"     class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
+            <button data-mix="powertrain" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Powertrain</button>
+          </div>
+          <span id="chart2-sub" class="hidden text-[11px] text-inkMuted font-medium flex-shrink-0"></span>
+        </div>
+        <div class="chart-panel-body">
+          <div id="chart2-product-sub" class="mb-1.5" style="min-height:28px">
+            <div class="inline-flex rounded-md bg-slate-50 p-0.5 text-[10.5px] border border-line/70">
+              <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-medium">Detailed</button>
+              <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-medium">SUV / Non-SUV</button>
+            </div>
+          </div>
+          <div id="chart2" style="min-height:240px"></div>
+          <div id="chart2-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3" style="min-height:40px"></div>
+          <p id="chart2-source" class="text-[10px] text-inkMuted mt-2 leading-snug" style="min-height:28px">&nbsp;</p>
+        </div>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="chart-panel lg:col-span-1">
-          <div class="chart-panel-head" style="min-height:64px">
-            <div class="min-w-0">
-              <h2 id="chart1-title" class="chart-panel-title"></h2>
-              <p id="chart1-help" class="chart-panel-sub"></p>
-            </div>
-            <span id="chart1-sub" class="text-[11px] text-inkMuted font-medium flex-shrink-0"></span>
-          </div>
-          <div class="chart-panel-body">
-            <div class="mb-1.5" style="min-height:28px"></div>
-            <div id="chart1" style="min-height:240px"></div>
-            <div id="chart1-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3" style="min-height:40px"></div>
-            <p id="chart1-source" class="text-[10px] text-inkMuted mt-2 leading-snug" style="min-height:28px">&nbsp;</p>
-          </div>
-        </div>
-
-        <div class="chart-panel lg:col-span-1">
-          <div class="chart-panel-head" style="min-height:64px">
-            <div class="min-w-0">
-              <h2 id="chart2-title" class="chart-panel-title"></h2>
-              <p id="chart2-help" class="chart-panel-sub"></p>
-            </div>
-            <div id="chart2-toggle" class="hidden inline-flex flex-shrink-0 rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
-              <button data-mix="product"    class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
-              <button data-mix="export"     class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
-              <button data-mix="powertrain" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Powertrain</button>
-            </div>
-            <span id="chart2-sub" class="hidden text-[11px] text-inkMuted font-medium flex-shrink-0"></span>
-          </div>
-          <div class="chart-panel-body">
-            <div id="chart2-product-sub" class="mb-1.5" style="min-height:28px">
-              <div class="inline-flex rounded-md bg-slate-50 p-0.5 text-[10.5px] border border-line/70">
-                <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-medium">Detailed</button>
-                <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-medium">SUV / Non-SUV</button>
-              </div>
-            </div>
-            <div id="chart2" style="min-height:240px"></div>
-            <div id="chart2-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3" style="min-height:40px"></div>
-            <p id="chart2-source" class="text-[10px] text-inkMuted mt-2 leading-snug" style="min-height:28px">&nbsp;</p>
-          </div>
-        </div>
-
+      <!-- Hidden legacy chart1 placeholders kept so the existing
+           Industry-view branch (which still writes into them) doesn't
+           crash. The OEM view never surfaces this card. -->
+      <div class="hidden">
+        <h2 id="chart1-title"></h2><p id="chart1-help"></p><span id="chart1-sub"></span>
+        <div id="chart1"></div><div id="chart1-legend"></div><p id="chart1-source"></p>
       </div>
     </section>
 
@@ -243,12 +239,18 @@
         <div id="tab-body" class="p-5"></div>
       </div>
 
-      <!-- OEM view: single grouped metric table + governance -->
+      <!-- OEM view: collapsed by default, expanded via "View all metrics" -->
       <div id="oem-hub" class="space-y-4">
-        <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden">
-          <div id="metric-table"></div>
+        <button id="view-all-toggle"
+                class="text-[11.5px] font-medium px-3 py-1.5 rounded-md border border-line bg-card hover:bg-bgSoft text-navy transition-colors">
+          View all metrics ↓
+        </button>
+        <div id="oem-hub-body" class="hidden space-y-4">
+          <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden">
+            <div id="metric-table"></div>
+          </div>
+          <div id="governance-card" class="bg-card rounded-xl shadow-card border border-line p-5"></div>
         </div>
-        <div id="governance-card" class="bg-card rounded-xl shadow-card border border-line p-5"></div>
       </div>
     </section>
 
@@ -374,7 +376,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507o"></script>
-  <script src="js/dashboard.js?v=20260507o"></script>
+  <script src="js/data-loader.js?v=20260507p"></script>
+  <script src="js/dashboard.js?v=20260507p"></script>
 </body>
 </html>
