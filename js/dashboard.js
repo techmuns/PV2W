@@ -1777,36 +1777,18 @@
     const fy = labels[i];
     if (v === null || v === undefined) { tip.classList.add("hidden"); return; }
     const prev = i > 0 ? values[i-1] : null;
-    const isPct = isPctMetric(metric);
-    const prevFyLabel = i > 0 ? labels[i-1] : null;
-
-    /* Year + absolute number */
-    $("#trend-tt-fy").textContent  = fy;
-    $("#trend-tt-val").textContent = formatMetricValue(metric, v);
-
-    /* Growth = YoY % change (current/prior - 1). Always rendered as
-       a percentage with 1 decimal, regardless of whether the metric
-       itself is a percentage or an absolute. */
-    let growthText = "Growth: —";
-    if (typeof prev === "number" && prev !== 0) {
-      const g = ((v / prev) - 1) * 100;
-      growthText = `Growth: ${g >= 0 ? "+" : ""}${g.toFixed(1)}% YoY`;
-    }
-    $("#trend-tt-growth").textContent = growthText;
-
-    /* YoY delta = absolute change (pp for %-metrics, raw for others) */
-    let yoyText = "Δ: —";
+    let yoyText = "—";
     if (typeof prev === "number") {
       const diff = v - prev;
-      const sign = diff >= 0 ? "+" : "";
-      const suffix = isPct ? " pp" : "";
-      yoyText = `Δ vs ${prevFyLabel}: ${sign}${diff.toFixed(1)}${suffix}`;
+      const isPct = isPctMetric(metric);
+      yoyText = (diff >= 0 ? "+" : "") + diff.toFixed(1) + (isPct ? "pp YoY" : " YoY");
     }
-    if (benchValues && typeof benchValues[i] === "number") {
-      yoyText += `  ·  Industry ${formatMetricValue(metric, benchValues[i])}`;
-    }
+    $("#trend-tt-fy").textContent = fy;
+    $("#trend-tt-val").textContent = formatMetricValue(metric, v);
     $("#trend-tt-yoy").textContent = yoyText;
-
+    if (benchValues && typeof benchValues[i] === "number") {
+      $("#trend-tt-yoy").textContent += `  ·  Industry: ${formatMetricValue(metric, benchValues[i])}`;
+    }
     tip.classList.remove("hidden");
     tip.style.left = (e.clientX + 14) + "px";
     tip.style.top  = (e.clientY + 14) + "px";
