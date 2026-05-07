@@ -748,7 +748,41 @@ body::before {
   border-bottom: 1px solid #E5EAF0;
   white-space: nowrap;
 }
-.mtbl-transposed thead th.row-label-head { background: #FFFFFF; border-bottom: 1px solid #E5EAF0; }
+.mtbl-transposed thead th.row-label-head { background: #FFFFFF; border-bottom: 1px solid #E5EAF0; padding: 8px 10px; }
+.mtbl-transposed thead th.metric-col-head {
+  background: #F4F6FA;
+  color: #1F2A37;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  padding: 10px 12px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+  border-bottom: 1px solid #E5EAF0;
+}
+/* Inline category dropdown, sits in the table's top-left corner */
+.cat-select-inline {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #FFFFFF;
+  color: #1F2A37;
+  font-weight: 600;
+  font-size: 12px;
+  border: 1px solid #D9E2EC;
+  border-radius: 8px;
+  padding: 6px 28px 6px 10px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231F2A37' stroke-width='2.4'><path stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  cursor: pointer;
+  width: 100%;
+  min-width: 110px;
+}
+.cat-select-inline:hover  { border-color: #C9D2DF; }
+.cat-select-inline:focus  { outline: none; border-color: #173B63; box-shadow: 0 0 0 2px rgba(23,59,99,0.15); }
 .mtbl-transposed thead th.group-start-col,
 .mtbl-transposed tbody td.group-start-col { border-left: 1px solid #DDE4EE; }
 .mtbl-transposed tbody th.row-label {
