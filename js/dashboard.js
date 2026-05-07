@@ -781,7 +781,7 @@
         legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
 
       $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
-      $("#chart2-help").textContent  = "Total sales volume, with split by selected mix";
+      $("#chart2-help").textContent  = "Total sales volume with product mix split";
       $("#chart2-sub").textContent   = "";
       $("#chart2-sub").classList.add("hidden");
       $("#chart2-toggle").classList.remove("hidden");
@@ -821,7 +821,7 @@
     let helpText = "";
     if (view === "product") {
       helpText = state.productView === "suv"
-        ? "SUV / non-SUV split within Maruti volume"
+        ? "Same product mix, grouped into SUV and non-SUV"
         : "Split of total sales volume by product segment";
     } else if (view === "export") {
       helpText = "Split of total sales volume into domestic and exports";
@@ -852,7 +852,7 @@
     if (state.company === "Maruti") {
       sourceEl.textContent = view === "powertrain"
         ? "Source: Maruti Suzuki Annual Reports / Q4 Investor Presentations; powertrain split based on company disclosures where available."
-        : "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report. Segment split from company sales disclosures.";
+        : "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report.";
       sourceEl.classList.remove("hidden");
     } else {
       sourceEl.textContent = "";
@@ -937,34 +937,15 @@
       legendItems = legendChip(COLOR.teal, "CNG") + legendChip(COLOR.amber, "Hybrid") +
                     legendChip("#22D3EE", "BEV") + legendChip(COLOR.greySft, "Petrol / Diesel / Other ICE");
       footnote = "Powertrain split per Maruti company disclosures (Q4 IP / AR). FY23 CNG not separately broken out; bundled with the residual ICE bucket.";
-    } else if (view === "product" && state.productView === "suv") {
-      /* SUV / UV % is reported on a *domestic* sales basis (Maruti
-         Q4 IP "domestic segment mix"). Convert SUV share back to
-         absolute lakh units against domestic vol, with the rest of
-         the bar (incl. exports) as Non-SUV. */
-      bars = data.map(d => {
-        if (d.total == null || d.suvP == null || d.exportP == null) return { fy: d.fy, total: null, segments: [] };
-        const totalLakh = TO_LAKH(d.total);
-        const domLakh   = totalLakh * (100 - d.exportP) / 100;
-        const suvLakh   = domLakh * d.suvP / 100;
-        const nonSuvLakh = totalLakh - suvLakh;
-        const suvOfTotal = (suvLakh / totalLakh) * 100;
-        return {
-          fy: d.fy, total: totalLakh, segments: [
-            { label: "Non-SUV", value: nonSuvLakh, pct: 100 - suvOfTotal, color: COLOR.greySft },
-            { label: "SUV",     value: suvLakh,    pct: suvOfTotal,        color: COLOR.blue },
-          ],
-          basisNote: `SUV share: ${d.suvP.toFixed(1)}% — basis: domestic sales volume`,
-        };
-      });
-      legendItems = legendChip(COLOR.greySft, "Non-SUV") + legendChip(COLOR.blue, "SUV");
-      footnote = "SUV / Non-SUV split is based on domestic sales volume.";
     } else if (view === "product") {
-      /* Product → Segment Mix.
-         Volumes per Maruti's monthly sales press releases. Six
+      /* Product mix from Maruti's monthly sales press releases. Six
          product buckets plus a residual that catches exports +
-         Toyota OEM supplies, so the bar still sums to the user-
-         disclosed total. Other OEMs render "Data not available". */
+         Toyota OEM supplies, so the bar sums to the user-disclosed
+         total. Sub-toggle (state.productView):
+           - 'segment' : show all 7 segments
+           - 'suv'     : same data, regrouped into SUV (= UV bucket)
+                         vs Non-SUV (everything else)
+      */
       const PRODUCT_MIX = {
         Maruti: {
           FY23: { Mini: 144517, Compact: 870790, MidSize: 13596, UV: 339640, Vans: 161099, LCV: 30762 },
@@ -973,15 +954,16 @@
         },
       };
       const segDef = [
-        { key: "Mini",       label: "Mini",                 color: COLOR.blueSft },
-        { key: "Compact",    label: "Compact",              color: COLOR.blue },
-        { key: "MidSize",    label: "Mid-size",             color: "#3B82F6" },
-        { key: "UV",         label: "UV / SUV",             color: COLOR.navy },
-        { key: "Vans",       label: "Vans",                 color: COLOR.teal },
-        { key: "LCV",        label: "LCV",                  color: COLOR.amber },
-        { key: "Other",      label: "Exports + OEM supply", color: COLOR.greySft },
+        { key: "Mini",    label: "Mini",                 color: COLOR.blueSft },
+        { key: "Compact", label: "Compact",              color: COLOR.blue },
+        { key: "MidSize", label: "Mid-size",             color: "#3B82F6" },
+        { key: "UV",      label: "UV / SUV",             color: COLOR.navy },
+        { key: "Vans",    label: "Vans",                 color: COLOR.teal },
+        { key: "LCV",     label: "LCV",                  color: COLOR.amber },
+        { key: "Other",   label: "Exports + OEM supply", color: COLOR.greySft },
       ];
       const mix = PRODUCT_MIX[company];
+
       bars = data.map(d => {
         const m = mix && mix[d.fy];
         if (!m || d.total == null) return { fy: d.fy, total: null, segments: [] };
@@ -989,14 +971,34 @@
         const segVolsLakh = segDef.slice(0, 6).map(sd => TO_LAKH(m[sd.key] || 0));
         const sumSix = segVolsLakh.reduce((a,b) => a+b, 0);
         const otherLakh = Math.max(0, totalLakh - sumSix);
-        const segments = segDef.map((sd, i) => {
+        const fullSegments = segDef.map((sd, i) => {
           const value = i < 6 ? segVolsLakh[i] : otherLakh;
           return { label: sd.label, value, pct: (value / totalLakh) * 100, color: sd.color };
-        }).filter(s => s.value > 0);
-        return { fy: d.fy, total: totalLakh, segments };
+        });
+
+        if (state.productView === "suv") {
+          /* Regroup the same product data: UV bucket = SUV;
+             everything else (Mini + Compact + Mid + Vans + LCV +
+             Exports/OEM residual) = Non-SUV. */
+          const suvLakh = TO_LAKH(m.UV || 0);
+          const nonSuvLakh = totalLakh - suvLakh;
+          return {
+            fy: d.fy, total: totalLakh, segments: [
+              { label: "Non-SUV", value: nonSuvLakh, pct: (nonSuvLakh / totalLakh) * 100, color: COLOR.greySft },
+              { label: "SUV",     value: suvLakh,    pct: (suvLakh / totalLakh) * 100,    color: COLOR.navy },
+            ],
+          };
+        }
+        return { fy: d.fy, total: totalLakh, segments: fullSegments.filter(s => s.value > 0) };
       });
-      legendItems = segDef.map(sd => legendChip(sd.color, sd.label)).join("");
-      footnote = "Product split per Maruti's monthly sales press release. Exports + OEM supplies grouped as the residual to tie to total volume per Q4 Investor Presentation.";
+
+      if (state.productView === "suv") {
+        legendItems = legendChip(COLOR.greySft, "Non-SUV") + legendChip(COLOR.navy, "SUV");
+        footnote = "SUV bucket here is the UV / SUV product segment (Brezza, Ertiga, Grand Vitara, Invicto, Jimny, XL6) regrouped from the same product mix data. Non-SUV is everything else.";
+      } else {
+        legendItems = segDef.map(sd => legendChip(sd.color, sd.label)).join("");
+        footnote = "Product split per Maruti's monthly sales press release. Exports + OEM supplies grouped as the residual to tie to total volume per Q4 Investor Presentation.";
+      }
     }
 
     $("#chart2").innerHTML = volumeMixBarChart(bars, {
