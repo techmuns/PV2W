@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260508i" />
+  <link rel="stylesheet" href="css/styles.css?v=20260508j" />
   <script>
     tailwind.config = {
       theme: {
@@ -244,20 +244,20 @@
 
       <!-- OEM view: 45/55 split — compact table left, larger chart right -->
       <div id="oem-hub" class="space-y-4">
-        <div class="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-4 items-stretch">
-          <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden flex flex-col">
+        <div class="grid grid-cols-1 lg:grid-cols-6 gap-3 items-stretch">
+          <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden flex flex-col lg:col-span-2">
             <div id="metric-table" class="flex-1 flex flex-col"></div>
           </div>
           <div id="metric-chart-panel"
-               class="bg-card rounded-xl shadow-card border border-line p-5 flex flex-col">
-            <div class="flex items-baseline justify-between mb-1">
+               class="bg-card rounded-xl shadow-card border border-line px-3 py-5 flex flex-col lg:col-span-4">
+            <div class="flex items-baseline justify-between mb-1 px-2">
               <h3 id="metric-chart-title" class="text-[13px] font-semibold text-navy"></h3>
               <span id="metric-chart-current" class="text-[11px] text-inkMuted tabular-nums"></span>
             </div>
-            <p id="metric-chart-help" class="text-[11px] text-inkMuted mb-3"></p>
+            <p id="metric-chart-help" class="text-[11px] text-inkMuted mb-3 px-2"></p>
             <div id="metric-chart" class="flex-1 min-h-[260px]"></div>
-            <div id="metric-chart-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-2"></div>
-            <p id="metric-chart-foot" class="text-[10px] text-inkMuted mt-3 leading-snug"></p>
+            <div id="metric-chart-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-2 px-2"></div>
+            <p id="metric-chart-foot" class="text-[10px] text-inkMuted mt-3 leading-snug px-2"></p>
           </div>
         </div>
         <div id="governance-card" class="bg-card rounded-xl shadow-card border border-line px-6 py-7"></div>
@@ -386,7 +386,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260508i"></script>
-  <script src="js/dashboard.js?v=20260508i"></script>
+  <script src="js/data-loader.js?v=20260508j"></script>
+  <script src="js/dashboard.js?v=20260508j"></script>
 </body>
 </html>
