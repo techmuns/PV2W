@@ -1396,116 +1396,118 @@
       return `<span class="read-pill ${cls}">${label}</span>`;
     }
 
-    const rows = [];
-    METRIC_TABLE_GROUPS.forEach((group, gi) => {
-      group.rows.forEach((spec, idx) => {
-        const catLabel = idx === 0
-          ? `<span class="text-[10px] uppercase tracking-wider font-semibold" style="color:#475569;letter-spacing:0.06em;">${group.cat}</span>`
-          : "";
-        const groupStart = (idx === 0 && gi > 0) ? "group-start" : "";
-        const rCurr  = pull(spec, fyCurrent);
-        const rPrior = pull(spec, fyPrior);
-        const curr   = rCurr  ? rCurr.Value  : null;
-        const prior  = rPrior ? rPrior.Value : null;
-        const yoy    = (rCurr && rCurr.YoY_Change != null) ? rCurr.YoY_Change : null;
-        const sig    = rCurr && rCurr.Signal ? rCurr.Signal : "Neutral";
-
-        const fmt = (v) => {
-          if (v == null) return "—";
-          if (typeof v === "string") return v;
-          if (spec.metric === "Stock Price (31-Mar)") return "₹" + fmtNum(v);
-          if (spec.metric === "Capex (Rs Cr)") return "₹" + fmtNum(v) + " Cr";
-          if (isPctMetric(spec.metric)) return v.toFixed(1) + "%";
-          if (/Days/.test(spec.metric)) return v.toFixed(0) + " d";
-          if (/Launches/.test(spec.metric)) return String(v);
-          return fmtNum(v);
-        };
-
-        /* Change formatting per spec:
-             pp delta  → '-12.4 pp'  (percentage / margin / share metrics)
-             days      → '+2 d'      (Working Capital Days)
-             capex/stock '+24.1%'    (% change of an absolute value)
-             launches  → '+1'        (raw count delta)
-             dealers   → '+390'      (raw count delta — derived locally
-                                       since dealers isn't in fy_metrics)
-             unchanged → '—'         */
-        let changeCell;
-        if (typeof curr === "string" || typeof prior === "string") {
-          /* Top Selling Model — always render em-dash for change */
-          changeCell = `<td class="num change flat">—</td>`;
-        } else if (yoy != null) {
-          const dir = yoy > 0 ? "up" : yoy < 0 ? "down" : "flat";
-          let suffix = "";
-          if (isPctMetric(spec.metric))            suffix = "pp";
-          else if (/Days/.test(spec.metric))       suffix = "d";
-          else if (/Capex|Stock/.test(spec.metric)) suffix = "%";
-          /* Launches / Dealers / others → raw number with sign */
-          changeCell = `<td class="num change ${dir}">${yoy === 0 ? "—" : fmtDelta(yoy, suffix)}</td>`;
-        } else if (typeof curr === "number" && typeof prior === "number") {
-          const d = curr - prior;
-          if (d === 0) {
-            changeCell = `<td class="num change flat">—</td>`;
-          } else {
-            const dir = d > 0 ? "up" : "down";
-            const sign = d > 0 ? "+" : "";
-            changeCell = `<td class="num change ${dir}">${sign}${d}</td>`;
-          }
-        } else {
-          changeCell = `<td class="num change flat">—</td>`;
-        }
-
-        let trendCell;
-        if (spec.trend) {
-          const values = fyHistory.map(fy => {
-            const r = pull(spec, fy);
-            const v = r ? r.Value : null;
-            return (typeof v === "number") ? v : null;
-          });
-          const sparkColor = sig === "Positive" ? "#16A34A" : sig === "Negative" ? "#DC2626" : "#94A3B8";
-          const spark = miniSparkline(values, sparkColor);
-          trendCell = `<td class="trend">${spark || '<span class="text-[10.5px]">View trend</span>'}</td>`;
-        } else if (spec.metric === "Top Selling Model") {
-          trendCell = `<td class="trend"><span class="text-[10.5px] text-inkMuted">—</span></td>`;
-        } else {
-          trendCell = `<td class="trend"><span class="text-[10.5px] text-inkMuted">—</span></td>`;
-        }
-
-        const trendable = spec.trend && D.TREND_METRICS.has(spec.metric);
-        const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending";
-
-        rows.push(`<tr class="${trendable ? 'trendable' : ''} ${groupStart}" ${trendable ? `data-metric="${spec.metric}"` : ''} title="${ATTR(sourceText)}">
-          <td>${catLabel}</td>
-          <td class="metric">${spec.metric}</td>
-          <td class="num prior">${fmt(prior)}</td>
-          <td class="num curr">${fmt(curr)}</td>
-          ${changeCell}
-          <td>${readPill(sig)}</td>
-          ${trendCell}
-        </tr>`);
+    /* Flatten the grouped specs into a single ordered list; each
+       entry knows its enclosing category. Used by the transposed
+       layout where each metric becomes a column. */
+    const allSpecs = [];
+    METRIC_TABLE_GROUPS.forEach(group => {
+      group.rows.forEach(spec => {
+        allSpecs.push({ ...spec, cat: group.cat, catSpan: group.rows.length });
       });
     });
 
+    const fmt = (spec, v) => {
+      if (v == null) return "—";
+      if (typeof v === "string") return v;
+      if (spec.metric === "Stock Price (31-Mar)") return "₹" + fmtNum(v);
+      if (spec.metric === "Capex (Rs Cr)") return "₹" + fmtNum(v) + " Cr";
+      if (isPctMetric(spec.metric)) return v.toFixed(1) + "%";
+      if (/Days/.test(spec.metric)) return v.toFixed(0) + " d";
+      if (/Launches/.test(spec.metric)) return String(v);
+      return fmtNum(v);
+    };
+
+    /* Per-metric computed cell values for the transposed view. */
+    const cells = allSpecs.map(spec => {
+      const rCurr  = pull(spec, fyCurrent);
+      const rPrior = pull(spec, fyPrior);
+      const curr   = rCurr  ? rCurr.Value  : null;
+      const prior  = rPrior ? rPrior.Value : null;
+      const yoy    = (rCurr && rCurr.YoY_Change != null) ? rCurr.YoY_Change : null;
+      const sig    = rCurr && rCurr.Signal ? rCurr.Signal : "Neutral";
+
+      let changeHtml;
+      if (typeof curr === "string" || typeof prior === "string") {
+        changeHtml = `<span class="change flat">—</span>`;
+      } else if (yoy != null) {
+        const dir = yoy > 0 ? "up" : yoy < 0 ? "down" : "flat";
+        let suffix = "";
+        if (isPctMetric(spec.metric))            suffix = "pp";
+        else if (/Days/.test(spec.metric))       suffix = "d";
+        else if (/Capex|Stock/.test(spec.metric)) suffix = "%";
+        changeHtml = `<span class="change ${dir}">${yoy === 0 ? "—" : fmtDelta(yoy, suffix)}</span>`;
+      } else if (typeof curr === "number" && typeof prior === "number") {
+        const d = curr - prior;
+        if (d === 0) {
+          changeHtml = `<span class="change flat">—</span>`;
+        } else {
+          const dir = d > 0 ? "up" : "down";
+          const sign = d > 0 ? "+" : "";
+          changeHtml = `<span class="change ${dir}">${sign}${d}</span>`;
+        }
+      } else {
+        changeHtml = `<span class="change flat">—</span>`;
+      }
+
+      let trendHtml;
+      if (spec.trend) {
+        const values = fyHistory.map(fy => {
+          const r = pull(spec, fy);
+          const v = r ? r.Value : null;
+          return (typeof v === "number") ? v : null;
+        });
+        const sparkColor = sig === "Positive" ? "#16A34A" : sig === "Negative" ? "#DC2626" : "#94A3B8";
+        const spark = miniSparkline(values, sparkColor);
+        trendHtml = spark || '<span class="text-[10.5px]">View</span>';
+      } else {
+        trendHtml = `<span class="text-[10.5px] text-inkMuted">—</span>`;
+      }
+
+      return {
+        spec, curr, prior, sig,
+        currHtml: fmt(spec, curr),
+        priorHtml: fmt(spec, prior),
+        changeHtml,
+        readHtml: readPill(sig),
+        trendHtml,
+        trendable: spec.trend && D.TREND_METRICS.has(spec.metric),
+        sourceText: rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending",
+      };
+    });
+
+    /* Build header row: a Category cell per group spanning that
+       group's metric columns. */
+    let categoryHeader = `<th class="row-label-head"></th>`;
+    METRIC_TABLE_GROUPS.forEach((group, gi) => {
+      categoryHeader += `<th class="cat-head ${gi > 0 ? 'group-start-col' : ''}" colspan="${group.rows.length}">${group.cat}</th>`;
+    });
+
+    const cellTd = (c, content, extra = "") =>
+      `<td data-metric="${ATTR(c.spec.metric)}" class="${c.trendable ? 'trendable' : ''} ${extra}" title="${ATTR(c.sourceText)}">${content}</td>`;
+
+    const rowMetric = `<tr><th class="row-label">Metric</th>${cells.map(c => cellTd(c, `<span class="metric-name">${c.spec.metric}</span>`)).join("")}</tr>`;
+    const rowPrior  = `<tr><th class="row-label">${fyPrior}</th>${cells.map(c => cellTd(c, c.priorHtml, "num prior")).join("")}</tr>`;
+    const rowCurr   = `<tr><th class="row-label">${fyCurrent}</th>${cells.map(c => cellTd(c, c.currHtml, "num curr")).join("")}</tr>`;
+    const rowChange = `<tr><th class="row-label">Change</th>${cells.map(c => cellTd(c, c.changeHtml, "num")).join("")}</tr>`;
+    const rowRead   = `<tr><th class="row-label">Read</th>${cells.map(c => cellTd(c, c.readHtml)).join("")}</tr>`;
+    const rowTrend  = `<tr><th class="row-label">Trend</th>${cells.map(c => cellTd(c, c.trendHtml, "trend")).join("")}</tr>`;
+
     $("#metric-table").innerHTML = `
-      <table class="mtbl">
-        <thead>
-          <tr>
-            <th style="width:120px">Category</th>
-            <th>Metric</th>
-            <th class="num">${fyPrior}</th>
-            <th class="num">${fyCurrent}</th>
-            <th class="num">Change</th>
-            <th>Read</th>
-            <th class="center">Trend</th>
-          </tr>
-        </thead>
-        <tbody>${rows.join("")}</tbody>
-      </table>
+      <div class="mtbl-scroll">
+        <table class="mtbl mtbl-transposed">
+          <thead><tr>${categoryHeader}</tr></thead>
+          <tbody>
+            ${rowMetric}${rowPrior}${rowCurr}${rowChange}${rowRead}${rowTrend}
+          </tbody>
+        </table>
+      </div>
       <div class="mtbl-foot">Source: ${company === "Maruti"
         ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations; SIAM (market share / industry); Maruti monthly sales press releases (segment volumes)."
         : "Company filings; Yahoo Finance (NSE close)."}</div>`;
 
-    document.querySelectorAll("#metric-table tr.trendable").forEach(tr => {
-      tr.addEventListener("click", () => openTrendModal(tr.dataset.metric));
+    /* Click any cell of a trendable metric column to open the modal. */
+    document.querySelectorAll("#metric-table td.trendable").forEach(td => {
+      td.addEventListener("click", () => openTrendModal(td.dataset.metric));
     });
   }
 
