@@ -1001,19 +1001,47 @@
       }
     }
 
-    $("#chart2").innerHTML = volumeMixBarChart(bars, {
+    const newSvg = volumeMixBarChart(bars, {
       yUnit: " L",
       yLabel: "Sales volume (lakh units)",
       totalLabel: "Total sales volume",
       fmtTotal: (v) => v.toFixed(2),
-      unavailableMsg: view === "product"
-        ? "Data not available for selected mix"
-        : "Data not available for selected mix",
+      unavailableMsg: "Data not available for selected mix",
     });
+    crossFadeChart($("#chart2"), newSvg);
     $("#chart2-legend").innerHTML = legendItems;
     $("#chart2-foot").textContent = footnote;
+  }
 
-    bindChartHovers($("#chart2"));
+  /* Cross-fade swap for the volume-mix chart. New SVG is inserted
+     absolutely-positioned over the old one; both are tweened in
+     opposite directions so the bar feels like it's reclassifying
+     itself. Hover targets get re-bound after the new layer is in. */
+  function crossFadeChart(host, newHtml) {
+    const DUR = 320;
+    const cs = host.style;
+    if (cs.position !== "relative") cs.position = "relative";
+    if (!host.style.minHeight) host.style.minHeight = "240px";
+
+    const incoming = document.createElement("div");
+    incoming.className = "mix-chart-layer";
+    incoming.style.cssText = `position:absolute;inset:0;opacity:0;transition:opacity ${DUR}ms cubic-bezier(0.4, 0, 0.2, 1);`;
+    incoming.innerHTML = newHtml;
+
+    /* Mark any existing layers as outgoing. */
+    Array.from(host.querySelectorAll(".mix-chart-layer")).forEach(layer => {
+      layer.style.transition = `opacity ${DUR}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+      layer.style.opacity = "0";
+      layer.classList.add("mix-chart-layer-leaving");
+      setTimeout(() => layer.remove(), DUR + 40);
+    });
+
+    host.appendChild(incoming);
+    /* Force a paint so the transition fires from opacity 0. */
+    incoming.getBoundingClientRect();
+    incoming.style.opacity = "1";
+
+    bindChartHovers(incoming);
   }
 
   /* ---------- buy-side signal box ---------- */
