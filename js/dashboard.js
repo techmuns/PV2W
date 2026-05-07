@@ -231,48 +231,49 @@
       </svg>`,
     "Industry": (c) => `
       <svg viewBox="0 0 96 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-        <!-- Cockpit-intelligence motif: speedometer gauge (left) +
-             analytics trend with nodes (right). Heavier strokes
-             so the motif reads against the purple gradient. -->
+        <!-- Cockpit-intelligence motif drawn in the dashboard's
+             deep-purple token (#6D28D9 / #4F46E5) so it reads
+             against the soft lavender panel. -->
 
-        <!-- Subtle filled gauge wedge for body -->
+        <!-- Filled gauge wedge for body -->
         <path d="M 16 24 A 12 12 0 0 1 30 13 L 28 24 Z"
-              fill="#FFFFFF" opacity="0.16"/>
-        <!-- Gauge: faint full arc + bright partial sweep -->
+              fill="#6D28D9" opacity="0.18"/>
+        <!-- Faint full arc -->
         <path d="M 16 24 A 12 12 0 0 1 40 24"
-              fill="none" stroke="#FFFFFF" stroke-width="2.2"
+              fill="none" stroke="#6D28D9" stroke-width="2.0"
               stroke-linecap="round" opacity="0.45"/>
+        <!-- Bright partial sweep — saturated purple, full opacity -->
         <path d="M 16 24 A 12 12 0 0 1 32.8 14.2"
-              fill="none" stroke="#FFFFFF" stroke-width="2.6"
+              fill="none" stroke="#4F46E5" stroke-width="2.6"
               stroke-linecap="round"/>
-        <!-- Tick marks -->
-        <line x1="16" y1="24"   x2="14"   y2="24"   stroke="#FFFFFF" stroke-width="1.6" opacity="0.7"/>
-        <line x1="40" y1="24"   x2="42"   y2="24"   stroke="#FFFFFF" stroke-width="1.6" opacity="0.7"/>
-        <line x1="28" y1="12"   x2="28"   y2="10"   stroke="#FFFFFF" stroke-width="1.6" opacity="0.7"/>
+        <!-- Ticks -->
+        <line x1="16" y1="24"   x2="14"   y2="24"   stroke="#6D28D9" stroke-width="1.6" opacity="0.75"/>
+        <line x1="40" y1="24"   x2="42"   y2="24"   stroke="#6D28D9" stroke-width="1.6" opacity="0.75"/>
+        <line x1="28" y1="12"   x2="28"   y2="10"   stroke="#6D28D9" stroke-width="1.6" opacity="0.75"/>
         <!-- Needle + hub -->
         <line x1="28" y1="24" x2="35" y2="14.5"
-              stroke="#FFFFFF" stroke-width="2.4"
+              stroke="#4F46E5" stroke-width="2.4"
               stroke-linecap="round"/>
-        <circle cx="28" cy="24" r="2.6" fill="#FFFFFF"/>
+        <circle cx="28" cy="24" r="2.6" fill="#4F46E5"/>
 
-        <!-- Analytics trend: thicker line with halo'd nodes -->
+        <!-- Analytics trend: dark indigo line with halo'd nodes -->
         <path d="M52 21 L60 17 L68 18.5 L76 12 L84 9"
-              fill="none" stroke="#FFFFFF" stroke-width="2.2"
+              fill="none" stroke="#4F46E5" stroke-width="2.2"
               stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="52" cy="21"   r="3.2" fill="#FFFFFF" opacity="0.18"/>
-        <circle cx="52" cy="21"   r="1.8" fill="#FFFFFF" opacity="0.85"/>
-        <circle cx="60" cy="17"   r="3.2" fill="#FFFFFF" opacity="0.18"/>
-        <circle cx="60" cy="17"   r="1.8" fill="#FFFFFF" opacity="0.9"/>
-        <circle cx="68" cy="18.5" r="3.2" fill="#FFFFFF" opacity="0.18"/>
-        <circle cx="68" cy="18.5" r="1.8" fill="#FFFFFF" opacity="0.92"/>
-        <circle cx="76" cy="12"   r="3.4" fill="#FFFFFF" opacity="0.22"/>
-        <circle cx="76" cy="12"   r="1.9" fill="#FFFFFF" opacity="0.96"/>
-        <circle cx="84" cy="9"    r="3.6" fill="#FFFFFF" opacity="0.28"/>
-        <circle cx="84" cy="9"    r="2.2" fill="#FFFFFF"/>
+        <circle cx="52" cy="21"   r="3.2" fill="#6D28D9" opacity="0.18"/>
+        <circle cx="52" cy="21"   r="1.8" fill="#6D28D9" opacity="0.92"/>
+        <circle cx="60" cy="17"   r="3.2" fill="#6D28D9" opacity="0.18"/>
+        <circle cx="60" cy="17"   r="1.8" fill="#6D28D9" opacity="0.95"/>
+        <circle cx="68" cy="18.5" r="3.2" fill="#6D28D9" opacity="0.18"/>
+        <circle cx="68" cy="18.5" r="1.8" fill="#6D28D9"/>
+        <circle cx="76" cy="12"   r="3.4" fill="#4F46E5" opacity="0.22"/>
+        <circle cx="76" cy="12"   r="1.9" fill="#4F46E5"/>
+        <circle cx="84" cy="9"    r="3.6" fill="#4F46E5" opacity="0.28"/>
+        <circle cx="84" cy="9"    r="2.2" fill="#4F46E5"/>
 
         <!-- Hairline baseline tying the two halves together -->
         <line x1="14" y1="27" x2="86" y2="27"
-              stroke="#FFFFFF" stroke-width="1.2" opacity="0.30"/>
+              stroke="#6D28D9" stroke-width="1.1" opacity="0.32"/>
       </svg>`,
   };
   function brandBadge(company) {
