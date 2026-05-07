@@ -745,6 +745,7 @@
         { name: "Industry volume", color: COLOR.navy, values: indVol },
       ], { xLabels: fyHistory, area: true });
       $("#chart1-legend").innerHTML = legendChip(COLOR.navy, "PV industry volume (lakh units)");
+      $("#chart1-source").textContent = "Source: SIAM domestic PV dispatches.";
 
       $("#chart2-title").textContent = "OEM market share";
       $("#chart2-help").textContent  = "Selected FY share alongside the prior FY.";
@@ -777,6 +778,9 @@
       ], fyHistory, { yUnit: "%" });
       $("#chart1-legend").innerHTML =
         legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
+      $("#chart1-source").textContent = state.company === "Maruti"
+        ? "Source: SIAM (industry); Maruti Suzuki Q4 Investor Presentations / FY25 Annual Report."
+        : "Source: SIAM (industry); company filings (OEM volumes).";
 
       $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
       $("#chart2-help").textContent  = "Total sales volume by selected mix";
