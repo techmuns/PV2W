@@ -794,37 +794,32 @@
       $("#chart1-source").textContent = "Source: SIAM domestic PV dispatches.";
 
       $("#chart2-title").textContent = "OEM market share";
-      $("#chart2-help").textContent  = "Selected FY share alongside the prior FY.";
+      $("#chart2-help").textContent  = `Domestic PV share of tracked OEMs · ${state.fy}`;
       $("#chart2-sub").textContent   = state.fy + " · %";
       $("#chart2-sub").classList.remove("hidden");
       $("#chart2-toggle").classList.add("hidden");
       $("#chart2-product-sub").style.visibility = "hidden";
       $("#chart2-source").textContent = " ";
 
-      /* Clear residue left by previous OEM-view crossFadeChart calls
-         (inline position:relative + min-height + a .mix-chart-layer
-         child can interfere with the static SVG we're about to drop
-         in). */
       const chart2 = $("#chart2");
       chart2.removeAttribute("style");
       chart2.style.minHeight = "240px";
 
+      /* Comparative single-FY view: one bar per OEM for the selected
+         FY, ranked by share so the leader sits left → tail right. */
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
-      const fyPrev = prevFY(state.fy);
-      const sharesPrev = oems.map(o => {
-        const r = fyPrev ? getCompanyMetric(fyPrev, o, "Market Share %") : null;
-        return r && r.Value != null ? r.Value : 0;
-      });
-      const sharesCurr = oems.map(o => {
-        const r = getCompanyMetric(state.fy, o, "Market Share %");
-        return r && r.Value != null ? r.Value : 0;
-      });
+      const ranked = oems
+        .map(o => {
+          const r = getCompanyMetric(state.fy, o, "Market Share %");
+          return { name: o, value: r && r.Value != null ? r.Value : 0 };
+        })
+        .sort((a, b) => b.value - a.value);
+      const labels = ranked.map(r => r.name);
+      const values = ranked.map(r => r.value);
       chart2.innerHTML = groupedBarChart([
-        { name: fyPrev || state.fy, color: COLOR.greySft, values: sharesPrev },
-        { name: state.fy,           color: COLOR.blue,    values: sharesCurr },
-      ], oems, { yUnit: "%" });
-      $("#chart2-legend").innerHTML =
-        legendChip(COLOR.greySft, fyPrev || "Prev FY") + legendChip(COLOR.blue, state.fy);
+        { name: state.fy, color: COLOR.blue, values },
+      ], labels, { yUnit: "%" });
+      $("#chart2-legend").innerHTML = legendChip(COLOR.blue, `${state.fy} domestic PV share`);
 
     } else {
       $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
