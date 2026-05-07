@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260508d" />
+  <link rel="stylesheet" href="css/styles.css?v=20260508e" />
   <script>
     tailwind.config = {
       theme: {
@@ -244,9 +244,9 @@
 
       <!-- OEM view: 45/55 split — compact table left, larger chart right -->
       <div id="oem-hub" class="space-y-4">
-        <div class="grid grid-cols-1 lg:grid-cols-[45fr_55fr] gap-4 items-stretch">
+        <div class="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-4 items-stretch">
           <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden flex flex-col">
-            <div id="metric-table" class="flex-1"></div>
+            <div id="metric-table" class="flex-1 flex flex-col"></div>
           </div>
           <div id="metric-chart-panel"
                class="bg-card rounded-xl shadow-card border border-line p-5 flex flex-col">
@@ -386,7 +386,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260508d"></script>
-  <script src="js/dashboard.js?v=20260508d"></script>
+  <script src="js/data-loader.js?v=20260508e"></script>
+  <script src="js/dashboard.js?v=20260508e"></script>
 </body>
 </html>
