@@ -676,18 +676,25 @@
         $("#cht-fy").textContent = p.fy;
         simple.classList.add("hidden");
         const fmtVol = (v) => `${v.toFixed(2)} lakh units`;
-        const totalLine = `<div class="flex items-center justify-between gap-3">
-          <span class="text-[11px] text-inkMuted">${p.totalLabel}</span>
-          <span class="text-[12.5px] font-semibold text-navy tabular-nums">${fmtVol(p.total)}</span>
+        const totalLine = `<div class="flex items-baseline justify-between gap-4">
+          <span class="text-[11px]" style="color:#6B7280;">${p.totalLabel}</span>
+          <span class="text-[13px] font-semibold tabular-nums" style="color:#1F2A37;">${fmtVol(p.total)}</span>
         </div>`;
         const segs = p.segments.map(s => `
-          <div class="flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-sm" style="background:${s.color}"></span>
-            <span class="text-[11.5px] text-inkSoft">${s.label}</span>
-            <span class="text-[12px] font-semibold text-navy tabular-nums ml-auto">${fmtVol(s.value)} <span class="text-inkMuted font-normal">(${s.pct.toFixed(1)}%)</span></span>
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
+            <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
+            <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">
+              <span class="font-semibold" style="color:#1F2A37;">${fmtVol(s.value)}</span>
+              <span class="font-normal ml-1" style="color:#6B7280;">(${s.pct.toFixed(1)}%)</span>
+            </span>
           </div>`).join("");
-        const basis = p.basis ? `<div class="text-[10px] text-inkMuted italic mt-1 pt-1 border-t border-line">${p.basis}</div>` : "";
-        rich.innerHTML = totalLine + `<div class="space-y-0.5 pt-1 border-t border-line">${segs}</div>` + basis;
+        const basis = p.basis
+          ? `<div class="text-[10.5px] mt-2 pt-2" style="color:#94A3B8; border-top:1px solid #EEF1F5;">${p.basis}</div>`
+          : "";
+        rich.innerHTML = totalLine
+          + `<div class="space-y-1.5 mt-2 pt-2" style="border-top:1px solid #EEF1F5;">${segs}</div>`
+          + basis;
         rich.classList.remove("hidden");
         tip.classList.remove("hidden");
         positionTip(tip, e);
