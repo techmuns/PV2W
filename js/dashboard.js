@@ -801,15 +801,30 @@
       $("#chart2-product-sub").style.visibility = "hidden";
       $("#chart2-source").textContent = " ";
 
+      /* Clear residue left by previous OEM-view crossFadeChart calls
+         (inline position:relative + min-height + a .mix-chart-layer
+         child can interfere with the static SVG we're about to drop
+         in). */
+      const chart2 = $("#chart2");
+      chart2.removeAttribute("style");
+      chart2.style.minHeight = "240px";
+
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
-      const sharesPrev = oems.map(o => (getCompanyMetric(prevFY(state.fy) || state.fy, o, "Market Share %")||{}).Value || 0);
-      const sharesCurr = oems.map(o => (getCompanyMetric(state.fy, o, "Market Share %")||{}).Value || 0);
-      $("#chart2").innerHTML = groupedBarChart([
-        { name: prevFY(state.fy) || state.fy, color: COLOR.greySft, values: sharesPrev },
-        { name: state.fy,                      color: COLOR.blue,    values: sharesCurr },
+      const fyPrev = prevFY(state.fy);
+      const sharesPrev = oems.map(o => {
+        const r = fyPrev ? getCompanyMetric(fyPrev, o, "Market Share %") : null;
+        return r && r.Value != null ? r.Value : 0;
+      });
+      const sharesCurr = oems.map(o => {
+        const r = getCompanyMetric(state.fy, o, "Market Share %");
+        return r && r.Value != null ? r.Value : 0;
+      });
+      chart2.innerHTML = groupedBarChart([
+        { name: fyPrev || state.fy, color: COLOR.greySft, values: sharesPrev },
+        { name: state.fy,           color: COLOR.blue,    values: sharesCurr },
       ], oems, { yUnit: "%" });
       $("#chart2-legend").innerHTML =
-        legendChip(COLOR.greySft, prevFY(state.fy) || "Prev FY") + legendChip(COLOR.blue, state.fy);
+        legendChip(COLOR.greySft, fyPrev || "Prev FY") + legendChip(COLOR.blue, state.fy);
 
     } else {
       $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
