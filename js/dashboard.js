@@ -881,11 +881,44 @@
       legendItems = legendChip(COLOR.greySft, "Non-UV / Non-SUV") + legendChip(COLOR.blue, "UV / SUV");
       footnote = "SUV / UV share is a percentage of domestic sales (per company disclosure). Bar segments translate that share to absolute units.";
     } else if (view === "product") {
-      /* No clean segment-volume input table for product mix yet,
-         so render the unavailable state rather than fabricate. */
-      bars = data.map(d => ({ fy: d.fy, total: null, segments: [] }));
-      legendItems = "";
-      footnote = "";
+      /* Product-segment volumes per Maruti's monthly sales press
+         releases (March-end of each FY). Six product buckets plus
+         a residual that catches exports + Toyota OEM supplies, so
+         the bar still sums to the user-disclosed total. Other OEMs
+         render "Data not available" until their input tables are
+         ingested. */
+      const PRODUCT_MIX = {
+        Maruti: {
+          FY23: { Mini: 144517, Compact: 870790, MidSize: 13596, UV: 339640, Vans: 161099, LCV: 30762 },
+          FY24: { Mini: 121395, Compact: 802514, MidSize: 12118, UV: 627360, Vans: 134058, LCV: 30159 },
+          FY25: { Mini: 65580,  Compact: 671737, MidSize: 583,   UV: 767728, Vans: 130167, LCV: 36167 },
+        },
+      };
+      const segDef = [
+        { key: "Mini",       label: "Mini",                 color: COLOR.blueSft },
+        { key: "Compact",    label: "Compact",              color: COLOR.blue },
+        { key: "MidSize",    label: "Mid-size",             color: "#3B82F6" },
+        { key: "UV",         label: "UV / SUV",             color: COLOR.navy },
+        { key: "Vans",       label: "Vans",                 color: COLOR.teal },
+        { key: "LCV",        label: "LCV",                  color: COLOR.amber },
+        { key: "Other",      label: "Exports + OEM supply", color: COLOR.greySft },
+      ];
+      const mix = PRODUCT_MIX[company];
+      bars = data.map(d => {
+        const m = mix && mix[d.fy];
+        if (!m || d.total == null) return { fy: d.fy, total: null, segments: [] };
+        const totalLakh = TO_LAKH(d.total);
+        const segVolsLakh = segDef.slice(0, 6).map(sd => TO_LAKH(m[sd.key] || 0));
+        const sumSix = segVolsLakh.reduce((a,b) => a+b, 0);
+        const otherLakh = Math.max(0, totalLakh - sumSix);
+        const segments = segDef.map((sd, i) => {
+          const value = i < 6 ? segVolsLakh[i] : otherLakh;
+          return { label: sd.label, value, pct: (value / totalLakh) * 100, color: sd.color };
+        }).filter(s => s.value > 0);
+        return { fy: d.fy, total: totalLakh, segments };
+      });
+      legendItems = segDef.map(sd => legendChip(sd.color, sd.label)).join("");
+      footnote = "Product split per Maruti's monthly sales press release. Exports + OEM supplies grouped as the residual to tie to total volume per Q4 Investor Presentation.";
     }
 
     $("#chart2").innerHTML = volumeMixBarChart(bars, {
