@@ -455,7 +455,7 @@
   const ATTR = (s) => String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/"/g,"&quot;");
 
   function lineChart(series, options = {}) {
-    const w = 480, h = options.height || 220, padL = 44, padR = 16, padT = 14, padB = 28;
+    const w = 480, h = options.height || 220, padL = 30, padR = 14, padT = 14, padB = 28;
     const labels = options.xLabels || [];
     const allVals = series.flatMap(s => s.values).filter(v => v !== null && v !== undefined);
     if (!allVals.length) return `<div class="text-xs text-inkMuted py-6 text-center">No data available</div>`;
