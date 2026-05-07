@@ -613,19 +613,19 @@
     const grid = [0,0.25,0.5,0.75,1].map(t => {
       const yy = padT + t * (h - padT - padB);
       const val = yMax * (1 - t);
-      return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#EEF1F5"/>
+      return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#E7EDF4"/>
               <text x="${padL-6}" y="${yy+3}" text-anchor="end" font-size="10" fill="#6B7280">${fmtVal(val)}</text>`;
     }).join("");
 
     let bodies = "";
     bars.forEach((b, i) => {
       const cx = padL + groupW * (i + 0.5);
-      bodies += `<text x="${cx}" y="${h-10}" text-anchor="middle" font-size="11" fill="#475569" font-weight="500">${b.fy}</text>`;
+      bodies += `<text x="${cx}" y="${h-10}" text-anchor="middle" font-size="11" fill="#6B7280" font-weight="500">${b.fy}</text>`;
       if (b.total == null) {
         bodies += `<text x="${cx}" y="${(h-padB+padT)/2}" text-anchor="middle" font-size="10" fill="#94A3B8">no data</text>`;
         return;
       }
-      bodies += `<text x="${cx}" y="${yScale(b.total) - 6}" text-anchor="middle" font-size="11" fill="#0B1F33" font-weight="600" class="tabular-nums">${fmtVal(b.total)}</text>`;
+      bodies += `<text x="${cx}" y="${yScale(b.total) - 6}" text-anchor="middle" font-size="11" fill="#1F2A37" font-weight="600" class="tabular-nums">${fmtVal(b.total)}</text>`;
       const tipPayload = JSON.stringify({
         fy: b.fy, total: b.total, totalLabel: options.totalLabel || "Total sales volume",
         unit: options.yUnit || "", basis: b.basisNote || options.basisNote || null,
@@ -646,7 +646,7 @@
     });
 
     const yLabel = options.yLabel
-      ? `<text x="14" y="${(h-padB+padT)/2}" transform="rotate(-90 14 ${(h-padB+padT)/2})" text-anchor="middle" font-size="10.5" fill="#475569" font-weight="600">${options.yLabel}</text>`
+      ? `<text x="14" y="${(h-padB+padT)/2}" transform="rotate(-90 14 ${(h-padB+padT)/2})" text-anchor="middle" font-size="10.5" fill="#1F2A37" font-weight="600">${options.yLabel}</text>`
       : "";
 
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
@@ -798,6 +798,37 @@
      bars for FYs where Total Sales Volume is available; FYs missing
      a clean total stay blank rather than fabricated. */
   const MIX_VIEW_FYS = ["FY23", "FY24", "FY25"];
+
+  /* Soothing, low-saturation palette for the mix chart. The single
+     dark navy in each view (SUV / UV in product, SUV in regrouped,
+     no equivalent in Export / Powertrain) acts as the visual anchor
+     so attention lands on the institutional highlight. */
+  const MIX_PALETTE = {
+    product: {
+      mini:    "#A7B8FF",
+      compact: "#5B7CFA",
+      midSize: "#8AA4D6",
+      uv:      "#173B63",   // dark anchor — buy-side highlight
+      vans:    "#4DB6AC",
+      lcv:     "#E7A64A",
+      other:   "#C9D2DF",
+    },
+    suv: {
+      suv:    "#173B63",
+      nonSuv: "#B9C6D8",
+    },
+    export: {
+      domestic: "#5B7CFA",
+      export:   "#4DB6AC",
+    },
+    powertrain: {
+      ice:    "#8AA4D6",
+      cng:    "#4DB6AC",
+      hybrid: "#A78BFA",
+      bev:    "#7DD3FC",
+    },
+  };
+
   function renderVolumeMixChart() {
     const view = state.mixView;
     const company = state.company;
@@ -871,6 +902,7 @@
     let bars, legendItems, footnote = "";
 
     if (view === "export") {
+      const P = MIX_PALETTE.export;
       bars = data.map(d => {
         if (d.total == null || d.exportP == null) return { fy: d.fy, total: null, segments: [] };
         const totalLakh = TO_LAKH(d.total);
@@ -878,12 +910,12 @@
         const domLakh   = totalLakh - expLakh;
         return {
           fy: d.fy, total: totalLakh, segments: [
-            { label: "Domestic", value: domLakh, pct: 100 - d.exportP, color: COLOR.blue },
-            { label: "Export",   value: expLakh, pct: d.exportP,        color: COLOR.warn },
+            { label: "Domestic", value: domLakh, pct: 100 - d.exportP, color: P.domestic },
+            { label: "Export",   value: expLakh, pct: d.exportP,        color: P.export   },
           ],
         };
       });
-      legendItems = legendChip(COLOR.blue, "Domestic") + legendChip(COLOR.warn, "Export");
+      legendItems = legendChip(P.domestic, "Domestic") + legendChip(P.export, "Export");
     } else if (view === "powertrain") {
       /* Powertrain split — CNG / Hybrid / BEV / Petrol-Diesel-Other ICE.
          Volumes are in absolute units, sourced from Maruti AR + Q4 IP
@@ -891,6 +923,7 @@
          explicitly disclosed (so for FY23, where CNG isn't broken
          out separately, the residual carries CNG too — bucket
          relabelled accordingly). */
+      const PT = MIX_PALETTE.powertrain;
       const POWERTRAIN_MIX = {
         Maruti: {
           /* CNG / Hybrid / BEV in absolute units; null = not
@@ -921,17 +954,17 @@
 
         const segments = [];
         if (cngLakh != null) {
-          segments.push({ label: "CNG",    value: cngLakh,    color: COLOR.teal });
+          segments.push({ label: "CNG",    value: cngLakh,    color: PT.cng });
         }
-        segments.push({ label: "Hybrid", value: hybridLakh, color: COLOR.amber });
-        segments.push({ label: "BEV",    value: bevLakh,    color: "#22D3EE" });
+        segments.push({ label: "Hybrid", value: hybridLakh, color: PT.hybrid });
+        segments.push({ label: "BEV",    value: bevLakh,    color: PT.bev });
 
         const accountedFor = (cngLakh || 0) + hybridLakh + bevLakh;
         const residualLakh = Math.max(0, totalLakh - accountedFor);
         const residualLabel = cngLakh == null
           ? "Petrol / Diesel / CNG / Other ICE"
           : "Petrol / Diesel / Other ICE";
-        segments.push({ label: residualLabel, value: residualLakh, color: COLOR.greySft });
+        segments.push({ label: residualLabel, value: residualLakh, color: PT.ice });
 
         const segWithPct = segments.map(s => ({ ...s, pct: (s.value / totalLakh) * 100 }))
                                    .filter(s => s.value > 0 || s.label === "BEV");
@@ -941,8 +974,8 @@
           basisNote: m.cngBasis || (cngLakh == null ? "CNG not separately disclosed for this FY — captured within the residual ICE bucket" : null),
         };
       });
-      legendItems = legendChip(COLOR.teal, "CNG") + legendChip(COLOR.amber, "Hybrid") +
-                    legendChip("#22D3EE", "BEV") + legendChip(COLOR.greySft, "Petrol / Diesel / Other ICE");
+      legendItems = legendChip(PT.cng, "CNG") + legendChip(PT.hybrid, "Hybrid") +
+                    legendChip(PT.bev, "BEV") + legendChip(PT.ice, "Petrol / Diesel / Other ICE");
       footnote = "";
     } else if (view === "product") {
       /* Product mix from Maruti's monthly sales press releases. Six
@@ -960,14 +993,15 @@
           FY25: { Mini: 65580,  Compact: 671737, MidSize: 583,   UV: 767728, Vans: 130167, LCV: 36167 },
         },
       };
+      const PP = MIX_PALETTE.product;
       const segDef = [
-        { key: "Mini",    label: "Mini",                 color: COLOR.blueSft },
-        { key: "Compact", label: "Compact",              color: COLOR.blue },
-        { key: "MidSize", label: "Mid-size",             color: "#3B82F6" },
-        { key: "UV",      label: "UV / SUV",             color: COLOR.navy },
-        { key: "Vans",    label: "Vans",                 color: COLOR.teal },
-        { key: "LCV",     label: "LCV",                  color: COLOR.amber },
-        { key: "Other",   label: "Exports + OEM supply", color: COLOR.greySft },
+        { key: "Mini",    label: "Mini",                 color: PP.mini    },
+        { key: "Compact", label: "Compact",              color: PP.compact },
+        { key: "MidSize", label: "Mid-size",             color: PP.midSize },
+        { key: "UV",      label: "UV / SUV",             color: PP.uv      },
+        { key: "Vans",    label: "Vans",                 color: PP.vans    },
+        { key: "LCV",     label: "LCV",                  color: PP.lcv     },
+        { key: "Other",   label: "Exports + OEM supply", color: PP.other   },
       ];
       const mix = PRODUCT_MIX[company];
 
@@ -987,12 +1021,13 @@
           /* Regroup the same product data: UV bucket = SUV;
              everything else (Mini + Compact + Mid + Vans + LCV +
              Exports/OEM residual) = Non-SUV. */
+          const SP = MIX_PALETTE.suv;
           const suvLakh = TO_LAKH(m.UV || 0);
           const nonSuvLakh = totalLakh - suvLakh;
           return {
             fy: d.fy, total: totalLakh, segments: [
-              { label: "Non-SUV", value: nonSuvLakh, pct: (nonSuvLakh / totalLakh) * 100, color: COLOR.greySft },
-              { label: "SUV",     value: suvLakh,    pct: (suvLakh / totalLakh) * 100,    color: COLOR.navy },
+              { label: "Non-SUV", value: nonSuvLakh, pct: (nonSuvLakh / totalLakh) * 100, color: SP.nonSuv },
+              { label: "SUV",     value: suvLakh,    pct: (suvLakh / totalLakh) * 100,    color: SP.suv    },
             ],
           };
         }
@@ -1000,7 +1035,8 @@
       });
 
       if (state.productView === "suv") {
-        legendItems = legendChip(COLOR.greySft, "Non-SUV") + legendChip(COLOR.navy, "SUV");
+        const SP = MIX_PALETTE.suv;
+        legendItems = legendChip(SP.nonSuv, "Non-SUV") + legendChip(SP.suv, "SUV");
       } else {
         legendItems = segDef.map(sd => legendChip(sd.color, sd.label)).join("");
       }
