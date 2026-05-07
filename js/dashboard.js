@@ -604,6 +604,65 @@
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
   }
 
+  /* ---------- Pie chart ----------
+     Slices ordered by value; an inline % label sits inside each
+     slice >5%. Legend renders to the right of the pie with the
+     OEM name + share %. */
+  function pieChart(slices, options = {}) {
+    if (!slices.length) return `<div class="text-xs text-inkMuted py-12 text-center">No data</div>`;
+    const w = 480, h = 240;
+    const cx = 130, cy = 120, r = 92;
+    const total = slices.reduce((s, x) => s + (x.value || 0), 0);
+    if (total <= 0) return `<div class="text-xs text-inkMuted py-12 text-center">No share data</div>`;
+
+    let angle = -Math.PI / 2;          // start at 12 o'clock
+    let body = "";
+    const positioned = [];
+    slices.forEach(s => {
+      const v = s.value || 0;
+      const sweep = (v / total) * Math.PI * 2;
+      const start = angle;
+      const end   = angle + sweep;
+      const x1 = cx + r * Math.cos(start);
+      const y1 = cy + r * Math.sin(start);
+      const x2 = cx + r * Math.cos(end);
+      const y2 = cy + r * Math.sin(end);
+      const largeArc = sweep > Math.PI ? 1 : 0;
+      const path = sweep >= Math.PI * 2 - 0.0001
+        ? `M ${cx} ${(cy - r).toFixed(2)} A ${r} ${r} 0 1 1 ${cx} ${(cy + r).toFixed(2)} A ${r} ${r} 0 1 1 ${cx} ${(cy - r).toFixed(2)} Z`
+        : `M ${cx} ${cy} L ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} Z`;
+      const mid = (start + end) / 2;
+      const labelR = r * 0.62;
+      const lx = cx + labelR * Math.cos(mid);
+      const ly = cy + labelR * Math.sin(mid);
+      const pct = (v / total) * 100;
+      body += `<path class="bar hover-target" d="${path}" fill="${s.color}" stroke="#FFFFFF" stroke-width="2"
+        data-fy="${ATTR(options.fy || "")}" data-series="${ATTR(s.name)}" data-value="${ATTR(v)}"
+        data-unit="%" data-color="${ATTR(s.color)}"/>`;
+      if (pct >= 5) {
+        body += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle"
+          font-size="11" font-weight="700" fill="#FFFFFF" style="paint-order:stroke;stroke:rgba(0,0,0,0.18);stroke-width:0.6">${pct.toFixed(1)}%</text>`;
+      }
+      positioned.push({ name: s.name, color: s.color, pct });
+      angle = end;
+    });
+
+    /* Legend rail to the right of the pie. */
+    const lx = 250, ly0 = 36, lh = 26;
+    let legend = "";
+    positioned.forEach((p, i) => {
+      const yy = ly0 + i * lh;
+      legend += `
+        <rect x="${lx}" y="${yy - 9}" width="12" height="12" fill="${p.color}" rx="2"/>
+        <text x="${lx + 20}" y="${yy + 1.5}" font-size="12" fill="#1F2A37">${p.name}</text>
+        <text x="${w - 14}" y="${yy + 1.5}" text-anchor="end" font-size="12" fill="#1F2A37" font-weight="600" font-variant-numeric="tabular-nums">${p.pct.toFixed(1)}%</text>`;
+    });
+
+    return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+      ${body}${legend}
+    </svg>`;
+  }
+
   /* ---------- Volume + Mix-split bar chart ----------
      One bar per FY whose total height encodes the FY's total sales
      volume; the bar is split into mutually exclusive segments
@@ -794,7 +853,7 @@
       $("#chart1-source").textContent = "Source: SIAM domestic PV dispatches.";
 
       $("#chart2-title").textContent = "OEM market share";
-      $("#chart2-help").textContent  = `Domestic PV share of tracked OEMs · ${state.fy}`;
+      $("#chart2-help").textContent  = `Domestic PV share split · ${state.fy}`;
       $("#chart2-sub").textContent   = state.fy + " · %";
       $("#chart2-sub").classList.remove("hidden");
       $("#chart2-toggle").classList.add("hidden");
@@ -805,21 +864,30 @@
       chart2.removeAttribute("style");
       chart2.style.minHeight = "240px";
 
-      /* Comparative single-FY view: one bar per OEM for the selected
-         FY, ranked by share so the leader sits left → tail right. */
-      const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
-      const ranked = oems
+      /* Single-FY pie: tracked OEMs by share, plus an 'Others'
+         slice catching the residual (FAW / Toyota / Kia / Honda /
+         MG / Skoda / Renault / VW / Citroen / Nissan / BYD …)
+         derived as 100 − Σ tracked. */
+      const PIE_COLORS = {
+        "Maruti":          "#173B63",
+        "Hyundai":         "#5B7CFA",
+        "Tata Motors PV":  "#4DB6AC",
+        "M&M":             "#E7A64A",
+        "Others":          "#C9D2DF",
+      };
+      const tracked = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"]
         .map(o => {
           const r = getCompanyMetric(state.fy, o, "Market Share %");
-          return { name: o, value: r && r.Value != null ? r.Value : 0 };
+          return { name: o, value: r && r.Value != null ? r.Value : 0, color: PIE_COLORS[o] };
         })
+        .filter(s => s.value > 0)
         .sort((a, b) => b.value - a.value);
-      const labels = ranked.map(r => r.name);
-      const values = ranked.map(r => r.value);
-      chart2.innerHTML = groupedBarChart([
-        { name: state.fy, color: COLOR.blue, values },
-      ], labels, { yUnit: "%" });
-      $("#chart2-legend").innerHTML = legendChip(COLOR.blue, `${state.fy} domestic PV share`);
+      const trackedSum = tracked.reduce((s, x) => s + x.value, 0);
+      const others = Math.max(0, +(100 - trackedSum).toFixed(1));
+      const slices = [...tracked, { name: "Others", value: others, color: PIE_COLORS.Others }];
+
+      chart2.innerHTML = pieChart(slices, { fy: state.fy });
+      $("#chart2-legend").innerHTML = "";
 
     } else {
       $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
