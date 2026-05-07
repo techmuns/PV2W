@@ -708,9 +708,9 @@ body::before {
 .mtbl tbody td.metric { color: #1F2A37; font-weight: 500; }
 .mtbl tbody td.curr { font-weight: 600; color: #1F2A37; }
 .mtbl tbody td.prior { color: #94A3B8; }
-.mtbl tbody td.change.up   { color: #16A34A; font-weight: 600; }
-.mtbl tbody td.change.down { color: #DC2626; font-weight: 600; }
-.mtbl tbody td.change.flat { color: #6B7280; }
+.mtbl tbody td.change.up   { color: #1F7A45; font-weight: 600; }
+.mtbl tbody td.change.down { color: #9F1F2E; font-weight: 600; }
+.mtbl tbody td.change.flat { color: #94A3B8; }
 .mtbl tbody td.trend { width: 110px; padding-right: 14px; text-align: right; }
 .mtbl tbody td.trend svg { display: inline-block; vertical-align: middle; }
 .mtbl tbody tr.cat-banner td {
@@ -728,6 +728,23 @@ body::before {
 .mtbl tbody tr.trendable:hover { background: #F8FAFC; }
 .mtbl tbody tr.trendable td.trend { color: #2563EB; }
 .mtbl tbody tr.group-start td { border-top: 1px solid #DDE4EE; }
+
+/* Soft Read-column pills — muted, no dot, no border. Used only by
+   the Supporting Data table to soften the visual weight of the
+   Signal indicator. */
+.read-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.005em;
+}
+.read-pill.positive { background: #E7F4EC; color: #1F7A45; }
+.read-pill.neutral  { background: #EEF2F7; color: #475569; }
+.read-pill.negative { background: #FBE9EA; color: #9F1F2E; }
+.read-pill.watch    { background: #FCEFD3; color: #8A5A0A; }
 .mtbl-foot {
   padding: 10px 14px 12px;
   font-size: 10.5px;

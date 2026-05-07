@@ -1387,9 +1387,13 @@
       return getCompanyMetric(fy, company, spec.metric);
     }
 
+    /* Soft, low-contrast pills for the Read column. Map the raw
+       Signal field (Positive / Neutral / Negative / Watch) to a
+       muted style without dot or border. */
     function readPill(sig) {
-      const cls = signalClass(sig || "Neutral");
-      return `<span class="inline-flex items-center gap-1 text-[10.5px] px-2 py-0.5 rounded-full ${cls}">${signalDot(sig||"Neutral")}${sig || "Neutral"}</span>`;
+      const label = sig || "Neutral";
+      const cls = ({ Positive: "positive", Negative: "negative", Watch: "watch" })[label] || "neutral";
+      return `<span class="read-pill ${cls}">${label}</span>`;
     }
 
     const rows = [];
@@ -1417,17 +1421,35 @@
           return fmtNum(v);
         };
 
+        /* Change formatting per spec:
+             pp delta  → '-12.4 pp'  (percentage / margin / share metrics)
+             days      → '+2 d'      (Working Capital Days)
+             capex/stock '+24.1%'    (% change of an absolute value)
+             launches  → '+1'        (raw count delta)
+             dealers   → '+390'      (raw count delta — derived locally
+                                       since dealers isn't in fy_metrics)
+             unchanged → '—'         */
         let changeCell;
         if (typeof curr === "string" || typeof prior === "string") {
-          changeCell = `<td class="num change ${curr === prior ? 'flat' : 'up'}">${curr === prior ? "Unchanged" : (prior ? "→" : "—")}</td>`;
+          /* Top Selling Model — always render em-dash for change */
+          changeCell = `<td class="num change flat">—</td>`;
         } else if (yoy != null) {
           const dir = yoy > 0 ? "up" : yoy < 0 ? "down" : "flat";
-          const suffix = isPctMetric(spec.metric) ? "pp" : (/Days/.test(spec.metric) ? "d" : (/Launches|Capex|Stock|Dealers/.test(spec.metric) ? "" : "%"));
-          changeCell = `<td class="num change ${dir}">${fmtDelta(yoy, suffix)}</td>`;
+          let suffix = "";
+          if (isPctMetric(spec.metric))            suffix = "pp";
+          else if (/Days/.test(spec.metric))       suffix = "d";
+          else if (/Capex|Stock/.test(spec.metric)) suffix = "%";
+          /* Launches / Dealers / others → raw number with sign */
+          changeCell = `<td class="num change ${dir}">${yoy === 0 ? "—" : fmtDelta(yoy, suffix)}</td>`;
         } else if (typeof curr === "number" && typeof prior === "number") {
           const d = curr - prior;
-          const dir = d > 0 ? "up" : d < 0 ? "down" : "flat";
-          changeCell = `<td class="num change ${dir}">${d > 0 ? "+" : ""}${d}</td>`;
+          if (d === 0) {
+            changeCell = `<td class="num change flat">—</td>`;
+          } else {
+            const dir = d > 0 ? "up" : "down";
+            const sign = d > 0 ? "+" : "";
+            changeCell = `<td class="num change ${dir}">${sign}${d}</td>`;
+          }
         } else {
           changeCell = `<td class="num change flat">—</td>`;
         }
