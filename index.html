@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507h" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507i" />
   <script>
     tailwind.config = {
       theme: {
@@ -204,17 +204,17 @@
             <span id="chart2-sub" class="hidden text-[11px] text-inkMuted font-medium flex-shrink-0"></span>
           </div>
           <div class="chart-panel-body">
-            <div id="chart2-product-sub" class="hidden mb-1.5">
+            <div id="chart2-product-sub" class="mb-1.5" style="min-height:28px">
               <div class="inline-flex rounded-md bg-slate-50 p-0.5 text-[10.5px] border border-line/70">
                 <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-medium">Detailed</button>
                 <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-medium">SUV / Non-SUV</button>
               </div>
             </div>
-            <p id="chart2-toggle-help" class="hidden text-[11px] text-inkMuted mb-3"></p>
-            <div id="chart2"></div>
-            <div id="chart2-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3"></div>
+            <p id="chart2-toggle-help" class="text-[11px] text-inkMuted mb-3" style="min-height:18px">&nbsp;</p>
+            <div id="chart2" style="min-height:240px"></div>
+            <div id="chart2-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3" style="min-height:40px"></div>
             <p id="chart2-foot"   class="text-[10px] text-inkMuted mt-2 italic leading-snug"></p>
-            <p id="chart2-source" class="hidden text-[10px] text-inkMuted mt-2 leading-snug"></p>
+            <p id="chart2-source" class="text-[10px] text-inkMuted mt-2 leading-snug" style="min-height:28px">&nbsp;</p>
           </div>
         </div>
 
@@ -363,7 +363,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507h"></script>
-  <script src="js/dashboard.js?v=20260507h"></script>
+  <script src="js/data-loader.js?v=20260507i"></script>
+  <script src="js/dashboard.js?v=20260507i"></script>
 </body>
 </html>

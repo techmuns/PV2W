@@ -817,7 +817,9 @@
       };
     });
 
-    /* Helper text varies by view, and for Product it varies by sub-view. */
+    /* Helper text varies by view, and for Product it varies by sub-view.
+       Row stays mounted with a non-breaking-space fallback so its
+       height doesn't collapse when no helper text applies. */
     let helpText = "";
     if (view === "product") {
       helpText = state.productView === "suv"
@@ -829,34 +831,39 @@
       helpText = "Split of sales volume by powertrain type";
     }
     const helpEl = $("#chart2-toggle-help");
-    helpEl.textContent = helpText;
-    helpEl.classList.toggle("hidden", !helpText);
+    helpEl.textContent = helpText || " ";
 
-    /* Highlight the active top-level toggle and show/hide the
-       Product sub-toggle accordingly. */
+    /* Re-show OEM-mode rows in case Industry view hid them via .hidden. */
+    helpEl.classList.remove("hidden");
+    $("#chart2-product-sub").classList.remove("hidden");
+    $("#chart2-source").classList.remove("hidden");
+
+    /* Highlight the active top-level toggle. The Product sub-toggle
+       row is always mounted (so the card height doesn't jump when
+       leaving Product); we just hide its content via visibility
+       when not in Product. */
     document.querySelectorAll("#chart2-toggle .mix-btn").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.mix === view);
     });
     const subToggle = $("#chart2-product-sub");
     if (view === "product") {
-      subToggle.classList.remove("hidden");
+      subToggle.style.visibility = "visible";
       document.querySelectorAll("#chart2-product-sub .prod-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.productView === state.productView);
       });
     } else {
-      subToggle.classList.add("hidden");
+      subToggle.style.visibility = "hidden";
     }
 
-    /* Source line (bottom-left, beneath legend & footnote). */
+    /* Source line — always rendered with a placeholder so its
+       row stays in the layout even when company has no source. */
     const sourceEl = $("#chart2-source");
     if (state.company === "Maruti") {
       sourceEl.textContent = view === "powertrain"
         ? "Source: Maruti Suzuki Annual Reports / Q4 Investor Presentations; powertrain split based on company disclosures where available."
         : "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report.";
-      sourceEl.classList.remove("hidden");
     } else {
-      sourceEl.textContent = "";
-      sourceEl.classList.add("hidden");
+      sourceEl.textContent = " ";
     }
 
     const TO_LAKH = (n) => n / 1e5;
