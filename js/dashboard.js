@@ -40,7 +40,7 @@
     activeTab: "Growth",
     mixView:     "product",  // product | export | powertrain — drives chart2 for OEM view
     productView: "segment",  // segment | suv — sub-toggle when mixView === 'product'
-    selectedMetric: "Revenue Growth %",  // metric whose 10-yr trend appears in the side panel
+    selectedCategory: "Growth",  // category whose metrics drive the side-panel trend chart
   };
 
   /* ---------- helpers ---------- */
@@ -1378,6 +1378,18 @@
     const fyHistory = D.FYS;
     const company   = state.company;
 
+    /* Populate the category dropdown once. */
+    const sel = $("#cat-select");
+    if (sel && !sel.dataset.wired) {
+      sel.innerHTML = METRIC_TABLE_GROUPS.map(g => `<option value="${g.cat}">${g.cat}</option>`).join("");
+      sel.addEventListener("change", () => {
+        state.selectedCategory = sel.value;
+        renderMetricTable();
+      });
+      sel.dataset.wired = "1";
+    }
+    if (sel) sel.value = state.selectedCategory;
+
     /* Resolve a row from the row spec — covers fy_metrics and
        company_info-backed entries (e.g. Dealers). */
     function pull(spec, fy) {
@@ -1461,30 +1473,23 @@
       };
     });
 
-    /* If the currently-selected side-panel metric isn't in the
-       trendable set anymore, fall back to the first trendable. */
-    if (!cells.find(c => c.spec.metric === state.selectedMetric && c.trendable)) {
-      const first = cells.find(c => c.trendable);
-      if (first) state.selectedMetric = first.spec.metric;
-    }
+    /* Filter to just the selected category's metrics. The dropdown
+       drives both the table content and the side-panel chart. */
+    const filteredCells = cells.filter(c => c.spec.cat === state.selectedCategory);
 
-    /* Build header row: a Category cell per group spanning that
-       group's metric columns. */
-    let categoryHeader = `<th class="row-label-head"></th>`;
-    METRIC_TABLE_GROUPS.forEach((group, gi) => {
-      categoryHeader += `<th class="cat-head ${gi > 0 ? 'group-start-col' : ''}" colspan="${group.rows.length}">${group.cat}</th>`;
-    });
+    /* Single-category banner header. */
+    const categoryHeader =
+      `<th class="row-label-head"></th>` +
+      `<th class="cat-head" colspan="${filteredCells.length}">${state.selectedCategory}</th>`;
 
-    const cellTd = (c, content, extra = "") => {
-      const isSelected = c.spec.metric === state.selectedMetric ? "selected" : "";
-      return `<td data-metric="${ATTR(c.spec.metric)}" class="${c.trendable ? 'trendable' : ''} ${extra} ${isSelected}" title="${ATTR(c.sourceText)}">${content}</td>`;
-    };
+    const cellTd = (c, content, extra = "") =>
+      `<td data-metric="${ATTR(c.spec.metric)}" class="${extra}" title="${ATTR(c.sourceText)}">${content}</td>`;
 
-    const rowMetric = `<tr><th class="row-label">Metric</th>${cells.map(c => cellTd(c, `<span class="metric-name">${c.spec.metric}</span>`)).join("")}</tr>`;
-    const rowPrior  = `<tr><th class="row-label">${fyPrior}</th>${cells.map(c => cellTd(c, c.priorHtml, "num prior")).join("")}</tr>`;
-    const rowCurr   = `<tr><th class="row-label">${fyCurrent}</th>${cells.map(c => cellTd(c, c.currHtml, "num curr")).join("")}</tr>`;
-    const rowChange = `<tr><th class="row-label">Change</th>${cells.map(c => cellTd(c, c.changeHtml, "num")).join("")}</tr>`;
-    const rowRead   = `<tr><th class="row-label">Read</th>${cells.map(c => cellTd(c, c.readHtml)).join("")}</tr>`;
+    const rowMetric = `<tr><th class="row-label">Metric</th>${filteredCells.map(c => cellTd(c, `<span class="metric-name">${c.spec.metric}</span>`)).join("")}</tr>`;
+    const rowPrior  = `<tr><th class="row-label">${fyPrior}</th>${filteredCells.map(c => cellTd(c, c.priorHtml, "num prior")).join("")}</tr>`;
+    const rowCurr   = `<tr><th class="row-label">${fyCurrent}</th>${filteredCells.map(c => cellTd(c, c.currHtml, "num curr")).join("")}</tr>`;
+    const rowChange = `<tr><th class="row-label">Change</th>${filteredCells.map(c => cellTd(c, c.changeHtml, "num")).join("")}</tr>`;
+    const rowRead   = `<tr><th class="row-label">Read</th>${filteredCells.map(c => cellTd(c, c.readHtml)).join("")}</tr>`;
 
     $("#metric-table").innerHTML = `
       <div class="mtbl-scroll">
@@ -1495,52 +1500,44 @@
           </tbody>
         </table>
       </div>
-      <div class="mtbl-foot">Click any metric column to focus its 10-year trend on the right. Source: ${company === "Maruti"
+      <div class="mtbl-foot">Source: ${company === "Maruti"
         ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations; SIAM (market share / industry); Maruti monthly sales press releases (segment volumes)."
         : "Company filings; Yahoo Finance (NSE close)."}</div>`;
 
-    /* Click any cell of a trendable metric column to focus its
-       10-year trend in the side panel. */
-    document.querySelectorAll("#metric-table td.trendable").forEach(td => {
-      td.addEventListener("click", () => {
-        state.selectedMetric = td.dataset.metric;
-        renderMetricTable();      // re-render to update .selected highlighting
-        renderMetricChartSide();  // refresh side panel
-      });
-    });
-
-    renderMetricChartSide();
+    renderCategoryChart(filteredCells);
   }
 
-  /* Side-panel chart for the currently selected metric. Lives next
-     to the Supporting Data table; replaces the per-row sparklines so
-     only ONE trend is visible at a time. */
-  function renderMetricChartSide() {
-    const metric = state.selectedMetric;
-    const company = state.company;
+  /* Side-panel chart for the currently selected category — every
+     metric in the category is one trend line, with distinct colors
+     so the user can read them apart. */
+  function renderCategoryChart(cells) {
+    const PALETTE = ["#173B63", "#5B7CFA", "#4DB6AC", "#E7A64A", "#A78BFA", "#94A3B8"];
     const fyHistory = D.FYS;
+    const company = state.company;
+    const cat = state.selectedCategory;
 
-    const titleEl = $("#metric-chart-title");
-    const helpEl  = $("#metric-chart-help");
-    const currEl  = $("#metric-chart-current");
-    const chartEl = $("#metric-chart");
-    const footEl  = $("#metric-chart-foot");
+    const titleEl  = $("#metric-chart-title");
+    const helpEl   = $("#metric-chart-help");
+    const currEl   = $("#metric-chart-current");
+    const chartEl  = $("#metric-chart");
+    const legendEl = $("#metric-chart-legend");
+    const footEl   = $("#metric-chart-foot");
     if (!titleEl || !chartEl) return;
 
-    /* Resolve the spec the same way renderMetricTable does so we
-       handle company_info-backed entries (Dealers) too. */
-    let spec = null;
-    METRIC_TABLE_GROUPS.forEach(g => g.rows.forEach(s => { if (s.metric === metric) spec = s; }));
-    if (!spec) {
-      titleEl.textContent = "Select a metric";
-      helpEl.textContent  = "Click any cell in the table to focus its 10-year trend.";
-      currEl.textContent  = "";
-      chartEl.innerHTML   = "";
-      footEl.textContent  = "";
-      return;
-    }
+    titleEl.textContent = cat;
+    currEl.textContent = state.fy;
+    helpEl.textContent = ({
+      "Growth":  "Revenue, volume, and realisation YoY %.",
+      "Margins": "Gross margin (proxy) and EBITDA margin %.",
+      "Mix":     "SUV / UV and export share of volume.",
+      "Scale":   "Capacity utilisation and market share %.",
+      "Capital": "Capex, capacity utilisation, working capital days. Capex shown ÷100 to share the axis.",
+      "Network": "Dealer / sales-outlet count.",
+      "Product Facts": "Launch counts (Top Selling Model excluded — non-numeric).",
+    })[cat] || "";
 
-    const pullSide = (fy) => {
+    /* Resolve resolver for fy_metrics vs company_info-backed entries. */
+    const pullSide = (spec, fy) => {
       if (spec.kind === "info") {
         const info = getCompanyInfo(fy, company);
         return info ? info[spec.field] : null;
@@ -1548,66 +1545,40 @@
       const r = getCompanyMetric(fy, company, spec.metric);
       return r ? r.Value : null;
     };
-    const values = fyHistory.map(fy => {
-      const v = pullSide(fy);
-      return typeof v === "number" ? v : null;
+
+    /* Build series — one per numeric metric in the category. */
+    const series = [];
+    let colorIdx = 0;
+    cells.forEach(c => {
+      const sample = pullSide(c.spec, state.fy);
+      if (typeof sample === "string") return;          // skip Top Selling Model
+      const scale = (cat === "Capital" && /Capex/.test(c.spec.metric)) ? 0.01 : 1;
+      const label = scale === 1 ? c.spec.metric : c.spec.metric + " (÷ 100)";
+      const values = fyHistory.map(fy => {
+        const v = pullSide(c.spec, fy);
+        if (typeof v !== "number") return null;
+        return scale === 1 ? v : +(v * scale).toFixed(2);
+      });
+      series.push({ name: label, color: PALETTE[colorIdx++ % PALETTE.length], values });
     });
 
-    const rCurr = spec.kind === "info" ? null : getCompanyMetric(state.fy, company, spec.metric);
-    const sig = (rCurr && rCurr.Signal) || "Neutral";
-    const lineColor = sig === "Positive" ? "#1F7A45" : sig === "Negative" ? "#9F1F2E" : "#173B63";
-
-    const fmt = (v) => {
-      if (v == null) return "—";
-      if (typeof v === "string") return v;
-      if (metric === "Stock Price (31-Mar)") return "₹" + fmtNum(v);
-      if (metric === "Capex (Rs Cr)") return "₹" + fmtNum(v) + " Cr";
-      if (isPctMetric(metric)) return v.toFixed(1) + "%";
-      if (/Days/.test(metric)) return v.toFixed(0) + " d";
-      return fmtNum(v);
-    };
-
-    titleEl.textContent = metric;
-    const yUnit = isPctMetric(metric) ? "%" : (/Days/.test(metric) ? "d" : "");
-    const curr = pullSide(state.fy);
-    currEl.textContent = state.fy + ": " + fmt(curr);
-
-    const helpByMetric = {
-      "Revenue Growth %":     "Net sales YoY %.",
-      "Volume Growth %":      "Total sales volume YoY %.",
-      "Realisation Growth %": "Average selling price YoY % (revenue ÷ volume).",
-      "Gross Margin %":       "Approx. 100 − material cost %.",
-      "EBITDA Margin %":      "EBITDA as % of revenue.",
-      "Export Volume %":      "Exports as % of total sales volume.",
-      "SUV Volume %":         "SUV / UV share of domestic volume.",
-      "Capacity Utilisation %": "Sales volume ÷ installed capacity (proxy).",
-      "Market Share %":       "Domestic PV share per SIAM / company data.",
-      "Capex (Rs Cr)":        "Annual capex from cash-flow disclosures.",
-      "Working Capital Days": "Negative = supplier finance funding ops.",
-      "Stock Price (31-Mar)": "NSE close on 31-Mar (Yahoo Finance).",
-      "Dealers / Sales Outlets": "FY-end sales outlet count.",
-      "New Model Launches":   "Count of new launches in the FY.",
-      "Facelift Launches":    "Count of facelifts / refreshes in the FY.",
-      "Top Selling Model":    "Highest-volume model in the FY.",
-    };
-    helpEl.textContent = helpByMetric[metric] || "";
-
-    if (typeof curr === "string") {
-      /* Top Selling Model — render a simple text strip instead of a chart */
-      chartEl.innerHTML = `<div class="text-sm text-ink py-6 text-center">${fyHistory.map(fy => {
-        const v = pullSide(fy);
-        return `<div class="flex items-center justify-between border-b border-line/60 py-1.5"><span class="text-[11px] text-inkMuted">${fy}</span><span class="font-medium">${v ?? "—"}</span></div>`;
-      }).join("")}</div>`;
+    if (!series.length) {
+      chartEl.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">${
+        cat === "Product Facts"
+          ? "Top Selling Model is non-numeric — see the table for FY-by-FY values."
+          : "No numeric trends available for this category."
+      }</div>`;
+      legendEl.innerHTML = "";
     } else {
-      chartEl.innerHTML = lineChart([
-        { name: metric, color: lineColor, values },
-      ], { xLabels: fyHistory, yUnit, area: true, height: 180 });
+      const yUnit = cat === "Network" ? "" : (cat === "Capital" || cat === "Product Facts" ? "" : "%");
+      chartEl.innerHTML = lineChart(series, { xLabels: fyHistory, yUnit, height: 190 });
+      legendEl.innerHTML = series.map(s => legendChip(s.color, s.name)).join("");
       bindChartHovers(chartEl);
     }
 
-    const sourceText = rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source
-      : (company === "Maruti" ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations." : "Company filings.");
-    footEl.textContent = "Source: " + sourceText;
+    footEl.textContent = "Source: " + (company === "Maruti"
+      ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations."
+      : "Company filings.");
   }
 
   function renderGovernanceCard() {
