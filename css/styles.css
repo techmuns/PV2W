@@ -752,16 +752,18 @@ body::before {
 .mtbl-transposed thead th.metric-col-head {
   background: #F4F6FA;
   color: #1F2A37;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.01em;
   text-transform: none;
-  padding: 10px 12px;
+  padding: 8px 10px;
   white-space: normal;
   text-align: center;
   line-height: 1.25;
-  border-bottom: 1px solid #E5EAF0;
+  border-bottom: 1px solid #D9E2EC;
+  border-left: 1px solid #E5EAF0;
 }
+.mtbl-transposed thead th.metric-col-head:first-of-type { border-left: 1px solid #D9E2EC; }
 /* Inline category dropdown, sits in the table's top-left corner */
 .cat-select-inline {
   appearance: none;
@@ -791,26 +793,28 @@ body::before {
   background: #FFFFFF;
   z-index: 2;
   text-align: left;
-  padding: 10px 14px;
-  font-size: 10.5px;
+  padding: 8px 12px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #6B7280;
   font-weight: 600;
-  border-right: 1px solid #E5EAF0;
+  border-right: 1px solid #D9E2EC;
   border-bottom: 1px solid #EEF1F5;
-  min-width: 96px;
+  min-width: 78px;
 }
 .mtbl-transposed tbody td {
-  padding: 10px 14px;
+  padding: 8px 10px;
   border-bottom: 1px solid #EEF1F5;
-  border-left: none;
+  border-left: 1px solid #EEF1F5;
   text-align: center;
-  font-size: 12.5px;
+  font-size: 11.5px;
   color: #1F2A37;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+.mtbl-transposed tbody td:first-of-type { border-left: 1px solid #D9E2EC; }
+.mtbl-transposed tbody tr:last-child td { border-bottom: none; }
 .mtbl-transposed tbody td.metric-name,
 .mtbl-transposed tbody td .metric-name {
   font-size: 11px;
@@ -856,6 +860,44 @@ body::before {
 .read-pill.neutral  { background: #EEF2F7; color: #475569; }
 .read-pill.negative { background: #FBE9EA; color: #9F1F2E; }
 .read-pill.watch    { background: #FCEFD3; color: #8A5A0A; }
+
+/* Governance & Network info chips — pill-shaped read-only cards
+   that present a single labelled fact each (CEO, CFO, Sales Outlets,
+   Employees, etc). Visually button-like but not interactive. */
+.info-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (min-width: 720px)  { .info-chip-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .info-chip-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.info-chip {
+  background: #F8FAFC;
+  border: 1px solid #E5EAF0;
+  border-radius: 10px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.info-chip:hover { border-color: #C9D2DF; background: #FFFFFF; }
+.info-chip-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6B7280;
+  font-weight: 600;
+}
+.info-chip-value {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1F2A37;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .mtbl-foot {
   padding: 10px 14px 12px;
   font-size: 10.5px;
