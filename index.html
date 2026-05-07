@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260507w" />
+  <link rel="stylesheet" href="css/styles.css?v=20260507x" />
   <script>
     tailwind.config = {
       theme: {
@@ -234,7 +234,6 @@
     <section>
       <div class="section-head">
         <span class="section-eyebrow">Supporting data</span>
-        <span class="section-hint">Click any row's trend for the 10-year chart</span>
       </div>
 
       <!-- Industry view falls back to the legacy tab structure -->
@@ -243,29 +242,22 @@
         <div id="tab-body" class="p-5"></div>
       </div>
 
-      <!-- OEM view: category dropdown + filtered table on the left,
-           multi-line trend chart on the right (one chart per category,
-           one line per metric in that category). -->
+      <!-- OEM view: 45/55 split — compact table left, larger chart right -->
       <div id="oem-hub" class="space-y-4">
-        <div class="flex items-center gap-3">
-          <label for="cat-select" class="text-[11px] uppercase tracking-wider text-inkMuted font-semibold">Category</label>
-          <select id="cat-select"
-                  class="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-line bg-card text-navy focus:outline-none focus:ring-2 focus:ring-blue/30 cursor-pointer"></select>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-4 items-start">
-          <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden">
-            <div id="metric-table"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-[45fr_55fr] gap-4 items-stretch">
+          <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden flex flex-col">
+            <div id="metric-table" class="flex-1"></div>
           </div>
           <div id="metric-chart-panel"
-               class="bg-card rounded-xl shadow-card border border-line p-4 lg:sticky lg:top-24">
+               class="bg-card rounded-xl shadow-card border border-line p-5 flex flex-col">
             <div class="flex items-baseline justify-between mb-1">
-              <h3 id="metric-chart-title" class="text-[12.5px] font-semibold text-navy"></h3>
+              <h3 id="metric-chart-title" class="text-[13px] font-semibold text-navy"></h3>
               <span id="metric-chart-current" class="text-[11px] text-inkMuted tabular-nums"></span>
             </div>
             <p id="metric-chart-help" class="text-[11px] text-inkMuted mb-3"></p>
-            <div id="metric-chart" style="min-height:200px"></div>
+            <div id="metric-chart" class="flex-1 min-h-[260px]"></div>
             <div id="metric-chart-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-2"></div>
-            <p id="metric-chart-foot" class="text-[10px] text-inkMuted mt-2 leading-snug"></p>
+            <p id="metric-chart-foot" class="text-[10px] text-inkMuted mt-3 leading-snug"></p>
           </div>
         </div>
         <div id="governance-card" class="bg-card rounded-xl shadow-card border border-line p-5"></div>
@@ -394,7 +386,7 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260507w"></script>
-  <script src="js/dashboard.js?v=20260507w"></script>
+  <script src="js/data-loader.js?v=20260507x"></script>
+  <script src="js/dashboard.js?v=20260507x"></script>
 </body>
 </html>

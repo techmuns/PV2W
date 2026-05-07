@@ -1378,18 +1378,6 @@
     const fyHistory = D.FYS;
     const company   = state.company;
 
-    /* Populate the category dropdown once. */
-    const sel = $("#cat-select");
-    if (sel && !sel.dataset.wired) {
-      sel.innerHTML = METRIC_TABLE_GROUPS.map(g => `<option value="${g.cat}">${g.cat}</option>`).join("");
-      sel.addEventListener("change", () => {
-        state.selectedCategory = sel.value;
-        renderMetricTable();
-      });
-      sel.dataset.wired = "1";
-    }
-    if (sel) sel.value = state.selectedCategory;
-
     /* Resolve a row from the row spec — covers fy_metrics and
        company_info-backed entries (e.g. Dealers). */
     function pull(spec, fy) {
@@ -1477,15 +1465,24 @@
        drives both the table content and the side-panel chart. */
     const filteredCells = cells.filter(c => c.spec.cat === state.selectedCategory);
 
-    /* Single-category banner header. */
-    const categoryHeader =
-      `<th class="row-label-head"></th>` +
-      `<th class="cat-head" colspan="${filteredCells.length}">${state.selectedCategory}</th>`;
+    /* The category selector lives inside the table's top-left corner.
+       Wired once on first render. */
+    function buildCatSelect() {
+      const opts = METRIC_TABLE_GROUPS.map(g =>
+        `<option value="${g.cat}" ${g.cat === state.selectedCategory ? 'selected' : ''}>${g.cat}</option>`
+      ).join("");
+      return `<select id="cat-select-inline" class="cat-select-inline">${opts}</select>`;
+    }
+
+    /* Single-category banner header — the corner cell holds the
+       dropdown; metric names sit in the rest of the thead row. */
+    const headRow =
+      `<th class="row-label-head">${buildCatSelect()}</th>` +
+      filteredCells.map(c => `<th class="metric-col-head" title="${ATTR(c.sourceText)}">${c.spec.metric}</th>`).join("");
 
     const cellTd = (c, content, extra = "") =>
       `<td data-metric="${ATTR(c.spec.metric)}" class="${extra}" title="${ATTR(c.sourceText)}">${content}</td>`;
 
-    const rowMetric = `<tr><th class="row-label">Metric</th>${filteredCells.map(c => cellTd(c, `<span class="metric-name">${c.spec.metric}</span>`)).join("")}</tr>`;
     const rowPrior  = `<tr><th class="row-label">${fyPrior}</th>${filteredCells.map(c => cellTd(c, c.priorHtml, "num prior")).join("")}</tr>`;
     const rowCurr   = `<tr><th class="row-label">${fyCurrent}</th>${filteredCells.map(c => cellTd(c, c.currHtml, "num curr")).join("")}</tr>`;
     const rowChange = `<tr><th class="row-label">Change</th>${filteredCells.map(c => cellTd(c, c.changeHtml, "num")).join("")}</tr>`;
@@ -1494,15 +1491,24 @@
     $("#metric-table").innerHTML = `
       <div class="mtbl-scroll">
         <table class="mtbl mtbl-transposed">
-          <thead><tr>${categoryHeader}</tr></thead>
+          <thead><tr>${headRow}</tr></thead>
           <tbody>
-            ${rowMetric}${rowPrior}${rowCurr}${rowChange}${rowRead}
+            ${rowPrior}${rowCurr}${rowChange}${rowRead}
           </tbody>
         </table>
       </div>
       <div class="mtbl-foot">Source: ${company === "Maruti"
         ? "Maruti Suzuki Annual Reports / Q4 Investor Presentations; SIAM (market share / industry); Maruti monthly sales press releases (segment volumes)."
         : "Company filings; Yahoo Finance (NSE close)."}</div>`;
+
+    /* Re-bind the dropdown that just got rendered. */
+    const inlineSel = $("#cat-select-inline");
+    if (inlineSel) {
+      inlineSel.addEventListener("change", () => {
+        state.selectedCategory = inlineSel.value;
+        renderMetricTable();
+      });
+    }
 
     renderCategoryChart(filteredCells);
   }
