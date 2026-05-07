@@ -8,7 +8,7 @@
     "Volume Growth %",
     "Revenue Growth %",
     "EBITDA Margin %",
-    "SUV Revenue %",
+    "SUV Volume %",
     "Stock Price (31-Mar)"
   ],
   "industry_kpis": [
@@ -24,12 +24,12 @@
     "Volume Growth %",
     "Revenue Growth %",
     "EBITDA Margin %",
-    "SUV Revenue %",
+    "SUV Volume %",
     "Stock Price (31-Mar)",
     "Gross Margin %",
     "Realisation Growth %",
-    "Export Revenue %",
-    "EV Revenue %",
+    "Export Volume %",
+    "EV Volume %",
     "Capacity Utilisation %",
     "Working Capital Days",
     "Capex (Rs Cr)"
@@ -45,7 +45,7 @@
     "oem": {
       "Growth":     ["Revenue Growth %", "Volume Growth %", "Realisation Growth %"],
       "Margins":    ["Gross Margin %", "EBITDA Margin %"],
-      "Mix":        ["SUV Volume %", "SUV Revenue %", "EV Volume %", "EV Revenue %", "Export Volume %", "Export Revenue %"],
+      "Mix":        ["SUV Volume %", "EV Volume %", "Export Volume %"],
       "Operations": ["Capacity (units)", "Capacity Utilisation %", "Capex (Rs Cr)", "Working Capital Days"],
       "Product":    ["New Model Launches", "Facelift Launches", "Top Selling Model"],
       "Governance": []
