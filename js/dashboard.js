@@ -750,11 +750,9 @@
       $("#chart2-help").textContent  = "Selected FY share alongside the prior FY.";
       $("#chart2-sub").textContent   = state.fy + " · %";
       $("#chart2-sub").classList.remove("hidden");
-      $("#chart2-foot").textContent  = "";
       $("#chart2-toggle").classList.add("hidden");
-      $("#chart2-toggle-help").classList.add("hidden");
-      $("#chart2-product-sub").classList.add("hidden");
-      $("#chart2-source").classList.add("hidden");
+      $("#chart2-product-sub").style.visibility = "hidden";
+      $("#chart2-source").textContent = " ";
 
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
       const sharesPrev = oems.map(o => (getCompanyMetric(prevFY(state.fy) || state.fy, o, "Market Share %")||{}).Value || 0);
@@ -768,8 +766,8 @@
 
     } else {
       $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
-      $("#chart1-help").textContent  = "Are we outperforming the industry?";
-      $("#chart1-sub").textContent   = "Volume growth %";
+      $("#chart1-help").textContent  = "Volume growth comparison";
+      $("#chart1-sub").textContent   = "";
 
       const oemVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Volume Growth %")||{}).Value ?? null);
       const indVals = fyHistory.map(fy => (getIndustryMetric(fy, "PV Volume Growth %")||{}).Value ?? null);
@@ -781,7 +779,7 @@
         legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
 
       $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
-      $("#chart2-help").textContent  = "Total sales volume with product mix split";
+      $("#chart2-help").textContent  = "Total sales volume by selected mix";
       $("#chart2-sub").textContent   = "";
       $("#chart2-sub").classList.add("hidden");
       $("#chart2-toggle").classList.remove("hidden");
@@ -848,26 +846,6 @@
       };
     });
 
-    /* Helper text varies by view, and for Product it varies by sub-view.
-       Row stays mounted with a non-breaking-space fallback so its
-       height doesn't collapse when no helper text applies. */
-    let helpText = "";
-    if (view === "product") {
-      helpText = state.productView === "suv"
-        ? "Same product mix, grouped into SUV and non-SUV"
-        : "Split of total sales volume by product segment";
-    } else if (view === "export") {
-      helpText = "Split of total sales volume into domestic and exports";
-    } else if (view === "powertrain") {
-      helpText = "Split of sales volume by powertrain type";
-    }
-    const helpEl = $("#chart2-toggle-help");
-    helpEl.textContent = helpText || " ";
-
-    /* Re-show OEM-mode rows in case Industry view hid them via .hidden. */
-    helpEl.classList.remove("hidden");
-    $("#chart2-product-sub").classList.remove("hidden");
-    $("#chart2-source").classList.remove("hidden");
 
     /* Highlight the active top-level toggle. The Product sub-toggle
        row is always mounted (so the card height doesn't jump when
@@ -899,7 +877,7 @@
 
     const TO_LAKH = (n) => n / 1e5;
 
-    let bars, legendItems, footnote = "";
+    let bars, legendItems;
 
     if (view === "export") {
       const P = MIX_PALETTE.export;
@@ -976,7 +954,6 @@
       });
       legendItems = legendChip(PT.cng, "CNG") + legendChip(PT.hybrid, "Hybrid") +
                     legendChip(PT.bev, "BEV") + legendChip(PT.ice, "Petrol / Diesel / Other ICE");
-      footnote = "";
     } else if (view === "product") {
       /* Product mix from Maruti's monthly sales press releases. Six
          product buckets plus a residual that catches exports +
@@ -1051,7 +1028,6 @@
     });
     crossFadeChart($("#chart2"), newSvg);
     $("#chart2-legend").innerHTML = legendItems;
-    $("#chart2-foot").textContent = footnote;
   }
 
   /* Cross-fade swap for the volume-mix chart. New SVG is inserted
