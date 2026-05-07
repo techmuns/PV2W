@@ -650,6 +650,7 @@
       $("#chart2-title").textContent = "OEM market share";
       $("#chart2-help").textContent  = "Selected FY share alongside the prior FY.";
       $("#chart2-sub").textContent   = state.fy + " · %";
+      $("#chart2-foot").textContent  = "";
 
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
       const sharesPrev = oems.map(o => (getCompanyMetric(prevFY(state.fy) || state.fy, o, "Market Share %")||{}).Value || 0);
@@ -676,22 +677,36 @@
         legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
 
       $("#chart2-title").textContent = "Mix shift";
-      $("#chart2-help").textContent  = "Quality of growth — SUV / EV / Export contribution.";
-      $("#chart2-sub").textContent   = "Volume mix · %";
+      $("#chart2-help").textContent  = "Quality of growth — SUV / EV / Export volume contribution.";
+      $("#chart2-sub").textContent   = "Volume mix %";
 
-      const suvVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "SUV Volume %")||{}).Value || 0);
-      const evVals  = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "EV Volume %")||{}).Value  || 0);
-      const expVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Export Volume %")||{}).Value || 0);
+      /* Three independent volume-share signals — drawn as separate
+         trend lines, NOT stacked. The shares can overlap (an export
+         vehicle can also be an SUV) so summing them is wrong. */
+      const suvVals = fyHistory.map(fy => {
+        const r = getCompanyMetric(fy, state.company, "SUV Volume %");
+        return r && r.Value !== null ? r.Value : null;
+      });
+      const evVals  = fyHistory.map(fy => {
+        const r = getCompanyMetric(fy, state.company, "EV Volume %");
+        return r && r.Value !== null ? r.Value : null;
+      });
+      const expVals = fyHistory.map(fy => {
+        const r = getCompanyMetric(fy, state.company, "Export Volume %");
+        return r && r.Value !== null ? r.Value : null;
+      });
 
-      $("#chart2").innerHTML = stackedBarChart([
-        { name: "SUV",    color: COLOR.blue,    values: suvVals },
-        { name: "EV",     color: COLOR.teal,    values: evVals  },
-        { name: "Export", color: COLOR.warn,    values: expVals },
-      ], fyHistory, { yUnit: "%" });
+      $("#chart2").innerHTML = lineChart([
+        { name: "SUV / UV", color: COLOR.blue, values: suvVals },
+        { name: "EV",       color: COLOR.teal, values: evVals  },
+        { name: "Export",   color: COLOR.warn, values: expVals },
+      ], { xLabels: fyHistory, yUnit: "%" });
       $("#chart2-legend").innerHTML =
-        legendChip(COLOR.blue, "SUV volume %") +
+        legendChip(COLOR.blue, "SUV / UV volume %") +
         legendChip(COLOR.teal, "EV volume %") +
         legendChip(COLOR.warn, "Export volume %");
+      $("#chart2-foot").textContent =
+        "SUV / EV / Export volume shares may overlap, so they are shown as separate trend lines.";
     }
 
     bindChartHovers($("#chart1"));
