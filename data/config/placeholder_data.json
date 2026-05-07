@@ -9806,7 +9806,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-07T14:58:27.516Z",
+    "last_refresh": "2026-05-07T15:05:19.970Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -9815,6 +9815,6 @@
       "mm": "success",
       "tata": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25503446126"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25503915718"
   }
 }
