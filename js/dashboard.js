@@ -1648,8 +1648,8 @@
       { label: "Employees",      value: fmtCount(info.Employees) },
     ];
     card.innerHTML = `
-      <div class="flex items-end justify-between mb-3">
-        <h3 class="text-[12.5px] font-semibold text-navy">Governance & Network</h3>
+      <div class="flex items-end justify-between mb-5">
+        <h3 class="text-[13px] font-semibold text-navy">Governance & Network</h3>
         <span class="text-[10.5px] text-inkMuted">${state.fy} snapshot</span>
       </div>
       <div class="info-chip-grid">
@@ -1659,7 +1659,7 @@
             <div class="info-chip-value">${c.value}</div>
           </div>`).join("")}
       </div>
-      <div class="text-[10.5px] text-inkMuted mt-4">
+      <div class="text-[10.5px] text-inkMuted mt-5 leading-relaxed">
         Source: ${(info.Source && info.Source !== "Pending") ? info.Source : "—"}${info.Last_Updated ? ` · Last updated ${new Date(info.Last_Updated).toLocaleDateString("en-GB")}` : ""}
       </div>`;
   }
