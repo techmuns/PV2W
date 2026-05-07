@@ -253,22 +253,33 @@
   function applyLogoMark(el, company, sizeClass = "") {
     const info = getCompanyInfo(state.fy, company);
     const url  = info && info.Logo_URL;
-    const baseClass = `logo-mark ${sizeClass}`.trim();
+
+    /* Preserve any caller-applied modifier classes (e.g.
+       .logo-mark-header on the snapshot header tile) — only swap
+       between the badge / image variants this function manages. */
+    const PRESERVE = new Set(["logo-mark", "logo-mark-sm", "logo-mark-header", "logo-mark-aggregate", "logo-mark-pending"]);
+    const keep = Array.from(el.classList).filter(c => PRESERVE.has(c));
+    const baseSet = new Set(keep);
+    baseSet.add("logo-mark");
+    if (sizeClass) sizeClass.split(/\s+/).forEach(c => c && baseSet.add(c));
+    el.removeAttribute("style");
 
     if (!url) {
-      el.className = `${baseClass} logo-mark-badge`;
-      el.removeAttribute("style");
+      baseSet.add("logo-mark-badge");
+      el.className = Array.from(baseSet).join(" ");
       el.innerHTML = brandBadge(company);
       return;
     }
 
-    el.className = `${baseClass} logo-mark-image`;
-    el.removeAttribute("style");
+    baseSet.add("logo-mark-image");
+    el.className = Array.from(baseSet).join(" ");
     el.innerHTML = "";
     const img = document.createElement("img");
     img.alt = `${company} logo`;
     img.onerror = () => {
-      el.className = `${baseClass} logo-mark-badge`;
+      baseSet.delete("logo-mark-image");
+      baseSet.add("logo-mark-badge");
+      el.className = Array.from(baseSet).join(" ");
       el.innerHTML = brandBadge(company);
     };
     img.src = url;
