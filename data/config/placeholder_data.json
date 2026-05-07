@@ -421,11 +421,11 @@
       "FY": "FY24",
       "Company": "Maruti",
       "Metric": "Export Volume %",
-      "Value": 13.6,
+      "Value": 13.3,
       "YoY_Change": 0.3,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release",
-      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
+      "Source": "Maruti Q4 Investor Presentation (volume split) / FY25 AR",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-07"
     },
     {
@@ -531,11 +531,11 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Volume Growth %",
-      "Value": 2.5,
+      "Value": 4.6,
       "YoY_Change": -4,
       "Signal": "Negative",
-      "Source": "Maruti monthly sales press release",
-      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
+      "Source": "Maruti Q4 Investor Presentation (total sales volume) / FY25 AR",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-07"
     },
     {
@@ -545,8 +545,8 @@
       "Value": 7.5,
       "YoY_Change": -12.4,
       "Signal": "Negative",
-      "Source": "Maruti FY financial results press release",
-      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
+      "Source": "Maruti Q4 Investor Presentation (net sales growth) / FY25 AR",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-07"
     },
     {
@@ -597,11 +597,11 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Realisation Growth %",
-      "Value": 5,
+      "Value": 2.8,
       "YoY_Change": -7.6,
       "Signal": "Negative",
-      "Source": "Maruti FY financial results PR + monthly sales PR",
-      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
+      "Source": "Derived: (1 + revenue growth) / (1 + volume growth) − 1",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-07"
     },
     {
@@ -641,11 +641,11 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Export Volume %",
-      "Value": 15.6,
+      "Value": 15,
       "YoY_Change": 1.7,
       "Signal": "Positive",
-      "Source": "Maruti monthly sales press release",
-      "Source_URL": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
+      "Source": "Maruti Q4 Investor Presentation (volume split) / FY25 AR",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-07"
     },
     {
@@ -7179,6 +7179,116 @@
       "YoY_Change": null,
       "Signal": "Neutral",
       "Source": "Maruti announcements / industry annual model-wise sales",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY16",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": null,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY17",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": null,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY18",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": null,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY19",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": null,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY20",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": null,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY21",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": null,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY22",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": null,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY23",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": 1966000,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY24",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": 2135000,
+      "YoY_Change": 8.6,
+      "Signal": "Positive",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY25",
+      "Company": "Maruti",
+      "Metric": "Total Sales Volume",
+      "Value": 2234000,
+      "YoY_Change": 4.6,
+      "Signal": "Positive",
+      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-07"
     }

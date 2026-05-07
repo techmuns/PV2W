@@ -196,11 +196,20 @@
               <h2 id="chart2-title" class="chart-panel-title"></h2>
               <p id="chart2-help" class="chart-panel-sub"></p>
             </div>
-            <span id="chart2-sub" class="text-[11px] text-inkMuted font-medium"></span>
+            <div class="flex items-center gap-2">
+              <div id="chart2-toggle" class="hidden inline-flex rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
+                <button data-mix="product" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
+                <button data-mix="export"  class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
+                <button data-mix="suv"     class="mix-btn px-2.5 py-1 rounded-md font-semibold">SUV</button>
+                <button data-mix="ev"      class="mix-btn px-2.5 py-1 rounded-md font-semibold">EV</button>
+              </div>
+              <span id="chart2-sub" class="text-[11px] text-inkMuted font-medium"></span>
+            </div>
           </div>
+          <p id="chart2-toggle-help" class="hidden text-[11px] text-inkMuted -mt-1 mb-1"></p>
           <div class="chart-panel-body">
             <div id="chart2"></div>
-            <div id="chart2-legend" class="flex gap-4 text-[11px] text-inkSoft mt-3"></div>
+            <div id="chart2-legend" class="flex flex-wrap gap-3 text-[11px] text-inkSoft mt-3"></div>
             <p id="chart2-foot" class="text-[10px] text-inkMuted mt-2 italic"></p>
           </div>
         </div>
@@ -250,13 +259,14 @@
   </div>
 
   <!-- Dashboard chart hover tooltip — white-on-navy, compact -->
-  <div id="chart-tooltip" class="hidden pointer-events-none fixed z-[60] bg-white border border-line shadow-modal rounded-lg px-3 py-2 min-w-[148px]">
+  <div id="chart-tooltip" class="hidden pointer-events-none fixed z-[60] bg-white border border-line shadow-modal rounded-lg px-3 py-2 min-w-[148px] max-w-[280px]">
     <div id="cht-fy" class="text-[10px] text-inkMuted uppercase tracking-wider font-semibold"></div>
-    <div class="flex items-center gap-2 mt-1">
+    <div id="cht-simple" class="flex items-center gap-2 mt-1">
       <span id="cht-swatch" class="inline-block w-2.5 h-2.5 rounded-sm"></span>
       <span id="cht-series" class="text-[11.5px] text-inkSoft"></span>
       <span id="cht-value" class="text-[13px] font-semibold text-navy tabular-nums ml-auto"></span>
     </div>
+    <div id="cht-rich" class="hidden mt-1.5 space-y-1"></div>
   </div>
 
   <!-- ============== TREND MODAL ============== -->
