@@ -749,9 +749,12 @@
       $("#chart2-title").textContent = "OEM market share";
       $("#chart2-help").textContent  = "Selected FY share alongside the prior FY.";
       $("#chart2-sub").textContent   = state.fy + " · %";
+      $("#chart2-sub").classList.remove("hidden");
       $("#chart2-foot").textContent  = "";
       $("#chart2-toggle").classList.add("hidden");
       $("#chart2-toggle-help").classList.add("hidden");
+      $("#chart2-product-sub").classList.add("hidden");
+      $("#chart2-source").classList.add("hidden");
 
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
       const sharesPrev = oems.map(o => (getCompanyMetric(prevFY(state.fy) || state.fy, o, "Market Share %")||{}).Value || 0);
@@ -779,9 +782,9 @@
 
       $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
       $("#chart2-help").textContent  = "Total sales volume, with split by selected mix";
-      $("#chart2-sub").textContent   = "Volume mix %";
+      $("#chart2-sub").textContent   = "";
+      $("#chart2-sub").classList.add("hidden");
       $("#chart2-toggle").classList.remove("hidden");
-      $("#chart2-toggle-help").classList.remove("hidden");
       renderVolumeMixChart();
     }
 
@@ -818,14 +821,16 @@
     let helpText = "";
     if (view === "product") {
       helpText = state.productView === "suv"
-        ? "Split of volume into SUV and non-SUV"
+        ? "SUV / non-SUV split within Maruti volume"
         : "Split of total sales volume by product segment";
     } else if (view === "export") {
       helpText = "Split of total sales volume into domestic and exports";
     } else if (view === "ev") {
       helpText = "Split of total sales volume into EV and non-EV";
     }
-    $("#chart2-toggle-help").textContent = helpText;
+    const helpEl = $("#chart2-toggle-help");
+    helpEl.textContent = helpText;
+    helpEl.classList.toggle("hidden", !helpText);
 
     /* Highlight the active top-level toggle and show/hide the
        Product sub-toggle accordingly. */
@@ -835,13 +840,21 @@
     const subToggle = $("#chart2-product-sub");
     if (view === "product") {
       subToggle.classList.remove("hidden");
-      subToggle.classList.add("flex");
       document.querySelectorAll("#chart2-product-sub .prod-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.productView === state.productView);
       });
     } else {
       subToggle.classList.add("hidden");
-      subToggle.classList.remove("flex");
+    }
+
+    /* Source line (bottom-left, beneath legend & footnote). */
+    const sourceEl = $("#chart2-source");
+    if (state.company === "Maruti") {
+      sourceEl.textContent = "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report. Segment split from company sales disclosures.";
+      sourceEl.classList.remove("hidden");
+    } else {
+      sourceEl.textContent = "";
+      sourceEl.classList.add("hidden");
     }
 
     const TO_LAKH = (n) => n / 1e5;
