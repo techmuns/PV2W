@@ -26,6 +26,7 @@ const fetchers = {
   tata:                process.env.TATA_OUTCOME         || 'unknown',
   governance:          process.env.GOVERNANCE_OUTCOME   || 'unknown',
   industry:            process.env.INDUSTRY_OUTCOME     || 'unknown',
+  hyundai_nse:         process.env.HYUNDAI_NSE_OUTCOME  || 'unknown',
 };
 
 const outcomes = Object.values(fetchers);
