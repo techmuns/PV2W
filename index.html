@@ -6,7 +6,9 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260509d" />
+  <link rel="stylesheet" href="css/styles.css?v=20260509e" />
+  <!-- ExcelJS for the workbook export feature -->
+  <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -116,9 +118,19 @@
         <span id="freshness-badge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full"></span>
       </div>
 
-      <div id="stale-warning" class="hidden ml-auto text-[11px] text-amber bg-amberSoft border border-amber/30 px-2.5 py-1 rounded-md font-medium">
+      <div id="stale-warning" class="hidden text-[11px] text-amber bg-amberSoft border border-amber/30 px-2.5 py-1 rounded-md font-medium">
         ⚠ Some metrics may be out of date
       </div>
+
+      <button id="export-btn"
+              type="button"
+              title="Download every dashboard table as a multi-sheet Excel workbook"
+              class="ml-auto inline-flex items-center gap-1.5 text-[11.5px] font-semibold px-3 py-1.5 rounded-md bg-white/15 hover:bg-white/25 border border-white/25 text-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5"/><path d="M3 13.5h10"/>
+        </svg>
+        <span>Export</span>
+      </button>
     </div>
   </header>
 
@@ -366,7 +378,8 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260509d"></script>
-  <script src="js/dashboard.js?v=20260509d"></script>
+  <script src="js/data-loader.js?v=20260509e"></script>
+  <script src="js/dashboard.js?v=20260509e"></script>
+  <script src="js/export.js?v=20260509e"></script>
 </body>
 </html>
