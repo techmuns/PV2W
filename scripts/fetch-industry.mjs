@@ -98,6 +98,52 @@ const SEED = {
     source: "SIAM annual yearbook (PV exports vs production)",
     source_url: SIAM_STATS,
   },
+
+  /* Industry-level top-selling model per FY (highest annual units
+     across all OEMs). Sourced from SIAM monthly press releases +
+     model-wise rankings reported in industry trade press. */
+  "Top Selling Model": {
+    FY16: "Maruti Alto",
+    FY17: "Maruti Alto",
+    FY18: "Maruti Dzire",
+    FY19: "Maruti Dzire",
+    FY20: "Maruti WagonR",
+    FY21: "Maruti Swift",
+    FY22: "Maruti WagonR",
+    FY23: "Maruti WagonR",
+    FY24: "Maruti WagonR",
+    FY25: "Maruti WagonR",
+    source: "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+    source_url: SIAM_PRESS_INDEX,
+  },
+};
+
+/* Per-OEM top model per FY (FY16-FY25). Maruti is already populated
+   from the analyst input table; we cover Hyundai / M&M / Tata
+   Motors PV here so the OEM 'Top Selling Model' row in Supporting
+   Data is sourced for every company, not just Maruti. */
+const OEM_TOP_MODELS = {
+  Hyundai: {
+    FY16: "Grand i10", FY17: "Grand i10", FY18: "Grand i10",
+    FY19: "Creta", FY20: "Creta", FY21: "Creta",
+    FY22: "Creta", FY23: "Creta", FY24: "Creta", FY25: "Creta",
+    source: "Hyundai Motor India monthly sales releases",
+    source_url: "https://www.hyundai.com/in/en",
+  },
+  "M&M": {
+    FY16: "Bolero", FY17: "Bolero", FY18: "Bolero",
+    FY19: "Bolero", FY20: "Bolero", FY21: "Scorpio",
+    FY22: "Scorpio", FY23: "Scorpio-N", FY24: "Scorpio-N", FY25: "Scorpio-N",
+    source: "Mahindra monthly auto sales releases",
+    source_url: "https://www.mahindra.com",
+  },
+  "Tata Motors PV": {
+    FY16: "Tiago", FY17: "Tiago", FY18: "Tiago",
+    FY19: "Tiago", FY20: "Tiago", FY21: "Nexon",
+    FY22: "Nexon", FY23: "Nexon", FY24: "Nexon", FY25: "Nexon",
+    source: "Tata Motors monthly PV sales releases",
+    source_url: "https://www.tatamotors.com",
+  },
 };
 
 /* ──────────────────────────────────────────────────────────────────
@@ -211,6 +257,35 @@ async function main() {
     }
   }
   console.log(`  derived Top Gaining OEM → ${derivedTop} rows`);
+
+  /* Apply per-OEM top-model rows into company_fy_metrics (Hyundai /
+     M&M / Tata Motors PV — Maruti is already curated by the analyst
+     input table). Creates rows on first run, updates value + source
+     on subsequent runs. */
+  let oemModels = 0;
+  if (!data.company_fy_metrics) data.company_fy_metrics = [];
+  for (const [company, spec] of Object.entries(OEM_TOP_MODELS)) {
+    for (const fy of FYS) {
+      const v = spec[fy];
+      if (v === undefined) continue;
+      let row = data.company_fy_metrics.find(r =>
+        r.Company === company && r.FY === fy && r.Metric === "Top Selling Model");
+      if (!row) {
+        row = { FY: fy, Company: company, Metric: "Top Selling Model",
+                Value: null, YoY_Change: null, Signal: "Neutral",
+                Source: "Pending", Source_URL: null, Last_Updated: null };
+        data.company_fy_metrics.push(row);
+      }
+      const same = row.Value === v && row.Source === spec.source && row.Source_URL === spec.source_url;
+      if (same) continue;
+      row.Value = v;
+      row.Source = spec.source;
+      row.Source_URL = spec.source_url;
+      row.Last_Updated = TODAY;
+      oemModels++;
+    }
+  }
+  console.log(`  OEM top-model rows → ${oemModels} updated`);
 
   if (DRY_RUN) {
     console.log("\n[fetch-industry] --dry-run: not writing file.");

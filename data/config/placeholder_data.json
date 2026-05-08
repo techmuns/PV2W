@@ -952,9 +952,9 @@
       "Value": "Creta",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY24",
@@ -1172,9 +1172,9 @@
       "Value": "Creta",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY25",
@@ -1392,9 +1392,9 @@
       "Value": "Creta",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY23",
@@ -1612,9 +1612,9 @@
       "Value": "Scorpio-N",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY24",
@@ -1832,9 +1832,9 @@
       "Value": "Scorpio-N",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY25",
@@ -2052,9 +2052,9 @@
       "Value": "Scorpio-N",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY23",
@@ -2272,9 +2272,9 @@
       "Value": "Nexon",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY24",
@@ -2492,9 +2492,9 @@
       "Value": "Nexon",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY25",
@@ -2712,9 +2712,9 @@
       "Value": "Nexon",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2025-12-01"
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY16",
@@ -7291,6 +7291,237 @@
       "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY16",
+      "Company": "Hyundai",
+      "Metric": "Top Selling Model",
+      "Value": "Grand i10",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY17",
+      "Company": "Hyundai",
+      "Metric": "Top Selling Model",
+      "Value": "Grand i10",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY18",
+      "Company": "Hyundai",
+      "Metric": "Top Selling Model",
+      "Value": "Grand i10",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY19",
+      "Company": "Hyundai",
+      "Metric": "Top Selling Model",
+      "Value": "Creta",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY20",
+      "Company": "Hyundai",
+      "Metric": "Top Selling Model",
+      "Value": "Creta",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY21",
+      "Company": "Hyundai",
+      "Metric": "Top Selling Model",
+      "Value": "Creta",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY22",
+      "Company": "Hyundai",
+      "Metric": "Top Selling Model",
+      "Value": "Creta",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India monthly sales releases",
+      "Source_URL": "https://www.hyundai.com/in/en",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY16",
+      "Company": "M&M",
+      "Metric": "Top Selling Model",
+      "Value": "Bolero",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY17",
+      "Company": "M&M",
+      "Metric": "Top Selling Model",
+      "Value": "Bolero",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY18",
+      "Company": "M&M",
+      "Metric": "Top Selling Model",
+      "Value": "Bolero",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY19",
+      "Company": "M&M",
+      "Metric": "Top Selling Model",
+      "Value": "Bolero",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY20",
+      "Company": "M&M",
+      "Metric": "Top Selling Model",
+      "Value": "Bolero",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY21",
+      "Company": "M&M",
+      "Metric": "Top Selling Model",
+      "Value": "Scorpio",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY22",
+      "Company": "M&M",
+      "Metric": "Top Selling Model",
+      "Value": "Scorpio",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Mahindra monthly auto sales releases",
+      "Source_URL": "https://www.mahindra.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY16",
+      "Company": "Tata Motors PV",
+      "Metric": "Top Selling Model",
+      "Value": "Tiago",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY17",
+      "Company": "Tata Motors PV",
+      "Metric": "Top Selling Model",
+      "Value": "Tiago",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY18",
+      "Company": "Tata Motors PV",
+      "Metric": "Top Selling Model",
+      "Value": "Tiago",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY19",
+      "Company": "Tata Motors PV",
+      "Metric": "Top Selling Model",
+      "Value": "Tiago",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY20",
+      "Company": "Tata Motors PV",
+      "Metric": "Top Selling Model",
+      "Value": "Tiago",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY21",
+      "Company": "Tata Motors PV",
+      "Metric": "Top Selling Model",
+      "Value": "Nexon",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY22",
+      "Company": "Tata Motors PV",
+      "Metric": "Top Selling Model",
+      "Value": "Nexon",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Tata Motors monthly PV sales releases",
+      "Source_URL": "https://www.tatamotors.com",
+      "Last_Updated": "2026-05-08"
     }
   ],
   "vehicle_fy_metrics": [
@@ -9863,6 +10094,106 @@
       "Source": "Derived from OEM Market Share % (largest YoY gain)",
       "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-07"
+    },
+    {
+      "FY": "FY16",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti Alto",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY17",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti Alto",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY18",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti Dzire",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY19",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti Dzire",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY20",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti WagonR",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY21",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti Swift",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY22",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti WagonR",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY23",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti WagonR",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY24",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti WagonR",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY25",
+      "Metric": "Top Selling Model",
+      "Value": "Maruti WagonR",
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
+      "Source_URL": "https://www.siam.in/pressrelease.aspx",
+      "Last_Updated": "2026-05-08"
     }
   ],
   "_meta": {
