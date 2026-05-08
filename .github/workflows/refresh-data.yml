@@ -88,6 +88,11 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-industry.mjs
 
+      - name: Hyundai NSE quote (best-effort)
+        id: hyundai_nse
+        continue-on-error: true
+        run: node scripts/fetch-hyundai-nse.mjs
+
       # ────────── stamp refresh status ──────────
       - name: Write _meta block (last refresh + per-fetcher status)
         run: node scripts/write-meta.mjs
@@ -99,6 +104,7 @@ jobs:
           TATA_OUTCOME:         ${{ steps.tata.outcome }}
           GOVERNANCE_OUTCOME:   ${{ steps.governance.outcome }}
           INDUSTRY_OUTCOME:     ${{ steps.industry.outcome }}
+          HYUNDAI_NSE_OUTCOME:  ${{ steps.hyundai_nse.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────

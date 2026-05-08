@@ -730,7 +730,7 @@
     let bodies = "";
     bars.forEach((b, i) => {
       const cx = padL + groupW * (i + 0.5);
-      bodies += `<text x="${cx}" y="${h-10}" text-anchor="middle" font-size="11" fill="#6B7280" font-weight="500">${b.fy}</text>`;
+      bodies += `<text x="${cx}" y="${h-10}" text-anchor="middle" font-size="11" fill="#94A3B8" font-weight="500">${b.fy}</text>`;
       if (b.total == null) {
         bodies += `<text x="${cx}" y="${(h-padB+padT)/2}" text-anchor="middle" font-size="10" fill="#94A3B8">no data</text>`;
         return;
