@@ -996,8 +996,8 @@
       "Value": 13.1,
       "YoY_Change": -2.2,
       "Signal": "Negative",
-      "Source": "FY19-FY23 EBITDA ÷ turnover KPI; FY24/FY25 from Q4 FY25 Investor Presentation",
-      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
       "Last_Updated": "2026-05-08"
     },
     {
@@ -1202,11 +1202,11 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "Revenue Growth %",
-      "Value": -1.6,
+      "Value": -0.9,
       "YoY_Change": -16.9,
       "Signal": "Negative",
-      "Source": "Hyundai Annual Report turnover KPI (sale of products + services excl. transportation income)",
-      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
       "Last_Updated": "2026-05-08"
     },
     {
@@ -1216,8 +1216,8 @@
       "Value": 12.9,
       "YoY_Change": -0.2,
       "Signal": "Neutral",
-      "Source": "FY19-FY23 EBITDA ÷ turnover KPI; FY24/FY25 from Q4 FY25 Investor Presentation",
-      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
       "Last_Updated": "2026-05-08"
     },
     {
@@ -1268,11 +1268,11 @@
       "FY": "FY25",
       "Company": "Hyundai",
       "Metric": "SUV Volume %",
-      "Value": 69,
+      "Value": 68.5,
       "YoY_Change": 6,
       "Signal": "Positive",
-      "Source": "FY21-FY23 from DRHP domestic SUV share; FY24/FY25 from Q4 FY25 IP",
-      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations/financial-reports",
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
       "Last_Updated": "2026-05-08"
     },
     {
@@ -1304,8 +1304,8 @@
       "Value": 21.4,
       "YoY_Change": 0.4,
       "Signal": "Neutral",
-      "Source": "Export sales ÷ total sales volume, Hyundai Annual Reports",
-      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
+      "Source": "Hyundai Q4 audited standalone results PR",
+      "Source_URL": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
       "Last_Updated": "2026-05-08"
     },
     {
@@ -9678,8 +9678,8 @@
       "Credit_Rating": "CRISIL AAA / Stable; CRISIL A1+",
       "Employees": 9000,
       "Dealers": 1419,
-      "Source": "Hyundai FY25 Annual Report (KMP / Board disclosures); HMIL IR credit rating page",
-      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
+      "Source": "KMP per https://www.hyundai.com/in/en/about-us/our-leaders · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.HYUNDAIMOTORINDIA.html · Dealers / employees per https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
+      "Source_URL": "https://www.hyundai.com/in/en/about-us/our-leaders",
       "Last_Updated": "2026-05-08"
     },
     {
@@ -10428,7 +10428,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-08T11:00:17.765Z",
+    "last_refresh": "2026-05-08T12:33:49.717Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -10440,6 +10440,6 @@
       "industry": "success",
       "hyundai_nse": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25551914462"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25555744050"
   }
 }
