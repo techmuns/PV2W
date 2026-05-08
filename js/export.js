@@ -161,7 +161,14 @@
       { label: "Industry Face Lift launches (Nos.)",source: null },
       { label: "Industry Top Selling Model",        source: "industry", metric: "Top Selling Model" },
     ];
-    appendBlock(sheet, "Industry", INDUSTRY_ROWS, null, D);
+    /* Auto-discover any industry metric we haven't hand-listed above
+       so new data refreshes appear in the export without code edits. */
+    const indCovered = new Set(INDUSTRY_ROWS.filter(r => r.metric).map(r => r.metric));
+    const indExtras = [...new Set((D.Industry_FY_Metrics || []).map(r => r.Metric))]
+      .filter(m => !indCovered.has(m))
+      .sort()
+      .map(m => ({ label: m, source: "industry", metric: m }));
+    appendBlock(sheet, "Industry", [...INDUSTRY_ROWS, ...indExtras], null, D);
 
     /* ── Per-OEM blocks ── */
     const OEM_ROWS = [
@@ -192,7 +199,21 @@
       { label: "COO",                            source: "info", field: "COO" },
       { label: "Credit Rating",                  source: "info", field: "Credit_Rating" },
     ];
-    ALL_OEMS.forEach(co => appendBlock(sheet, co.toUpperCase(), OEM_ROWS, co, D));
+    const oemCovered = new Set(OEM_ROWS.filter(r => r.metric).map(r => r.metric));
+    ALL_OEMS.forEach(co => {
+      /* Per-OEM, append any metric in the data that isn't in the
+         curated list yet — keeps the workbook self-updating as new
+         metrics (e.g. fuel-mix splits, Hybrid %, etc.) get added
+         to placeholder_data.json. */
+      const seen = [...new Set((D.Company_FY_Metrics || [])
+        .filter(r => r.Company === co)
+        .map(r => r.Metric))];
+      const extras = seen
+        .filter(m => !oemCovered.has(m))
+        .sort()
+        .map(m => ({ label: m, source: "company", metric: m }));
+      appendBlock(sheet, co.toUpperCase(), [...OEM_ROWS, ...extras], co, D);
+    });
 
     /* Column widths */
     sheet.getColumn(1).width = 14;
@@ -200,37 +221,6 @@
     for (let i = 3; i <= 2 + yearCount; i++) sheet.getColumn(i).width = 11;
 
     sheet.views = [{ state: "frozen", xSplit: 2, ySplit: 1 }];
-  }
-
-  function buildVehicles(wb, D) {
-    const sheet = wb.addWorksheet("Vehicles");
-    const rows = D.Vehicle_FY_Metrics || [];
-    if (!rows.length) {
-      sheet.addRow(["No vehicle data available"]);
-      return;
-    }
-    const cols = Array.from(rows.reduce((s, r) => { Object.keys(r).forEach(k => s.add(k)); return s; }, new Set()));
-    const front = ["FY", "Company", "Vehicle", "Segment", "Sales_Volume", "Market_Share_in_Segment", "Avg_Price"];
-    const ordered = [...front.filter(k => cols.includes(k)), ...cols.filter(k => !front.includes(k))];
-    sheet.addRow(ordered);
-    const hr = sheet.getRow(1);
-    hr.font = { bold: true, color: { argb: "FFFFFFFF" } };
-    hr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: PURPLE } };
-    hr.alignment = { vertical: "middle", horizontal: "left" };
-    hr.height = 22;
-    rows.forEach(r => sheet.addRow(ordered.map(k => r[k] ?? null)));
-    sheet.columns.forEach((col) => {
-      let max = 8;
-      col.eachCell({ includeEmpty: false }, c => {
-        const v = c.value && typeof c.value === "object" && "richText" in c.value
-          ? c.value.richText.map(t => t.text).join("")
-          : c.value;
-        const len = v == null ? 0 : String(v).length;
-        if (len > max) max = len;
-      });
-      col.width = Math.min(40, Math.max(8, max + 2));
-    });
-    sheet.views = [{ state: "frozen", ySplit: 1 }];
   }
 
   function buildSources(wb, D) {
@@ -352,7 +342,6 @@
       wb.title   = "PV Industry Dashboard Export";
 
       buildPV(wb, D);
-      buildVehicles(wb, D);
       buildSources(wb, D);
       buildDictionary(wb, D);
 
