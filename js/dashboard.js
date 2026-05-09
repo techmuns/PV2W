@@ -1201,10 +1201,18 @@
       btn.classList.toggle("active", btn.dataset.mix === view);
     });
     const subToggle = $("#chart2-product-sub");
+    /* Detailed segment view is only available for Maruti (only OEM
+       publishing SIAM segment-wise units monthly). For other OEMs we
+       show only the SUV / Non-SUV chip and pin productView to 'suv'. */
+    const hasSegmentMix = view === "product" && state.company === "Maruti";
     if (view === "product") {
       subToggle.style.visibility = "visible";
       document.querySelectorAll("#chart2-product-sub .prod-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.productView === state.productView);
+        const v = btn.dataset.productView;
+        const showBtn = hasSegmentMix || v === "suv";
+        btn.style.display = showBtn ? "" : "none";
+        const activeView = hasSegmentMix ? state.productView : "suv";
+        btn.classList.toggle("active", v === activeView);
       });
     } else {
       subToggle.style.visibility = "hidden";
@@ -1217,6 +1225,11 @@
       sourceEl.textContent = view === "powertrain"
         ? "Source: Maruti Suzuki Annual Reports / Q4 Investor Presentations; powertrain split based on company disclosures where available."
         : "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report.";
+    } else if (view === "product") {
+      const co = state.company;
+      sourceEl.textContent = `Source: ${co} Annual Report / Investor Presentations — SUV share applied to total dispatches (${co} doesn't publish SIAM segment-wise monthly units).`;
+    } else if (view === "export") {
+      sourceEl.textContent = `Source: ${state.company} Annual Report / Investor Presentations — exports % of total dispatches.`;
     } else {
       sourceEl.textContent = " ";
     }
@@ -1262,7 +1275,23 @@
       const mix = POWERTRAIN_MIX[company];
       bars = data.map(d => {
         const m = mix && mix[d.fy];
-        if (!m || d.total == null) return { fy: d.fy, total: null, segments: [] };
+        if (!m || d.total == null) {
+          /* No CNG/Hybrid/BEV breakdown available (Hyundai/M&M/Tata).
+             Fall back to BEV vs ICE using EV Volume %. */
+          if (d.total != null && d.evP != null) {
+            const totalLakh = TO_LAKH(d.total);
+            const bevLakh = totalLakh * d.evP / 100;
+            const iceLakh = Math.max(0, totalLakh - bevLakh);
+            return {
+              fy: d.fy, total: totalLakh, segments: [
+                { label: "BEV", value: bevLakh, pct: d.evP, color: PT.bev },
+                { label: "Petrol / Diesel / CNG / Other ICE",
+                  value: iceLakh, pct: 100 - d.evP, color: PT.ice },
+              ],
+            };
+          }
+          return { fy: d.fy, total: null, segments: [] };
+        }
         const totalLakh = TO_LAKH(d.total);
 
         /* Resolve CNG: explicit units > %-of-domestic > null */
@@ -1301,13 +1330,14 @@
       legendItems = legendChip(PT.cng, "CNG") + legendChip(PT.hybrid, "Hybrid") +
                     legendChip(PT.bev, "BEV") + legendChip(PT.ice, "Petrol / Diesel / Other ICE");
     } else if (view === "product") {
-      /* Product mix from Maruti's monthly sales press releases. Six
-         product buckets plus a residual that catches exports +
-         Toyota OEM supplies, so the bar sums to the user-disclosed
-         total. Sub-toggle (state.productView):
-           - 'segment' : show all 7 segments
-           - 'suv'     : same data, regrouped into SUV (= UV bucket)
-                         vs Non-SUV (everything else)
+      /* Product mix.
+         - Maruti publishes SIAM segment-wise volumes monthly
+           (Mini / Compact / Mid / UV / Vans / LCV) → 'Detailed' view
+           shows all 7 buckets, 'SUV / Non-SUV' regroups them.
+         - Hyundai / M&M / Tata only publish SUV vs total split in
+           their AR / IP disclosures (no segment-wise units), so the
+           Detailed view is hidden for them and SUV / Non-SUV is
+           computed from SUV Volume % × Total Sales Volume.
       */
       const PRODUCT_MIX = {
         Maruti: {
@@ -1317,6 +1347,7 @@
         },
       };
       const PP = MIX_PALETTE.product;
+      const SP = MIX_PALETTE.suv;
       const segDef = [
         { key: "Mini",    label: "Mini",                 color: PP.mini    },
         { key: "Compact", label: "Compact",              color: PP.compact },
@@ -1327,26 +1358,27 @@
         { key: "Other",   label: "Exports + OEM supply", color: PP.other   },
       ];
       const mix = PRODUCT_MIX[company];
+      const hasSegmentMix = !!mix;
+      /* Force SUV view when no segment-level mix exists. */
+      const effectiveView = hasSegmentMix ? state.productView : "suv";
 
       bars = data.map(d => {
-        const m = mix && mix[d.fy];
-        if (!m || d.total == null) return { fy: d.fy, total: null, segments: [] };
+        if (d.total == null) return { fy: d.fy, total: null, segments: [] };
         const totalLakh = TO_LAKH(d.total);
-        const segVolsLakh = segDef.slice(0, 6).map(sd => TO_LAKH(m[sd.key] || 0));
-        const sumSix = segVolsLakh.reduce((a,b) => a+b, 0);
-        const otherLakh = Math.max(0, totalLakh - sumSix);
-        const fullSegments = segDef.map((sd, i) => {
-          const value = i < 6 ? segVolsLakh[i] : otherLakh;
-          return { label: sd.label, value, pct: (value / totalLakh) * 100, color: sd.color };
-        });
 
-        if (state.productView === "suv") {
-          /* Regroup the same product data: UV bucket = SUV;
-             everything else (Mini + Compact + Mid + Vans + LCV +
-             Exports/OEM residual) = Non-SUV. */
-          const SP = MIX_PALETTE.suv;
-          const suvLakh = TO_LAKH(m.UV || 0);
-          const nonSuvLakh = totalLakh - suvLakh;
+        if (effectiveView === "suv") {
+          /* SUV units: prefer Maruti's audited UV-bucket count;
+             otherwise derive from SUV Volume % × Total Sales Volume. */
+          let suvLakh;
+          const m = mix && mix[d.fy];
+          if (m && m.UV != null) {
+            suvLakh = TO_LAKH(m.UV);
+          } else if (d.suvP != null) {
+            suvLakh = totalLakh * d.suvP / 100;
+          } else {
+            return { fy: d.fy, total: null, segments: [] };
+          }
+          const nonSuvLakh = Math.max(0, totalLakh - suvLakh);
           return {
             fy: d.fy, total: totalLakh, segments: [
               { label: "Non-SUV", value: nonSuvLakh, pct: (nonSuvLakh / totalLakh) * 100, color: SP.nonSuv },
@@ -1354,11 +1386,21 @@
             ],
           };
         }
+
+        /* Detailed segment view — Maruti only. */
+        const m = mix && mix[d.fy];
+        if (!m) return { fy: d.fy, total: null, segments: [] };
+        const segVolsLakh = segDef.slice(0, 6).map(sd => TO_LAKH(m[sd.key] || 0));
+        const sumSix = segVolsLakh.reduce((a,b) => a+b, 0);
+        const otherLakh = Math.max(0, totalLakh - sumSix);
+        const fullSegments = segDef.map((sd, i) => {
+          const value = i < 6 ? segVolsLakh[i] : otherLakh;
+          return { label: sd.label, value, pct: (value / totalLakh) * 100, color: sd.color };
+        });
         return { fy: d.fy, total: totalLakh, segments: fullSegments.filter(s => s.value > 0) };
       });
 
-      if (state.productView === "suv") {
-        const SP = MIX_PALETTE.suv;
+      if (effectiveView === "suv") {
         legendItems = legendChip(SP.nonSuv, "Non-SUV") + legendChip(SP.suv, "SUV");
       } else {
         legendItems = segDef.map(sd => legendChip(sd.color, sd.label)).join("");
