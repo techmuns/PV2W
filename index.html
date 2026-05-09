@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260509g" />
+  <link rel="stylesheet" href="css/styles.css?v=20260509h" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -166,6 +166,17 @@
         <span class="section-eyebrow">Performance</span>
         <span class="section-hint">Growth · Mix · Buy-side read</span>
       </div>
+
+      <!-- Industry-only shared controls — drive both Performance cards
+           with one metric + year selection. Toggled visible by JS only
+           when state.company === 'Industry'. -->
+      <div id="industry-controls" class="hidden items-center gap-3 mb-3 flex-wrap">
+        <span class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold">Metric</span>
+        <select id="ind-metric-select" class="cat-select-inline" style="width:auto;min-width:170px"></select>
+        <span class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold ml-2">Year (right)</span>
+        <select id="ind-year-select" class="cat-select-inline" style="width:auto;min-width:90px"></select>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="chart-panel lg:col-span-1">
           <div class="chart-panel-head" style="min-height:64px">
@@ -378,8 +389,8 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260509g"></script>
-  <script src="js/dashboard.js?v=20260509g"></script>
-  <script src="js/export.js?v=20260509g"></script>
+  <script src="js/data-loader.js?v=20260509h"></script>
+  <script src="js/dashboard.js?v=20260509h"></script>
+  <script src="js/export.js?v=20260509h"></script>
 </body>
 </html>
