@@ -41,6 +41,9 @@
     mixView:     "product",  // product | export | powertrain — drives chart2 for OEM view
     productView: "segment",  // segment | suv — sub-toggle when mixView === 'product'
     selectedCategory: "Growth",  // category whose metrics drive the side-panel trend chart
+    /* Industry-view shared controls (left trend + right OEM split) */
+    indMetric:    "volume",  // see IND_METRICS registry
+    indYearRight: "FY25",
   };
 
   /* ---------- helpers ---------- */
@@ -645,6 +648,226 @@
      Slices ordered by value; an inline % label sits inside each
      slice >5%. Legend renders to the right of the pie with the
      OEM name + share %. */
+  /* ---------- Ranked horizontal-of-vertical bar chart ----------
+     One bar per item, value label above each bar, name below.
+     Used for non-additive OEM comparisons (margins, growth %,
+     launch counts) where pie charts are misleading. */
+  function rankedBarChart(items, options = {}) {
+    const w = 480, h = options.height || 240, padL = 38, padR = 12, padT = 24, padB = 38;
+    if (!items.length) return `<div class="text-xs text-inkMuted py-12 text-center">No data available</div>`;
+    const vals = items.map(x => (x.value == null ? 0 : x.value));
+    let yMax = Math.max(...vals, 0.0001);
+    let yMin = Math.min(...vals, 0);
+    const pad = (yMax - yMin) * 0.18 || 1;
+    if (yMax > 0) yMax += pad;
+    if (yMin < 0) yMin -= pad;
+    if (yMax === yMin) yMax = yMin + 1;
+    const yScale = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (h - padT - padB);
+    const groupW = (w - padL - padR) / items.length;
+    const barW = Math.min(groupW * 0.55, 56);
+    const zeroY = yScale(0);
+
+    const grid = [0,0.25,0.5,0.75,1].map(t => {
+      const yy = padT + t * (h - padT - padB);
+      const val = yMax - t * (yMax - yMin);
+      return `<line x1="${padL}" y1="${yy}" x2="${w-padR}" y2="${yy}" stroke="#EEF1F5"/>
+              <text x="${padL-6}" y="${yy+3}" text-anchor="end" font-size="10" fill="#6B7280">${val.toFixed(0)}${options.yUnit||""}</text>`;
+    }).join("");
+
+    let bars = "";
+    items.forEach((item, i) => {
+      const cx = padL + groupW * (i + 0.5);
+      const v = item.value == null ? 0 : item.value;
+      const yy = yScale(v);
+      const hh = Math.abs(yy - zeroY);
+      const yTop = v >= 0 ? yy : zeroY;
+      bars += `<rect class="bar hover-target" x="${cx - barW/2}" y="${yTop}" width="${barW}" height="${hh}" fill="${item.color}" rx="3"
+        data-fy="${ATTR(options.fy || "")}" data-series="${ATTR(item.name)}" data-value="${ATTR(v)}"
+        data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(item.color)}"/>`;
+      const label = item.value == null ? "—" : (Number.isInteger(v) ? v : v.toFixed(1)) + (options.yUnit || "");
+      bars += `<text x="${cx}" y="${(v >= 0 ? yTop - 6 : yTop + hh + 12)}" text-anchor="middle" font-size="11" font-weight="600" fill="#1F2A37">${label}</text>`;
+      bars += `<text x="${cx}" y="${h-12}" text-anchor="middle" font-size="10" fill="#475569">${item.name}</text>`;
+    });
+
+    return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}${bars}</svg>`;
+  }
+
+  /* ---------- Industry view: shared-control performance module ----------
+     Metric registry. Each entry maps a user-facing label to:
+       - the industry_fy_metrics row name (left card 10-yr trend)
+       - the company_fy_metrics row name (right card OEM split)
+     `additive`: true = pie chart of contribution; false = ranked bar.
+     `oemBase: 'share-of-industry'` derives per-OEM volume from
+       (Market Share % × industry total). */
+  const IND_METRICS = [
+    { id: "volume",   label: "PV Volume",        unit: "lakh units",
+      industry: "Total PV Volume", oemBase: "share-of-industry",
+      industryScale: 1/1e5, additive: true },
+    { id: "growth",   label: "Volume Growth %",   unit: "%",
+      industry: "PV Volume Growth %", oem: "Volume Growth %",
+      additive: false },
+    { id: "marketshare", label: "Market Share %", unit: "%",
+      industry: null, oem: "Market Share %",
+      additive: true },
+    { id: "export",   label: "Export Volume %",  unit: "%",
+      industry: "Export Share %",  oem: "Export Volume %",
+      additive: false },
+    { id: "ev",       label: "EV Volume %",      unit: "%",
+      industry: "EV Share %",      oem: "EV Volume %",
+      additive: false },
+    { id: "suv",      label: "SUV Volume %",     unit: "%",
+      industry: "SUV Share %",     oem: "SUV Volume %",
+      additive: false },
+    { id: "rev_growth", label: "Revenue Growth %", unit: "%",
+      industry: null, oem: "Revenue Growth %",
+      additive: false },
+    { id: "ebitda",   label: "EBITDA Margin %",  unit: "%",
+      industry: null, oem: "EBITDA Margin %",
+      additive: false },
+    { id: "real_growth", label: "Realisation Growth %", unit: "%",
+      industry: null, oem: "Realisation Growth %",
+      additive: false },
+    { id: "capex",    label: "Capex (Rs Cr)",    unit: "₹ Cr",
+      industry: null, oem: "Capex (Rs Cr)",
+      additive: false },
+    { id: "newlaunches", label: "New Launches",  unit: "count",
+      industry: null, oem: "New Model Launches",
+      additive: false },
+    { id: "facelifts",   label: "Facelifts",     unit: "count",
+      industry: null, oem: "Facelift Launches",
+      additive: false },
+  ];
+  const OEM_COLOR = {
+    "Maruti":         "#173B63",
+    "Hyundai":        "#5B7CFA",
+    "Tata Motors PV": "#4DB6AC",
+    "M&M":            "#E7A64A",
+    "Others":         "#C9D2DF",
+  };
+
+  /* Populate (once) the metric + year selects in #industry-controls
+     and wire them to state. Called every Industry render — the
+     `wired` flag guards against re-binding listeners. */
+  function ensureIndustryControls() {
+    const mSel = $("#ind-metric-select");
+    const ySel = $("#ind-year-select");
+    if (!mSel || !ySel) return;
+
+    if (!mSel.dataset.wired) {
+      mSel.innerHTML = IND_METRICS.map(m =>
+        `<option value="${m.id}">${m.label}</option>`
+      ).join("");
+      mSel.addEventListener("change", () => {
+        state.indMetric = mSel.value;
+        renderIndustryPerformance();
+      });
+      mSel.dataset.wired = "1";
+    }
+    if (!ySel.dataset.wired) {
+      ySel.innerHTML = D.FYS_FULL.slice().reverse().map(fy =>
+        `<option value="${fy}">${fy}</option>`
+      ).join("");
+      ySel.addEventListener("change", () => {
+        state.indYearRight = ySel.value;
+        renderIndustryPerformance();
+      });
+      ySel.dataset.wired = "1";
+    }
+    /* Sync select values to state (handles FY/company switches that
+       reset values out of band). */
+    mSel.value = state.indMetric;
+    ySel.value = state.indYearRight;
+  }
+
+  /* Render the Industry view's two-card module driven by
+     state.indMetric + state.indYearRight. Called from renderCharts(). */
+  function renderIndustryPerformance() {
+    const def = IND_METRICS.find(m => m.id === state.indMetric) || IND_METRICS[0];
+    const fyTrend = D.FYS_FULL;
+    const fy = state.indYearRight;
+
+    /* Common chart-2 grooming */
+    $("#chart2-toggle").classList.add("hidden");
+    $("#chart2-product-sub").style.visibility = "hidden";
+    const chart2 = $("#chart2");
+    chart2.removeAttribute("style");
+    chart2.style.minHeight = "240px";
+
+    /* ── Left card: 10-yr trend ── */
+    if (def.industry) {
+      const series = fyTrend.map(fyx => {
+        const r = getIndustryMetric(fyx, def.industry);
+        const v = r && r.Value != null && typeof r.Value === "number" ? r.Value : null;
+        return v == null ? null : (def.industryScale ? +(v * def.industryScale).toFixed(2) : v);
+      });
+      $("#chart1-title").textContent  = `${def.label} · industry trend`;
+      $("#chart1-help").textContent   = "10-year history (SIAM domestic PV)";
+      $("#chart1-sub").textContent    = def.unit;
+      $("#chart1").innerHTML = lineChart([
+        { name: def.label, color: COLOR.navy, values: series },
+      ], { xLabels: fyTrend, yUnit: def.unit === "%" ? "%" : "", area: true });
+      $("#chart1-legend").innerHTML  = legendChip(COLOR.navy, def.label);
+      $("#chart1-source").textContent = "Source: SIAM yearbook / monthly press releases.";
+    } else {
+      $("#chart1-title").textContent  = `${def.label} · industry trend`;
+      $("#chart1-help").textContent   = "Industry-level series not currently tracked";
+      $("#chart1-sub").textContent    = "";
+      $("#chart1").innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">Industry-level series not available for this metric. The right-hand card still shows the OEM-by-OEM split for ${fy}.</div>`;
+      $("#chart1-legend").innerHTML  = "";
+      $("#chart1-source").textContent = "";
+    }
+
+    /* ── Right card: OEM split for selected FY ── */
+    const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
+    let items = [];
+    if (def.oemBase === "share-of-industry" && def.industry) {
+      const indRow = getIndustryMetric(fy, def.industry);
+      const indV = indRow && indRow.Value != null ? indRow.Value : 0;
+      const indScaled = def.industryScale ? indV * def.industryScale : indV;
+      let trackedSum = 0;
+      oems.forEach(co => {
+        const ms = getCompanyMetric(fy, co, "Market Share %");
+        const share = ms && ms.Value != null ? ms.Value : 0;
+        const value = +(indScaled * (share / 100)).toFixed(2);
+        items.push({ name: co, value, color: OEM_COLOR[co] });
+        trackedSum += value;
+      });
+      const others = +Math.max(0, indScaled - trackedSum).toFixed(2);
+      items.push({ name: "Others", value: others, color: OEM_COLOR.Others });
+    } else if (def.oem) {
+      oems.forEach(co => {
+        const r = getCompanyMetric(fy, co, def.oem);
+        const v = r && r.Value != null && typeof r.Value === "number" ? r.Value : null;
+        items.push({ name: co, value: v, color: OEM_COLOR[co] });
+      });
+    }
+
+    $("#chart2-title").textContent = `${def.label} · OEM split (${fy})`;
+    $("#chart2-help").textContent  = def.additive
+      ? "Share of industry"
+      : "OEM-by-OEM comparison";
+    $("#chart2-sub").textContent   = `${fy} · ${def.unit}`;
+    $("#chart2-sub").classList.remove("hidden");
+
+    if (def.additive) {
+      const slices = items.filter(s => s.value > 0).sort((a, b) => b.value - a.value);
+      chart2.innerHTML = pieChart(slices, { fy });
+      $("#chart2-legend").innerHTML = "";
+    } else {
+      const ranked = items
+        .filter(x => x.value != null)
+        .sort((a, b) => (b.value || 0) - (a.value || 0));
+      if (!ranked.length) {
+        chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">No OEM data for this metric in ${fy}.</div>`;
+        $("#chart2-legend").innerHTML = "";
+      } else {
+        chart2.innerHTML = rankedBarChart(ranked, { yUnit: def.unit === "%" ? "%" : "", fy });
+        $("#chart2-legend").innerHTML = ranked.map(r => legendChip(r.color, r.name)).join("");
+      }
+    }
+    $("#chart2-source").textContent = "";
+  }
+
   function pieChart(slices, options = {}) {
     if (!slices.length) return `<div class="text-xs text-inkMuted py-12 text-center">No data</div>`;
     const w = 480, h = 240;
@@ -875,61 +1098,16 @@
     const fyHistory = D.FYS;
 
     if (isIndustry) {
-      $("#chart1-title").textContent = "PV industry volume trend";
-      $("#chart1-help").textContent  = "Aggregate domestic PV demand · 10-year history";
-      $("#chart1-sub").textContent   = "Lakhs · units";
-
-      /* Full FY16-FY25 history for the industry trend (D.FYS is the
-         3-FY selector window; D.FYS_FULL is the 10-year span). */
-      const fyTrend = D.FYS_FULL;
-      const indVol = fyTrend.map(fy => {
-        const r = getIndustryMetric(fy, "Total PV Volume");
-        return r ? r.Value / 100000 : null;
-      });
-      $("#chart1").innerHTML = lineChart([
-        { name: "Industry volume", color: COLOR.navy, values: indVol },
-      ], { xLabels: fyTrend, area: true });
-      $("#chart1-legend").innerHTML = legendChip(COLOR.navy, "PV industry volume (lakh units)");
-      $("#chart1-source").textContent = "Source: SIAM domestic PV dispatches.";
-
-      $("#chart2-title").textContent = "OEM market share";
-      $("#chart2-help").textContent  = `Domestic PV share split · ${state.fy}`;
-      $("#chart2-sub").textContent   = state.fy + " · %";
-      $("#chart2-sub").classList.remove("hidden");
-      $("#chart2-toggle").classList.add("hidden");
-      $("#chart2-product-sub").style.visibility = "hidden";
-      $("#chart2-source").textContent = " ";
-
-      const chart2 = $("#chart2");
-      chart2.removeAttribute("style");
-      chart2.style.minHeight = "240px";
-
-      /* Single-FY pie: tracked OEMs by share, plus an 'Others'
-         slice catching the residual (FAW / Toyota / Kia / Honda /
-         MG / Skoda / Renault / VW / Citroen / Nissan / BYD …)
-         derived as 100 − Σ tracked. */
-      const PIE_COLORS = {
-        "Maruti":          "#173B63",
-        "Hyundai":         "#5B7CFA",
-        "Tata Motors PV":  "#4DB6AC",
-        "M&M":             "#E7A64A",
-        "Others":          "#C9D2DF",
-      };
-      const tracked = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"]
-        .map(o => {
-          const r = getCompanyMetric(state.fy, o, "Market Share %");
-          return { name: o, value: r && r.Value != null ? r.Value : 0, color: PIE_COLORS[o] };
-        })
-        .filter(s => s.value > 0)
-        .sort((a, b) => b.value - a.value);
-      const trackedSum = tracked.reduce((s, x) => s + x.value, 0);
-      const others = Math.max(0, +(100 - trackedSum).toFixed(1));
-      const slices = [...tracked, { name: "Others", value: others, color: PIE_COLORS.Others }];
-
-      chart2.innerHTML = pieChart(slices, { fy: state.fy });
-      $("#chart2-legend").innerHTML = "";
+      /* Show industry shared controls + dispatch the metric-driven
+         two-card module. */
+      const ctl = $("#industry-controls");
+      if (ctl) { ctl.classList.remove("hidden"); ctl.classList.add("flex"); }
+      ensureIndustryControls();
+      renderIndustryPerformance();
 
     } else {
+      const ctl = $("#industry-controls");
+      if (ctl) { ctl.classList.add("hidden"); ctl.classList.remove("flex"); }
       $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
       $("#chart1-help").textContent  = "Volume growth comparison";
       $("#chart1-sub").textContent   = "";
