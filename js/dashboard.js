@@ -2548,21 +2548,10 @@
                  : "#6B7280";
     const dot = `<span style="display:inline-block;width:7px;height:7px;border-radius:999px;background:${colour};margin-right:6px;vertical-align:middle"></span>`;
 
-    const fetcherStatus = m.fetchers
-      ? Object.entries(m.fetchers).map(([k, v]) => `${k}: ${v}`).join(" · ")
-      : "";
-    const tip = `Fetcher status — ${fetcherStatus}`;
-
-    const linkPart = m.run_url
-      ? ` · <a href="${m.run_url}" target="_blank" rel="noopener" class="hover:underline" style="color:#2563EB">view run</a>`
-      : "";
-    const errPart = m.status === "error"
-      ? ' <span style="color:#C62828">· refresh failed</span>'
-      : m.status === "partial"
-        ? ' <span style="color:#B45309">· some fetchers errored</span>'
-        : "";
-
-    el.innerHTML = `${dot}<span title="${tip}">Data refreshed ${ago}</span>${errPart}${linkPart}`;
+    /* User-facing freshness only — internal fetcher names, run
+       URLs, and per-step status stay out of the dashboard so the
+       UI doesn't surface backend / GitHub plumbing. */
+    el.innerHTML = `${dot}<span>Data refreshed ${ago}</span>`;
   }
 
   /* ---------- master render ---------- */
