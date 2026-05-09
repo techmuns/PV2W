@@ -902,6 +902,13 @@
     } else {
       $("#chart2-source").textContent = "";
     }
+
+    /* Re-bind hover tooltips after every Industry-view re-render
+       (the metric / year dropdowns trigger this without going
+       through renderCharts, so we need to wire chart1 + chart2's
+       new hover-targets here too). */
+    bindChartHovers($("#chart1"));
+    bindChartHovers($("#chart2"));
   }
 
   function pieChart(slices, options = {}) {
