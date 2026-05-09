@@ -128,6 +128,21 @@ jobs:
         continue-on-error: true
         run: node scripts/derive-financials.mjs
 
+      - name: Seed Maruti / Hyundai standalone PAT Margin + Capex Intensity (FY16-FY25)
+        id: seed_financials
+        continue-on-error: true
+        run: node scripts/seed-financials.mjs
+
+      - name: Seed operational mix (Export / EV / SUV / Launches) for Hyundai / M&M / Tata pre-FY23
+        id: seed_operational
+        continue-on-error: true
+        run: node scripts/seed-operational.mjs
+
+      - name: Seed Company_Info (KMP / dealers / employees / credit rating) for FY16-FY24
+        id: seed_company_info
+        continue-on-error: true
+        run: node scripts/seed-company-info.mjs
+
       # ────────── stamp refresh status ──────────
       - name: Write _meta block (last refresh + per-fetcher status)
         run: node scripts/write-meta.mjs
