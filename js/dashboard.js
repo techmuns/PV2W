@@ -808,6 +808,33 @@
       ], { xLabels: fyTrend, yUnit: def.unit === "%" ? "%" : "", area: true });
       $("#chart1-legend").innerHTML  = legendChip(COLOR.navy, def.label);
       $("#chart1-source").textContent = "Source: SIAM yearbook / monthly press releases.";
+    } else if (def.oem) {
+      /* No single industry-level series for this metric (e.g. Market
+         Share %, EBITDA Margin %) — render every tracked OEM as its
+         own line so the trend card still shows a structurally-useful
+         picture of how OEM positions have moved over time. */
+      const oemList = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
+      const series = oemList.map(co => ({
+        name: co,
+        color: OEM_COLOR[co],
+        values: fyTrend.map(fyx => {
+          const r = getCompanyMetric(fyx, co, def.oem);
+          return r && r.Value != null && typeof r.Value === "number" ? r.Value : null;
+        }),
+      })).filter(s => s.values.some(v => v != null));
+
+      $("#chart1-title").textContent  = `${def.label} · industry trend`;
+      $("#chart1-help").textContent   = "Per-OEM 10-year history";
+      $("#chart1-sub").textContent    = def.unit;
+      if (!series.length) {
+        $("#chart1").innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">No OEM history available for this metric yet.</div>`;
+        $("#chart1-legend").innerHTML  = "";
+        $("#chart1-source").textContent = "";
+      } else {
+        $("#chart1").innerHTML = lineChart(series, { xLabels: fyTrend, yUnit: def.unit === "%" ? "%" : "" });
+        $("#chart1-legend").innerHTML  = series.map(s => legendChip(s.color, s.name)).join("");
+        $("#chart1-source").textContent = `Source: company filings (annual reports + Q4 investor presentations); ${def.label} per OEM across FY16-${fyTrend[fyTrend.length-1]}.`;
+      }
     } else {
       $("#chart1-title").textContent  = `${def.label} · industry trend`;
       $("#chart1-help").textContent   = "Industry-level series not currently tracked";
