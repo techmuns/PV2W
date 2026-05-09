@@ -177,7 +177,7 @@
 
     /* ── Per-OEM blocks ── */
     const OEM_ROWS = [
-      { label: "Capacity",                       source: null },
+      { label: "Capacity (units)",               source: "company", metric: "Capacity (units)" },
       { label: "Capacity Utilisation %",         source: "company", metric: "Capacity Utilisation %" },
       { label: "Capex (₹ Cr)",                   source: "company", metric: "Capex (Rs Cr)" },
       { label: "Capex Intensity %",              source: "company", metric: "Capex Intensity %" },
@@ -189,11 +189,11 @@
       { label: "Gross Margin %",                 source: "company", metric: "Gross Margin %" },
       { label: "EBITDA Margin %",                source: "company", metric: "EBITDA Margin %" },
       { label: "Export Volume %",                source: "company", metric: "Export Volume %" },
-      { label: "Export Revenue %",               source: null },
+      { label: "Export Revenue %",               source: "company", metric: "Export Revenue %" },
       { label: "EV Volume %",                    source: "company", metric: "EV Volume %" },
-      { label: "EV Revenue %",                   source: null },
+      { label: "EV Revenue %",                   source: "company", metric: "EV Revenue %" },
       { label: "SUV Volume %",                   source: "company", metric: "SUV Volume %" },
-      { label: "SUV Revenue %",                  source: null },
+      { label: "SUV Revenue %",                  source: "company", metric: "SUV Revenue %" },
       { label: "Working Capital Days",           source: "company", metric: "Working Capital Days" },
       { label: "New Model launches (Nos.)",      source: "company", metric: "New Model Launches" },
       { label: "Face Lift launches (Nos.)",      source: "company", metric: "Facelift Launches" },
@@ -207,16 +207,21 @@
       { label: "Credit Rating",                  source: "info", field: "Credit_Rating" },
     ];
     const oemCovered = new Set(OEM_ROWS.filter(r => r.metric).map(r => r.metric));
+    /* Metrics that overlap with Company_Info fields (already covered
+       by the curated 'info'-sourced rows). Suppressed from auto-
+       discover so the export doesn't render two parallel rows for
+       the same concept (e.g. 'Dealers / Sales Outlets' company
+       metric vs 'No. of Dealers' from Company_Info). */
+    const COMPANY_INFO_OVERLAP = new Set([
+      "Dealers / Sales Outlets",
+      "Employees",
+    ]);
     ALL_OEMS.forEach(co => {
-      /* Per-OEM, append any metric in the data that isn't in the
-         curated list yet — keeps the workbook self-updating as new
-         metrics (e.g. fuel-mix splits, Hybrid %, etc.) get added
-         to placeholder_data.json. */
       const seen = [...new Set((D.Company_FY_Metrics || [])
         .filter(r => r.Company === co)
         .map(r => r.Metric))];
       const extras = seen
-        .filter(m => !oemCovered.has(m))
+        .filter(m => !oemCovered.has(m) && !COMPANY_INFO_OVERLAP.has(m))
         .sort()
         .map(m => ({ label: m, source: "company", metric: m }));
       appendBlock(sheet, co.toUpperCase(), [...OEM_ROWS, ...extras], co, D);
