@@ -798,9 +798,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY23",
@@ -1018,9 +1018,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": "2026-04-20"
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY24",
@@ -4109,9 +4109,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY17",
@@ -4120,9 +4120,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY18",
@@ -4131,9 +4131,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY19",
@@ -4142,9 +4142,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY20",
@@ -4153,9 +4153,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY21",
@@ -4164,9 +4164,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY22",
@@ -4175,9 +4175,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Pre-IPO — Hyundai Motor India listed on NSE/BSE on 22 Oct 2024 (no 31-Mar quote prior to FY25)",
+      "Source_URL": "https://www.nseindia.com/get-quote/equity?symbol=HYUNDAI",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY16",
@@ -7186,78 +7186,78 @@
       "FY": "FY16",
       "Company": "Maruti",
       "Metric": "Total Sales Volume",
-      "Value": null,
+      "Value": 1429248,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source": "Maruti Suzuki India — annual reports (Total Vehicles Sold)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY17",
       "Company": "Maruti",
       "Metric": "Total Sales Volume",
-      "Value": null,
+      "Value": 1568603,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source": "Maruti Suzuki India — annual reports (Total Vehicles Sold)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY18",
       "Company": "Maruti",
       "Metric": "Total Sales Volume",
-      "Value": null,
+      "Value": 1779574,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source": "Maruti Suzuki India — annual reports (Total Vehicles Sold)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY19",
       "Company": "Maruti",
       "Metric": "Total Sales Volume",
-      "Value": null,
+      "Value": 1862449,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source": "Maruti Suzuki India — annual reports (Total Vehicles Sold)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY20",
       "Company": "Maruti",
       "Metric": "Total Sales Volume",
-      "Value": null,
+      "Value": 1563297,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source": "Maruti Suzuki India — annual reports (Total Vehicles Sold)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY21",
       "Company": "Maruti",
       "Metric": "Total Sales Volume",
-      "Value": null,
+      "Value": 1457861,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source": "Maruti Suzuki India — annual reports (Total Vehicles Sold)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY22",
       "Company": "Maruti",
       "Metric": "Total Sales Volume",
-      "Value": null,
+      "Value": 1652653,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti monthly sales press release (FY total = Domestic + Exports + OEM supplies)",
+      "Source": "Maruti Suzuki India — annual reports (Total Vehicles Sold)",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY23",
@@ -7574,9 +7574,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY20",
@@ -7585,9 +7585,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY21",
@@ -7618,9 +7618,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY20",
@@ -7629,9 +7629,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY21",
@@ -7640,9 +7640,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY22",
@@ -7651,9 +7651,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY19",
@@ -7662,9 +7662,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY20",
@@ -7673,9 +7673,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY21",
@@ -7684,9 +7684,9 @@
       "Value": null,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Pending",
-      "Source_URL": null,
-      "Last_Updated": null
+      "Source": "Hyundai Motor India DRHP (filed Jun 2024) — historical operating metrics not separately disclosed pre-FY23",
+      "Source_URL": "https://www.sebi.gov.in/filings/public-issues.html",
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY22",
