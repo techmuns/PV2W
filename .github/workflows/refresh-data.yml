@@ -113,6 +113,21 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-tata-screener.mjs
 
+      - name: Maruti Screener.in financials (best-effort)
+        id: maruti_screener
+        continue-on-error: true
+        run: node scripts/fetch-maruti-screener.mjs
+
+      - name: Hyundai Screener.in financials (best-effort, standalone)
+        id: hyundai_screener
+        continue-on-error: true
+        run: node scripts/fetch-hyundai-screener.mjs
+
+      - name: Derive PAT Margin / Capex / Capex Intensity from Screener raw extracts
+        id: derive_financials
+        continue-on-error: true
+        run: node scripts/derive-financials.mjs
+
       # ────────── stamp refresh status ──────────
       - name: Write _meta block (last refresh + per-fetcher status)
         run: node scripts/write-meta.mjs
@@ -128,7 +143,10 @@ jobs:
           MM_SCREENER_OUTCOME:  ${{ steps.mm_screener.outcome }}
           TIJORI_OUTCOME:       ${{ steps.tijori.outcome }}
           SEED_VOLUMES_OUTCOME: ${{ steps.seed_volumes.outcome }}
-          TATA_SCREENER_OUTCOME: ${{ steps.tata_screener.outcome }}
+          TATA_SCREENER_OUTCOME:  ${{ steps.tata_screener.outcome }}
+          MARUTI_SCREENER_OUTCOME:  ${{ steps.maruti_screener.outcome }}
+          HYUNDAI_SCREENER_OUTCOME: ${{ steps.hyundai_screener.outcome }}
+          DERIVE_FINANCIALS_OUTCOME: ${{ steps.derive_financials.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────

@@ -865,7 +865,16 @@
         $("#chart2-legend").innerHTML = ranked.map(r => legendChip(r.color, r.name)).join("");
       }
     }
-    $("#chart2-source").textContent = "";
+    /* Source line — credit SIAM for industry totals + company filings
+       for the OEM-level numbers (market share for additive splits,
+       audited per-OEM values for non-additive metrics). */
+    if (def.additive && def.industry) {
+      $("#chart2-source").textContent = `Source: SIAM domestic PV ${def.industry.toLowerCase()} for ${fy}, sliced by audited OEM market shares (company annual reports + investor presentations); the residual is captured under "Others".`;
+    } else if (def.oem) {
+      $("#chart2-source").textContent = `Source: ${def.label} per OEM, ${fy} — company annual reports + quarterly investor presentations; SIAM where industry-derived.`;
+    } else {
+      $("#chart2-source").textContent = "";
+    }
   }
 
   function pieChart(slices, options = {}) {
