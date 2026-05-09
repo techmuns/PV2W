@@ -230,6 +230,120 @@
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mahindra-auto-sells-48048-SUVs-a-growth-of-18-percents-and-total-volumes-of-83894-a-growth-of-23-percents-in-march-2025",
         "last_updated": "2026-05-09"
       }
+    },
+    "Screener": {
+      "fetched_at": "2026-05-09T11:44:38.665Z",
+      "source_url": "https://www.screener.in/company/M%26M/consolidated/",
+      "by_fy": {
+        "FY15": {
+          "sales_cr": 71448,
+          "ebitda_margin_pct": 12,
+          "pat_cr": 3381,
+          "working_capital_days": -5,
+          "roce_pct": 11,
+          "investing_cr": -4357
+        },
+        "FY16": {
+          "sales_cr": 75841,
+          "ebitda_margin_pct": 13,
+          "pat_cr": 3554,
+          "working_capital_days": -3,
+          "roce_pct": 13,
+          "investing_cr": -5506,
+          "revenue_growth_pct": 6.1
+        },
+        "FY17": {
+          "sales_cr": 83773,
+          "ebitda_margin_pct": 13,
+          "pat_cr": 4051,
+          "working_capital_days": -2,
+          "roce_pct": 12,
+          "investing_cr": -5875,
+          "revenue_growth_pct": 10.5
+        },
+        "FY18": {
+          "sales_cr": 92094,
+          "ebitda_margin_pct": 14,
+          "pat_cr": 7958,
+          "working_capital_days": -8,
+          "roce_pct": 13,
+          "investing_cr": -5467,
+          "revenue_growth_pct": 9.9
+        },
+        "FY19": {
+          "sales_cr": 104721,
+          "ebitda_margin_pct": 15,
+          "pat_cr": 6017,
+          "working_capital_days": -14,
+          "roce_pct": 12,
+          "investing_cr": -7174,
+          "revenue_growth_pct": 13.7
+        },
+        "FY20": {
+          "sales_cr": 75382,
+          "ebitda_margin_pct": 13,
+          "pat_cr": -321,
+          "working_capital_days": -20,
+          "roce_pct": 7,
+          "investing_cr": -6870,
+          "revenue_growth_pct": -28
+        },
+        "FY21": {
+          "sales_cr": 74278,
+          "ebitda_margin_pct": 15,
+          "pat_cr": 1512,
+          "working_capital_days": -11,
+          "roce_pct": 8,
+          "investing_cr": -19686,
+          "revenue_growth_pct": -1.5
+        },
+        "FY22": {
+          "sales_cr": 90171,
+          "ebitda_margin_pct": 16,
+          "pat_cr": 7253,
+          "working_capital_days": -13,
+          "roce_pct": 11,
+          "investing_cr": -3252,
+          "revenue_growth_pct": 21.4
+        },
+        "FY23": {
+          "sales_cr": 121269,
+          "ebitda_margin_pct": 17,
+          "pat_cr": 11374,
+          "working_capital_days": -14,
+          "roce_pct": 13,
+          "investing_cr": -8866,
+          "revenue_growth_pct": 34.5
+        },
+        "FY24": {
+          "sales_cr": 139078,
+          "ebitda_margin_pct": 18,
+          "pat_cr": 12270,
+          "working_capital_days": -8,
+          "roce_pct": 14,
+          "investing_cr": -5615,
+          "revenue_growth_pct": 14.7
+        },
+        "FY25": {
+          "sales_cr": 159211,
+          "ebitda_margin_pct": 19,
+          "pat_cr": 14073,
+          "working_capital_days": -14,
+          "roce_pct": 14,
+          "investing_cr": -18616,
+          "revenue_growth_pct": 14.5
+        },
+        "FY26": {
+          "sales_cr": 198639,
+          "ebitda_margin_pct": 19,
+          "pat_cr": 18622,
+          "working_capital_days": -2,
+          "roce_pct": 15,
+          "investing_cr": -17707,
+          "revenue_growth_pct": 24.8
+        }
+      },
+      "problems": []
     }
   },
   "Tata Motors PV": {
