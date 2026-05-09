@@ -56,33 +56,71 @@
 
   /* ── styling helpers ── */
   const PURPLE = "FF4F46E5";
-  const YELLOW = "FFFFE066";          // softer yellow than #FFFF00
+  const PURPLE_DEEP = "FF312E81";     // header band
+  const YELLOW = "FFFDE68A";          // soft amber for year headers
   const HEAD_BG = "FFE2E8F0";         // slate-200 for the first two header cells
-  const COMPANY_BG = "FFF1F5F9";      // slate-100 fill for the merged company column
+  const ROW_BAND = "FFF8FAFC";        // slate-50 for alt-row banding
+  const GROUP_BG = "FFEEF2FF";        // indigo-50 for group sub-headers
+  const GROUP_FG = "FF3730A3";        // indigo-700 text on group headers
   const GRID = { style: "thin", color: { argb: "FFCBD5E1" } };
+
+  /* Per-OEM accent colour for the merged company column. Picked
+     to match the dashboard brand chips: red-tinted Maruti, Hyundai
+     blue, M&M dark red, Tata teal, Industry indigo. */
+  const COMPANY_ACCENT = {
+    Industry:         { bg: "FFEEF2FF", fg: "FF312E81" },
+    Maruti:           { bg: "FFFFE4E6", fg: "FF9F1239" },
+    MARUTI:           { bg: "FFFFE4E6", fg: "FF9F1239" },
+    Hyundai:          { bg: "FFE0E7FF", fg: "FF1E3A8A" },
+    HYUNDAI:          { bg: "FFE0E7FF", fg: "FF1E3A8A" },
+    "M&M":            { bg: "FFFEE2E2", fg: "FF7F1D1D" },
+    "Tata Motors PV": { bg: "FFCCFBF1", fg: "FF115E59" },
+    "TATA MOTORS PV": { bg: "FFCCFBF1", fg: "FF115E59" },
+  };
 
   function thinBorders() {
     return { top: GRID, bottom: GRID, left: GRID, right: GRID };
   }
 
   /* Merge company column across the rows we just appended and
-     style the merged cell. */
+     style the merged cell with a brand-tinted accent. */
   function mergeCompanyColumn(sheet, startRow, endRow, label) {
     if (startRow > endRow) return;
     sheet.mergeCells(startRow, 1, endRow, 1);
     const cell = sheet.getCell(startRow, 1);
     cell.value = label;
-    cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
-    cell.font = { bold: true, color: { argb: "FF1F2A37" } };
-    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: COMPANY_BG } };
+    const accent = COMPANY_ACCENT[label] || { bg: "FFF1F5F9", fg: "FF1F2A37" };
+    cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true, textRotation: 90 };
+    cell.font = { bold: true, size: 12, color: { argb: accent.fg } };
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: accent.bg } };
     cell.border = thinBorders();
   }
 
-  /* Append one company / industry block to the PV sheet. */
+  /* Append one company / industry block to the PV sheet.
+     Supports group sub-headers via { _group: "Section name" } row
+     entries which render as a coloured pill spanning the metric +
+     year columns and softly visually separate metric clusters. */
   function appendBlock(sheet, companyLabel, rows, oem, D) {
     const yearCount = YEAR_END - YEAR_START + 1;
     const startRow = sheet.rowCount + 1;
-    rows.forEach(({ label, source, metric, field }) => {
+    let dataRowIdx = 0;     // for alt-row banding within metric rows
+
+    rows.forEach((rowDef) => {
+      /* Group-header row */
+      if (rowDef._group) {
+        const headRow = sheet.addRow(["", rowDef._group, ...new Array(yearCount).fill(null)]);
+        headRow.height = 18;
+        sheet.mergeCells(headRow.number, 2, headRow.number, 2 + yearCount);
+        const c = headRow.getCell(2);
+        c.value = rowDef._group;
+        c.font = { bold: true, size: 10, color: { argb: GROUP_FG } };
+        c.alignment = { horizontal: "left", vertical: "middle", indent: 1 };
+        c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: GROUP_BG } };
+        c.border = thinBorders();
+        return;
+      }
+
+      const { label, source, metric, field } = rowDef;
       const r = [companyLabel, label];
       for (let y = YEAR_START; y <= YEAR_END; y++) {
         const fy = yearToFY(y);
@@ -104,18 +142,22 @@
       }
       sheet.addRow(r);
 
-      /* Style the row */
+      /* Style the row — banded background + per-cell number format. */
       const last = sheet.lastRow;
+      last.height = 17;
       const fmt = fmtFor(label);
+      const isAlt = (dataRowIdx++ % 2 === 1);
       const metricCell = last.getCell(2);
-      metricCell.font = { bold: true, color: { argb: "FF1F2A37" } };
-      metricCell.alignment = { horizontal: "right", vertical: "middle" };
-      metricCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: COMPANY_BG } };
+      metricCell.font = { bold: false, size: 10, color: { argb: "FF1F2A37" } };
+      metricCell.alignment = { horizontal: "left", vertical: "middle", indent: 1 };
+      metricCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: isAlt ? ROW_BAND : "FFFFFFFF" } };
       metricCell.border = thinBorders();
       for (let i = 3; i <= 2 + yearCount; i++) {
         const c = last.getCell(i);
         if (fmt) c.numFmt = fmt;
         c.alignment = { horizontal: "right", vertical: "middle" };
+        c.font = { size: 10, color: { argb: "FF1F2A37" } };
+        c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: isAlt ? ROW_BAND : "FFFFFFFF" } };
         c.border = thinBorders();
       }
     });
@@ -136,35 +178,37 @@
     sheet.addRow(head);
 
     const hr = sheet.getRow(1);
-    hr.height = 26;
-    hr.font = { bold: true, color: { argb: "FF1F2A37" } };
+    hr.height = 30;
     hr.alignment = { horizontal: "center", vertical: "middle" };
-    /* First two cells: slate-200 */
+    /* First two cells: deep purple band, white text */
     [1, 2].forEach(i => {
-      hr.getCell(i).fill = { type: "pattern", pattern: "solid", fgColor: { argb: HEAD_BG } };
-      hr.getCell(i).border = thinBorders();
+      const c = hr.getCell(i);
+      c.font = { bold: true, size: 11, color: { argb: "FFFFFFFF" } };
+      c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: PURPLE_DEEP } };
+      c.border = thinBorders();
     });
-    /* Year cells: yellow */
+    /* Year cells: soft amber band */
     for (let i = 3; i <= 2 + yearCount; i++) {
       const c = hr.getCell(i);
+      c.font = { bold: true, size: 11, color: { argb: "FF78350F" } };
       c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: YELLOW } };
       c.border = thinBorders();
     }
 
     /* ── Industry block ── */
     const INDUSTRY_ROWS = [
+      { _group: "Volume" },
       { label: "Industry Volume",                   source: "industry", metric: "Total PV Volume" },
-      { label: "Industry Realisation",              source: null },
-      { label: "Industry PAT",                      source: null },
-      { label: "Export Volume %",                   source: "industry", metric: "Export Share %" },
-      { label: "Export Revenue %",                  source: null },
-      { label: "EV Volume %",                       source: "industry", metric: "EV Share %" },
-      { label: "EV Revenue %",                      source: null },
-      { label: "SUV Volume %",                      source: "industry", metric: "SUV Share %" },
-      { label: "SUV Revenue %",                     source: null },
-      { label: "Industry New Launches",             source: null },
-      { label: "Industry Face Lift launches (Nos.)",source: null },
-      { label: "Industry Top Selling Model",        source: "industry", metric: "Top Selling Model" },
+      { label: "PV Volume Growth %",                source: "industry", metric: "PV Volume Growth %" },
+      { label: "Average ASP (₹ Lakh)",              source: "industry", metric: "Average ASP (Rs Lakh)" },
+      { label: "Industry PAT (₹ Cr)",               source: "industry", metric: "Industry PAT (Rs Cr)" },
+      { _group: "Mix" },
+      { label: "Export Share %",                    source: "industry", metric: "Export Share %" },
+      { label: "EV Share %",                        source: "industry", metric: "EV Share %" },
+      { label: "SUV Share %",                       source: "industry", metric: "SUV Share %" },
+      { _group: "Leadership" },
+      { label: "Top Selling Model",                 source: "industry", metric: "Top Selling Model" },
+      { label: "Top Gaining OEM",                   source: "industry", metric: "Top Gaining OEM" },
     ];
     /* Auto-discover any industry metric we haven't hand-listed above
        so new data refreshes appear in the export without code edits. */
@@ -177,34 +221,40 @@
 
     /* ── Per-OEM blocks ── */
     const OEM_ROWS = [
+      { _group: "Scale & Growth" },
+      { label: "Market Share %",                 source: "company", metric: "Market Share %" },
+      { label: "Volume Growth %",                source: "company", metric: "Volume Growth %" },
+      { label: "Revenue Growth %",               source: "company", metric: "Revenue Growth %" },
+      { label: "Realisation Growth %",           source: "company", metric: "Realisation Growth %" },
+      { _group: "Profitability" },
+      { label: "Gross Margin %",                 source: "company", metric: "Gross Margin %" },
+      { label: "EBITDA Margin %",                source: "company", metric: "EBITDA Margin %" },
+      { label: "PAT Margin %",                   source: "company", metric: "PAT Margin %" },
+      { _group: "Capital & Operations" },
       { label: "Capacity (units)",               source: "company", metric: "Capacity (units)" },
       { label: "Capacity Utilisation %",         source: "company", metric: "Capacity Utilisation %" },
       { label: "Capex (₹ Cr)",                   source: "company", metric: "Capex (Rs Cr)" },
       { label: "Capex Intensity %",              source: "company", metric: "Capex Intensity %" },
-      { label: "PAT Margin %",                   source: "company", metric: "PAT Margin %" },
-      { label: "Market Share %",                 source: "company", metric: "Market Share %" },
-      { label: "Revenue Growth %",               source: "company", metric: "Revenue Growth %" },
-      { label: "Volume Growth %",                source: "company", metric: "Volume Growth %" },
-      { label: "Realisation Growth %",           source: "company", metric: "Realisation Growth %" },
-      { label: "Gross Margin %",                 source: "company", metric: "Gross Margin %" },
-      { label: "EBITDA Margin %",                source: "company", metric: "EBITDA Margin %" },
+      { label: "Working Capital Days",           source: "company", metric: "Working Capital Days" },
+      { _group: "Volume Mix" },
       { label: "Export Volume %",                source: "company", metric: "Export Volume %" },
       { label: "Export Revenue %",               source: "company", metric: "Export Revenue %" },
       { label: "EV Volume %",                    source: "company", metric: "EV Volume %" },
       { label: "EV Revenue %",                   source: "company", metric: "EV Revenue %" },
       { label: "SUV Volume %",                   source: "company", metric: "SUV Volume %" },
       { label: "SUV Revenue %",                  source: "company", metric: "SUV Revenue %" },
-      { label: "Working Capital Days",           source: "company", metric: "Working Capital Days" },
-      { label: "New Model launches (Nos.)",      source: "company", metric: "New Model Launches" },
-      { label: "Face Lift launches (Nos.)",      source: "company", metric: "Facelift Launches" },
+      { _group: "Product Cadence" },
+      { label: "New Model Launches",             source: "company", metric: "New Model Launches" },
+      { label: "Facelift Launches",              source: "company", metric: "Facelift Launches" },
       { label: "Top Selling Model",              source: "company", metric: "Top Selling Model" },
-      { label: "Stock Price as on 31st March",   source: "company", metric: "Stock Price (31-Mar)" },
+      { _group: "Market & Governance" },
+      { label: "Stock Price (31-Mar, ₹)",        source: "company", metric: "Stock Price (31-Mar)" },
       { label: "No. of Employees",               source: "info", field: "Employees" },
       { label: "No. of Dealers",                 source: "info", field: "Dealers" },
+      { label: "Credit Rating",                  source: "info", field: "Credit_Rating" },
       { label: "CEO",                            source: "info", field: "CEO" },
       { label: "CFO",                            source: "info", field: "CFO" },
       { label: "COO",                            source: "info", field: "COO" },
-      { label: "Credit Rating",                  source: "info", field: "Credit_Rating" },
     ];
     const oemCovered = new Set(OEM_ROWS.filter(r => r.metric).map(r => r.metric));
     /* Metrics that overlap with Company_Info fields (already covered
@@ -227,12 +277,14 @@
       appendBlock(sheet, co.toUpperCase(), [...OEM_ROWS, ...extras], co, D);
     });
 
-    /* Column widths */
-    sheet.getColumn(1).width = 14;
-    sheet.getColumn(2).width = 34;
+    /* Column widths — narrow company band (vertical text), wider
+       metric column for breathing room, and uniform year cells. */
+    sheet.getColumn(1).width = 6;
+    sheet.getColumn(2).width = 30;
     for (let i = 3; i <= 2 + yearCount; i++) sheet.getColumn(i).width = 11;
 
     sheet.views = [{ state: "frozen", xSplit: 2, ySplit: 1 }];
+    sheet.properties.defaultRowHeight = 16;
   }
 
   function buildSources(wb, D) {
