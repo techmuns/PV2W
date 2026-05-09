@@ -277,11 +277,28 @@
       appendBlock(sheet, co.toUpperCase(), [...OEM_ROWS, ...extras], co, D);
     });
 
-    /* Column widths — narrow company band (vertical text), wider
-       metric column for breathing room, and uniform year cells. */
-    sheet.getColumn(1).width = 6;
-    sheet.getColumn(2).width = 30;
-    for (let i = 3; i <= 2 + yearCount; i++) sheet.getColumn(i).width = 11;
+    /* Column widths — sized so the longest content fits without
+       wrapping. Years widened from 11 → 14 (fits 6-digit volumes
+       like 1,650,000 and the 'Mahindra & Mahindra' top-selling
+       model strings), metric column from 30 → 36 (fits 'Stock
+       Price (31-Mar, ₹)' etc.), company from 6 → 9 for the
+       vertical brand label. */
+    sheet.getColumn(1).width = 9;
+    sheet.getColumn(2).width = 36;
+    for (let i = 3; i <= 2 + yearCount; i++) sheet.getColumn(i).width = 14;
+
+    /* Auto-widen any year column whose longest data string exceeds
+       the default — guards against new metrics with long values
+       (e.g. 'Hyundai Creta', 'CRISIL AAA / Stable'). */
+    for (let i = 3; i <= 2 + yearCount; i++) {
+      const col = sheet.getColumn(i);
+      let max = col.width;
+      col.eachCell({ includeEmpty: false }, c => {
+        const s = c.value == null ? "" : String(c.value);
+        if (s.length + 2 > max) max = s.length + 2;
+      });
+      col.width = Math.min(28, max);
+    }
 
     sheet.views = [{ state: "frozen", xSplit: 2, ySplit: 1 }];
     sheet.properties.defaultRowHeight = 16;
