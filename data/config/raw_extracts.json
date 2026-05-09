@@ -76,7 +76,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-09T19:16:22.771Z",
+      "fetched_at": "2026-05-09T19:20:14.933Z",
       "source_url": "https://www.screener.in/company/MARUTI/consolidated/",
       "basis": "Maruti Suzuki India consolidated annual P&L + cash flow",
       "by_fy": {
@@ -258,7 +258,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-09T19:16:19.947Z",
+      "fetched_at": "2026-05-09T19:20:11.064Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
@@ -266,7 +266,7 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-05-09T19:16:23.917Z",
+      "fetched_at": "2026-05-09T19:20:16.017Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -490,7 +490,7 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-05-09T19:16:20.630Z",
+      "fetched_at": "2026-05-09T19:20:12.450Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
@@ -592,7 +592,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-09T19:16:20.674Z",
+      "fetched_at": "2026-05-09T19:20:12.811Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [

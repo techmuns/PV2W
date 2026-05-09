@@ -1862,11 +1862,11 @@
       "FY": "FY25",
       "Company": "M&M",
       "Metric": "Revenue Growth %",
-      "Value": 14.5,
+      "Value": 19.3,
       "YoY_Change": -3,
       "Signal": "Positive",
-      "Source": "Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow",
-      "Source_URL": "https://www.screener.in/company/M%26M/consolidated/",
+      "Source": "M&M Q4 + FY results PR (Auto segment)",
+      "Source_URL": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
       "Last_Updated": "2026-05-09"
     },
     {
@@ -13732,7 +13732,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-09T19:16:24.231Z",
+    "last_refresh": "2026-05-09T19:20:16.344Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -13751,6 +13751,6 @@
       "hyundai_filings": "success",
       "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25609570862"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25609644491"
   }
 }
