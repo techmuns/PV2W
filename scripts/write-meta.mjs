@@ -31,6 +31,9 @@ const fetchers = {
   tata_filings:        process.env.TATA_SCREENER_OUTCOME  || 'unknown',
   oem_volumes:         process.env.TIJORI_OUTCOME         || 'unknown',
   seed_volumes:        process.env.SEED_VOLUMES_OUTCOME   || 'unknown',
+  maruti_filings:      process.env.MARUTI_SCREENER_OUTCOME  || 'unknown',
+  hyundai_filings:     process.env.HYUNDAI_SCREENER_OUTCOME || 'unknown',
+  derived_financials:  process.env.DERIVE_FINANCIALS_OUTCOME || 'unknown',
 };
 
 const outcomes = Object.values(fetchers);

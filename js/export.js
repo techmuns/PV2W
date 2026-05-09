@@ -27,7 +27,12 @@
   const ALL_OEMS = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
 
   /* Calendar years for the column header. Edit here to extend. */
-  const YEAR_START = 2010, YEAR_END = 2026;
+  /* Year range: FY16 – FY26. We dropped 2010-2015 because no source
+     in the dataset covers those FYs (Maruti Q4 IPs go back to FY16,
+     Hyundai DRHP covers FY19+, M&M Screener covers FY15+ but only
+     for one row, etc.). FY26 is included for forward-looking series
+     (M&M consolidated already prints a full FY26 column). */
+  const YEAR_START = 2016, YEAR_END = 2026;
 
   /* Column 2010 → FY10, 2025 → FY25, etc. */
   function yearToFY(y) { return "FY" + String(y).slice(2); }
@@ -174,7 +179,9 @@
     const OEM_ROWS = [
       { label: "Capacity",                       source: null },
       { label: "Capacity Utilisation %",         source: "company", metric: "Capacity Utilisation %" },
-      { label: "Capex",                          source: "company", metric: "Capex (Rs Cr)" },
+      { label: "Capex (₹ Cr)",                   source: "company", metric: "Capex (Rs Cr)" },
+      { label: "Capex Intensity %",              source: "company", metric: "Capex Intensity %" },
+      { label: "PAT Margin %",                   source: "company", metric: "PAT Margin %" },
       { label: "Market Share %",                 source: "company", metric: "Market Share %" },
       { label: "Revenue Growth %",               source: "company", metric: "Revenue Growth %" },
       { label: "Volume Growth %",                source: "company", metric: "Volume Growth %" },
@@ -278,7 +285,9 @@
       ["SUV Volume % (Ind.)",    "%",      "Industry-level UV share of domestic PV.",                                       "SIAM yearbook"],
       ["Industry Top Selling Model","—",   "Highest-volume model across all OEMs in the FY.",                               "SIAM model-wise"],
       ["Capacity Utilisation %", "%",      "Sales volume ÷ installed capacity (proxy where production not disclosed).",      "Company AR + Q4 IP"],
-      ["Capex",                  "Rs Cr",  "Annual capex from cash-flow statement.",                                        "Company AR cash flow"],
+      ["Capex (₹ Cr)",           "₹ Cr",   "Annual capex proxy = |Cash from Investing Activities| (Screener cash flow). Includes net of asset sales / divestments.", "Company AR cash flow"],
+      ["Capex Intensity %",      "%",      "Capex ÷ Sales × 100 — how reinvestment-heavy the OEM is per ₹ of revenue.",       "Derived from AR cash flow + P&L"],
+      ["PAT Margin %",           "%",      "Net Profit ÷ Sales × 100 — bottom-line margin per ₹ of revenue.",                  "Company AR / Screener consolidated P&L"],
       ["Market Share %",         "%",      "Domestic PV market share (SIAM basis).",                                        "SIAM / company AR"],
       ["Revenue Growth %",       "%",      "YoY change in Revenue from Operations / Net Sales / Turnover.",                 "Company AR / Q4 IP"],
       ["Volume Growth %",        "%",      "YoY change in total sales volume (domestic + exports).",                        "Company AR / SIAM"],
