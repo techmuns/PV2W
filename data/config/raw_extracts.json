@@ -176,6 +176,14 @@
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
         "last_updated": "2026-05-09"
       }
+    },
+    "Tijori": {
+      "fetched_at": "2026-05-09T12:40:05.151Z",
+      "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
+      "by_fy": {},
+      "problems": [
+        "no volume row found"
+      ]
     }
   },
   "M&M": {
@@ -232,7 +240,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-09T11:44:38.665Z",
+      "fetched_at": "2026-05-09T12:40:04.018Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
@@ -344,6 +352,14 @@
         }
       },
       "problems": []
+    },
+    "Tijori": {
+      "fetched_at": "2026-05-09T12:40:05.942Z",
+      "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
+      "by_fy": {},
+      "problems": [
+        "no volume row found"
+      ]
     }
   },
   "Tata Motors PV": {
@@ -438,6 +454,14 @@
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
         "last_updated": "2026-05-09"
       }
+    },
+    "Tijori": {
+      "fetched_at": "2026-05-09T12:40:06.379Z",
+      "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
+      "by_fy": {},
+      "problems": [
+        "no volume row found"
+      ]
     }
   }
 }
