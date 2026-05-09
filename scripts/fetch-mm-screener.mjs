@@ -217,7 +217,7 @@ function distill(html) {
    the same rows but never clobber an analyst-PDF or AR-cited value).
    ────────────────────────────────────────────────────────────────── */
 const COMPANY = 'M&M';
-const SCREENER_SRC = 'Screener.in (M&M consolidated P&L / ratios / cash flow)';
+const SCREENER_SRC = 'Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow (aggregated via Screener.in)';
 
 function isAnalystAuthoritative(src) {
   if (!src || src === 'Pending') return false;
