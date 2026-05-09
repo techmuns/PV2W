@@ -27,7 +27,12 @@
   const ALL_OEMS = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
 
   /* Calendar years for the column header. Edit here to extend. */
-  const YEAR_START = 2010, YEAR_END = 2026;
+  /* Year range: FY16 – FY26. We dropped 2010-2015 because no source
+     in the dataset covers those FYs (Maruti Q4 IPs go back to FY16,
+     Hyundai DRHP covers FY19+, M&M Screener covers FY15+ but only
+     for one row, etc.). FY26 is included for forward-looking series
+     (M&M consolidated already prints a full FY26 column). */
+  const YEAR_START = 2016, YEAR_END = 2026;
 
   /* Column 2010 → FY10, 2025 → FY25, etc. */
   function yearToFY(y) { return "FY" + String(y).slice(2); }
@@ -174,7 +179,7 @@
     const OEM_ROWS = [
       { label: "Capacity",                       source: null },
       { label: "Capacity Utilisation %",         source: "company", metric: "Capacity Utilisation %" },
-      { label: "Capex (₹ Cr)",                   source: "company", metric: "Capex (₹ Cr)" },
+      { label: "Capex (₹ Cr)",                   source: "company", metric: "Capex (Rs Cr)" },
       { label: "Capex Intensity %",              source: "company", metric: "Capex Intensity %" },
       { label: "PAT Margin %",                   source: "company", metric: "PAT Margin %" },
       { label: "Market Share %",                 source: "company", metric: "Market Share %" },

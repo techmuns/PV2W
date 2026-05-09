@@ -120,7 +120,7 @@ function main() {
         else if (r.status === 'unchanged') unchanged++;
       };
       apply('PAT Margin %',      patMargin);
-      apply('Capex (₹ Cr)',      capex);
+      apply('Capex (Rs Cr)',     capex);
       apply('Capex Intensity %', capexIntens);
     }
   }
