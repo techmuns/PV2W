@@ -98,6 +98,16 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-mm-screener.mjs
 
+      - name: Tijorifinance — Hyundai / M&M / Tata PV unit volumes (best-effort)
+        id: tijori
+        continue-on-error: true
+        run: node scripts/fetch-tijori.mjs
+
+      - name: Seed Total Sales Volume from SIAM × market share where missing
+        id: seed_volumes
+        continue-on-error: true
+        run: node scripts/seed-volumes.mjs
+
       - name: Tata Motors Screener.in financials (best-effort, parent-level)
         id: tata_screener
         continue-on-error: true
@@ -116,6 +126,8 @@ jobs:
           INDUSTRY_OUTCOME:     ${{ steps.industry.outcome }}
           HYUNDAI_NSE_OUTCOME:  ${{ steps.hyundai_nse.outcome }}
           MM_SCREENER_OUTCOME:  ${{ steps.mm_screener.outcome }}
+          TIJORI_OUTCOME:       ${{ steps.tijori.outcome }}
+          SEED_VOLUMES_OUTCOME: ${{ steps.seed_volumes.outcome }}
           TATA_SCREENER_OUTCOME: ${{ steps.tata_screener.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 

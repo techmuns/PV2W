@@ -56,7 +56,9 @@ const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' +
            '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 const COMPANY = 'Tata Motors PV';
-const SCREENER_SRC = 'Screener.in (Tata Motors consolidated parent — JLR + India CV + India PV combined)';
+/* Dashboard label credits the company filings; Screener is the
+   aggregator path we use but only logged in raw_extracts.json. */
+const SCREENER_SRC = 'Tata Motors Ltd annual report — consolidated parent (JLR + India CV + India PV)';
 
 /* ──────────────────────────────────────────────────────────────────
    Network

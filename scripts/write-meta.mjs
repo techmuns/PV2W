@@ -27,8 +27,10 @@ const fetchers = {
   governance:          process.env.GOVERNANCE_OUTCOME   || 'unknown',
   industry:            process.env.INDUSTRY_OUTCOME     || 'unknown',
   hyundai_nse:         process.env.HYUNDAI_NSE_OUTCOME  || 'unknown',
-  mm_screener:         process.env.MM_SCREENER_OUTCOME  || 'unknown',
-  tata_screener:       process.env.TATA_SCREENER_OUTCOME || 'unknown',
+  mm_filings:          process.env.MM_SCREENER_OUTCOME   || 'unknown',
+  tata_filings:        process.env.TATA_SCREENER_OUTCOME  || 'unknown',
+  oem_volumes:         process.env.TIJORI_OUTCOME         || 'unknown',
+  seed_volumes:        process.env.SEED_VOLUMES_OUTCOME   || 'unknown',
 };
 
 const outcomes = Object.values(fetchers);
