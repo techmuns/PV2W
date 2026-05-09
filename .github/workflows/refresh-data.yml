@@ -98,6 +98,11 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-mm-screener.mjs
 
+      - name: Tata Motors Screener.in financials (best-effort, parent-level)
+        id: tata_screener
+        continue-on-error: true
+        run: node scripts/fetch-tata-screener.mjs
+
       # ────────── stamp refresh status ──────────
       - name: Write _meta block (last refresh + per-fetcher status)
         run: node scripts/write-meta.mjs
@@ -111,6 +116,7 @@ jobs:
           INDUSTRY_OUTCOME:     ${{ steps.industry.outcome }}
           HYUNDAI_NSE_OUTCOME:  ${{ steps.hyundai_nse.outcome }}
           MM_SCREENER_OUTCOME:  ${{ steps.mm_screener.outcome }}
+          TATA_SCREENER_OUTCOME: ${{ steps.tata_screener.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────
