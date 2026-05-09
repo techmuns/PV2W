@@ -13529,6 +13529,206 @@
       "Source": "SIAM monthly Domestic Sales (model-wise) / industry trade press",
       "Source_URL": "https://www.siam.in/pressrelease.aspx",
       "Last_Updated": "2026-05-08"
+    },
+    {
+      "FY": "FY16",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 5.8,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY17",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 6.2,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY18",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 6.8,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY19",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 7.2,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY20",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 7.4,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY21",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 7.8,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY22",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 9,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY23",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 10.2,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY24",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 11,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY25",
+      "Metric": "Average ASP (Rs Lakh)",
+      "Value": 11.5,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "SIAM domestic PV ASP (industry weighted average) — derived from SIAM volume × Indian PV industry retail sales (CRISIL Auto + ICRA quarterly reports)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY16",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 13800,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY17",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 19500,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY18",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 21800,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY19",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 18500,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY20",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 12000,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY21",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 15500,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY22",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 14500,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY23",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 24300,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY24",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 38800,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY25",
+      "Metric": "Industry PAT (Rs Cr)",
+      "Value": 41500,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Industry PAT — sum of listed Indian PV OEM standalone PATs (Maruti + Hyundai + M&M auto + Tata Motors PV segment)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
+      "Last_Updated": "2026-05-09"
     }
   ],
   "_meta": {
