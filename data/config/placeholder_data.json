@@ -245,12 +245,12 @@
       "FY": "FY23",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 6115,
+      "Value": 8036,
       "YoY_Change": 90.7,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY23",
@@ -465,12 +465,12 @@
       "FY": "FY24",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 6727,
+      "Value": 11865,
       "YoY_Change": 10,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY24",
@@ -685,12 +685,12 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 8349,
+      "Value": 14456,
       "YoY_Change": 24.1,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY25",
@@ -3644,78 +3644,78 @@
       "FY": "FY16",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 2581,
+      "Value": 7230,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY17",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 3250,
+      "Value": 9173,
       "YoY_Change": 25.9,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY18",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 3892,
+      "Value": 8302,
       "YoY_Change": 19.8,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY19",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 4745,
+      "Value": 3540,
       "YoY_Change": 21.9,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY20",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 3194,
+      "Value": 557,
       "YoY_Change": -32.7,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY21",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 2132,
+      "Value": 7291,
       "YoY_Change": -33.2,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY22",
       "Company": "Maruti",
       "Metric": "Capex (Rs Cr)",
-      "Value": 3206,
+      "Value": 239,
       "YoY_Change": 50.4,
       "Signal": "Neutral",
-      "Source": "Maruti Annual Report cash flow (PPE + CWIP + intangibles)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
-      "Last_Updated": "2026-05-07"
+      "Last_Updated": "2026-05-09"
     },
     {
       "FY": "FY16",
@@ -8429,10 +8429,10 @@
       "FY": "FY16",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 7.94,
+      "Value": 9.55,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8440,10 +8440,10 @@
       "FY": "FY16",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 4.49,
+      "Value": 12.55,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8451,10 +8451,10 @@
       "FY": "FY17",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 10.79,
+      "Value": 11.03,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8462,10 +8462,10 @@
       "FY": "FY17",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 4.78,
+      "Value": 13.47,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8473,10 +8473,10 @@
       "FY": "FY18",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 9.89,
+      "Value": 9.87,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8484,10 +8484,10 @@
       "FY": "FY18",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 4.98,
+      "Value": 10.4,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8495,10 +8495,10 @@
       "FY": "FY19",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 9.03,
+      "Value": 8.89,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8506,10 +8506,10 @@
       "FY": "FY19",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 5.72,
+      "Value": 4.11,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8517,10 +8517,10 @@
       "FY": "FY20",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 7.47,
+      "Value": 7.5,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8528,10 +8528,10 @@
       "FY": "FY20",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 4.22,
+      "Value": 0.74,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8539,10 +8539,10 @@
       "FY": "FY21",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 6.01,
+      "Value": 6.24,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8550,10 +8550,10 @@
       "FY": "FY21",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 3.03,
+      "Value": 10.36,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8564,7 +8564,7 @@
       "Value": 4.39,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8572,10 +8572,10 @@
       "FY": "FY22",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 3.63,
+      "Value": 0.27,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8583,10 +8583,10 @@
       "FY": "FY23",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 6.85,
+      "Value": 6.98,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8594,10 +8594,10 @@
       "FY": "FY23",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 5.2,
+      "Value": 6.84,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8605,10 +8605,10 @@
       "FY": "FY24",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 9.31,
+      "Value": 9.51,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8616,10 +8616,10 @@
       "FY": "FY24",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 4.74,
+      "Value": 8.36,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8627,10 +8627,10 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "PAT Margin %",
-      "Value": 9.49,
+      "Value": 9.48,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -8638,10 +8638,10 @@
       "FY": "FY25",
       "Company": "Maruti",
       "Metric": "Capex Intensity %",
-      "Value": 5.46,
+      "Value": 9.45,
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Maruti Suzuki India — Annual Report (Standalone P&L: Revenue from Operations + Profit for the Year)",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
       "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
       "Last_Updated": "2026-05-09"
     },
@@ -9017,6 +9017,105 @@
       "Signal": "Neutral",
       "Source": "Tata Motors PV-segment revenue from Q4 Investor Presentations (segment results); Capex Intensity = Capex ÷ PV-segment revenue",
       "Source_URL": "https://www.tatamotors.com/investors/financials/quarterly-results/",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY15",
+      "Company": "Maruti",
+      "Metric": "PAT Margin %",
+      "Value": 7.5,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY15",
+      "Company": "Maruti",
+      "Metric": "Capex (Rs Cr)",
+      "Value": 4491,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY15",
+      "Company": "Maruti",
+      "Metric": "Capex Intensity %",
+      "Value": 8.84,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Maruti",
+      "Metric": "PAT Margin %",
+      "Value": 8.01,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Maruti",
+      "Metric": "Capex (Rs Cr)",
+      "Value": 14734,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Maruti",
+      "Metric": "Capex Intensity %",
+      "Value": 8.04,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/investors/financial-and-other-information",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Hyundai",
+      "Metric": "PAT Margin %",
+      "Value": 7.71,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Hyundai",
+      "Metric": "Capex (Rs Cr)",
+      "Value": 2022,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations",
+      "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Hyundai",
+      "Metric": "Capex Intensity %",
+      "Value": 2.93,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India annual report — standalone P&L / cash flow",
+      "Source_URL": "https://www.hyundai.com/in/en/about-us/investor-relations",
       "Last_Updated": "2026-05-09"
     }
   ],
@@ -11693,7 +11792,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-09T12:40:07.392Z",
+    "last_refresh": "2026-05-09T18:34:41.199Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -11707,8 +11806,11 @@
       "mm_filings": "success",
       "tata_filings": "success",
       "oem_volumes": "success",
-      "seed_volumes": "success"
+      "seed_volumes": "success",
+      "maruti_filings": "success",
+      "hyundai_filings": "success",
+      "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25601339975"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25608717405"
   }
 }
