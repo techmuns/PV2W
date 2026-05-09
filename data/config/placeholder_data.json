@@ -9667,7 +9667,7 @@
       "Dealers": 4235,
       "Source": "KMP per https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MARUTI.html · Dealers / employees per https://www.marutisuzuki.com/corporate/investors/financial-and-other-information/annual-reports",
       "Source_URL": "https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management",
-      "Last_Updated": "2026-05-09"
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY25",
@@ -9680,7 +9680,7 @@
       "Dealers": 1419,
       "Source": "KMP per https://www.hyundai.com/in/en/about-us/our-leaders · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.HYUNDAIMOTORINDIA.html · Dealers / employees per https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
       "Source_URL": "https://www.hyundai.com/in/en/about-us/our-leaders",
-      "Last_Updated": "2026-05-09"
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY25",
@@ -9693,7 +9693,7 @@
       "Dealers": 1500,
       "Source": "KMP per https://www.mahindra.com/about-us/management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MAHINDRAANDMAHINDRA.html · Dealers / employees per https://www.mahindra.com/investor-relations/annual-reports",
       "Source_URL": "https://www.mahindra.com/about-us/management",
-      "Last_Updated": "2026-05-09"
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY25",
@@ -9706,7 +9706,7 @@
       "Dealers": 1500,
       "Source": "KMP per https://www.tatamotors.com/board-management/ · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.TATAMOTORS.html · Dealers / employees per https://www.tatamotors.com/investors/annual-reports/",
       "Source_URL": "https://www.tatamotors.com/board-management/",
-      "Last_Updated": "2026-05-09"
+      "Last_Updated": "2026-05-08"
     },
     {
       "FY": "FY24",
@@ -10428,7 +10428,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-09T09:01:27.289Z",
+    "last_refresh": "2026-05-08T13:12:00.380Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -10440,6 +10440,6 @@
       "industry": "success",
       "hyundai_nse": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25597155647"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25557439696"
   }
 }
