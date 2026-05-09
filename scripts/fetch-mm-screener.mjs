@@ -217,7 +217,10 @@ function distill(html) {
    the same rows but never clobber an analyst-PDF or AR-cited value).
    ────────────────────────────────────────────────────────────────── */
 const COMPANY = 'M&M';
-const SCREENER_SRC = 'Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow (aggregated via Screener.in)';
+/* The dashboard label deliberately credits the underlying company
+   filings only — Screener.in is the aggregator we hit, but the
+   audit trail in raw_extracts.json already records that path. */
+const SCREENER_SRC = 'Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow';
 
 function isAnalystAuthoritative(src) {
   if (!src || src === 'Pending') return false;
