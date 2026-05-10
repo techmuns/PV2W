@@ -1679,7 +1679,10 @@
       const ctl = $("#industry-controls");
       if (ctl) { ctl.classList.add("hidden"); ctl.classList.remove("flex"); }
       $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
-      $("#chart1-help").textContent  = "Volume growth comparison";
+      const winLabel = fyHistory.length
+        ? `Showing ${fyHistory[0]}–${fyHistory[fyHistory.length-1]}`
+        : "";
+      $("#chart1-help").textContent  = `Volume growth comparison · ${winLabel}`;
       $("#chart1-sub").textContent   = "";
 
       const oemVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Volume Growth %")||{}).Value ?? null);
@@ -1711,7 +1714,10 @@
      internally split by the selected mix mode. Chart only renders
      bars for FYs where Total Sales Volume is available; FYs missing
      a clean total stay blank rather than fabricated. */
-  const MIX_VIEW_FYS = ["FY23", "FY24", "FY25"];
+  /* Trailing 3-FY window for the volume-mix chart on OEM views.
+     Computed from D.FYS (already trimmed at boot to FYs with
+     real data) so it auto-rolls forward when FY26 / FY27 lands. */
+  const getMixViewFYs = () => (D && D.FYS && D.FYS.length >= 3) ? D.FYS.slice(-3) : (D && D.FYS) || [];
 
   /* Soothing, low-saturation palette for the mix chart. The single
      dark navy in each view (SUV / UV in product, SUV in regrouped,
@@ -1748,7 +1754,7 @@
     const company = state.company;
 
     /* Pull total volume + the relevant share for each FY */
-    const data = MIX_VIEW_FYS.map(fy => {
+    const data = getMixViewFYs().map(fy => {
       const totalRow = getCompanyMetric(fy, company, "Total Sales Volume");
       const expRow   = getCompanyMetric(fy, company, "Export Volume %");
       const evRow    = getCompanyMetric(fy, company, "EV Volume %");
@@ -3087,6 +3093,35 @@
     }
 
     D = result.data;
+
+    /* ── Year-window trim ───────────────────────────────────────
+       company_config.json carries the full FY list (FY16 … FY27)
+       because extend-fys runs each April and adds the new fiscal
+       year to the config. But an FY that was just *added* doesn't
+       have actual data until the relevant fetcher / Q4 IP lands.
+       Filter D.FYS / D.FYS_FULL down to FYs that actually carry
+       at least one non-null metric across any tracked OEM —
+       otherwise charts render empty bars for FY26 / FY27 etc. */
+    (function trimToAvailableYears() {
+      const allMetrics = D.Company_FY_Metrics || [];
+      const indMetrics = D.Industry_FY_Metrics || [];
+      const fyHasData = (fy) =>
+        allMetrics.some(r => r.FY === fy && r.Value != null && r.Value !== "Pending") ||
+        indMetrics.some(r => r.FY === fy && r.Value != null && r.Value !== "Pending");
+      const fullsAvail = (D.FYS_FULL || []).filter(fyHasData);
+      if (fullsAvail.length) D.FYS_FULL = fullsAvail;
+      /* Trailing 3-FY window for the OEM-view chart1 + KPI strip:
+         last 3 FYs in the available list. */
+      const tail3 = fullsAvail.slice(-3);
+      if (tail3.length) D.FYS = tail3;
+      /* Pin the default selected FY to the latest available so the
+         dashboard never opens on an empty future-year column. */
+      if (fullsAvail.length) {
+        state.fy = fullsAvail[fullsAvail.length - 1];
+        state.indYearRight = state.fy;
+      }
+    })();
+
     window.PV_DATA = D;
     BRAND = D.BRANDS;
     TABS_OEM      = D.TABS && D.TABS.oem      ? D.TABS.oem      : {};
