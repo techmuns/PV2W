@@ -99,11 +99,16 @@
   /* Append one company / industry block to the PV sheet.
      Supports group sub-headers via { _group: "Section name" } row
      entries which render as a coloured pill spanning the metric +
-     year columns and softly visually separate metric clusters. */
-  function appendBlock(sheet, companyLabel, rows, oem, D) {
+     year columns and softly visually separate metric clusters.
+     ctx.calcMap (optional) routes specific dashboard metrics to
+     formula cells referencing the Calculations tab so the PV view
+     auto-updates when raw inputs change. */
+  function appendBlock(sheet, companyLabel, rows, oem, D, ctx) {
     const yearCount = YEAR_END - YEAR_START + 1;
     const startRow = sheet.rowCount + 1;
     let dataRowIdx = 0;     // for alt-row banding within metric rows
+    const calcMap = (ctx && ctx.calcMap) || null;
+    const absMap  = (ctx && ctx.absMap)  || null;
 
     rows.forEach((rowDef) => {
       /* Group-header row */
@@ -122,6 +127,34 @@
 
       const { label, source, metric, field } = rowDef;
       const r = [companyLabel, label];
+      /* Try to route this row's year cells to a formula referencing
+         the Calculations or Financials_Absolute tab. Only kicks in
+         when (a) a calcMap is provided (PV-tab build only) and
+         (b) we have a matching key for the (oem, metric) pair. */
+      const calcKey  = (oem && metric) ? `${oem}|${metric}` : null;
+      const absKey   = (oem && metric === "Total Sales Volume") ? `${oem}|Total Sales Volume`
+                     : (oem && metric === "Capacity (units)")    ? `${oem}|Capacity`
+                     : (oem && metric === "Capex (Rs Cr)")       ? `${oem}|Capex`
+                     : (source === "industry" && metric === "Industry PAT (Rs Cr)") ? "Industry|Industry PAT (Rs Cr)"
+                     : (source === "industry" && metric === "Average ASP (Rs Lakh)") ? "Industry|Average ASP"
+                     : (source === "industry" && metric === "Total PV Volume") ? "Industry|Industry Volume"
+                     : null;
+      const calcRow  = calcMap && calcKey && calcMap[calcKey];
+      const absRow   = absMap && absKey && absMap[absKey];
+
+      const formulas = new Array(yearCount).fill(null);
+      if (calcRow) {
+        for (let y = YEAR_START; y <= YEAR_END; y++) {
+          const fy = yearToFY(y);
+          formulas[y - YEAR_START] = `'Calculations'!${fyColLetter(fy)}${calcRow}`;
+        }
+      } else if (absRow) {
+        for (let y = YEAR_START; y <= YEAR_END; y++) {
+          const fy = yearToFY(y);
+          formulas[y - YEAR_START] = `'Financials_Absolute'!${fyColLetter(fy)}${absRow}`;
+        }
+      }
+
       for (let y = YEAR_START; y <= YEAR_END; y++) {
         const fy = yearToFY(y);
         let v = null;
@@ -141,6 +174,18 @@
         r.push(v);
       }
       sheet.addRow(r);
+      /* If the row should be formula-driven, overwrite the value
+         cells with the formula references after the addRow. Track
+         counts on ctx so Model_Checks can report. */
+      if (formulas.some(Boolean)) {
+        const last = sheet.lastRow;
+        for (let i = 0; i < yearCount; i++) {
+          if (formulas[i]) {
+            last.getCell(3 + i).value = { formula: formulas[i] };
+            if (ctx) ctx.formulaCount = (ctx.formulaCount || 0) + 1;
+          }
+        }
+      }
 
       /* Style the row — banded background + per-cell number format. */
       const last = sheet.lastRow;
@@ -165,12 +210,619 @@
   }
 
   /* ──────────────────────────────────────────
+     Financial-model layer
+     ──────────────────────────────────────────
+     Three new tabs ahead of the dashboard view:
+       1. Financials_Absolute  - absolute historical inputs
+       2. Calculations         - all dashboard ratios derived
+                                 from Financials_Absolute via
+                                 Excel formulas
+       3. Model_Checks         - validation checks
+     These let the user open any cell in the dashboard PV tab,
+     trace it back via formula precedents to the absolute number,
+     and edit the absolute to see the dashboard recompute. */
+
+  /* Year ↔ column mapping for the model tabs (FY16 = col E, ...,
+     FY26 = col O). 1=Company, 2=Statement, 3=Line Item, 4=Unit,
+     5..15=FY16..FY26, 16=Source, 17=Source URL, 18=Last Updated.
+     The Calculations + PV tabs share the same FY column layout
+     so cross-tab references stay readable. */
+  const FYS_MODEL = ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25","FY26"];
+  const FY_COL_OFFSET = 5;   // FY16 lives in column 5 (E) on Financials_Absolute
+  const fyCol = (fy) => FY_COL_OFFSET + FYS_MODEL.indexOf(fy);
+  const fyColLetter = (fy) => columnLetter(fyCol(fy));
+  function columnLetter(n) {
+    let s = "";
+    while (n > 0) { const r = (n - 1) % 26; s = String.fromCharCode(65 + r) + s; n = Math.floor((n - 1) / 26); }
+    return s;
+  }
+
+  /* Style helpers for the model tabs — distinguish raw inputs
+     (blue) from formulas (black) at a glance. */
+  const COLOUR_INPUT     = "FF1D4ED8";   // blue-700 — hardcoded raw input
+  const COLOUR_FORMULA   = "FF1F2937";   // gray-800 — formula cell
+  const COLOUR_GAP       = "FFB45309";   // amber-700 — known gap (no source yet)
+  const COLOUR_SECTION   = "FF065F46";   // emerald-700 — section header text
+  const FILL_SECTION     = "FFD1FAE5";   // emerald-100 — section header bg
+  const FILL_COMPANY     = "FFEEF2FF";   // indigo-50  — company-band bg
+  const FILL_INPUT_BG    = "FFF0F9FF";   // sky-50     — raw input cell tint
+
+  /* Per-OEM helpers to look up curated values out of the data
+     so we can pre-fill absolute inputs from what we already
+     have (Sales, PAT, Capex, Volume, Capacity, Employees,
+     Dealers). */
+  function getCM(D, co, fy, metric) {
+    const r = (D.Company_FY_Metrics || []).find(x =>
+      x.Company === co && x.FY === fy && x.Metric === metric);
+    return r && r.Value != null && r.Value !== "Pending" ? r.Value : null;
+  }
+  function getInd(D, fy, metric) {
+    const r = (D.Industry_FY_Metrics || []).find(x =>
+      x.FY === fy && x.Metric === metric);
+    return r && r.Value != null && r.Value !== "Pending" ? r.Value : null;
+  }
+  function getInfo(D, co, fy, field) {
+    const r = (D.Company_Info || []).find(x => x.Company === co && x.FY === fy);
+    if (!r) return null;
+    const v = r[field];
+    return (v === "—" || v == null || v === "") ? null : v;
+  }
+
+  /* Source label / URL for an input — pulls from raw data when
+     the metric has been curated, otherwise leaves blank. */
+  function getSource(D, co, fy, metric) {
+    const list = co === "Industry" ? D.Industry_FY_Metrics : D.Company_FY_Metrics;
+    const r = (list || []).find(x =>
+      (co === "Industry" ? true : x.Company === co) && x.FY === fy && x.Metric === metric);
+    if (!r) return { src: "", url: "", date: "" };
+    return {
+      src:  (r.Source && r.Source !== "Pending") ? r.Source : "",
+      url:  r.Source_URL || "",
+      date: r.Last_Updated || "",
+    };
+  }
+
+  /* Style a model-tab data row: blue for inputs, black for
+     formulas, amber for known gaps. */
+  function styleModelRow(row, kind) {
+    const colour = kind === "formula" ? COLOUR_FORMULA
+                 : kind === "gap"     ? COLOUR_GAP
+                 : COLOUR_INPUT;
+    const fill   = kind === "input"   ? FILL_INPUT_BG : "FFFFFFFF";
+    for (let i = FY_COL_OFFSET; i <= FY_COL_OFFSET + FYS_MODEL.length - 1; i++) {
+      const c = row.getCell(i);
+      c.font = { size: 10, color: { argb: colour }, bold: false };
+      c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: fill } };
+      c.alignment = { horizontal: "right", vertical: "middle" };
+      c.border = thinBorders();
+    }
+    /* Identifier columns (Company / Statement / Line Item / Unit) */
+    for (let i = 1; i <= 4; i++) {
+      const c = row.getCell(i);
+      c.font = { size: 10, color: { argb: "FF1F2A37" } };
+      c.alignment = { horizontal: i === 4 ? "center" : "left", vertical: "middle", indent: 1 };
+      c.border = thinBorders();
+    }
+    /* Source columns */
+    for (let i = 16; i <= 18; i++) {
+      const c = row.getCell(i);
+      c.font = { size: 9, color: { argb: "FF6B7280" } };
+      c.alignment = { horizontal: "left", vertical: "middle", wrapText: true };
+      c.border = thinBorders();
+    }
+  }
+
+  /* Add a section-header row inside Financials_Absolute or
+     Calculations (e.g. "P&L", "Balance Sheet", "Cash Flow"). */
+  function addSectionHeader(sheet, label) {
+    const row = sheet.addRow([label]);
+    sheet.mergeCells(row.number, 1, row.number, 18);
+    const c = row.getCell(1);
+    c.value = label;
+    c.font = { bold: true, size: 11, color: { argb: COLOUR_SECTION } };
+    c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: FILL_SECTION } };
+    c.alignment = { horizontal: "left", vertical: "middle", indent: 1 };
+    c.border = thinBorders();
+    row.height = 18;
+    return row;
+  }
+
+  /* Add a company-band row (one per company section) so users
+     can scan the sheet by colour. */
+  function addCompanyHeader(sheet, label) {
+    const row = sheet.addRow([label]);
+    sheet.mergeCells(row.number, 1, row.number, 18);
+    const accent = COMPANY_ACCENT[label] || { bg: FILL_COMPANY, fg: "FF312E81" };
+    const c = row.getCell(1);
+    c.value = label;
+    c.font = { bold: true, size: 12, color: { argb: accent.fg } };
+    c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: accent.bg } };
+    c.alignment = { horizontal: "left", vertical: "middle", indent: 1 };
+    c.border = thinBorders();
+    row.height = 22;
+    return row;
+  }
+
+  /* Push a financial-model line item.
+     spec = { co, statement, item, unit, kind, getValue, formula, src }
+       kind  = 'input' | 'formula' | 'gap'
+       getValue(fy) -> number | null     (used when kind='input')
+       formula(fyLetter, rowNum) -> string  (used when kind='formula')
+     Returns the row number so other formulas can reference it. */
+  function addModelRow(sheet, spec, D, numFmt) {
+    const r = [spec.co, spec.statement, spec.item, spec.unit];
+    /* Year cells: empty for now, fill below depending on kind. */
+    for (let i = 0; i < FYS_MODEL.length; i++) r.push(null);
+    /* Source columns blank; populated only for raw inputs. */
+    r.push(""); r.push(""); r.push("");
+    sheet.addRow(r);
+    const row = sheet.lastRow;
+    let bestSrc = { src: "", url: "", date: "" };
+
+    FYS_MODEL.forEach((fy, i) => {
+      const colIdx = FY_COL_OFFSET + i;
+      const c = row.getCell(colIdx);
+      if (numFmt) c.numFmt = numFmt;
+      if (spec.kind === "input") {
+        const v = spec.getValue ? spec.getValue(fy) : null;
+        if (v != null && v !== "") {
+          c.value = v;
+          /* Capture latest source label from the raw data so the
+             Source columns reflect provenance. */
+          if (spec.srcMetric && D) {
+            const s = getSource(D, spec.srcCompany || spec.co, fy, spec.srcMetric);
+            if (s.src && (!bestSrc.date || (s.date && s.date >= bestSrc.date))) bestSrc = s;
+          }
+        }
+      } else if (spec.kind === "formula") {
+        const formula = spec.formula(fy, row.number, columnLetter(colIdx));
+        if (formula) c.value = { formula };
+      }
+    });
+
+    if (bestSrc.src) {
+      row.getCell(16).value = bestSrc.src;
+      row.getCell(17).value = bestSrc.url;
+      row.getCell(18).value = bestSrc.date;
+    }
+    styleModelRow(row, spec.kind);
+    return row.number;
+  }
+
+  /* ──────────────────────────────────────────
+     Tab 1: Financials_Absolute
+     Returns a row map keyed by `${co}|${item}` so the
+     Calculations tab can build cross-tab formulas. */
+  function buildFinancialsAbsolute(wb, D) {
+    const sheet = wb.addWorksheet("Financials_Absolute", { properties: { tabColor: { argb: "FF1D4ED8" } } });
+
+    /* Header row */
+    const head = ["Company", "Statement", "Line Item", "Unit"];
+    FYS_MODEL.forEach(fy => head.push(fy));
+    head.push("Source"); head.push("Source URL"); head.push("Last Updated");
+    sheet.addRow(head);
+    const hr = sheet.getRow(1);
+    hr.height = 26;
+    hr.eachCell({ includeEmpty: false }, c => {
+      c.font = { bold: true, size: 11, color: { argb: "FFFFFFFF" } };
+      c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1E3A8A" } };
+      c.alignment = { horizontal: "center", vertical: "middle" };
+      c.border = thinBorders();
+    });
+
+    const rowMap = {};
+    const allCos = ["Industry", ...ALL_OEMS];
+
+    allCos.forEach(co => {
+      addCompanyHeader(sheet, co);
+
+      /* P&L */
+      addSectionHeader(sheet, "P&L");
+      if (co === "Industry") {
+        rowMap[`${co}|Industry PAT (Rs Cr)`] = addModelRow(sheet, {
+          co, statement: "P&L", item: "Industry PAT", unit: "₹ Cr", kind: "input",
+          getValue: (fy) => getInd(D, fy, "Industry PAT (Rs Cr)"),
+          srcMetric: "Industry PAT (Rs Cr)", srcCompany: "Industry",
+        }, D, '#,##0');
+        rowMap[`${co}|Average ASP`] = addModelRow(sheet, {
+          co, statement: "P&L", item: "Average ASP", unit: "₹ Lakh", kind: "input",
+          getValue: (fy) => getInd(D, fy, "Average ASP (Rs Lakh)"),
+          srcMetric: "Average ASP (Rs Lakh)", srcCompany: "Industry",
+        }, D, '0.00');
+      } else {
+        rowMap[`${co}|Revenue`] = addModelRow(sheet, {
+          co, statement: "P&L", item: "Revenue / Net Sales", unit: "₹ Cr", kind: "input",
+          getValue: (fy) => getCM(D, co, fy, "Net Sales (Rs Cr)") ?? null,
+          srcMetric: "Net Sales (Rs Cr)", srcCompany: co,
+        }, D, '#,##0');
+        rowMap[`${co}|EBITDA`] = addModelRow(sheet, {
+          co, statement: "P&L", item: "EBITDA", unit: "₹ Cr", kind: "formula",
+          formula: (fy) => {
+            const rev = `${fyColLetter(fy)}${rowMap[`${co}|Revenue`]}`;
+            const margin = `'PctInputs'!${fyColLetter(fy)}${(rowMap[`${co}|EBITDA Margin %_input`] || 0)}`;
+            return rowMap[`${co}|EBITDA Margin %_input`]
+              ? `IFERROR(${rev}*${margin}/100,"")`
+              : "";
+          },
+        }, D, '#,##0');
+        rowMap[`${co}|PAT`] = addModelRow(sheet, {
+          co, statement: "P&L", item: "PAT", unit: "₹ Cr", kind: "input",
+          getValue: (fy) => {
+            /* PAT can be back-derived from PAT Margin % × Revenue
+               where we don't have absolute. We have Maruti from
+               curated, M&M from Screener raw_extracts (not in
+               company_fy_metrics). For now treat as input where
+               available. */
+            const rev = getCM(D, co, fy, "Net Sales (Rs Cr)");
+            const patM = getCM(D, co, fy, "PAT Margin %");
+            if (rev != null && patM != null) return Math.round(rev * patM / 100);
+            return null;
+          },
+          srcMetric: "PAT Margin %", srcCompany: co,
+        }, D, '#,##0');
+
+        /* Balance Sheet */
+        addSectionHeader(sheet, "Balance Sheet");
+        rowMap[`${co}|Working Capital`] = addModelRow(sheet, {
+          co, statement: "BS", item: "Working Capital", unit: "₹ Cr", kind: "formula",
+          formula: (fy) => {
+            const rev   = `${fyColLetter(fy)}${rowMap[`${co}|Revenue`]}`;
+            const wcRow = rowMap[`${co}|WC Days_input`];
+            return wcRow ? `IFERROR('PctInputs'!${fyColLetter(fy)}${wcRow}*${rev}/365,"")` : "";
+          },
+        }, D, '#,##0');
+        rowMap[`${co}|Net Debt`] = addModelRow(sheet, {
+          co, statement: "BS", item: "Net Debt", unit: "₹ Cr", kind: "gap",
+        }, D, '#,##0');
+        rowMap[`${co}|Net Worth / Equity`] = addModelRow(sheet, {
+          co, statement: "BS", item: "Net Worth / Equity", unit: "₹ Cr", kind: "gap",
+        }, D, '#,##0');
+
+        /* Cash Flow */
+        addSectionHeader(sheet, "Cash Flow");
+        rowMap[`${co}|CFO`] = addModelRow(sheet, {
+          co, statement: "CF", item: "CFO (Cash from Operations)", unit: "₹ Cr", kind: "gap",
+        }, D, '#,##0');
+        rowMap[`${co}|Capex`] = addModelRow(sheet, {
+          co, statement: "CF", item: "Capex", unit: "₹ Cr", kind: "input",
+          getValue: (fy) => getCM(D, co, fy, "Capex (Rs Cr)"),
+          srcMetric: "Capex (Rs Cr)", srcCompany: co,
+        }, D, '#,##0');
+        rowMap[`${co}|Free Cash Flow`] = addModelRow(sheet, {
+          co, statement: "CF", item: "Free Cash Flow", unit: "₹ Cr", kind: "formula",
+          formula: (fy) => {
+            const cfo   = `${fyColLetter(fy)}${rowMap[`${co}|CFO`]}`;
+            const capex = `${fyColLetter(fy)}${rowMap[`${co}|Capex`]}`;
+            return `IFERROR(${cfo}-${capex},"")`;
+          },
+        }, D, '#,##0');
+      }
+
+      /* Operating absolute metrics */
+      addSectionHeader(sheet, "Operating");
+      if (co === "Industry") {
+        rowMap[`${co}|Industry Volume`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "Industry PV Volume", unit: "units", kind: "input",
+          getValue: (fy) => getInd(D, fy, "Total PV Volume"),
+          srcMetric: "Total PV Volume", srcCompany: "Industry",
+        }, D, '#,##0');
+      } else {
+        rowMap[`${co}|Total Sales Volume`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "Total Sales Volume", unit: "units", kind: "input",
+          getValue: (fy) => getCM(D, co, fy, "Total Sales Volume"),
+          srcMetric: "Total Sales Volume", srcCompany: co,
+        }, D, '#,##0');
+        rowMap[`${co}|Domestic Volume`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "Domestic Volume", unit: "units", kind: "formula",
+          formula: (fy) => {
+            const tot = `${fyColLetter(fy)}${rowMap[`${co}|Total Sales Volume`]}`;
+            const exp = rowMap[`${co}|Export Volume %_input`];
+            return exp ? `IFERROR(${tot}*(1-'PctInputs'!${fyColLetter(fy)}${exp}/100),"")` : tot;
+          },
+        }, D, '#,##0');
+        rowMap[`${co}|Export Volume`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "Export Volume", unit: "units", kind: "formula",
+          formula: (fy) => {
+            const tot = `${fyColLetter(fy)}${rowMap[`${co}|Total Sales Volume`]}`;
+            const exp = rowMap[`${co}|Export Volume %_input`];
+            return exp ? `IFERROR(${tot}*'PctInputs'!${fyColLetter(fy)}${exp}/100,"")` : "";
+          },
+        }, D, '#,##0');
+        rowMap[`${co}|EV Volume`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "EV Volume", unit: "units", kind: "formula",
+          formula: (fy) => {
+            const tot = `${fyColLetter(fy)}${rowMap[`${co}|Total Sales Volume`]}`;
+            const ev  = rowMap[`${co}|EV Volume %_input`];
+            return ev ? `IFERROR(${tot}*'PctInputs'!${fyColLetter(fy)}${ev}/100,"")` : "";
+          },
+        }, D, '#,##0');
+        rowMap[`${co}|SUV Volume`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "SUV Volume", unit: "units", kind: "formula",
+          formula: (fy) => {
+            const tot = `${fyColLetter(fy)}${rowMap[`${co}|Total Sales Volume`]}`;
+            const suv = rowMap[`${co}|SUV Volume %_input`];
+            return suv ? `IFERROR(${tot}*'PctInputs'!${fyColLetter(fy)}${suv}/100,"")` : "";
+          },
+        }, D, '#,##0');
+        rowMap[`${co}|Capacity`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "Capacity", unit: "units", kind: "input",
+          getValue: (fy) => getCM(D, co, fy, "Capacity (units)"),
+          srcMetric: "Capacity (units)", srcCompany: co,
+        }, D, '#,##0');
+        rowMap[`${co}|Employees`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "Employees", unit: "count", kind: "input",
+          getValue: (fy) => getInfo(D, co, fy, "Employees"),
+        }, D, '#,##0');
+        rowMap[`${co}|Dealers`] = addModelRow(sheet, {
+          co, statement: "OPS", item: "Dealers", unit: "count", kind: "input",
+          getValue: (fy) => getInfo(D, co, fy, "Dealers"),
+        }, D, '#,##0');
+      }
+    });
+
+    /* Column widths */
+    sheet.getColumn(1).width = 16;
+    sheet.getColumn(2).width = 11;
+    sheet.getColumn(3).width = 28;
+    sheet.getColumn(4).width = 8;
+    for (let i = FY_COL_OFFSET; i <= FY_COL_OFFSET + FYS_MODEL.length - 1; i++) sheet.getColumn(i).width = 13;
+    sheet.getColumn(16).width = 50;
+    sheet.getColumn(17).width = 30;
+    sheet.getColumn(18).width = 13;
+    sheet.views = [{ state: "frozen", xSplit: 4, ySplit: 1 }];
+
+    return rowMap;
+  }
+
+  /* ──────────────────────────────────────────
+     Tab 1.5: PctInputs (raw % inputs)
+     The percentages we have only as ratios (not absolutes) live
+     here so derived absolutes in Financials_Absolute can reference
+     them without polluting that tab. Returns row map. */
+  function buildPctInputs(wb, D) {
+    const sheet = wb.addWorksheet("PctInputs", { properties: { tabColor: { argb: "FF0EA5E9" } } });
+
+    const head = ["Company", "Statement", "Line Item", "Unit"];
+    FYS_MODEL.forEach(fy => head.push(fy));
+    head.push("Source"); head.push("Source URL"); head.push("Last Updated");
+    sheet.addRow(head);
+    const hr = sheet.getRow(1);
+    hr.height = 26;
+    hr.eachCell({ includeEmpty: false }, c => {
+      c.font = { bold: true, size: 11, color: { argb: "FFFFFFFF" } };
+      c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF0369A1" } };
+      c.alignment = { horizontal: "center", vertical: "middle" };
+      c.border = thinBorders();
+    });
+
+    const rowMap = {};
+    ALL_OEMS.forEach(co => {
+      addCompanyHeader(sheet, co);
+      const pct = (item, metric) => {
+        rowMap[`${co}|${metric}_input`] = addModelRow(sheet, {
+          co, statement: "PCT", item, unit: "%", kind: "input",
+          getValue: (fy) => getCM(D, co, fy, metric),
+          srcMetric: metric, srcCompany: co,
+        }, D, '0.00');
+      };
+      /* Margin / ratio inputs the dashboard publishes as %.
+         These are 'Source Percentage Input' per the spec. */
+      pct("Gross Margin %",       "Gross Margin %");
+      pct("EBITDA Margin %",      "EBITDA Margin %");
+      pct("PAT Margin %",         "PAT Margin %");
+      pct("Capex Intensity %",    "Capex Intensity %");
+      pct("WC Days",              "Working Capital Days");
+      pct("Capacity Utilisation %", "Capacity Utilisation %");
+      pct("Export Volume %",      "Export Volume %");
+      pct("EV Volume %",          "EV Volume %");
+      pct("SUV Volume %",         "SUV Volume %");
+      pct("Export Revenue %",     "Export Revenue %");
+      pct("EV Revenue %",         "EV Revenue %");
+      pct("SUV Revenue %",        "SUV Revenue %");
+      pct("Market Share %",       "Market Share %");
+    });
+
+    sheet.getColumn(1).width = 16;
+    sheet.getColumn(2).width = 8;
+    sheet.getColumn(3).width = 26;
+    sheet.getColumn(4).width = 8;
+    for (let i = FY_COL_OFFSET; i <= FY_COL_OFFSET + FYS_MODEL.length - 1; i++) sheet.getColumn(i).width = 11;
+    sheet.getColumn(16).width = 50;
+    sheet.getColumn(17).width = 30;
+    sheet.getColumn(18).width = 13;
+    sheet.views = [{ state: "frozen", xSplit: 4, ySplit: 1 }];
+
+    return rowMap;
+  }
+
+  /* ──────────────────────────────────────────
+     Tab 2: Calculations
+     Every dashboard ratio derived as an Excel formula referencing
+     Financials_Absolute (and PctInputs where we only have %).
+     Returns row map keyed by `${co}|${dashboardMetric}`. */
+  function buildCalculations(wb, D, absMap) {
+    const sheet = wb.addWorksheet("Calculations", { properties: { tabColor: { argb: "FF059669" } } });
+
+    const head = ["Company", "Statement", "Line Item", "Unit"];
+    FYS_MODEL.forEach(fy => head.push(fy));
+    head.push("Source"); head.push("Source URL"); head.push("Last Updated");
+    sheet.addRow(head);
+    const hr = sheet.getRow(1);
+    hr.height = 26;
+    hr.eachCell({ includeEmpty: false }, c => {
+      c.font = { bold: true, size: 11, color: { argb: "FFFFFFFF" } };
+      c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF065F46" } };
+      c.alignment = { horizontal: "center", vertical: "middle" };
+      c.border = thinBorders();
+    });
+
+    const calcMap = {};
+    const FA = "'Financials_Absolute'!";
+    const PI = "'PctInputs'!";
+    const yoyShift = (fy) => {
+      const i = FYS_MODEL.indexOf(fy);
+      return i > 0 ? FYS_MODEL[i - 1] : null;
+    };
+
+    ALL_OEMS.forEach(co => {
+      addCompanyHeader(sheet, co);
+      addSectionHeader(sheet, "Growth");
+
+      calcMap[`${co}|Revenue Growth %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Revenue Growth %", unit: "%", kind: "formula",
+        formula: (fy) => {
+          const prev = yoyShift(fy); if (!prev) return "";
+          const cur  = `${FA}${fyColLetter(fy)}${absMap[`${co}|Revenue`]}`;
+          const pre  = `${FA}${fyColLetter(prev)}${absMap[`${co}|Revenue`]}`;
+          return `IFERROR((${cur}/${pre}-1)*100,"")`;
+        },
+      }, D, '0.00"%"');
+
+      calcMap[`${co}|Volume Growth %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Volume Growth %", unit: "%", kind: "formula",
+        formula: (fy) => {
+          const prev = yoyShift(fy); if (!prev) return "";
+          const cur  = `${FA}${fyColLetter(fy)}${absMap[`${co}|Total Sales Volume`]}`;
+          const pre  = `${FA}${fyColLetter(prev)}${absMap[`${co}|Total Sales Volume`]}`;
+          return `IFERROR((${cur}/${pre}-1)*100,"")`;
+        },
+      }, D, '0.00"%"');
+
+      calcMap[`${co}|Realisation Growth %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Realisation Growth %", unit: "%", kind: "formula",
+        formula: (fy) => {
+          const r = calcMap[`${co}|Revenue Growth %`];
+          const v = calcMap[`${co}|Volume Growth %`];
+          const rg = `${fyColLetter(fy)}${r}`;
+          const vg = `${fyColLetter(fy)}${v}`;
+          return `IFERROR(((1+${rg}/100)/(1+${vg}/100)-1)*100,"")`;
+        },
+      }, D, '0.00"%"');
+
+      addSectionHeader(sheet, "Margins");
+      calcMap[`${co}|Gross Margin %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Gross Margin %", unit: "%", kind: "formula",
+        formula: (fy) => `${PI}${fyColLetter(fy)}${absMap[`${co}|Gross Margin %_input`] || ""}`,
+      }, D, '0.00"%"');
+      calcMap[`${co}|EBITDA Margin %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "EBITDA Margin %", unit: "%", kind: "formula",
+        formula: (fy) => `${PI}${fyColLetter(fy)}${absMap[`${co}|EBITDA Margin %_input`] || ""}`,
+      }, D, '0.00"%"');
+      calcMap[`${co}|PAT Margin %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "PAT Margin %", unit: "%", kind: "formula",
+        formula: (fy) => {
+          const pat = `${FA}${fyColLetter(fy)}${absMap[`${co}|PAT`]}`;
+          const rev = `${FA}${fyColLetter(fy)}${absMap[`${co}|Revenue`]}`;
+          return `IFERROR(${pat}/${rev}*100,"")`;
+        },
+      }, D, '0.00"%"');
+
+      addSectionHeader(sheet, "Capital");
+      calcMap[`${co}|Capex Intensity %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Capex Intensity %", unit: "%", kind: "formula",
+        formula: (fy) => {
+          const cx  = `${FA}${fyColLetter(fy)}${absMap[`${co}|Capex`]}`;
+          const rev = `${FA}${fyColLetter(fy)}${absMap[`${co}|Revenue`]}`;
+          return `IFERROR(${cx}/${rev}*100,"")`;
+        },
+      }, D, '0.00"%"');
+      calcMap[`${co}|Working Capital Days`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Working Capital Days", unit: "days", kind: "formula",
+        formula: (fy) => `${PI}${fyColLetter(fy)}${absMap[`${co}|WC Days_input`] || ""}`,
+      }, D, '0');
+      calcMap[`${co}|Capacity Utilisation %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Capacity Utilisation %", unit: "%", kind: "formula",
+        formula: (fy) => {
+          const v = `${FA}${fyColLetter(fy)}${absMap[`${co}|Total Sales Volume`]}`;
+          const k = `${FA}${fyColLetter(fy)}${absMap[`${co}|Capacity`]}`;
+          return `IFERROR(${v}/${k}*100,"")`;
+        },
+      }, D, '0.00"%"');
+
+      addSectionHeader(sheet, "Mix Ratios");
+      calcMap[`${co}|Export Volume %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Export Volume %", unit: "%", kind: "formula",
+        formula: (fy) => `${PI}${fyColLetter(fy)}${absMap[`${co}|Export Volume %_input`] || ""}`,
+      }, D, '0.00"%"');
+      calcMap[`${co}|EV Volume %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "EV Volume %", unit: "%", kind: "formula",
+        formula: (fy) => `${PI}${fyColLetter(fy)}${absMap[`${co}|EV Volume %_input`] || ""}`,
+      }, D, '0.00"%"');
+      calcMap[`${co}|SUV Volume %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "SUV Volume %", unit: "%", kind: "formula",
+        formula: (fy) => `${PI}${fyColLetter(fy)}${absMap[`${co}|SUV Volume %_input`] || ""}`,
+      }, D, '0.00"%"');
+      calcMap[`${co}|Market Share %`] = addModelRow(sheet, {
+        co, statement: "DRV", item: "Market Share %", unit: "%", kind: "formula",
+        formula: (fy) => `${PI}${fyColLetter(fy)}${absMap[`${co}|Market Share %_input`] || ""}`,
+      }, D, '0.00"%"');
+    });
+
+    sheet.getColumn(1).width = 16;
+    sheet.getColumn(2).width = 8;
+    sheet.getColumn(3).width = 26;
+    sheet.getColumn(4).width = 8;
+    for (let i = FY_COL_OFFSET; i <= FY_COL_OFFSET + FYS_MODEL.length - 1; i++) sheet.getColumn(i).width = 12;
+    sheet.getColumn(16).width = 50;
+    sheet.getColumn(17).width = 30;
+    sheet.getColumn(18).width = 13;
+    sheet.views = [{ state: "frozen", xSplit: 4, ySplit: 1 }];
+
+    return calcMap;
+  }
+
+  /* ──────────────────────────────────────────
+     Tab N: Model_Checks
+     Light validation that the dashboard equals the calculation
+     layer for a few sentinel metrics. */
+  function buildModelChecks(wb, calcMap, pvMap) {
+    const sheet = wb.addWorksheet("Model_Checks", { properties: { tabColor: { argb: "FFB45309" } } });
+    sheet.addRow(["Check", "Detail", "Result"]);
+    const hr = sheet.getRow(1);
+    hr.eachCell({ includeEmpty: false }, c => {
+      c.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF92400E" } };
+      c.alignment = { horizontal: "left" };
+      c.border = thinBorders();
+    });
+    const checks = [
+      ["FY count", "FY16-FY26 = 11 columns", FYS_MODEL.length === 11 ? "OK" : "FAIL"],
+      ["Calculations tab", "Has Maruti Revenue Growth %", calcMap["Maruti|Revenue Growth %"] ? "OK" : "FAIL"],
+      ["Calculations tab", "Has Hyundai PAT Margin %", calcMap["Hyundai|PAT Margin %"] ? "OK" : "FAIL"],
+      ["Calculations tab", "Has M&M Capex Intensity %", calcMap["M&M|Capex Intensity %"] ? "OK" : "FAIL"],
+      ["Calculations tab", "Has Tata Capacity Utilisation %", calcMap["Tata Motors PV|Capacity Utilisation %"] ? "OK" : "FAIL"],
+      ["PV tab", "References Calculations for Revenue Growth %", pvMap.formulaCount > 0 ? "OK" : "FAIL"],
+      ["Formula count on PV", "Total formula cells emitted into PV from Calculations", String(pvMap.formulaCount || 0)],
+    ];
+    checks.forEach(c => {
+      sheet.addRow(c);
+      const row = sheet.lastRow;
+      row.eachCell({ includeEmpty: false }, cell => {
+        cell.alignment = { horizontal: "left", vertical: "middle" };
+        cell.border = thinBorders();
+      });
+      const result = row.getCell(3);
+      if (result.value === "OK") result.font = { bold: true, color: { argb: "FF065F46" } };
+      else if (result.value === "FAIL") result.font = { bold: true, color: { argb: "FFB91C1C" } };
+    });
+    sheet.getColumn(1).width = 24;
+    sheet.getColumn(2).width = 60;
+    sheet.getColumn(3).width = 14;
+    sheet.views = [{ state: "frozen", ySplit: 1 }];
+  }
+
+  /* ──────────────────────────────────────────
      Sheet builders
      ────────────────────────────────────────── */
 
-  function buildPV(wb, D) {
+  function buildPV(wb, D, models) {
     const sheet = wb.addWorksheet("PV", { properties: { tabColor: { argb: PURPLE } } });
     const yearCount = YEAR_END - YEAR_START + 1;
+    /* ctx threads the formula maps through appendBlock so PV cells
+       become live formulas referencing Calculations / Financials_Absolute. */
+    const ctx = { calcMap: (models && models.calcMap) || null,
+                  absMap:  (models && models.absMap)  || null,
+                  formulaCount: 0 };
 
     /* Header row */
     const head = ["COMPANY NAME", "METRIC"];
@@ -217,7 +869,7 @@
       .filter(m => !indCovered.has(m))
       .sort()
       .map(m => ({ label: m, source: "industry", metric: m }));
-    appendBlock(sheet, "Industry", [...INDUSTRY_ROWS, ...indExtras], null, D);
+    appendBlock(sheet, "Industry", [...INDUSTRY_ROWS, ...indExtras], null, D, ctx);
 
     /* ── Per-OEM blocks ── */
     const OEM_ROWS = [
@@ -274,7 +926,7 @@
         .filter(m => !oemCovered.has(m) && !COMPANY_INFO_OVERLAP.has(m))
         .sort()
         .map(m => ({ label: m, source: "company", metric: m }));
-      appendBlock(sheet, co.toUpperCase(), [...OEM_ROWS, ...extras], co, D);
+      appendBlock(sheet, co.toUpperCase(), [...OEM_ROWS, ...extras], co, D, ctx);
     });
 
     /* Column widths — sized so the longest content fits without
@@ -302,11 +954,14 @@
 
     sheet.views = [{ state: "frozen", xSplit: 2, ySplit: 1 }];
     sheet.properties.defaultRowHeight = 16;
+    return ctx;
   }
 
   function buildSources(wb, D) {
     const sheet = wb.addWorksheet("Sources");
-    sheet.addRow(["Company", "FY", "Metric", "Value", "YoY_Change", "Signal", "Source", "Source_URL", "Last_Updated"]);
+    /* Type column added per the financial-model spec: 'Raw Input',
+       'Derived Formula', 'Manual Text Input', 'Source Percentage Input'. */
+    sheet.addRow(["Company", "FY", "Metric", "Value", "Unit", "Type", "Source", "Source_URL", "Last_Updated", "Notes"]);
     const hr = sheet.getRow(1);
     hr.font = { bold: true, color: { argb: "FFFFFFFF" } };
     hr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: PURPLE } };
@@ -319,20 +974,47 @@
     ];
     const fyIdx = (fy) => D.FYS_FULL.indexOf(fy);
     all.sort((a, b) => (a.Company || "").localeCompare(b.Company || "") || fyIdx(a.FY) - fyIdx(b.FY));
+    /* Classify each metric per the spec's typology so analysts can
+       filter the Sources tab by 'Raw Input' vs 'Source Percentage
+       Input' vs 'Manual Text Input'. */
+    const ABS_INPUTS = new Set([
+      "Net Sales (Rs Cr)", "Capex (Rs Cr)", "Capacity (units)",
+      "Total Sales Volume", "Total PV Volume", "Industry PAT (Rs Cr)",
+      "Average ASP (Rs Lakh)",
+    ]);
+    const TEXT_METRICS = new Set([
+      "Top Selling Model", "Top Gaining OEM", "CEO", "CFO", "COO", "Credit_Rating",
+    ]);
+    const classify = (metric) => {
+      if (ABS_INPUTS.has(metric)) return "Raw Input";
+      if (TEXT_METRICS.has(metric)) return "Manual Text Input";
+      if (/%$/.test(metric || "") || /Days$/.test(metric || "")) return "Source Percentage Input";
+      return "Raw Input";
+    };
+    const unitFor = (metric) => {
+      if (/%$/.test(metric)) return "%";
+      if (/Days$/.test(metric)) return "days";
+      if (/\(Rs Cr\)/.test(metric)) return "₹ Cr";
+      if (/\(Rs Lakh\)/.test(metric)) return "₹ Lakh";
+      if (/Volume$|Capacity/.test(metric)) return "units";
+      if (/Stock Price/.test(metric)) return "₹";
+      return "";
+    };
     all.forEach((r) => {
       sheet.addRow([
         r.Company || "Industry",
         r.FY || null,
         r.Metric || null,
         (r.Value === "Pending" || r.Value === undefined) ? null : r.Value,
-        r.YoY_Change == null ? null : r.YoY_Change,
-        r.Signal || null,
+        unitFor(r.Metric || ""),
+        classify(r.Metric || ""),
         (r.Source && r.Source !== "Pending") ? r.Source : null,
         r.Source_URL || null,
         r.Last_Updated || null,
+        "",
       ]);
     });
-    sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: sheet.rowCount, column: 9 } };
+    sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: sheet.rowCount, column: 10 } };
     sheet.views = [{ state: "frozen", ySplit: 1 }];
     sheet.columns.forEach((col) => {
       let max = 8;
@@ -424,9 +1106,19 @@
       wb.created = new Date();
       wb.title   = "PV Industry Dashboard Export";
 
-      buildPV(wb, D);
+      /* Build the financial-model layer first so the dashboard PV
+         tab can reference it via formulas. Order of sheets in the
+         workbook = order of buildXxx calls. */
+      const absMap   = buildFinancialsAbsolute(wb, D);
+      const pctMap   = buildPctInputs(wb, D);
+      /* Merge maps so Calculations can resolve both absolute rows
+         (Revenue, Capex, Volume) and % inputs (Margins, Days). */
+      const mergedAbsMap = Object.assign({}, absMap, pctMap);
+      const calcMap  = buildCalculations(wb, D, mergedAbsMap);
+      const pvCtx    = buildPV(wb, D, { calcMap, absMap });
       buildSources(wb, D);
       buildDictionary(wb, D);
+      buildModelChecks(wb, calcMap, pvCtx);
 
       const buffer = await wb.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
