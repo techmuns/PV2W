@@ -98,23 +98,60 @@ function distill(html) {
   const pl = parseSection(html, 'profit-loss');
   if (!pl) { out.problems.push('no profit-loss section'); return out; }
   const fys = pl.yearCols.map(colToFY);
-  const sales = findRow(pl.rows, 'sales');
-  const opm   = findRow(pl.rows, 'opm');
-  const np    = findRow(pl.rows, 'net profit');
+  const sales        = findRow(pl.rows, 'sales');
+  const expenses     = findRow(pl.rows, 'expenses');
+  const opProfit     = findRow(pl.rows, 'operating profit');
+  const opm          = findRow(pl.rows, 'opm');
+  const interest     = findRow(pl.rows, 'interest');
+  const depreciation = findRow(pl.rows, 'depreciation');
+  const pbt          = findRow(pl.rows, 'profit before tax');
+  const taxPct       = findRow(pl.rows, 'tax %');
+  const np           = findRow(pl.rows, 'net profit');
   fys.forEach((fy, i) => {
     if (!fy) return;
-    if (sales) setVal(fy, 'sales_cr',          toNum(sales.values[i]));
-    if (opm)   setVal(fy, 'ebitda_margin_pct', toNum(opm.values[i]));
-    if (np)    setVal(fy, 'pat_cr',            toNum(np.values[i]));
+    if (sales)        setVal(fy, 'sales_cr',          toNum(sales.values[i]));
+    if (expenses)     setVal(fy, 'expenses_cr',       toNum(expenses.values[i]));
+    if (opProfit)     setVal(fy, 'ebitda_cr',         toNum(opProfit.values[i]));
+    if (opm)          setVal(fy, 'ebitda_margin_pct', toNum(opm.values[i]));
+    if (interest)     setVal(fy, 'interest_cr',       toNum(interest.values[i]));
+    if (depreciation) setVal(fy, 'depreciation_cr',   toNum(depreciation.values[i]));
+    if (pbt)          setVal(fy, 'pbt_cr',            toNum(pbt.values[i]));
+    if (taxPct)       setVal(fy, 'tax_pct',           toNum(taxPct.values[i]));
+    if (np)           setVal(fy, 'pat_cr',            toNum(np.values[i]));
   });
+
+  /* Balance sheet — Equity, Reserves, Borrowings, Total Assets. */
+  const bs = parseSection(html, 'balance-sheet');
+  if (bs) {
+    const bsFys = bs.yearCols.map(colToFY);
+    const equity   = findRow(bs.rows, 'equity capital');
+    const reserves = findRow(bs.rows, 'reserves');
+    const borrow   = findRow(bs.rows, 'borrowings');
+    const fixed    = findRow(bs.rows, 'fixed assets');
+    const inv      = findRow(bs.rows, 'investments');
+    const totalAst = findRow(bs.rows, 'total assets');
+    bsFys.forEach((fy, i) => {
+      if (!fy) return;
+      if (equity)    setVal(fy, 'equity_capital_cr', toNum(equity.values[i]));
+      if (reserves)  setVal(fy, 'reserves_cr',       toNum(reserves.values[i]));
+      if (borrow)    setVal(fy, 'borrowings_cr',     toNum(borrow.values[i]));
+      if (fixed)     setVal(fy, 'fixed_assets_cr',   toNum(fixed.values[i]));
+      if (inv)       setVal(fy, 'investments_cr',    toNum(inv.values[i]));
+      if (totalAst)  setVal(fy, 'total_assets_cr',   toNum(totalAst.values[i]));
+    });
+  }
 
   const cf = parseSection(html, 'cash-flow');
   if (cf) {
     const cfFys = cf.yearCols.map(colToFY);
-    const inv = findRow(cf.rows, 'investing');
+    const op   = findRow(cf.rows, 'operating');
+    const inv  = findRow(cf.rows, 'investing');
+    const fin  = findRow(cf.rows, 'financing');
     cfFys.forEach((fy, i) => {
       if (!fy) return;
+      if (op)  setVal(fy, 'cfo_cr',       toNum(op.values[i]));
       if (inv) setVal(fy, 'investing_cr', toNum(inv.values[i]));
+      if (fin) setVal(fy, 'cff_cr',       toNum(fin.values[i]));
     });
   }
   return out;

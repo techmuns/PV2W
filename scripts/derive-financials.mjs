@@ -122,6 +122,26 @@ function main() {
       apply('PAT Margin %',      patMargin);
       apply('Capex (Rs Cr)',     capex);
       apply('Capex Intensity %', capexIntens);
+
+      /* Push richer Screener line items into placeholder_data so the
+         Excel Absolute_Numbers tab renders real values instead of
+         NA. Each is stored as a new metric on company_fy_metrics. */
+      apply('Net Sales (Rs Cr)',           sales);
+      apply('EBITDA (Rs Cr)',              vals.ebitda_cr);
+      apply('Interest (Rs Cr)',            vals.interest_cr);
+      apply('Depreciation (Rs Cr)',        vals.depreciation_cr);
+      apply('PBT (Rs Cr)',                 vals.pbt_cr);
+      apply('Net Profit (Rs Cr)',          pat);
+      apply('Equity Capital (Rs Cr)',      vals.equity_capital_cr);
+      apply('Reserves (Rs Cr)',            vals.reserves_cr);
+      apply('Borrowings (Rs Cr)',          vals.borrowings_cr);
+      apply('Total Assets (Rs Cr)',        vals.total_assets_cr);
+      apply('Net Worth (Rs Cr)',
+        (vals.equity_capital_cr != null && vals.reserves_cr != null)
+          ? vals.equity_capital_cr + vals.reserves_cr : null);
+      apply('CFO (Rs Cr)',                 vals.cfo_cr);
+      apply('Cash from Investing (Rs Cr)', vals.investing_cr);
+      apply('Cash from Financing (Rs Cr)', vals.cff_cr);
     }
   }
 
