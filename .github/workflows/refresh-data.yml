@@ -123,6 +123,21 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-hyundai-screener.mjs
 
+      - name: Tickertape balance-sheet sub-lines (best-effort)
+        id: tickertape
+        continue-on-error: true
+        run: node scripts/fetch-tickertape.mjs
+
+      - name: Trendlyne balance-sheet sub-lines (best-effort)
+        id: trendlyne
+        continue-on-error: true
+        run: node scripts/fetch-trendlyne.mjs
+
+      - name: Moneycontrol balance-sheet sub-lines (best-effort)
+        id: moneycontrol
+        continue-on-error: true
+        run: node scripts/fetch-moneycontrol.mjs
+
       - name: Derive PAT Margin / Capex / Capex Intensity from Screener raw extracts
         id: derive_financials
         continue-on-error: true
