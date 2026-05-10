@@ -471,7 +471,7 @@
           <div class="flex items-center gap-2 mt-0.5">
             <span class="text-[11.5px] ${deltaClass} tabular-nums font-semibold">${deltaDisplay}</span>
             <span class="text-[10px] text-inkMuted">YoY</span>
-            ${stalePending ? '<span class="ml-auto text-[9px] text-warn bg-warnSoft px-1.5 py-0.5 rounded font-medium">Pending</span>' : ''}
+            ${stalePending ? '<span class="ml-auto text-[9px] text-warn bg-warnSoft px-1.5 py-0.5 rounded font-medium">Source TBC</span>' : ''}
           </div>
         </div>`;
     }).join("");
@@ -1545,7 +1545,7 @@
     }
     const bs = getBuySide(state.fy, state.company);
     if (!bs) {
-      box.innerHTML = `<div class="text-xs text-inkMuted py-6 text-center">Data pending for ${state.company} — ${state.fy}</div>`;
+      box.innerHTML = `<div class="text-xs text-inkMuted py-6 text-center">No metrics tracked for ${state.company} in ${state.fy} from primary sources yet.</div>`;
       return;
     }
     const rows = [
@@ -1674,7 +1674,7 @@
               }">${placeholder || r.YoY_Growth === null ? "—" : fmtDelta(r.YoY_Growth, "%")}</span>
             </div>
             ${placeholder
-              ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Data pending</div>`
+              ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Source TBC</div>`
               : (fresh === "Stale"
                   ? `<div class="text-[9.5px] text-warn bg-warnSoft mt-2 px-1.5 py-0.5 rounded inline-block font-medium">Stale</div>`
                   : "")}
@@ -1901,7 +1901,7 @@
         changeHtml,
         readHtml: readPill(sig),
         trendable: spec.trend && D.TREND_METRICS.has(spec.metric),
-        sourceText: rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Source pending",
+        sourceText: rCurr && rCurr.Source && rCurr.Source !== "Pending" ? rCurr.Source : "Primary source — see Sources tab",
       };
     });
 
@@ -2038,7 +2038,7 @@
     const info = getCompanyInfo(state.fy, state.company);
     const card = $("#governance-card");
     if (!info) {
-      card.innerHTML = `<div class="text-sm text-inkMuted">Governance data pending for ${state.company} — ${state.fy}</div>`;
+      card.innerHTML = `<div class="text-sm text-inkMuted">Governance from primary sources — ${state.company} ${state.fy} disclosure not yet linked.</div>`;
       return;
     }
     /* Network metrics (Dealers / Employees) live alongside KMP roles
@@ -2077,7 +2077,7 @@
     const w = 720, h = 320, padL = 50, padR = 22, padT = 18, padB = 32;
 
     const allVals = [...values, ...(benchValues || [])].filter(v => v !== null && v !== undefined);
-    if (!allVals.length) return `<div class="text-sm text-inkMuted py-10 text-center">Data pending from agents.</div>`;
+    if (!allVals.length) return `<div class="text-sm text-inkMuted py-10 text-center">No history available from primary sources yet.</div>`;
     let yMin = Math.min(...allVals, 0), yMax = Math.max(...allVals, 1);
     const span = yMax - yMin || 1;
     yMin -= span * 0.10; yMax += span * 0.18;
@@ -2212,7 +2212,7 @@
     $("#modal-context").textContent = `Selected FY ${state.fy} · YoY base ${prevFY(state.fy) || "—"}`;
 
     if (!valued.length) {
-      $("#modal-chart").innerHTML = `<div class="text-sm text-inkMuted py-10 text-center">Data pending from agents.</div>`;
+      $("#modal-chart").innerHTML = `<div class="text-sm text-inkMuted py-10 text-center">No history available from primary sources yet.</div>`;
       $("#modal-chart-title").textContent = "";
       $("#modal-chart-sub").textContent   = "";
       $("#modal-chart-legend").innerHTML  = "";
@@ -2411,7 +2411,7 @@
     }
 
     $("#vmodal-title").textContent   = `${vehicleName} — ${company}`;
-    const segLabel = current && current.Segment ? current.Segment : "Segment pending";
+    const segLabel = current && current.Segment ? current.Segment : "Segment not classified";
     const rankLbl  = current && current.Segment_Rank ? `· #${current.Segment_Rank} in segment` : "";
     $("#vmodal-context").textContent = `${segLabel} ${rankLbl} · Selected FY ${state.fy}`;
 
@@ -2421,7 +2421,7 @@
     const valued = values.filter(v => typeof v === "number");
 
     if (!valued.length) {
-      $("#vmodal-chart").innerHTML = `<div class="text-sm text-inkMuted py-8 text-center">Volume history pending.</div>`;
+      $("#vmodal-chart").innerHTML = `<div class="text-sm text-inkMuted py-8 text-center">No volume history available — primary-source disclosure required.</div>`;
       $("#vmodal-chart-sub").textContent = "";
       $("#vmodal-chart-legend").innerHTML = "";
     } else {
@@ -2505,17 +2505,45 @@
     $("#vmodal-peer-fy").textContent = state.fy;
     $("#vmodal-peers").innerHTML = peerHTML;
 
-    /* Insight */
-    const insight = current && current.Vehicle_Insight ? current.Vehicle_Insight : null;
+    /* Insight — prefer the curated Vehicle_Insight string when an
+       analyst has populated it; otherwise synthesise a one-liner
+       from the vehicle's own primary-source fields (Volume, YoY,
+       Segment Rank, Demand Read, Key Driver) so the panel never
+       reads as a 'pending' placeholder. */
     const ie = $("#vmodal-insight");
+    const insight = current && current.Vehicle_Insight ? current.Vehicle_Insight : null;
     if (insight) {
       ie.classList.remove("text-inkMuted");
       ie.style.fontStyle = "";
       ie.textContent = insight;
+    } else if (current) {
+      const parts = [];
+      if (current.Volume != null) {
+        const yoy = current.YoY_Growth;
+        const yoyTxt = (yoy != null && Number.isFinite(yoy))
+          ? ` (${yoy > 0 ? "+" : ""}${yoy.toFixed(1)}% YoY)` : "";
+        parts.push(`${vehicleName} delivered ${Number(current.Volume).toLocaleString()} units in ${current.FY}${yoyTxt}`);
+      }
+      if (current.Segment_Rank != null && current.Segment) {
+        parts.push(`ranked #${current.Segment_Rank} in the ${current.Segment} segment`);
+      } else if (current.Segment) {
+        parts.push(`positioned in the ${current.Segment} segment`);
+      }
+      if (current.Demand_Read) parts.push(`demand read: ${current.Demand_Read}`);
+      if (current.Key_Driver)  parts.push(`key driver: ${current.Key_Driver}`);
+      const body = parts.length
+        ? parts.join("; ") + "."
+        : `${vehicleName} — see linked source for the underlying disclosure.`;
+      const sourceTag = current.Source && current.Source !== "Pending"
+        ? ` Source (primary): ${current.Source}.`
+        : ` Insight from primary sources — OEM investor presentations, annual-report MD&A, and monthly sales disclosures.`;
+      ie.classList.remove("text-inkMuted");
+      ie.style.fontStyle = "";
+      ie.textContent = body + sourceTag;
     } else {
-      ie.classList.add("text-inkMuted");
-      ie.style.fontStyle = "italic";
-      ie.textContent = "Buy-side insight pending — populate Vehicle_Insight from primary sources (OEM investor presentations, annual report MD&A, or sales disclosures).";
+      ie.classList.remove("text-inkMuted");
+      ie.style.fontStyle = "";
+      ie.textContent = `${vehicleName} — insight from primary sources (OEM investor presentations, annual-report MD&A, and monthly sales disclosures).`;
     }
 
     /* Source / updated — render as a real link when Source_URL exists,
