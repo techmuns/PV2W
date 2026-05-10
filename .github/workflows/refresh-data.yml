@@ -1,15 +1,32 @@
 # Live data refresh for the PV dashboard.
 #
 # Triggers (zero manual action required):
-#   - Every push to main (skipping the bot's own commits to avoid loops)
 #   - Daily cron at 09:00 IST (03:30 UTC)
+#   - Every push to main (skipping the bot's own data writes)
 #   - Manual: Actions tab → "Run workflow"
 #
-# Each fetcher step uses continue-on-error so one source failing doesn't
-# kill the whole refresh. The final write-meta step records every step's
-# outcome and the timestamp into placeholder_data.json under _meta, so
-# the dashboard can show "Last refreshed: 5 min ago" / "fetcher X
-# failed" without the user opening GitHub.
+# YEARLY AUTO-EXTENSION
+# The extend-fys step runs first; once a calendar year crosses
+# 1 April it adds the new FY to company_config.json so the
+# dashboard FY selector, KPI strip, and Excel year columns all
+# pick up the new fiscal year automatically. js/export.js also
+# computes its own YEAR_END dynamically, so the Excel year band
+# extends without code edits.
+#
+# DATA SOURCE CHAIN (all parsed automatically)
+#   stock prices       — Yahoo NSE quote
+#   monthly volumes    — Maruti / Hyundai / M&M / Tata press releases
+#   industry totals    — SIAM
+#   full P&L / BS / CF — Screener.in (per-OEM consolidated/standalone)
+#   BS sub-lines       — Tijori → Tickertape → Trendlyne → Moneycontrol
+#                        (priority order; first non-empty per cell wins)
+#   PV-segment Tata    — tatamotors.com Q4 IP slides (curated seed)
+#
+# Each fetcher uses continue-on-error so one source failing doesn't
+# kill the whole refresh. write-meta records every step's outcome
+# and the timestamp into placeholder_data.json under _meta, so the
+# dashboard can show "Last refreshed: 5 min ago" without the user
+# opening GitHub.
 
 name: Refresh dashboard data
 
@@ -22,6 +39,7 @@ on:
     paths-ignore:
       - 'data/config/placeholder_data.json'   # don't loop on the bot's own data writes
       - 'data/config/raw_extracts.json'
+      - 'data/config/company_config.json'     # auto-extended by extend-fys step
       - 'data/config/press_text/**'
 
 permissions:
@@ -44,6 +62,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+
+      # ────────── auto-extend FY range ──────────
+      # Once a year (after April 1st) this adds the new fiscal
+      # year to company_config.json so the dashboard FY selector
+      # / KPI strip / Excel export pick it up automatically.
+      - name: Extend FY range for new fiscal year
+        id: extend_fys
+        continue-on-error: true
+        run: node scripts/extend-fys.mjs
 
       # ────────── fetchers ──────────
       # continue-on-error: failures recorded into _meta, not fatal.
