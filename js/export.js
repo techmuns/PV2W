@@ -662,15 +662,39 @@
           },
           { src: `Derived: Revenue × EBITDA Margin % (${(ABS_DATA[co] && ABS_DATA[co].src) || "OEM AR"})`,
             url:  (ABS_DATA[co] && ABS_DATA[co].url) || "" });
-        rowMap[`${co}|EBIT`]       = gapRow(co, "P&L", "EBIT", "₹ Cr", "NA — EBIT absolute not separately disclosed in summary; back out via EBITDA - D&A once D&A is sourced");
-        rowMap[`${co}|Depreciation`] = gapRow(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
-          "NA — absolute D&A not in captured summary; available in full AR P&L breakdown");
-        rowMap[`${co}|Finance Cost`] = gapRow(co, "P&L", "Finance Cost", "₹ Cr",
-          "NA — absolute finance cost not captured (most OEMs are debt-light; Maruti is debt-free)");
-        rowMap[`${co}|PBT`]          = gapRow(co, "P&L", "PBT (Profit Before Tax)", "₹ Cr",
-          "NA — absolute PBT not captured (= PAT + Tax once Tax is sourced)");
-        rowMap[`${co}|Tax`]          = gapRow(co, "P&L", "Tax Expense", "₹ Cr",
-          "NA — absolute tax expense not captured");
+        /* P&L line items pulled from Screener (via derive-financials)
+           where present; fall back to gap row when the metric hasn't
+           landed in placeholder_data yet (only happens for OEMs whose
+           Screener fetch hasn't run). */
+        const screenerSrc = { src: `Screener.in (parsed by fetch-${co.toLowerCase().replace(/\s+/g,'').replace('&','-and-')}-screener.mjs → derive-financials.mjs)`,
+                              url: `https://www.screener.in/company/` };
+        const orGap = (co, statement, item, unit, metric, reason) => {
+          const has = (D.Company_FY_Metrics || []).some(r =>
+            r.Company === co && r.Metric === metric && r.Value != null && r.Value !== "Pending");
+          if (has) {
+            return inputRow(co, statement, item, unit, (fy) => getCM(D, co, fy, metric), screenerSrc);
+          }
+          return gapRow(co, statement, item, unit, reason);
+        };
+        rowMap[`${co}|Depreciation`] = orGap(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
+          "Depreciation (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        /* EBIT = EBITDA - D&A. Defined as a formula so it auto-updates. */
+        rowMap[`${co}|EBIT`]         = formulaRow(co, "P&L", "EBIT", "₹ Cr",
+          (fy) => {
+            const e = `${fyColLetter(fy)}${rowMap[`${co}|EBITDA`]}`;
+            const d = `${fyColLetter(fy)}${rowMap[`${co}|Depreciation`]}`;
+            return `IFERROR(${e}-${d},"")`;
+          }, '#,##0');
+        rowMap[`${co}|Finance Cost`] = orGap(co, "P&L", "Finance Cost (Interest)", "₹ Cr",
+          "Interest (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        rowMap[`${co}|PBT`]          = orGap(co, "P&L", "PBT (Profit Before Tax)", "₹ Cr",
+          "PBT (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        rowMap[`${co}|Tax`]          = formulaRow(co, "P&L", "Tax Expense", "₹ Cr",
+          (fy) => {
+            const pbt = `${fyColLetter(fy)}${rowMap[`${co}|PBT`]}`;
+            const pat = `${fyColLetter(fy)}${rowMap[`${co}|PAT`]}`;
+            return `IFERROR(${pbt}-${pat},"")`;
+          }, '#,##0');
         rowMap[`${co}|PAT`]        = inputRow(co, "P&L", "PAT", "₹ Cr",
           (fy) => getAbs(co, fy, "PAT"), ABS_DATA[co], "company AR not parsed for this FY");
       }
@@ -678,10 +702,13 @@
       /* ── Balance Sheet ── */
       if (co !== "Industry") {
         addSectionHeader(sheet, "Balance Sheet");
-        rowMap[`${co}|Total Assets`]    = gapRow(co, "BS", "Total Assets", "₹ Cr", "NA — full BS not in captured summary");
-        rowMap[`${co}|Net Worth`]       = gapRow(co, "BS", "Net Worth / Equity", "₹ Cr", "NA — full BS not in captured summary");
-        rowMap[`${co}|Total Debt`]      = gapRow(co, "BS", "Total Debt", "₹ Cr", "NA — Maruti is debt-free; others' debt absolute not in summary");
-        rowMap[`${co}|Cash`]            = gapRow(co, "BS", "Cash & Investments", "₹ Cr", "NA — absolute cash & investments not in summary");
+        rowMap[`${co}|Total Assets`]    = orGap(co, "BS", "Total Assets", "₹ Cr",
+          "Total Assets (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        rowMap[`${co}|Net Worth`]       = orGap(co, "BS", "Net Worth / Equity", "₹ Cr",
+          "Net Worth (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        rowMap[`${co}|Total Debt`]      = orGap(co, "BS", "Total Debt (Borrowings)", "₹ Cr",
+          "Borrowings (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        rowMap[`${co}|Cash`]            = gapRow(co, "BS", "Cash & Investments", "₹ Cr", "NA — Screener publishes Investments line; pure-Cash absolute requires AR balance sheet drill-down");
         rowMap[`${co}|Net Debt`]        = formulaRow(co, "BS", "Net Debt", "₹ Cr",
           (fy) => {
             const td = `${fyColLetter(fy)}${rowMap[`${co}|Total Debt`]}`;
@@ -708,7 +735,8 @@
       /* ── Cash Flow ── */
       if (co !== "Industry") {
         addSectionHeader(sheet, "Cash Flow");
-        rowMap[`${co}|CFO`]   = gapRow(co, "CF", "CFO (Cash from Operations)", "₹ Cr", "absolute CFO not sourced");
+        rowMap[`${co}|CFO`]   = orGap(co, "CF", "CFO (Cash from Operations)", "₹ Cr",
+          "CFO (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
         rowMap[`${co}|Capex`] = inputRow(co, "CF", "Capex", "₹ Cr",
           (fy) => getCM(D, co, fy, "Capex (Rs Cr)"),
           { src: `${co} Annual Report — cash flow statement / Q4 IP`,
@@ -719,8 +747,10 @@
             const cx  = `${fyColLetter(fy)}${rowMap[`${co}|Capex`]}`;
             return `IFERROR(${cfo}-${cx},"")`;
           }, '#,##0');
-        rowMap[`${co}|CFI`]   = gapRow(co, "CF", "Cash Flow from Investing", "₹ Cr", "absolute CFI not sourced");
-        rowMap[`${co}|CFF`]   = gapRow(co, "CF", "Cash Flow from Financing", "₹ Cr", "absolute CFF not sourced");
+        rowMap[`${co}|CFI`]   = orGap(co, "CF", "Cash Flow from Investing", "₹ Cr",
+          "Cash from Investing (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        rowMap[`${co}|CFF`]   = orGap(co, "CF", "Cash Flow from Financing", "₹ Cr",
+          "Cash from Financing (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
       }
 
       /* ── Operating Data ── */
