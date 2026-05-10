@@ -1264,15 +1264,25 @@
     /* Source line — always rendered with a placeholder so its
        row stays in the layout even when company has no source. */
     const sourceEl = $("#chart2-source");
-    if (state.company === "Maruti") {
-      sourceEl.textContent = view === "powertrain"
-        ? "Source: Maruti Suzuki Annual Reports / Q4 Investor Presentations; powertrain split based on company disclosures where available."
-        : "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report.";
+    /* Per-OEM powertrain source notes — what each company actually
+       discloses about CNG / Hybrid / BEV vs ICE in its filings. */
+    const POWERTRAIN_SRC = {
+      "Maruti":         "Maruti Suzuki Annual Reports + Q4 Investor Presentations — CNG units disclosed FY24 (482,717), Hybrid units disclosed FY23-FY25, BEV launches FY26 (e VITARA). Residual = Petrol / Diesel / Other ICE.",
+      "Hyundai":        "Hyundai Motor India Q4 FY25 Investor Presentation + DRHP — BEV % from disclosed Ioniq 5 + Kona EV + Creta Electric volumes. Hyundai does not separately publish CNG / Hybrid in PV; CNG is captured within the ICE residual.",
+      "M&M":            "Mahindra & Mahindra Q4 FY25 Investor Presentation — BEV % from disclosed XUV400 + BE 6 + XEV 9e volumes. ICE residual covers Bolero / Scorpio / Thar / XUV diesel + petrol; M&M PV is largely diesel and CNG share is negligible.",
+      "Tata Motors PV": "Tata Motors Q4 Investor Presentations (PV segment) — EV % from disclosed Nexon EV + Tigor EV + Punch EV + Tiago EV volumes. Tata PV CNG mix is not separately disclosed and is captured within the ICE residual.",
+    };
+    const co = state.company;
+
+    if (view === "powertrain") {
+      sourceEl.textContent = "Source: " + (POWERTRAIN_SRC[co]
+        || `${co} Annual Report / Investor Presentations — BEV % from disclosed EV-model volumes; CNG / Hybrid where separately published; residual is Petrol / Diesel / Other ICE.`);
+    } else if (co === "Maruti") {
+      sourceEl.textContent = "Source: Maruti Suzuki Q4 FY23, Q4 FY24 Investor Presentations; FY25 Annual Report.";
     } else if (view === "product") {
-      const co = state.company;
       sourceEl.textContent = `Source: ${co} Annual Report / Investor Presentations — SUV share applied to total dispatches (${co} doesn't publish SIAM segment-wise monthly units).`;
     } else if (view === "export") {
-      sourceEl.textContent = `Source: ${state.company} Annual Report / Investor Presentations — exports % of total dispatches.`;
+      sourceEl.textContent = `Source: ${co} Annual Report / Investor Presentations — exports % of total dispatches.`;
     } else {
       sourceEl.textContent = " ";
     }
