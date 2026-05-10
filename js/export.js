@@ -100,14 +100,79 @@
      Supports group sub-headers via { _group: "Section name" } row
      entries which render as a coloured pill spanning the metric +
      year columns and softly visually separate metric clusters.
-     ctx.calcMap (optional) routes specific dashboard metrics to
-     formula cells referencing the Calculations tab so the PV view
-     auto-updates when raw inputs change. */
+     ctx.absMap routes specific dashboard metrics to formula cells
+     referencing the Absolute_Numbers tab so PV ratios recompute
+     when the underlying absolutes are edited. */
+
+  /* Dashboard metric → Excel formula generator. Each entry returns
+     a formula string given (fy, oem, refAbs(key, fy)) where refAbs
+     returns "'Absolute_Numbers'!E45" or null if absent. */
+  const PV_RATIOS = {
+    "Revenue Growth %": (fy, oem, refAbs) => {
+      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return "";
+      const cur = refAbs("Revenue", fy);
+      const pre = refAbs("Revenue", FYS_MODEL[i-1]);
+      return (cur && pre) ? `IFERROR((${cur}/${pre}-1)*100,"")` : "";
+    },
+    "Volume Growth %": (fy, oem, refAbs) => {
+      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return "";
+      const cur = refAbs("Total Sales Volume", fy);
+      const pre = refAbs("Total Sales Volume", FYS_MODEL[i-1]);
+      return (cur && pre) ? `IFERROR((${cur}/${pre}-1)*100,"")` : "";
+    },
+    "Realisation Growth %": (fy, oem, refAbs) => {
+      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return "";
+      const rCur = refAbs("Revenue", fy), rPre = refAbs("Revenue", FYS_MODEL[i-1]);
+      const vCur = refAbs("Total Sales Volume", fy), vPre = refAbs("Total Sales Volume", FYS_MODEL[i-1]);
+      return (rCur && rPre && vCur && vPre)
+        ? `IFERROR(((${rCur}/${rPre})/(${vCur}/${vPre})-1)*100,"")`
+        : "";
+    },
+    "EBITDA Margin %": (fy, oem, refAbs) => {
+      const e = refAbs("EBITDA", fy);
+      const r = refAbs("Revenue", fy);
+      return (e && r) ? `IFERROR(${e}/${r}*100,"")` : "";
+    },
+    "PAT Margin %": (fy, oem, refAbs) => {
+      const p = refAbs("PAT", fy);
+      const r = refAbs("Revenue", fy);
+      return (p && r) ? `IFERROR(${p}/${r}*100,"")` : "";
+    },
+    "Capex Intensity %": (fy, oem, refAbs) => {
+      const c = refAbs("Capex", fy);
+      const r = refAbs("Revenue", fy);
+      return (c && r) ? `IFERROR(${c}/${r}*100,"")` : "";
+    },
+    "Working Capital Days": (fy, oem, refAbs) => {
+      const w = refAbs("Working Capital", fy);
+      const r = refAbs("Revenue", fy);
+      return (w && r) ? `IFERROR(${w}*365/${r},"")` : "";
+    },
+    "Capacity Utilisation %": (fy, oem, refAbs) => {
+      const v = refAbs("Total Sales Volume", fy);
+      const k = refAbs("Capacity", fy);
+      return (v && k) ? `IFERROR(${v}/${k}*100,"")` : "";
+    },
+    "Export Volume %": (fy, oem, refAbs) => {
+      const e = refAbs("Export Volume", fy);
+      const t = refAbs("Total Sales Volume", fy);
+      return (e && t) ? `IFERROR(${e}/${t}*100,"")` : "";
+    },
+    "EV Volume %": (fy, oem, refAbs) => {
+      const e = refAbs("EV Volume", fy);
+      const t = refAbs("Total Sales Volume", fy);
+      return (e && t) ? `IFERROR(${e}/${t}*100,"")` : "";
+    },
+    "SUV Volume %": (fy, oem, refAbs) => {
+      const s = refAbs("SUV Volume", fy);
+      const t = refAbs("Total Sales Volume", fy);
+      return (s && t) ? `IFERROR(${s}/${t}*100,"")` : "";
+    },
+  };
   function appendBlock(sheet, companyLabel, rows, oem, D, ctx) {
     const yearCount = YEAR_END - YEAR_START + 1;
     const startRow = sheet.rowCount + 1;
     let dataRowIdx = 0;     // for alt-row banding within metric rows
-    const calcMap = (ctx && ctx.calcMap) || null;
     const absMap  = (ctx && ctx.absMap)  || null;
 
     rows.forEach((rowDef) => {
@@ -127,31 +192,47 @@
 
       const { label, source, metric, field } = rowDef;
       const r = [companyLabel, label];
-      /* Try to route this row's year cells to a formula referencing
-         the Calculations or Financials_3Statement tab. Only kicks in
-         when (a) a calcMap is provided (PV-tab build only) and
-         (b) we have a matching key for the (oem, metric) pair. */
-      const calcKey  = (oem && metric) ? `${oem}|${metric}` : null;
-      const absKey   = (oem && metric === "Total Sales Volume") ? `${oem}|Total Sales Volume`
-                     : (oem && metric === "Capacity (units)")    ? `${oem}|Capacity`
-                     : (oem && metric === "Capex (Rs Cr)")       ? `${oem}|Capex`
-                     : (source === "industry" && metric === "Industry PAT (Rs Cr)") ? "Industry|Industry PAT (Rs Cr)"
-                     : (source === "industry" && metric === "Average ASP (Rs Lakh)") ? "Industry|Average ASP"
-                     : (source === "industry" && metric === "Total PV Volume") ? "Industry|Industry Volume"
-                     : null;
-      const calcRow  = calcMap && calcKey && calcMap[calcKey];
-      const absRow   = absMap && absKey && absMap[absKey];
-
+      /* PV-tab formula generation. Each metric is mapped to either:
+           a) a direct row reference into Absolute_Numbers (for raw
+              absolutes the dashboard surfaces unchanged: Total
+              Sales Volume, Capacity, Capex, Industry Volume, etc.)
+           b) an Excel ratio formula computed from two Absolute_
+              Numbers rows (Revenue Growth %, PAT Margin %, Capex
+              Intensity %, etc.).
+         The formulas[i] array is populated per-FY; cells without a
+         formula fall back to the hardcoded value pulled from
+         placeholder_data below. */
       const formulas = new Array(yearCount).fill(null);
-      if (calcRow) {
-        for (let y = YEAR_START; y <= YEAR_END; y++) {
-          const fy = yearToFY(y);
-          formulas[y - YEAR_START] = `'Calculations'!${fyColLetter(fy)}${calcRow}`;
-        }
-      } else if (absRow) {
-        for (let y = YEAR_START; y <= YEAR_END; y++) {
-          const fy = yearToFY(y);
-          formulas[y - YEAR_START] = `'Financials_3Statement'!${fyColLetter(fy)}${absRow}`;
+      const AN = "'Absolute_Numbers'!";
+      const refAbs = (key, fy) => {
+        const rn = absMap && absMap[`${oem || (source === "industry" ? "Industry" : "")}|${key}`];
+        return rn ? `${AN}${fyColLetter(fy)}${rn}` : null;
+      };
+      const indRefAbs = (key, fy) => {
+        const rn = absMap && absMap[`Industry|${key}`];
+        return rn ? `${AN}${fyColLetter(fy)}${rn}` : null;
+      };
+      const directKey = oem
+        ? ({
+            "Total Sales Volume": "Total Sales Volume",
+            "Capacity (units)":   "Capacity",
+            "Capex (Rs Cr)":      "Capex",
+          })[metric]
+        : ({
+            "Industry PAT (Rs Cr)":   "Industry PAT (Rs Cr)",
+            "Average ASP (Rs Lakh)":  "Average ASP",
+            "Total PV Volume":        "Industry Volume",
+          })[metric];
+      const ratioFn = oem ? PV_RATIOS[metric] : null;
+
+      for (let y = YEAR_START; y <= YEAR_END; y++) {
+        const fy = yearToFY(y);
+        if (directKey) {
+          const ref = oem ? refAbs(directKey, fy) : indRefAbs(directKey, fy);
+          if (ref) formulas[y - YEAR_START] = ref;
+        } else if (ratioFn) {
+          const f = ratioFn(fy, oem, refAbs);
+          if (f) formulas[y - YEAR_START] = f;
         }
       }
 
@@ -377,6 +458,12 @@
       } else if (spec.kind === "formula") {
         const formula = spec.formula(fy, row.number, columnLetter(colIdx));
         if (formula) c.value = { formula };
+      } else if (spec.kind === "gap") {
+        /* Render gap cells as 'NA' text per the spec — analyst sees
+           the row exists but the value is unavailable. */
+        c.value = "NA";
+        c.alignment = { horizontal: "center", vertical: "middle" };
+        c.numFmt = "@";
       }
     });
 
@@ -470,9 +557,9 @@
     _missingLog.push({ co, fy, metric, sourceChecked, reason, action });
   }
 
-  function buildFinancials3Statement(wb, D) {
+  function buildAbsoluteNumbers(wb, D) {
     _missingLog = [];   // reset per export
-    const sheet = wb.addWorksheet("Financials_3Statement", { properties: { tabColor: { argb: "FF1D4ED8" } } });
+    const sheet = wb.addWorksheet("Absolute_Numbers", { properties: { tabColor: { argb: "FF1D4ED8" } } });
 
     /* Header row */
     const head = ["Company", "Statement", "Line Item", "Unit"];
@@ -550,42 +637,58 @@
       } else {
         rowMap[`${co}|Revenue`]    = inputRow(co, "P&L", "Revenue / Net Sales", "₹ Cr",
           (fy) => getAbs(co, fy, "Revenue"), ABS_DATA[co], "company AR not parsed for this FY");
-        rowMap[`${co}|EBITDA`]     = gapRow(co, "P&L", "EBITDA", "₹ Cr",
-          "EBITDA absolute not in audited summary; only EBITDA Margin % captured (PctInputs)");
-        rowMap[`${co}|EBIT`]       = gapRow(co, "P&L", "EBIT", "₹ Cr", "EBIT absolute not sourced");
+        /* EBITDA absolute = Revenue × EBITDA Margin % (exact arithmetic
+           — not estimation. EBITDA Margin % is sourced from each
+           OEM's AR / Q4 IP and Revenue is the audited figure). */
+        rowMap[`${co}|EBITDA`]     = inputRow(co, "P&L", "EBITDA", "₹ Cr",
+          (fy) => {
+            const rev = getAbs(co, fy, "Revenue");
+            const m   = getCM(D, co, fy, "EBITDA Margin %");
+            return (rev != null && m != null) ? Math.round(rev * m / 100) : null;
+          },
+          { src: `Derived: Revenue × EBITDA Margin % (${(ABS_DATA[co] && ABS_DATA[co].src) || "OEM AR"})`,
+            url:  (ABS_DATA[co] && ABS_DATA[co].url) || "" });
+        rowMap[`${co}|EBIT`]       = gapRow(co, "P&L", "EBIT", "₹ Cr", "NA — EBIT absolute not separately disclosed in summary; back out via EBITDA - D&A once D&A is sourced");
+        rowMap[`${co}|Depreciation`] = gapRow(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
+          "NA — absolute D&A not in captured summary; available in full AR P&L breakdown");
+        rowMap[`${co}|Finance Cost`] = gapRow(co, "P&L", "Finance Cost", "₹ Cr",
+          "NA — absolute finance cost not captured (most OEMs are debt-light; Maruti is debt-free)");
+        rowMap[`${co}|PBT`]          = gapRow(co, "P&L", "PBT (Profit Before Tax)", "₹ Cr",
+          "NA — absolute PBT not captured (= PAT + Tax once Tax is sourced)");
+        rowMap[`${co}|Tax`]          = gapRow(co, "P&L", "Tax Expense", "₹ Cr",
+          "NA — absolute tax expense not captured");
         rowMap[`${co}|PAT`]        = inputRow(co, "P&L", "PAT", "₹ Cr",
           (fy) => getAbs(co, fy, "PAT"), ABS_DATA[co], "company AR not parsed for this FY");
-        rowMap[`${co}|Depreciation`] = gapRow(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
-          "absolute D&A not sourced");
-        rowMap[`${co}|Finance Cost`] = gapRow(co, "P&L", "Finance Cost", "₹ Cr",
-          "absolute finance cost not sourced");
-        rowMap[`${co}|Tax`]          = gapRow(co, "P&L", "Tax Expense", "₹ Cr",
-          "absolute tax expense not sourced");
       }
 
       /* ── Balance Sheet ── */
       if (co !== "Industry") {
         addSectionHeader(sheet, "Balance Sheet");
-        rowMap[`${co}|Total Assets`]    = gapRow(co, "BS", "Total Assets", "₹ Cr", "absolute BS not sourced");
-        rowMap[`${co}|Total Debt`]      = gapRow(co, "BS", "Total Debt", "₹ Cr", "absolute BS not sourced");
-        rowMap[`${co}|Cash`]            = gapRow(co, "BS", "Cash & Investments", "₹ Cr", "absolute BS not sourced");
+        rowMap[`${co}|Total Assets`]    = gapRow(co, "BS", "Total Assets", "₹ Cr", "NA — full BS not in captured summary");
+        rowMap[`${co}|Net Worth`]       = gapRow(co, "BS", "Net Worth / Equity", "₹ Cr", "NA — full BS not in captured summary");
+        rowMap[`${co}|Total Debt`]      = gapRow(co, "BS", "Total Debt", "₹ Cr", "NA — Maruti is debt-free; others' debt absolute not in summary");
+        rowMap[`${co}|Cash`]            = gapRow(co, "BS", "Cash & Investments", "₹ Cr", "NA — absolute cash & investments not in summary");
         rowMap[`${co}|Net Debt`]        = formulaRow(co, "BS", "Net Debt", "₹ Cr",
           (fy) => {
             const td = `${fyColLetter(fy)}${rowMap[`${co}|Total Debt`]}`;
             const cs = `${fyColLetter(fy)}${rowMap[`${co}|Cash`]}`;
             return `IFERROR(${td}-${cs},"")`;
           }, '#,##0');
-        rowMap[`${co}|Net Worth`]       = gapRow(co, "BS", "Net Worth / Equity", "₹ Cr", "absolute BS not sourced");
-        rowMap[`${co}|Receivables`]     = gapRow(co, "BS", "Receivables", "₹ Cr", "absolute BS not sourced");
-        rowMap[`${co}|Inventory`]       = gapRow(co, "BS", "Inventory", "₹ Cr", "absolute BS not sourced");
-        rowMap[`${co}|Payables`]        = gapRow(co, "BS", "Payables", "₹ Cr", "absolute BS not sourced");
-        rowMap[`${co}|Working Capital`] = formulaRow(co, "BS", "Working Capital", "₹ Cr",
+        rowMap[`${co}|Receivables`]     = gapRow(co, "BS", "Receivables", "₹ Cr", "NA — BS line item not in summary");
+        rowMap[`${co}|Inventory`]       = gapRow(co, "BS", "Inventory", "₹ Cr", "NA — BS line item not in summary");
+        rowMap[`${co}|Payables`]        = gapRow(co, "BS", "Payables", "₹ Cr", "NA — BS line item not in summary");
+        /* Working Capital absolute = Working Capital Days × Revenue / 365.
+           WC Days is sourced from Screener / AR ratios; this gives a
+           usable Working Capital number while Receivables / Inventory /
+           Payables stay NA. */
+        rowMap[`${co}|Working Capital`] = inputRow(co, "BS", "Working Capital", "₹ Cr",
           (fy) => {
-            const r = `${fyColLetter(fy)}${rowMap[`${co}|Receivables`]}`;
-            const i = `${fyColLetter(fy)}${rowMap[`${co}|Inventory`]}`;
-            const p = `${fyColLetter(fy)}${rowMap[`${co}|Payables`]}`;
-            return `IFERROR(${r}+${i}-${p},"")`;
-          }, '#,##0');
+            const rev = getAbs(co, fy, "Revenue");
+            const days = getCM(D, co, fy, "Working Capital Days");
+            return (rev != null && days != null) ? Math.round(days * rev / 365) : null;
+          },
+          { src: "Derived: Working Capital Days × Revenue / 365 (Days from Screener / AR ratios)",
+            url: (ABS_DATA[co] && ABS_DATA[co].url) || "" });
       }
 
       /* ── Cash Flow ── */
@@ -617,14 +720,31 @@
           (fy) => getCM(D, co, fy, "Total Sales Volume"),
           { src: `${co} Annual Report / monthly sales press release`,
             url: ABS_DATA[co] && ABS_DATA[co].url || "" });
-        rowMap[`${co}|Domestic Volume`] = gapRow(co, "OPS", "Domestic Volume", "units",
-          "absolute domestic units not separately captured (Export Volume % is in PctInputs)");
-        rowMap[`${co}|Export Volume`]   = gapRow(co, "OPS", "Export Volume", "units",
-          "absolute export units not separately captured (Export Volume % is in PctInputs)");
-        rowMap[`${co}|EV Volume`]       = gapRow(co, "OPS", "EV Volume", "units",
-          "absolute EV units not separately captured (EV Volume % is in PctInputs)");
-        rowMap[`${co}|SUV Volume`]      = gapRow(co, "OPS", "SUV / UV Volume", "units",
-          "absolute SUV units not separately captured (SUV Volume % is in PctInputs)");
+        /* Volume mix absolutes computed from total × respective % —
+           exact arithmetic; the % is sourced from each OEM's monthly
+           sales PR / Q4 IP. Pre-computing here as input values lets
+           the PV tab divide cleanly back without circular formulas. */
+        const volMix = (key) => (fy) => {
+          const tot = getCM(D, co, fy, "Total Sales Volume");
+          const pct = getCM(D, co, fy, key);
+          return (tot != null && pct != null) ? Math.round(tot * pct / 100) : null;
+        };
+        const volSrc = (m) => ({
+          src: `Derived: Total Sales Volume × ${m} (% from ${co} AR / Q4 IP)`,
+          url: (ABS_DATA[co] && ABS_DATA[co].url) || "",
+        });
+        rowMap[`${co}|Domestic Volume`] = inputRow(co, "OPS", "Domestic Volume", "units",
+          (fy) => {
+            const tot = getCM(D, co, fy, "Total Sales Volume");
+            const expPct = getCM(D, co, fy, "Export Volume %");
+            return (tot != null && expPct != null) ? Math.round(tot * (1 - expPct / 100)) : null;
+          }, volSrc("(1 − Export Volume %)"));
+        rowMap[`${co}|Export Volume`]   = inputRow(co, "OPS", "Export Volume", "units",
+          volMix("Export Volume %"), volSrc("Export Volume %"));
+        rowMap[`${co}|EV Volume`]       = inputRow(co, "OPS", "EV Volume", "units",
+          volMix("EV Volume %"), volSrc("EV Volume %"));
+        rowMap[`${co}|SUV Volume`]      = inputRow(co, "OPS", "SUV / UV Volume", "units",
+          volMix("SUV Volume %"), volSrc("SUV Volume %"));
         rowMap[`${co}|Capacity`]        = inputRow(co, "OPS", "Capacity", "units",
           (fy) => getCM(D, co, fy, "Capacity (units)"),
           { src: `${co} Annual Report — installed annual capacity`,
@@ -1103,72 +1223,115 @@
     return ctx;
   }
 
-  function buildSources(wb, D) {
-    const sheet = wb.addWorksheet("Sources");
-    /* Type column added per the financial-model spec: 'Raw Input',
-       'Derived Formula', 'Manual Text Input', 'Source Percentage Input'. */
-    sheet.addRow(["Company", "FY", "Metric", "Value", "Unit", "Type", "Source", "Source_URL", "Last_Updated", "Notes"]);
+  function buildSources(wb, D, absMap) {
+    const sheet = wb.addWorksheet("Sources", { properties: { tabColor: { argb: "FF6B7280" } } });
+    /* Schema per the simplified spec:
+         Company | Metric | FY | Value | Unit | Source Name |
+         Source URL | Source Type | Notes
+       Source Type ∈ Annual Report / Screener / Investor Presentation
+                    / Exchange Filing / Dashboard Existing Data /
+                    Derived Formula / Not Available */
+    sheet.addRow(["Company", "Metric", "FY", "Value", "Unit", "Source Name", "Source URL", "Source Type", "Notes"]);
     const hr = sheet.getRow(1);
     hr.font = { bold: true, color: { argb: "FFFFFFFF" } };
-    hr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: PURPLE } };
+    hr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1E3A8A" } };
     hr.alignment = { vertical: "middle", horizontal: "left" };
-    hr.height = 22;
+    hr.height = 24;
 
-    const all = [
-      ...((D.Industry_FY_Metrics || []).map(r => ({ ...r, Company: "Industry" }))),
-      ...(D.Company_FY_Metrics || []),
-    ];
-    const fyIdx = (fy) => D.FYS_FULL.indexOf(fy);
-    all.sort((a, b) => (a.Company || "").localeCompare(b.Company || "") || fyIdx(a.FY) - fyIdx(b.FY));
-    /* Classify each metric per the spec's typology so analysts can
-       filter the Sources tab by 'Raw Input' vs 'Source Percentage
-       Input' vs 'Manual Text Input'. */
-    const ABS_INPUTS = new Set([
-      "Net Sales (Rs Cr)", "Capex (Rs Cr)", "Capacity (units)",
-      "Total Sales Volume", "Total PV Volume", "Industry PAT (Rs Cr)",
-      "Average ASP (Rs Lakh)",
-    ]);
-    const TEXT_METRICS = new Set([
-      "Top Selling Model", "Top Gaining OEM", "CEO", "CFO", "COO", "Credit_Rating",
-    ]);
-    const classify = (metric) => {
-      if (ABS_INPUTS.has(metric)) return "Raw Input";
-      if (TEXT_METRICS.has(metric)) return "Manual Text Input";
-      if (/%$/.test(metric || "") || /Days$/.test(metric || "")) return "Source Percentage Input";
-      return "Raw Input";
+    /* Source-Type classifier — maps each metric label to one of the
+       enumerated values. */
+    const classifyType = (label, value, sourceLabel) => {
+      if (value === "NA" || value == null) return "Not Available";
+      if (/^Derived:/i.test(sourceLabel || "")) return "Derived Formula";
+      if (/Screener/i.test(sourceLabel || "")) return "Screener";
+      if (/DRHP|Q4 Investor Presentation|Investor Presentation|Q4 IP/i.test(sourceLabel || "")) return "Investor Presentation";
+      if (/Annual Report/i.test(sourceLabel || "")) return "Annual Report";
+      if (/MCA|exchange|NSE|BSE|press release|sebi/i.test(sourceLabel || "")) return "Exchange Filing";
+      if (sourceLabel) return "Dashboard Existing Data";
+      return "Not Available";
     };
-    const unitFor = (metric) => {
-      if (/%$/.test(metric)) return "%";
-      if (/Days$/.test(metric)) return "days";
-      if (/\(Rs Cr\)/.test(metric)) return "₹ Cr";
-      if (/\(Rs Lakh\)/.test(metric)) return "₹ Lakh";
-      if (/Volume$|Capacity/.test(metric)) return "units";
-      if (/Stock Price/.test(metric)) return "₹";
+    const unitFor = (label) => {
+      if (/%$/.test(label)) return "%";
+      if (/Days$/.test(label)) return "days";
+      if (/₹ Cr|Rs Cr/i.test(label)) return "₹ Cr";
+      if (/₹ Lakh|Rs Lakh/i.test(label)) return "₹ Lakh";
+      if (/Volume|Capacity|Employees|Dealers/i.test(label)) return "units";
+      if (/Stock Price/i.test(label)) return "₹";
       return "";
     };
-    all.forEach((r) => {
+
+    const fyIdx = (fy) => FYS_MODEL.indexOf(fy);
+
+    /* 1) Walk every Absolute_Numbers row and emit one Sources entry
+       per (Company, Metric, FY) combination using the source label
+       captured during build. This is the audit trail for the
+       absolute data. */
+    const absSheet = wb.getWorksheet("Absolute_Numbers");
+    if (absSheet) {
+      absSheet.eachRow({ includeEmpty: false }, (row, rowNum) => {
+        if (rowNum === 1) return;                         // header
+        const co        = row.getCell(1).value;
+        const statement = row.getCell(2).value;
+        const item      = row.getCell(3).value;
+        const unit      = row.getCell(4).value;
+        if (!co || !item || statement == null) return;     // skip section/company headers
+        const srcName = row.getCell(16).value || "";
+        const srcUrl  = row.getCell(17).value || "";
+        const srcDate = row.getCell(18).value || "";
+        FYS_MODEL.forEach((fy, i) => {
+          const v = row.getCell(FY_COL_OFFSET + i).value;
+          let displayValue = v;
+          let notes = "";
+          if (v && typeof v === "object" && "formula" in v) {
+            displayValue = `=${v.formula}`;
+            notes = "Excel formula";
+          }
+          if (v === "NA") notes = srcName || "absolute not in captured summary";
+          sheet.addRow([
+            co, item, fy, displayValue, unit || unitFor(item),
+            srcName, srcUrl,
+            classifyType(item, v, srcName),
+            notes,
+          ]);
+        });
+      });
+    }
+
+    /* 2) Append source rows for the dashboard's % / source-percentage
+       inputs (Margins, Mix %, etc.) which live in placeholder_data
+       rather than Absolute_Numbers. */
+    const cm = (D.Company_FY_Metrics || []);
+    const im = (D.Industry_FY_Metrics || []).map(r => ({ ...r, Company: "Industry" }));
+    [...im, ...cm].forEach(r => {
+      if (!r.Metric || !r.FY) return;
+      if (!FYS_MODEL.includes(r.FY)) return;
       sheet.addRow([
         r.Company || "Industry",
-        r.FY || null,
-        r.Metric || null,
-        (r.Value === "Pending" || r.Value === undefined) ? null : r.Value,
-        unitFor(r.Metric || ""),
-        classify(r.Metric || ""),
-        (r.Source && r.Source !== "Pending") ? r.Source : null,
-        r.Source_URL || null,
-        r.Last_Updated || null,
-        "",
+        r.Metric,
+        r.FY,
+        (r.Value === "Pending" || r.Value === undefined) ? "NA" : r.Value,
+        unitFor(r.Metric),
+        (r.Source && r.Source !== "Pending") ? r.Source : "",
+        r.Source_URL || "",
+        classifyType(r.Metric, r.Value, r.Source || ""),
+        r.Last_Updated ? `Last updated ${r.Last_Updated}` : "",
       ]);
     });
-    sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: sheet.rowCount, column: 10 } };
+
+    sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: sheet.rowCount, column: 9 } };
     sheet.views = [{ state: "frozen", ySplit: 1 }];
-    sheet.columns.forEach((col) => {
-      let max = 8;
-      col.eachCell({ includeEmpty: false }, c => {
-        const len = c.value == null ? 0 : String(c.value).length;
-        if (len > max) max = len;
+
+    /* Per-column widths sized to the spec. */
+    [16, 30, 8, 14, 8, 56, 30, 22, 36].forEach((w, i) => sheet.getColumn(i + 1).width = w);
+
+    /* Style data rows. */
+    sheet.eachRow({ includeEmpty: false }, (row, rowNum) => {
+      if (rowNum === 1) return;
+      row.eachCell({ includeEmpty: false }, c => {
+        c.font = { size: 10, color: { argb: "FF1F2A37" } };
+        c.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+        c.border = thinBorders();
       });
-      col.width = Math.min(48, Math.max(8, max + 2));
     });
   }
 
@@ -1252,20 +1415,13 @@
       wb.created = new Date();
       wb.title   = "Munshot PV Dashboard Export";
 
-      /* Build the financial-model layer first so the dashboard PV
-         tab can reference it via formulas. Order of sheets in the
-         workbook = order of buildXxx calls. */
-      const absMap   = buildFinancials3Statement(wb, D);
-      const pctMap   = buildPctInputs(wb, D);
-      /* Merge maps so Calculations can resolve both absolute rows
-         (Revenue, Capex, Volume) and % inputs (Margins, Days). */
-      const mergedAbsMap = Object.assign({}, absMap, pctMap);
-      const calcMap  = buildCalculations(wb, D, mergedAbsMap);
-      const pvCtx    = buildPV(wb, D, { calcMap, absMap });
-      buildSources(wb, D);
-      buildDictionary(wb, D);
-      buildModelChecks(wb, calcMap, pvCtx);
-      buildMissingDataLog(wb);
+      /* 3-tab workbook only: Absolute_Numbers (sourced data) →
+         PV (formula-linked dashboard) → Sources (audit trail).
+         Backend-y tabs (PctInputs / Calculations / Model_Checks /
+         Missing_Data_Log / Dictionary) are intentionally NOT built. */
+      const absMap = buildAbsoluteNumbers(wb, D);
+      buildPV(wb, D, { absMap });
+      buildSources(wb, D, absMap);
 
       const buffer = await wb.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
