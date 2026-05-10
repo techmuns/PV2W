@@ -125,16 +125,76 @@ function extractVolumeRow(html) {
   return null;
 }
 
+/* Look for any table whose body contains a row matching one of
+   the supplied label patterns. Used for the BS sub-lines that
+   Screener doesn't expose directly: Receivables / Inventory /
+   Payables / Cash & Bank / Net Worth / Total Debt. */
+function extractRowMatching(html, labelPatterns) {
+  const tables = [...html.matchAll(/<table[\s\S]*?<\/table>/gi)].map(m => m[0]);
+  for (const tbl of tables) {
+    const headM = tbl.match(/<thead[\s\S]*?<\/thead>/i) || tbl.match(/<tr[\s\S]*?<\/tr>/i);
+    if (!headM) continue;
+    const ths = [...headM[0].matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/gi)].map(m => stripTags(m[1]));
+    const yearCols = ths.slice(1);
+    if (!yearCols.length) continue;
+    const trs = [...tbl.matchAll(/<tr[\s\S]*?<\/tr>/gi)].map(m => m[0]);
+    for (const tr of trs) {
+      const tds = [...tr.matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/gi)].map(m => stripTags(m[1]));
+      if (!tds.length) continue;
+      const label = tds[0];
+      if (labelPatterns.some(rx => rx.test(label))) {
+        return { label, yearCols, values: tds.slice(1) };
+      }
+    }
+  }
+  return null;
+}
+
 function distill(html) {
   const out = { byFY: {}, problems: [] };
-  const row = extractVolumeRow(html);
-  if (!row) { out.problems.push('no volume row found'); return out; }
-  row.yearCols.forEach((col, i) => {
-    const fy = colToFY(col);
-    if (!fy) return;
-    const v = toInt(row.values[i]);
-    if (v != null && v > 1000) out.byFY[fy] = { total_sales_volume: v, label: row.label };
+
+  /* Volume row (existing behaviour). */
+  const volRow = extractVolumeRow(html);
+  if (volRow) {
+    volRow.yearCols.forEach((col, i) => {
+      const fy = colToFY(col);
+      if (!fy) return;
+      const v = toInt(volRow.values[i]);
+      if (v != null && v > 1000) {
+        out.byFY[fy] = out.byFY[fy] || {};
+        out.byFY[fy].total_sales_volume = v;
+        out.byFY[fy].volume_label = volRow.label;
+      }
+    });
+  } else {
+    out.problems.push('no volume row found');
+  }
+
+  /* Balance-sheet sub-lines that Screener doesn't expose: pull
+     each from whichever Tijori table publishes it. */
+  const bsRows = [
+    { key: 'receivables_cr',  rx: [/^trade\s*receivables\b/i, /^receivables\b/i, /^debtors\b/i] },
+    { key: 'inventory_cr',    rx: [/^inventor(y|ies)\b/i, /^stock\s*in\s*trade\b/i] },
+    { key: 'payables_cr',     rx: [/^trade\s*payables\b/i, /^payables\b/i, /^creditors\b/i] },
+    { key: 'cash_bank_cr',    rx: [/^cash\s*(&|and)?\s*bank\b/i, /^cash\s*equivalents\b/i, /^cash\s*&\s*equivalents\b/i] },
+    { key: 'total_debt_cr',   rx: [/^total\s*debt\b/i, /^borrowings\b/i, /^debt\b/i] },
+    { key: 'net_worth_cr',    rx: [/^net\s*worth\b/i, /^shareholders?\s*funds?\b/i, /^total\s*equity\b/i] },
+    { key: 'total_assets_cr', rx: [/^total\s*assets\b/i] },
+  ];
+  bsRows.forEach(({ key, rx }) => {
+    const row = extractRowMatching(html, rx);
+    if (!row) return;
+    row.yearCols.forEach((col, i) => {
+      const fy = colToFY(col);
+      if (!fy) return;
+      const v = toInt(row.values[i]);
+      if (v != null) {
+        out.byFY[fy] = out.byFY[fy] || {};
+        out.byFY[fy][key] = v;
+      }
+    });
   });
+
   if (!Object.keys(out.byFY).length) out.problems.push('no parseable yearly values');
   return out;
 }
