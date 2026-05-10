@@ -169,10 +169,24 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config pull.rebase true
           git add data/config/
           if git diff --staged --quiet; then
             echo "No data changes — nothing to commit."
             exit 0
           fi
           git commit -m "data: auto-refresh ($(date -u +'%Y-%m-%d %H:%M UTC'))"
-          git push
+          # Rebase-and-push retry — handles the race where another
+          # commit landed on main between the workflow's checkout
+          # and this push step. Up to 4 attempts with backoff.
+          for i in 1 2 3 4; do
+            if git push origin main; then
+              echo "pushed on attempt $i"
+              exit 0
+            fi
+            echo "push rejected on attempt $i — pulling --rebase and retrying"
+            git pull --rebase origin main || { echo "rebase failed"; exit 1; }
+            sleep $((i * 2))
+          done
+          echo "push failed after 4 attempts"
+          exit 1
