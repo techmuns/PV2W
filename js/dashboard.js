@@ -986,10 +986,22 @@
       items.push({ name: "Others", value: others, color: OEM_COLOR.Others });
     } else if (def.oem) {
       const prevFyForBar = prevFY(fy);
+      /* For additive % metrics (Market Share %), pull industry
+         volume so we can show absolute units alongside each OEM's
+         share, then add an Others segment so the donut sums to
+         100% / industry-total instead of normalising within the
+         visible OEMs. */
+      const isShareMix = def.additive && def.oem === "Market Share %";
+      const indVolRow  = isShareMix ? getIndustryMetric(fy, "Total PV Volume") : null;
+      const indVolLakh = (isShareMix && indVolRow && indVolRow.Value != null)
+        ? indVolRow.Value / 1e5 : null;
       oems.forEach(co => {
         const r = getCompanyMetric(fy, co, def.oem);
         const v = r && r.Value != null && typeof r.Value === "number" ? r.Value : null;
         const item = { name: co, value: v, color: OEM_COLOR[co] };
+        if (isShareMix && indVolLakh != null && v != null) {
+          item.volumeLakh = +(indVolLakh * v / 100).toFixed(2);
+        }
         /* Build per-bar tooltip context so the tooltip can show
            previous-FY value, absolute base (e.g. volume / revenue),
            and the industry benchmark. */
@@ -1013,6 +1025,26 @@
         item.context = ctx;
         items.push(item);
       });
+
+      /* Reusable Others-segment helper for additive share charts.
+         Math is straightforward: Others% = 100 − sum(visible%);
+         Others volume = industry total − sum(visible volumes).
+         Clamps slightly-negative rounding artefacts to 0. */
+      if (isShareMix) {
+        const totalShare = items.reduce((s, x) => s + (x.value || 0), 0);
+        const othersShare = +Math.max(0, +(100 - totalShare).toFixed(1));
+        if (othersShare > 0) {
+          const othersVolume = (indVolLakh != null)
+            ? +Math.max(0, indVolLakh - items.reduce((s, x) => s + (x.volumeLakh || 0), 0)).toFixed(2)
+            : null;
+          items.push({
+            name: "Others",
+            value: othersShare,
+            volumeLakh: othersVolume,
+            color: OEM_COLOR.Others,
+          });
+        }
+      }
     }
 
     /* Title / subtitle now describe what the % means and what the
@@ -1046,10 +1078,12 @@
       }
     }
     if (def.id === "marketshare") {
+      ctxRows.push(`Selected FY: <b>${fy}</b>`);
       const indVol = getIndustryMetric(fy, "Total PV Volume");
       if (indVol && indVol.Value != null) {
         ctxRows.push(`Total industry domestic PV volume: <b>${(indVol.Value/1e5).toFixed(2)} lakh units</b>`);
       }
+      ctxRows.push(`Total shown: <b>100.0%</b> (Maruti + Hyundai + M&amp;M + Tata Motors PV + Others)`);
     }
     const prevFyLabel = prevFY(fy);
     if (mDef.kind === "yoy" && prevFyLabel) {
@@ -1070,11 +1104,24 @@
       : "";
 
     if (def.additive) {
-      const slices = items.filter(s => s.value > 0).sort((a, b) => b.value - a.value);
+      /* Keep 'Others' last in the legend even though it's typically
+         smaller than tracked OEMs — sort all non-Others by value
+         desc, then append Others if present. */
+      const others = items.find(s => s.name === "Others");
+      const slices = items.filter(s => s.name !== "Others" && s.value > 0)
+                          .sort((a, b) => b.value - a.value);
+      if (others && others.value > 0) slices.push(others);
+      const isShareMix = def.oem === "Market Share %";
+      const indVolRow  = getIndustryMetric(fy, "Total PV Volume");
+      const indVolLakh = (indVolRow && indVolRow.Value != null) ? indVolRow.Value / 1e5 : null;
       chart2.innerHTML = pieChart(slices, {
         fy,
-        totalLabel: `Total ${def.label.toLowerCase()} · ${fy}`,
+        totalLabel: isShareMix
+          ? `Total industry domestic PV volume · ${fy}`
+          : `Total ${def.label.toLowerCase()} · ${fy}`,
         unit: def.unit === "lakh units" ? "lakh units" : (def.unit || ""),
+        shareMode: isShareMix,
+        industryVolumeLakh: isShareMix ? indVolLakh : null,
       });
       $("#chart2-legend").innerHTML = "";
     } else {
@@ -1135,8 +1182,17 @@
       segments: slices.map(s => ({
         label: s.name, value: s.value || 0,
         pct: ((s.value || 0) / total) * 100,
+        /* For Market Share %-style donuts, the value IS already the
+           share — carry the absolute volume separately so the tooltip
+           can show 'XX lakh units · 41.4%' without a redundant
+           parenthetical. */
+        volumeLakh: s.volumeLakh != null ? s.volumeLakh : null,
         color: s.color,
       })),
+      /* Flag: when set the tooltip shows volume + actual share
+         (no within-visible re-normalisation parenthesis). */
+      shareMode: !!options.shareMode,
+      industryVolumeLakh: options.industryVolumeLakh ?? null,
     });
 
     let angle = -Math.PI / 2;          // start at 12 o'clock
@@ -1280,17 +1336,50 @@
       if (p && (p.kind === "pie-share" || p.kind === "ranked-share")) {
         $("#cht-fy").textContent = p.fy || "";
         simple.classList.add("hidden");
+        const fmtVol = (v) => v.toFixed(2) + " lakh units";
         const fmt = (v) => {
-          /* Pick a unit-aware format. Lakhs for volumes, ₹ Cr for
-             revenue, % for share metrics, plain for counts. */
           if (p.unit === "%")        return v.toFixed(1) + "%";
           if (p.unit === "lakh units" || p.unit === " L" || p.unit === "L")
-                                     return v.toFixed(2) + " lakh units";
+                                     return fmtVol(v);
           if (p.unit === "₹ Cr" || p.unit === "Rs Cr")
                                      return "₹" + Math.round(v).toLocaleString("en-IN") + " Cr";
           if (Math.abs(v) >= 1000)   return Math.round(v).toLocaleString("en-IN");
           return v.toFixed(2);
         };
+
+        /* Share-mode: each segment carries volumeLakh + actual share %
+           (the value). Tooltip renders 'XX lakh units · 41.4%' with
+           no redundant within-visible-slice parenthesis. */
+        if (p.shareMode) {
+          const totalRow = p.industryVolumeLakh != null
+            ? `<div class="flex items-baseline justify-between gap-4">
+                 <span class="text-[11px]" style="color:#6B7280;">${p.totalLabel || "Total"}</span>
+                 <span class="text-[13px] font-semibold tabular-nums" style="color:#1F2A37;">${fmtVol(p.industryVolumeLakh)} · 100.0%</span>
+               </div>`
+            : "";
+          const segs = p.segments
+            .filter(s => s.value != null && s.value !== 0)
+            .map(s => `
+              <div class="flex items-center gap-2.5">
+                <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
+                <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
+                <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">
+                  ${s.volumeLakh != null
+                    ? `<span class="font-normal mr-2" style="color:#1F2A37;">${fmtVol(s.volumeLakh)}</span>`
+                    : ""}
+                  <span class="font-semibold" style="color:#1F2A37;">${s.value.toFixed(1)}%</span>
+                </span>
+              </div>`).join("");
+          rich.innerHTML = totalRow
+            + `<div class="space-y-1.5 mt-2 pt-2" style="border-top:1px solid #EEF1F5;">${segs}</div>`;
+          rich.classList.remove("hidden");
+          tip.classList.remove("hidden");
+          positionTip(tip, e);
+          return;
+        }
+
+        /* Default composition mode (volume mix etc.) — abs value
+           and pct in parentheses. */
         const totalRow = p.total
           ? `<div class="flex items-baseline justify-between gap-4">
                <span class="text-[11px]" style="color:#6B7280;">${p.totalLabel || "Total"}</span>
@@ -1305,7 +1394,7 @@
               <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
               <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">
                 <span class="font-semibold" style="color:#1F2A37;">${fmt(s.value)}</span>
-                ${s.pct != null
+                ${s.pct != null && p.unit !== "%"
                   ? `<span class="font-normal ml-1" style="color:#6B7280;">(${s.pct.toFixed(1)}%)</span>`
                   : ""}
               </span>
