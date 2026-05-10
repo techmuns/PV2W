@@ -688,6 +688,7 @@
         value: it.value,
         pct: isShareMetric ? (it.value / total) * 100 : null,
         color: it.color,
+        context: it.context || null,
       }));
     const richPayload = isShareMetric
       ? JSON.stringify({
@@ -696,12 +697,16 @@
           total,
           totalLabel: options.totalLabel || `Total ${options.yUnit || ""}`.trim(),
           unit: options.yUnit || "",
+          metric: options.metric || "",
+          metricBase: options.metricBase || "",
           segments: richSegments,
         })
       : JSON.stringify({
           kind: "ranked-list",
           fy: options.fy || "",
           unit: options.yUnit || "",
+          metric: options.metric || "",
+          metricBase: options.metricBase || "",
           segments: richSegments,
         });
 
@@ -768,6 +773,93 @@
       industry: null, oem: "Facelift Launches",
       additive: false },
   ];
+
+  /* Per-metric meaning / base / phrasing — drives chart titles,
+     subtitles, context strip, and tooltip rows so the user can
+     immediately see "% of what?" without guessing. Keys match
+     IND_METRICS[].id. */
+  const METRIC_DEF = {
+    volume: {
+      kind: "absolute", titleNoun: "PV volume",
+      subtitle: "Total domestic PV sales volume per OEM",
+      sliceTitle: "PV volume · OEM mix", growthTitle: null,
+    },
+    growth: {
+      kind: "yoy",      titleNoun: "Volume growth",
+      subtitle: "YoY growth in each OEM's domestic PV sales volume vs the previous FY",
+      growthTitle: "Volume Growth % · OEM YoY comparison",
+      base: "Current FY volume vs previous FY volume",
+      benchmarkMetric: "PV Volume Growth %",
+      sourceMetric: "Total Sales Volume",
+    },
+    marketshare: {
+      kind: "share",    titleNoun: "Market share",
+      subtitle: "Each OEM's domestic PV volume as % of total industry domestic PV volume",
+      sliceTitle: "Market Share % · industry mix",
+      base: "Company domestic PV volume / total industry domestic PV volume",
+    },
+    export: {
+      kind: "ratio",    titleNoun: "Export share",
+      subtitle: "Exports as % of each OEM's total dispatches (vs industry exports as % of PV production)",
+      growthTitle: "Export Volume % · OEM comparison",
+      base: "Exports / total dispatches",
+      benchmarkMetric: "Export Share %",
+    },
+    ev: {
+      kind: "ratio",    titleNoun: "EV share",
+      subtitle: "BEV volume as % of each OEM's total domestic PV volume (vs industry BEV / total PV)",
+      growthTitle: "EV Volume % · OEM comparison",
+      base: "BEV volume / total domestic PV volume",
+      benchmarkMetric: "EV Share %",
+    },
+    suv: {
+      kind: "ratio",    titleNoun: "SUV share",
+      subtitle: "SUV / UV volume as % of each OEM's total domestic PV volume (vs industry SUV / total PV)",
+      growthTitle: "SUV Volume % · OEM comparison",
+      base: "SUV / UV volume / total domestic PV volume",
+      benchmarkMetric: "SUV Share %",
+    },
+    rev_growth: {
+      kind: "yoy",      titleNoun: "Revenue growth",
+      subtitle: "YoY growth in each OEM's net revenue from operations",
+      growthTitle: "Revenue Growth % · OEM YoY comparison",
+      base: "Current FY revenue vs previous FY revenue",
+    },
+    ebitda: {
+      kind: "margin",   titleNoun: "EBITDA margin",
+      subtitle: "EBITDA as % of each OEM's revenue",
+      growthTitle: "EBITDA Margin % · OEM comparison",
+      base: "EBITDA / Revenue",
+    },
+    real_growth: {
+      kind: "yoy",      titleNoun: "Realisation growth",
+      subtitle: "YoY growth in net realisation per unit (revenue / volume)",
+      growthTitle: "Realisation Growth % · OEM YoY comparison",
+      base: "(1 + Revenue Growth) / (1 + Volume Growth) − 1",
+    },
+    capex: {
+      kind: "absolute", titleNoun: "Capex",
+      subtitle: "Annual capex from each OEM's cash flow statement, in ₹ crore",
+      growthTitle: "Capex · OEM comparison",
+    },
+    newlaunches: {
+      kind: "count",    titleNoun: "New model launches",
+      subtitle: "Count of new models launched in the FY per OEM",
+      growthTitle: "New Launches · OEM comparison",
+    },
+    facelifts: {
+      kind: "count",    titleNoun: "Facelifts",
+      subtitle: "Count of model facelifts / refreshes in the FY per OEM",
+      growthTitle: "Facelifts · OEM comparison",
+    },
+  };
+
+  const fmtUnits = {
+    "lakh units": (v) => `${(v / 1e5).toFixed(2)} lakh units`,
+    "%":          (v) => `${v >= 0 ? "+" : ""}${v.toFixed(1)}%`,
+    "₹ Cr":       (v) => `₹${Math.round(v).toLocaleString("en-IN")} Cr`,
+    "count":      (v) => `${Math.round(v)}`,
+  };
   const OEM_COLOR = {
     "Maruti":         "#173B63",
     "Hyundai":        "#5B7CFA",
@@ -893,19 +985,89 @@
       const others = +Math.max(0, indScaled - trackedSum).toFixed(2);
       items.push({ name: "Others", value: others, color: OEM_COLOR.Others });
     } else if (def.oem) {
+      const prevFyForBar = prevFY(fy);
       oems.forEach(co => {
         const r = getCompanyMetric(fy, co, def.oem);
         const v = r && r.Value != null && typeof r.Value === "number" ? r.Value : null;
-        items.push({ name: co, value: v, color: OEM_COLOR[co] });
+        const item = { name: co, value: v, color: OEM_COLOR[co] };
+        /* Build per-bar tooltip context so the tooltip can show
+           previous-FY value, absolute base (e.g. volume / revenue),
+           and the industry benchmark. */
+        const meta = METRIC_DEF[def.id] || {};
+        const ctx = {};
+        if (meta.kind === "yoy") {
+          /* For Volume Growth %: show this FY's volume + prev FY's
+             volume. Inferred from the metric's source data field. */
+          const srcMetric = meta.sourceMetric;
+          if (srcMetric) {
+            const cur = getCompanyMetric(fy, co, srcMetric);
+            const pre = prevFyForBar ? getCompanyMetric(prevFyForBar, co, srcMetric) : null;
+            if (cur && cur.Value != null) ctx.curUnits = `${(cur.Value/1e5).toFixed(2)} lakh units`;
+            if (pre && pre.Value != null) ctx.preUnits = `${(pre.Value/1e5).toFixed(2)} lakh units`;
+          }
+        }
+        if (meta.benchmarkMetric) {
+          const indBench = getIndustryMetric(fy, meta.benchmarkMetric);
+          if (indBench && indBench.Value != null) ctx.industryValue = indBench.Value;
+        }
+        item.context = ctx;
+        items.push(item);
       });
     }
 
-    $("#chart2-title").textContent = `${def.label} · OEM split (${fy})`;
-    $("#chart2-help").textContent  = def.additive
-      ? "Share of industry"
-      : "OEM-by-OEM comparison";
+    /* Title / subtitle now describe what the % means and what the
+       base/denominator is. 'Split' wording reserved for true
+       composition charts (additive). For YoY / margin / ratio
+       metrics use 'comparison' instead. */
+    const mDef = METRIC_DEF[def.id] || {};
+    let title = def.additive
+      ? (mDef.sliceTitle || `${def.label} · OEM mix (${fy})`)
+      : (mDef.growthTitle || `${def.label} · OEM comparison (${fy})`);
+    if (!title.includes(`(${fy})`)) title += ` (${fy})`;
+    $("#chart2-title").textContent = title;
+    $("#chart2-help").textContent  = mDef.subtitle
+      || (def.additive ? "Share of industry" : "OEM-by-OEM comparison");
     $("#chart2-sub").textContent   = `${fy} · ${def.unit}`;
     $("#chart2-sub").classList.remove("hidden");
+
+    /* Context strip — industry total + benchmark for non-additive
+       % metrics so the user immediately sees the denominator. */
+    let ctxRows = [];
+    if (mDef.benchmarkMetric) {
+      const indBench = getIndustryMetric(fy, mDef.benchmarkMetric);
+      if (indBench && indBench.Value != null) {
+        ctxRows.push(`Industry ${def.label.toLowerCase()}: <b>${indBench.Value > 0 ? "+" : ""}${indBench.Value.toFixed(1)}%</b>`);
+      }
+    }
+    if (def.id === "growth" || def.id === "volume") {
+      const indVol = getIndustryMetric(fy, "Total PV Volume");
+      if (indVol && indVol.Value != null) {
+        ctxRows.push(`Industry total volume: <b>${(indVol.Value/1e5).toFixed(2)} lakh units</b>`);
+      }
+    }
+    if (def.id === "marketshare") {
+      const indVol = getIndustryMetric(fy, "Total PV Volume");
+      if (indVol && indVol.Value != null) {
+        ctxRows.push(`Total industry domestic PV volume: <b>${(indVol.Value/1e5).toFixed(2)} lakh units</b>`);
+      }
+    }
+    const prevFyLabel = prevFY(fy);
+    if (mDef.kind === "yoy" && prevFyLabel) {
+      ctxRows.push(`Selected FY: <b>${fy}</b> · YoY base: <b>${prevFyLabel}</b>`);
+    }
+    /* Find or lazily create a context-strip element below the
+       chart subtitle. Inserted only once. */
+    let ctxEl = document.getElementById("chart2-context");
+    if (!ctxEl) {
+      ctxEl = document.createElement("div");
+      ctxEl.id = "chart2-context";
+      ctxEl.style.cssText = "font-size:10.5px;color:#475569;margin:4px 0 6px;line-height:1.5";
+      const subEl = $("#chart2-sub");
+      if (subEl && subEl.parentElement) subEl.parentElement.appendChild(ctxEl);
+    }
+    ctxEl.innerHTML = ctxRows.length
+      ? ctxRows.map(t => `<span style="display:inline-block;margin-right:14px">${t}</span>`).join("")
+      : "";
 
     if (def.additive) {
       const slices = items.filter(s => s.value > 0).sort((a, b) => b.value - a.value);
@@ -929,6 +1091,8 @@
           totalLabel: def.unit === "%"
             ? `Range across OEMs · ${fy}`
             : `Total ${def.label.toLowerCase()} · ${fy}`,
+          metric: mDef.titleNoun || def.label,
+          metricBase: mDef.base || "",
         });
         $("#chart2-legend").innerHTML = ranked.map(r => legendChip(r.color, r.name)).join("");
       }
@@ -1167,13 +1331,35 @@
             : (Math.abs(v) >= 100 ? Math.round(v).toString() : v.toFixed(1));
           return `${sign}${body}${unit}`;
         };
-        const segs = p.segments.map(s => `
-          <div class="flex items-center gap-2.5">
+        /* Find which segment was hovered → show its full context
+           block (prev FY value, industry benchmark, base formula). */
+        const hoveredName = el.dataset.series || "";
+        const hovered = p.segments.find(s => s.label === hoveredName);
+        const ctx = hovered && hovered.context;
+        const metricLine = p.metric
+          ? `<div class="text-[10.5px] mt-0.5" style="color:#6B7280">${p.metric}${p.metricBase ? ` · ${p.metricBase}` : ""}</div>`
+          : "";
+        const segs = p.segments.map(s => {
+          const isHovered = s.label === hoveredName;
+          return `
+          <div class="flex items-center gap-2.5${isHovered ? " font-semibold" : ""}">
             <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
             <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
             <span class="text-[12px] tabular-nums ml-auto font-semibold whitespace-nowrap" style="color:#1F2A37;">${fmtVal(s.value)}</span>
-          </div>`).join("");
-        rich.innerHTML = `<div class="space-y-1.5 mt-1">${segs}</div>`;
+          </div>`;
+        }).join("");
+        let footer = "";
+        if (ctx && (ctx.curUnits || ctx.preUnits || ctx.industryValue != null)) {
+          const lines = [];
+          if (ctx.curUnits)  lines.push(`<span style="color:#6B7280">${p.fy} volume:</span> <b>${ctx.curUnits}</b>`);
+          if (ctx.preUnits)  lines.push(`<span style="color:#6B7280">Prior FY volume:</span> <b>${ctx.preUnits}</b>`);
+          if (ctx.industryValue != null)
+            lines.push(`<span style="color:#6B7280">Industry ${unit === "%" ? "benchmark" : "total"}:</span> <b>${ctx.industryValue > 0 ? "+" : ""}${ctx.industryValue.toFixed(1)}${unit}</b>`);
+          footer = `<div class="text-[10.5px] mt-2 pt-2 leading-relaxed" style="color:#1F2A37; border-top:1px solid #EEF1F5;">${lines.join("<br>")}</div>`;
+        }
+        rich.innerHTML = metricLine
+          + `<div class="space-y-1.5 mt-1">${segs}</div>`
+          + footer;
         rich.classList.remove("hidden");
         tip.classList.remove("hidden");
         positionTip(tip, e);
