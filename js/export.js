@@ -105,68 +105,72 @@
      when the underlying absolutes are edited. */
 
   /* Dashboard metric → Excel formula generator. Each entry returns
-     a formula string given (fy, oem, refAbs(key, fy)) where refAbs
-     returns "'Absolute_Numbers'!E45" or null if absent. */
+     a formula string given (fy, oem, refAbs(key, fy), fallback)
+     where refAbs returns "'Absolute_Numbers'!E45" or null, and
+     fallback is the curated dashboard value for that (co, fy)
+     pulled from placeholder_data — used as the IFERROR catch so
+     PV cells are never blank when an absolute is NA. */
+  const fbk = (v) => (v != null && v !== "" && Number.isFinite(+v)) ? String(+v) : '""';
   const PV_RATIOS = {
-    "Revenue Growth %": (fy, oem, refAbs) => {
-      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return "";
+    "Revenue Growth %": (fy, oem, refAbs, fb) => {
+      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return fb != null ? `IFERROR(${fbk(fb)},"")` : "";
       const cur = refAbs("Revenue", fy);
       const pre = refAbs("Revenue", FYS_MODEL[i-1]);
-      return (cur && pre) ? `IFERROR((${cur}/${pre}-1)*100,"")` : "";
+      return (cur && pre) ? `IFERROR((${cur}/${pre}-1)*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "Volume Growth %": (fy, oem, refAbs) => {
-      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return "";
+    "Volume Growth %": (fy, oem, refAbs, fb) => {
+      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return fb != null ? fbk(fb) : "";
       const cur = refAbs("Total Sales Volume", fy);
       const pre = refAbs("Total Sales Volume", FYS_MODEL[i-1]);
-      return (cur && pre) ? `IFERROR((${cur}/${pre}-1)*100,"")` : "";
+      return (cur && pre) ? `IFERROR((${cur}/${pre}-1)*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "Realisation Growth %": (fy, oem, refAbs) => {
-      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return "";
+    "Realisation Growth %": (fy, oem, refAbs, fb) => {
+      const i = FYS_MODEL.indexOf(fy); if (i <= 0) return fb != null ? fbk(fb) : "";
       const rCur = refAbs("Revenue", fy), rPre = refAbs("Revenue", FYS_MODEL[i-1]);
       const vCur = refAbs("Total Sales Volume", fy), vPre = refAbs("Total Sales Volume", FYS_MODEL[i-1]);
       return (rCur && rPre && vCur && vPre)
-        ? `IFERROR(((${rCur}/${rPre})/(${vCur}/${vPre})-1)*100,"")`
-        : "";
+        ? `IFERROR(((${rCur}/${rPre})/(${vCur}/${vPre})-1)*100,${fbk(fb)})`
+        : (fb != null ? fbk(fb) : "");
     },
-    "EBITDA Margin %": (fy, oem, refAbs) => {
+    "EBITDA Margin %": (fy, oem, refAbs, fb) => {
       const e = refAbs("EBITDA", fy);
       const r = refAbs("Revenue", fy);
-      return (e && r) ? `IFERROR(${e}/${r}*100,"")` : "";
+      return (e && r) ? `IFERROR(${e}/${r}*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "PAT Margin %": (fy, oem, refAbs) => {
+    "PAT Margin %": (fy, oem, refAbs, fb) => {
       const p = refAbs("PAT", fy);
       const r = refAbs("Revenue", fy);
-      return (p && r) ? `IFERROR(${p}/${r}*100,"")` : "";
+      return (p && r) ? `IFERROR(${p}/${r}*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "Capex Intensity %": (fy, oem, refAbs) => {
+    "Capex Intensity %": (fy, oem, refAbs, fb) => {
       const c = refAbs("Capex", fy);
       const r = refAbs("Revenue", fy);
-      return (c && r) ? `IFERROR(${c}/${r}*100,"")` : "";
+      return (c && r) ? `IFERROR(${c}/${r}*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "Working Capital Days": (fy, oem, refAbs) => {
+    "Working Capital Days": (fy, oem, refAbs, fb) => {
       const w = refAbs("Working Capital", fy);
       const r = refAbs("Revenue", fy);
-      return (w && r) ? `IFERROR(${w}*365/${r},"")` : "";
+      return (w && r) ? `IFERROR(${w}*365/${r},${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "Capacity Utilisation %": (fy, oem, refAbs) => {
+    "Capacity Utilisation %": (fy, oem, refAbs, fb) => {
       const v = refAbs("Total Sales Volume", fy);
       const k = refAbs("Capacity", fy);
-      return (v && k) ? `IFERROR(${v}/${k}*100,"")` : "";
+      return (v && k) ? `IFERROR(${v}/${k}*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "Export Volume %": (fy, oem, refAbs) => {
+    "Export Volume %": (fy, oem, refAbs, fb) => {
       const e = refAbs("Export Volume", fy);
       const t = refAbs("Total Sales Volume", fy);
-      return (e && t) ? `IFERROR(${e}/${t}*100,"")` : "";
+      return (e && t) ? `IFERROR(${e}/${t}*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "EV Volume %": (fy, oem, refAbs) => {
+    "EV Volume %": (fy, oem, refAbs, fb) => {
       const e = refAbs("EV Volume", fy);
       const t = refAbs("Total Sales Volume", fy);
-      return (e && t) ? `IFERROR(${e}/${t}*100,"")` : "";
+      return (e && t) ? `IFERROR(${e}/${t}*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
-    "SUV Volume %": (fy, oem, refAbs) => {
+    "SUV Volume %": (fy, oem, refAbs, fb) => {
       const s = refAbs("SUV Volume", fy);
       const t = refAbs("Total Sales Volume", fy);
-      return (s && t) ? `IFERROR(${s}/${t}*100,"")` : "";
+      return (s && t) ? `IFERROR(${s}/${t}*100,${fbk(fb)})` : (fb != null ? fbk(fb) : "");
     },
   };
   function appendBlock(sheet, companyLabel, rows, oem, D, ctx) {
@@ -231,7 +235,17 @@
           const ref = oem ? refAbs(directKey, fy) : indRefAbs(directKey, fy);
           if (ref) formulas[y - YEAR_START] = ref;
         } else if (ratioFn) {
-          const f = ratioFn(fy, oem, refAbs);
+          /* Pull the curated dashboard value as the IFERROR fallback
+             so the cell always shows a number, never blank. */
+          let fallback = null;
+          if (oem) {
+            const rec = (D.Company_FY_Metrics || []).find(x =>
+              x.Company === oem && x.FY === fy && x.Metric === metric);
+            if (rec && rec.Value != null && rec.Value !== "Pending" && Number.isFinite(+rec.Value)) {
+              fallback = +rec.Value;
+            }
+          }
+          const f = ratioFn(fy, oem, refAbs, fallback);
           if (f) formulas[y - YEAR_START] = f;
         }
       }
