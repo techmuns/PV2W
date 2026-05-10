@@ -573,9 +573,20 @@ body::before {
   padding: 12px 18px;
   background: linear-gradient(180deg, #F4F8FE 0%, #FFFFFF 100%);
   border-bottom: 1px solid #EEF1F5;
-  min-height: 64px;
+  /* Strict fixed height so the title-line / subtitle-line / unit
+     pill on the right never push the body up or down when copy
+     length changes between metrics. */
+  height: 64px;
   flex-shrink: 0;
+  overflow: hidden;
 }
+/* Truncate long titles / subtitles instead of wrapping — wrapping
+   pushes the right-side unit pill out of place. */
+.chart-panel-title { line-height: 18px; max-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chart-panel-sub   { line-height: 16px; max-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Smooth opacity fade when chart content swaps between metrics. */
+#chart1, #chart2 { transition: opacity 180ms ease-in-out; }
+#chart1.is-swapping, #chart2.is-swapping { opacity: 0; }
 .chart-panel-title {
   font-size: 14px;
   font-weight: 600;

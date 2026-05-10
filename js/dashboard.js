@@ -1076,7 +1076,17 @@
     $("#chart2-product-sub").style.visibility = "hidden";
     const chart2 = $("#chart2");
     chart2.removeAttribute("style");
-    chart2.style.minHeight = "240px";
+    /* Smooth fade-in: mark both chart canvases as 'swapping'
+       (opacity 0) before re-render, then drop the class on the
+       next frame so CSS transition kicks in. Layout doesn't move
+       because the panel + canvas heights are CSS-locked. */
+    const chart1El = $("#chart1");
+    [chart1El, chart2].forEach(el => el && el.classList.add("is-swapping"));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        [chart1El, chart2].forEach(el => el && el.classList.remove("is-swapping"));
+      });
+    });
 
     /* ── Left card: 10-yr trend ── */
     if (def.industry) {
@@ -1328,10 +1338,10 @@
       body += `<path class="bar hover-target" d="${path}" fill="${s.color}" stroke="#FFFFFF" stroke-width="2"
         data-fy="${ATTR(options.fy || "")}" data-series="${ATTR(s.name)}" data-value="${ATTR(v)}"
         data-unit="%" data-color="${ATTR(s.color)}" data-rich="${ATTR(richPayload)}"/>`;
-      if (pct >= 5) {
-        body += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle"
-          font-size="11" font-weight="700" fill="#FFFFFF" style="paint-order:stroke;stroke:rgba(0,0,0,0.18);stroke-width:0.6">${pct.toFixed(1)}%</text>`;
-      }
+      /* In-slice percent labels removed — the hover tooltip already
+         shows volume + share for every slice, and the side legend
+         carries the share %. Cleaner visual without two readouts of
+         the same number. */
       positioned.push({ name: s.name, color: s.color, pct });
       angle = end;
     });
