@@ -1090,10 +1090,15 @@
 
     /* ── Left card: 10-yr trend ── */
     if (def.industry) {
+      /* Scale: volume metric stores raw units (e.g. 4,300,000) but
+         the trend chart axis labels in lakh units. Compute scale
+         from the metric's unit string so we don't need a per-metric
+         flag. */
+      const trendScale = (def.unit === "lakh units") ? 1/1e5 : 1;
       const series = fyTrend.map(fyx => {
         const r = getIndustryMetric(fyx, def.industry);
         const v = r && r.Value != null && typeof r.Value === "number" ? r.Value : null;
-        return v == null ? null : (def.industryScale ? +(v * def.industryScale).toFixed(2) : v);
+        return v == null ? null : +(v * trendScale).toFixed(2);
       });
       $("#chart1-title").textContent  = `${def.label} · industry trend`;
       $("#chart1-help").textContent   = "10-year history (SIAM domestic PV)";
@@ -1597,10 +1602,18 @@
         $("#cht-fy").textContent = p.fy;
         simple.classList.add("hidden");
         const unit = p.unit || "";
+        /* '+' prefix only for delta-shaped metrics (%, growth);
+           absolute values (lakh units, ₹ Cr, count) are always
+           positive and reading '+3,288,581' as a delta is wrong. */
+        const isDelta = unit === "%" || /Δ|growth/i.test(unit);
         const fmtVal = (v) => {
-          const sign = v > 0 ? "+" : "";          // negatives carry their own '-'
-          const body = unit === "%" ? v.toFixed(1) : (Math.abs(v) >= 100 ? Math.round(v).toString() : v.toFixed(1));
-          return `${sign}${body}${unit}`;
+          const sign = (isDelta && v > 0) ? "+" : "";
+          let body;
+          if (unit === "%") body = v.toFixed(1);
+          else if (Math.abs(v) >= 1000) body = Math.round(v).toLocaleString("en-IN");
+          else body = v.toFixed(2);
+          const suffix = unit ? ` ${unit}` : "";
+          return `${sign}${body}${suffix}`;
         };
         const segs = p.segments.map(s => `
           <div class="flex items-center gap-2.5">
