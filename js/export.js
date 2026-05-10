@@ -754,16 +754,20 @@
         })();
         rowMap[`${co}|Total Debt`]      = orGap(co, "BS", "Total Debt (Borrowings)", "₹ Cr",
           "Borrowings (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
-        rowMap[`${co}|Cash`]            = gapRow(co, "BS", "Cash & Investments", "₹ Cr", "NA — Screener publishes Investments line; pure-Cash absolute requires AR balance sheet drill-down");
+        rowMap[`${co}|Cash`]            = orGap(co, "BS", "Cash & Investments", "₹ Cr",
+          "Cash (Rs Cr)", "NA — Tijori fetch hasn't extracted the cash sub-line yet");
         rowMap[`${co}|Net Debt`]        = formulaRow(co, "BS", "Net Debt", "₹ Cr",
           (fy) => {
             const td = `${fyColLetter(fy)}${rowMap[`${co}|Total Debt`]}`;
             const cs = `${fyColLetter(fy)}${rowMap[`${co}|Cash`]}`;
             return `IFERROR(${td}-${cs},"")`;
           }, '#,##0');
-        rowMap[`${co}|Receivables`]     = gapRow(co, "BS", "Receivables", "₹ Cr", "NA — BS line item not in summary");
-        rowMap[`${co}|Inventory`]       = gapRow(co, "BS", "Inventory", "₹ Cr", "NA — BS line item not in summary");
-        rowMap[`${co}|Payables`]        = gapRow(co, "BS", "Payables", "₹ Cr", "NA — BS line item not in summary");
+        rowMap[`${co}|Receivables`]     = orGap(co, "BS", "Receivables", "₹ Cr",
+          "Receivables (Rs Cr)", "NA — Tijori fetch hasn't extracted this BS sub-line yet");
+        rowMap[`${co}|Inventory`]       = orGap(co, "BS", "Inventory", "₹ Cr",
+          "Inventory (Rs Cr)", "NA — Tijori fetch hasn't extracted this BS sub-line yet");
+        rowMap[`${co}|Payables`]        = orGap(co, "BS", "Payables", "₹ Cr",
+          "Payables (Rs Cr)", "NA — Tijori fetch hasn't extracted this BS sub-line yet");
         /* Working Capital absolute = Working Capital Days × Revenue / 365.
            WC Days is sourced from Screener / AR ratios; this gives a
            usable Working Capital number while Receivables / Inventory /

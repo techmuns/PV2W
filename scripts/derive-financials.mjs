@@ -143,6 +143,36 @@ function main() {
       apply('Cash from Investing (Rs Cr)', vals.investing_cr);
       apply('Cash from Financing (Rs Cr)', vals.cff_cr);
     }
+
+    /* Tijori publishes balance-sheet sub-lines that Screener
+       doesn't surface (Receivables / Inventory / Payables / Cash
+       & Bank). Push those into placeholder_data when present. */
+    const tijori = raw[meta.rawKey] && raw[meta.rawKey].Tijori;
+    if (tijori && tijori.by_fy) {
+      const tijoriSrc = `Tijorifinance — ${company} balance sheet sub-lines`;
+      const tijoriUrl = tijori.source_url || meta.url;
+      const setTij = (fy, metric, value) => {
+        if (value == null || !Number.isFinite(value)) return;
+        let row = data.company_fy_metrics.find(r =>
+          r.Company === company && r.FY === fy && r.Metric === metric);
+        if (!row) {
+          row = { FY: fy, Company: company, Metric: metric,
+                  Value: null, YoY_Change: null, Signal: 'Neutral',
+                  Source: 'Pending', Source_URL: null, Last_Updated: null };
+          data.company_fy_metrics.push(row);
+        }
+        if (isAnalystAuthoritative(row.Source) && row.Value != null) { kept++; return; }
+        if (row.Value === value && row.Source === tijoriSrc) { unchanged++; return; }
+        row.Value = value; row.Source = tijoriSrc; row.Source_URL = tijoriUrl;
+        row.Last_Updated = TODAY; updated++;
+      };
+      for (const [fy, vals] of Object.entries(tijori.by_fy)) {
+        setTij(fy, 'Receivables (Rs Cr)', vals.receivables_cr);
+        setTij(fy, 'Inventory (Rs Cr)',   vals.inventory_cr);
+        setTij(fy, 'Payables (Rs Cr)',    vals.payables_cr);
+        setTij(fy, 'Cash (Rs Cr)',        vals.cash_bank_cr);
+      }
+    }
   }
 
   console.log(`\n[derive-financials] updated=${updated} kept-authoritative=${kept} unchanged=${unchanged} noRawData=${noRaw}`);
