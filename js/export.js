@@ -1250,7 +1250,7 @@
       const wb = new ExcelJS.Workbook();
       wb.creator = "PV Industry Dashboard";
       wb.created = new Date();
-      wb.title   = "PV Industry Dashboard Export";
+      wb.title   = "Munshot PV Dashboard Export";
 
       /* Build the financial-model layer first so the dashboard PV
          tab can reference it via formulas. Order of sheets in the
@@ -1272,7 +1272,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Dashboard_Export_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      a.download = `Munshot PV Dashboard Export ${new Date().toISOString().slice(0, 10)}.xlsx`;
       document.body.appendChild(a);
       a.click();
       a.remove();
