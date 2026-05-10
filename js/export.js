@@ -635,6 +635,24 @@
       return rowNum;
     };
 
+    /* Helper closures used across P&L / BS / CF sections — defined
+       once at function scope so they're visible from every block.
+       (Earlier they were declared inside the P&L `else` block which
+       caused ReferenceError when the BS / CF blocks tried to use
+       them — that broke the export.) */
+    const screenerSrcFor = (co) => ({
+      src: `Screener.in (parsed by fetch-${co.toLowerCase().replace(/\s+/g,'').replace('&','-and-')}-screener.mjs → derive-financials.mjs)`,
+      url: `https://www.screener.in/company/`,
+    });
+    const orGap = (co, statement, item, unit, metric, reason) => {
+      const has = (D.Company_FY_Metrics || []).some(r =>
+        r.Company === co && r.Metric === metric && r.Value != null && r.Value !== "Pending");
+      if (has) {
+        return inputRow(co, statement, item, unit, (fy) => getCM(D, co, fy, metric), screenerSrcFor(co));
+      }
+      return gapRow(co, statement, item, unit, reason);
+    };
+
     allCos.forEach(co => {
       addCompanyHeader(sheet, co);
 
@@ -664,18 +682,7 @@
             url:  (ABS_DATA[co] && ABS_DATA[co].url) || "" });
         /* P&L line items pulled from Screener (via derive-financials)
            where present; fall back to gap row when the metric hasn't
-           landed in placeholder_data yet (only happens for OEMs whose
-           Screener fetch hasn't run). */
-        const screenerSrc = { src: `Screener.in (parsed by fetch-${co.toLowerCase().replace(/\s+/g,'').replace('&','-and-')}-screener.mjs → derive-financials.mjs)`,
-                              url: `https://www.screener.in/company/` };
-        const orGap = (co, statement, item, unit, metric, reason) => {
-          const has = (D.Company_FY_Metrics || []).some(r =>
-            r.Company === co && r.Metric === metric && r.Value != null && r.Value !== "Pending");
-          if (has) {
-            return inputRow(co, statement, item, unit, (fy) => getCM(D, co, fy, metric), screenerSrc);
-          }
-          return gapRow(co, statement, item, unit, reason);
-        };
+           landed in placeholder_data yet. */
         rowMap[`${co}|Depreciation`] = orGap(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
           "Depreciation (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
         /* EBIT = EBITDA - D&A. Defined as a formula so it auto-updates. */
