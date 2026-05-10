@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260510d" />
+  <link rel="stylesheet" href="css/styles.css?v=20260510e" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -164,7 +164,7 @@
     <section>
       <div class="section-head">
         <span class="section-eyebrow">Performance</span>
-        <span class="section-hint">Growth · Mix · Buy-side read</span>
+        <span class="section-hint">Growth · Mix · Composition</span>
       </div>
 
       <!-- Industry-only shared controls — drive both Performance cards
@@ -340,11 +340,8 @@
 
         <div id="modal-stats" class="grid grid-cols-2 sm:grid-cols-5 gap-3"></div>
 
-        <div id="modal-insight"
-             class="rounded-xl bg-tint border border-blue/15 px-5 py-4 text-[13px] text-ink leading-relaxed"></div>
-
         <div class="text-[10.5px] text-inkMuted pt-1 border-t border-lineSoft">
-          Source: <span id="modal-source">Pending</span> · Last updated <span id="modal-updated">—</span>
+          Source: <span id="modal-source">—</span> · Last updated <span id="modal-updated">—</span>
         </div>
       </div>
     </div>
@@ -388,9 +385,6 @@
           <div id="vmodal-peers"></div>
         </div>
 
-        <div id="vmodal-insight"
-             class="rounded-xl bg-tint border border-blue/15 px-5 py-4 text-[13px] text-ink leading-relaxed"></div>
-
         <div class="text-[10.5px] text-inkMuted pt-1 border-t border-lineSoft">
           Source: <span id="vmodal-source">—</span> · Last updated <span id="vmodal-updated">—</span>
         </div>
@@ -398,8 +392,8 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260510d"></script>
-  <script src="js/dashboard.js?v=20260510d"></script>
-  <script src="js/export.js?v=20260510d"></script>
+  <script src="js/data-loader.js?v=20260510e"></script>
+  <script src="js/dashboard.js?v=20260510e"></script>
+  <script src="js/export.js?v=20260510e"></script>
 </body>
 </html>
