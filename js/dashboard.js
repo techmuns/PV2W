@@ -2505,45 +2505,22 @@
     $("#vmodal-peer-fy").textContent = state.fy;
     $("#vmodal-peers").innerHTML = peerHTML;
 
-    /* Insight — prefer the curated Vehicle_Insight string when an
-       analyst has populated it; otherwise synthesise a one-liner
-       from the vehicle's own primary-source fields (Volume, YoY,
-       Segment Rank, Demand Read, Key Driver) so the panel never
-       reads as a 'pending' placeholder. */
+    /* Insight panel — when an analyst has curated a Vehicle_Insight
+       string, show it. Otherwise show ONLY the primary source line
+       (no 'insight pending' wording, no synthesised commentary).
+       The source tag is detached from any 'insight' framing per
+       the user spec. */
     const ie = $("#vmodal-insight");
     const insight = current && current.Vehicle_Insight ? current.Vehicle_Insight : null;
+    const hasSrc = current && current.Source && current.Source !== "Pending";
+    ie.classList.remove("text-inkMuted");
+    ie.style.fontStyle = "";
     if (insight) {
-      ie.classList.remove("text-inkMuted");
-      ie.style.fontStyle = "";
       ie.textContent = insight;
-    } else if (current) {
-      const parts = [];
-      if (current.Volume != null) {
-        const yoy = current.YoY_Growth;
-        const yoyTxt = (yoy != null && Number.isFinite(yoy))
-          ? ` (${yoy > 0 ? "+" : ""}${yoy.toFixed(1)}% YoY)` : "";
-        parts.push(`${vehicleName} delivered ${Number(current.Volume).toLocaleString()} units in ${current.FY}${yoyTxt}`);
-      }
-      if (current.Segment_Rank != null && current.Segment) {
-        parts.push(`ranked #${current.Segment_Rank} in the ${current.Segment} segment`);
-      } else if (current.Segment) {
-        parts.push(`positioned in the ${current.Segment} segment`);
-      }
-      if (current.Demand_Read) parts.push(`demand read: ${current.Demand_Read}`);
-      if (current.Key_Driver)  parts.push(`key driver: ${current.Key_Driver}`);
-      const body = parts.length
-        ? parts.join("; ") + "."
-        : `${vehicleName} — see linked source for the underlying disclosure.`;
-      const sourceTag = current.Source && current.Source !== "Pending"
-        ? ` Source (primary): ${current.Source}.`
-        : ` Insight from primary sources — OEM investor presentations, annual-report MD&A, and monthly sales disclosures.`;
-      ie.classList.remove("text-inkMuted");
-      ie.style.fontStyle = "";
-      ie.textContent = body + sourceTag;
+    } else if (hasSrc) {
+      ie.textContent = `Source: ${current.Source}.`;
     } else {
-      ie.classList.remove("text-inkMuted");
-      ie.style.fontStyle = "";
-      ie.textContent = `${vehicleName} — insight from primary sources (OEM investor presentations, annual-report MD&A, and monthly sales disclosures).`;
+      ie.textContent = "Source: OEM investor presentations / annual-report MD&A / monthly sales disclosures.";
     }
 
     /* Source / updated — render as a real link when Source_URL exists,
