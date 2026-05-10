@@ -551,14 +551,25 @@
         .map(s => {
           const v = s.values[i];
           if (v === null || v === undefined) return null;
-          return { label: s.name || "", value: v, color: s.color || "#2563EB" };
+          /* Carry the prior-FY value so the tooltip can render the
+             YoY change next to the absolute. */
+          const prev = i > 0 ? s.values[i - 1] : null;
+          return {
+            label: s.name || "",
+            value: v,
+            prev: (prev === null || prev === undefined) ? null : prev,
+            color: s.color || "#2563EB",
+          };
         })
         .filter(Boolean);
       if (!segments.length) return "";
       const payload = JSON.stringify({
         kind: "multi-line",
         fy: l,
-        unit: options.yUnit || "",
+        /* Pass the unit used by the helper for axis ticks (yUnit)
+           AND the analyst-facing unit phrase from the caller
+           (axisLabel takes priority for the tooltip suffix). */
+        unit: options.tooltipUnit || options.yUnit || "",
         segments,
       });
       return `<rect class="hover-target" x="${x(i) - colW/2}" y="${padT}" width="${colW}" height="${h - padT - padB}" fill="transparent"
@@ -1105,7 +1116,8 @@
       $("#chart1-sub").textContent    = def.unit;
       $("#chart1").innerHTML = lineChart([
         { name: def.label, color: COLOR.navy, values: series },
-      ], { xLabels: fyTrend, yUnit: def.unit === "%" ? "%" : "", area: true });
+      ], { xLabels: fyTrend, yUnit: def.unit === "%" ? "%" : "",
+           tooltipUnit: def.unit, area: true });
       $("#chart1-legend").innerHTML  = legendChip(COLOR.navy, def.label);
       $("#chart1-source").textContent = "Source: SIAM yearbook / monthly press releases.";
     } else if (def.oem) {
@@ -1131,7 +1143,7 @@
         $("#chart1-legend").innerHTML  = "";
         $("#chart1-source").textContent = "";
       } else {
-        $("#chart1").innerHTML = lineChart(series, { xLabels: fyTrend, yUnit: def.unit === "%" ? "%" : "" });
+        $("#chart1").innerHTML = lineChart(series, { xLabels: fyTrend, yUnit: def.unit === "%" ? "%" : "", tooltipUnit: def.unit });
         $("#chart1-legend").innerHTML  = series.map(s => legendChip(s.color, s.name)).join("");
         $("#chart1-source").textContent = `Source: company filings (annual reports + Q4 investor presentations); ${def.label} per OEM across FY16-${fyTrend[fyTrend.length-1]}.`;
       }
@@ -1602,9 +1614,6 @@
         $("#cht-fy").textContent = p.fy;
         simple.classList.add("hidden");
         const unit = p.unit || "";
-        /* '+' prefix only for delta-shaped metrics (%, growth);
-           absolute values (lakh units, ₹ Cr, count) are always
-           positive and reading '+3,288,581' as a delta is wrong. */
         const isDelta = unit === "%" || /Δ|growth/i.test(unit);
         const fmtVal = (v) => {
           const sign = (isDelta && v > 0) ? "+" : "";
@@ -1615,11 +1624,24 @@
           const suffix = unit ? ` ${unit}` : "";
           return `${sign}${body}${suffix}`;
         };
+        /* For absolute-value series, also render the YoY change
+           next to the value so analysts see the trajectory at a
+           glance. Skip when prev is missing (first FY) or when
+           the metric itself is already a % (avoids double %).  */
+        const fmtYoY = (cur, prev) => {
+          if (prev == null || prev === 0) return "";
+          const dPct = ((cur - prev) / Math.abs(prev)) * 100;
+          const sign = dPct >= 0 ? "+" : "";
+          const colour = dPct >= 0 ? "#15803D" : "#B91C1C";
+          return `<span class="ml-1.5 text-[11px] font-medium" style="color:${colour}">${sign}${dPct.toFixed(1)}%</span>`;
+        };
         const segs = p.segments.map(s => `
           <div class="flex items-center gap-2.5">
             <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
             <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
-            <span class="text-[12px] tabular-nums ml-auto font-semibold whitespace-nowrap" style="color:#1F2A37;">${fmtVal(s.value)}</span>
+            <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">
+              <span class="font-semibold" style="color:#1F2A37;">${fmtVal(s.value)}</span>${unit !== "%" ? fmtYoY(s.value, s.prev) : ""}
+            </span>
           </div>`).join("");
         rich.innerHTML = `<div class="space-y-1.5 mt-1">${segs}</div>`;
         rich.classList.remove("hidden");
