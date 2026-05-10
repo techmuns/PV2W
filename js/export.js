@@ -27,12 +27,18 @@
   const ALL_OEMS = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
 
   /* Calendar years for the column header. Edit here to extend. */
-  /* Year range: FY16 – FY26. We dropped 2010-2015 because no source
-     in the dataset covers those FYs (Maruti Q4 IPs go back to FY16,
-     Hyundai DRHP covers FY19+, M&M Screener covers FY15+ but only
-     for one row, etc.). FY26 is included for forward-looking series
-     (M&M consolidated already prints a full FY26 column). */
-  const YEAR_START = 2016, YEAR_END = 2026;
+  /* Year range — auto-extends each fiscal year.
+       YEAR_START is fixed at 2016 (no source covers earlier FYs).
+       YEAR_END is computed dynamically: April marks the start of
+       a new Indian FY, so once we cross April N we want the column
+       for FY ending March (N+1) visible (Q1 partials land in May).
+     This means the Excel grows by one column every April with no
+     code change required. */
+  const YEAR_START = 2016;
+  const _now       = new Date();
+  const _currentY  = _now.getFullYear();
+  const _isPostApr = _now.getMonth() >= 3;   // 0-indexed; April = 3
+  const YEAR_END   = _isPostApr ? _currentY + 1 : _currentY;
 
   /* Column 2010 → FY10, 2025 → FY25, etc. */
   function yearToFY(y) { return "FY" + String(y).slice(2); }
@@ -322,7 +328,14 @@
      5..15=FY16..FY26, 16=Source, 17=Source URL, 18=Last Updated.
      The Calculations + PV tabs share the same FY column layout
      so cross-tab references stay readable. */
-  const FYS_MODEL = ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25","FY26"];
+  /* FYs that the financial-model tabs span — derived from the
+     YEAR_START/YEAR_END dynamic range so adding a new fiscal year
+     to the dashboard requires no code change. */
+  const FYS_MODEL = (() => {
+    const out = [];
+    for (let y = YEAR_START; y <= YEAR_END; y++) out.push("FY" + String(y).slice(2));
+    return out;
+  })();
   const FY_COL_OFFSET = 5;   // FY16 lives in column 5 (E) on Financials_3Statement
   const fyCol = (fy) => FY_COL_OFFSET + FYS_MODEL.indexOf(fy);
   const fyColLetter = (fy) => columnLetter(fyCol(fy));

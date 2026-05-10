@@ -1,8 +1,31 @@
 {
   "_notes": "Top-level dashboard config: company list, FY ranges, KPI lists, brand colors, tab definitions. Single source for everything that's structural rather than per-row data.",
-  "companies": ["Industry", "Maruti", "Hyundai", "M&M", "Tata Motors PV"],
-  "fys":      ["FY23", "FY24", "FY25"],
-  "fys_full": ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25"],
+  "companies": [
+    "Industry",
+    "Maruti",
+    "Hyundai",
+    "M&M",
+    "Tata Motors PV"
+  ],
+  "fys": [
+    "FY25",
+    "FY26",
+    "FY27"
+  ],
+  "fys_full": [
+    "FY16",
+    "FY17",
+    "FY18",
+    "FY19",
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26",
+    "FY27"
+  ],
   "oem_kpis": [
     "Market Share %",
     "Volume Growth %",
@@ -35,25 +58,78 @@
     "Capex (Rs Cr)"
   ],
   "brands": {
-    "Maruti":         { "color": "#C95A5A", "label": "OEM",       "initials": "MS",  "domain": "marutisuzuki.com" },
-    "Hyundai":        { "color": "#0F3D75", "label": "OEM",       "initials": "HM",  "domain": "hyundai.com" },
-    "M&M":            { "color": "#7A2E3A", "label": "OEM",       "initials": "M&M", "domain": "mahindra.com" },
-    "Tata Motors PV": { "color": "#1E4E8C", "label": "OEM",       "initials": "TM",  "domain": "tatamotors.com" },
-    "Industry":       { "color": "#334E68", "label": "Aggregate", "initials": "PV",  "domain": null }
+    "Maruti": {
+      "color": "#C95A5A",
+      "label": "OEM",
+      "initials": "MS",
+      "domain": "marutisuzuki.com"
+    },
+    "Hyundai": {
+      "color": "#0F3D75",
+      "label": "OEM",
+      "initials": "HM",
+      "domain": "hyundai.com"
+    },
+    "M&M": {
+      "color": "#7A2E3A",
+      "label": "OEM",
+      "initials": "M&M",
+      "domain": "mahindra.com"
+    },
+    "Tata Motors PV": {
+      "color": "#1E4E8C",
+      "label": "OEM",
+      "initials": "TM",
+      "domain": "tatamotors.com"
+    },
+    "Industry": {
+      "color": "#334E68",
+      "label": "Aggregate",
+      "initials": "PV",
+      "domain": null
+    }
   },
   "tabs": {
     "oem": {
-      "Growth":     ["Revenue Growth %", "Volume Growth %", "Realisation Growth %"],
-      "Margins":    ["Gross Margin %", "EBITDA Margin %"],
-      "Mix":        ["SUV Volume %", "EV Volume %", "Export Volume %"],
-      "Operations": ["Capacity Utilisation %", "Capex (Rs Cr)", "Working Capital Days"],
-      "Product":    ["New Model Launches", "Facelift Launches", "Top Selling Model"],
+      "Growth": [
+        "Revenue Growth %",
+        "Volume Growth %",
+        "Realisation Growth %"
+      ],
+      "Margins": [
+        "Gross Margin %",
+        "EBITDA Margin %"
+      ],
+      "Mix": [
+        "SUV Volume %",
+        "EV Volume %",
+        "Export Volume %"
+      ],
+      "Operations": [
+        "Capacity Utilisation %",
+        "Capex (Rs Cr)",
+        "Working Capital Days"
+      ],
+      "Product": [
+        "New Model Launches",
+        "Facelift Launches",
+        "Top Selling Model"
+      ],
       "Governance": []
     },
     "industry": {
-      "Demand":      ["Total PV Volume", "PV Volume Growth %"],
-      "Mix":         ["SUV Share %", "EV Share %", "Export Share %"],
-      "Competition": ["Top Gaining OEM"]
+      "Demand": [
+        "Total PV Volume",
+        "PV Volume Growth %"
+      ],
+      "Mix": [
+        "SUV Share %",
+        "EV Share %",
+        "Export Share %"
+      ],
+      "Competition": [
+        "Top Gaining OEM"
+      ]
     }
   }
 }
