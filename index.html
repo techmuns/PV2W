@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260509v" />
+  <link rel="stylesheet" href="css/styles.css?v=20260509w" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -234,18 +234,20 @@
 
     <!-- ============== METRIC TABLE / DRILLDOWNS ============== -->
     <section>
-      <div class="section-head">
-        <span class="section-eyebrow">Supporting data</span>
-      </div>
-
       <!-- Industry view falls back to the legacy tab structure -->
       <div id="industry-tabs" class="hidden bg-card rounded-xl shadow-card border border-line">
         <div id="tab-bar" class="flex border-b border-line overflow-x-auto bg-bgSoft/60 rounded-t-xl"></div>
         <div id="tab-body" class="p-5"></div>
       </div>
 
-      <!-- OEM view: 45/55 split — compact table left, larger chart right -->
+      <!-- OEM view: 45/55 split — compact table left, larger chart right.
+           "Supporting data" eyebrow lives inside the OEM hub so it
+           only renders when an OEM is selected (Industry view hides
+           the whole hub + eyebrow together). -->
       <div id="oem-hub" class="space-y-4">
+        <div class="section-head">
+          <span class="section-eyebrow">Supporting data</span>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-6 gap-3 items-stretch">
           <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden flex flex-col lg:col-span-2">
             <div id="metric-table" class="flex-1 flex flex-col"></div>
@@ -389,8 +391,8 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260509v"></script>
-  <script src="js/dashboard.js?v=20260509v"></script>
-  <script src="js/export.js?v=20260509v"></script>
+  <script src="js/data-loader.js?v=20260509w"></script>
+  <script src="js/dashboard.js?v=20260509w"></script>
+  <script src="js/export.js?v=20260509w"></script>
 </body>
 </html>
