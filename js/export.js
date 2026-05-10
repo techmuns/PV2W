@@ -667,8 +667,22 @@
           (fy) => getInd(D, fy, "Average ASP (Rs Lakh)"),
           { src: "SIAM domestic PV ASP (industry weighted average)", url: "https://www.siam.in/statistics.aspx" });
       } else {
-        rowMap[`${co}|Revenue`]    = inputRow(co, "P&L", "Revenue / Net Sales", "₹ Cr",
-          (fy) => getAbs(co, fy, "Revenue"), ABS_DATA[co], "company AR not parsed for this FY");
+        /* Revenue: prefer the curated ABS_DATA hardcode (Maruti / Hyundai
+           / M&M); fall back to the Screener-derived 'Net Sales (Rs Cr)'
+           that derive-financials wrote into placeholder_data; then
+           orGap will mark NA if neither is present. Tata PV-segment
+           lands on the placeholder_data path via seed-tata-pv-segment.mjs. */
+        rowMap[`${co}|Revenue`] = inputRow(co, "P&L", "Revenue / Net Sales", "₹ Cr",
+          (fy) => {
+            const v = getAbs(co, fy, "Revenue");
+            if (v != null) return v;
+            return getCM(D, co, fy, "Net Sales (Rs Cr)");
+          },
+          ABS_DATA[co] && Object.keys(ABS_DATA[co].byFY || {}).length
+            ? ABS_DATA[co]
+            : { src: `${co} Q4 Investor Presentation / Annual Report (segment revenue where applicable)`,
+                url: (ABS_DATA[co] && ABS_DATA[co].url) || "" },
+          "company filing not parsed for this FY");
         /* EBITDA absolute = Revenue × EBITDA Margin % (exact arithmetic
            — not estimation. EBITDA Margin % is sourced from each
            OEM's AR / Q4 IP and Revenue is the audited figure). */
@@ -685,13 +699,22 @@
            landed in placeholder_data yet. */
         rowMap[`${co}|Depreciation`] = orGap(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
           "Depreciation (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
-        /* EBIT = EBITDA - D&A. Defined as a formula so it auto-updates. */
-        rowMap[`${co}|EBIT`]         = formulaRow(co, "P&L", "EBIT", "₹ Cr",
-          (fy) => {
-            const e = `${fyColLetter(fy)}${rowMap[`${co}|EBITDA`]}`;
-            const d = `${fyColLetter(fy)}${rowMap[`${co}|Depreciation`]}`;
-            return `IFERROR(${e}-${d},"")`;
-          }, '#,##0');
+        /* EBIT — prefer the absolute disclosed in placeholder_data
+           (Tata PV segment from Q4 IPs lands here); else compute
+           = EBITDA − D&A. */
+        const hasEbitAbs = (D.Company_FY_Metrics || []).some(r =>
+          r.Company === co && r.Metric === "EBIT (Rs Cr)" && r.Value != null);
+        rowMap[`${co}|EBIT`] = hasEbitAbs
+          ? inputRow(co, "P&L", "EBIT", "₹ Cr",
+              (fy) => getCM(D, co, fy, "EBIT (Rs Cr)"),
+              { src: `${co} Q4 Investor Presentation — segment EBIT`,
+                url: (ABS_DATA[co] && ABS_DATA[co].url) || "" })
+          : formulaRow(co, "P&L", "EBIT", "₹ Cr",
+              (fy) => {
+                const e = `${fyColLetter(fy)}${rowMap[`${co}|EBITDA`]}`;
+                const d = `${fyColLetter(fy)}${rowMap[`${co}|Depreciation`]}`;
+                return `IFERROR(${e}-${d},"")`;
+              }, '#,##0');
         rowMap[`${co}|Finance Cost`] = orGap(co, "P&L", "Finance Cost (Interest)", "₹ Cr",
           "Interest (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
         rowMap[`${co}|PBT`]          = orGap(co, "P&L", "PBT (Profit Before Tax)", "₹ Cr",
@@ -711,8 +734,24 @@
         addSectionHeader(sheet, "Balance Sheet");
         rowMap[`${co}|Total Assets`]    = orGap(co, "BS", "Total Assets", "₹ Cr",
           "Total Assets (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
-        rowMap[`${co}|Net Worth`]       = orGap(co, "BS", "Net Worth / Equity", "₹ Cr",
-          "Net Worth (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+        /* Net Worth — try Screener-derived first; for Tata PV
+           segment the official Q4 IP discloses Capital Employed
+           (a segment-level Net Worth + allocated Net Debt proxy)
+           which we use as the input. */
+        rowMap[`${co}|Net Worth`] = (() => {
+          const hasNW = (D.Company_FY_Metrics || []).some(r =>
+            r.Company === co && r.Metric === "Net Worth (Rs Cr)" && r.Value != null);
+          if (hasNW) return orGap(co, "BS", "Net Worth / Equity", "₹ Cr",
+            "Net Worth (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          const hasCE = (D.Company_FY_Metrics || []).some(r =>
+            r.Company === co && r.Metric === "Capital Employed (Rs Cr)" && r.Value != null);
+          if (hasCE) return inputRow(co, "BS", "Capital Employed (segment proxy for Net Worth)", "₹ Cr",
+            (fy) => getCM(D, co, fy, "Capital Employed (Rs Cr)"),
+            { src: `${co} Q4 Investor Presentation — segment Capital Employed`,
+              url: "https://www.tatamotors.com/investors/financials/quarterly-results/" });
+          return gapRow(co, "BS", "Net Worth / Equity", "₹ Cr",
+            "NA — entity-level only, segment Net Worth not separately disclosed");
+        })();
         rowMap[`${co}|Total Debt`]      = orGap(co, "BS", "Total Debt (Borrowings)", "₹ Cr",
           "Borrowings (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
         rowMap[`${co}|Cash`]            = gapRow(co, "BS", "Cash & Investments", "₹ Cr", "NA — Screener publishes Investments line; pure-Cash absolute requires AR balance sheet drill-down");
