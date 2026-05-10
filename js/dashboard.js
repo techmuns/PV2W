@@ -1641,49 +1641,6 @@
     bindChartHovers(incoming);
   }
 
-  /* ---------- buy-side signal box ---------- */
-  function renderSignalBox() {
-    const box = $("#signal-box");
-    if (state.company === "Industry") {
-      const fy = state.fy;
-      const volR = getIndustryMetric(fy, "PV Volume Growth %");
-      const suvR = getIndustryMetric(fy, "SUV Share %");
-      const evR  = getIndustryMetric(fy, "EV Share %");
-      const expR = getIndustryMetric(fy, "Export Share %");
-      const topR = getIndustryMetric(fy, "Top Gaining OEM");
-
-      const demand = !volR ? "—" :
-        volR.Value > 10 ? "Improving" : volR.Value > 4 ? "Stable" : "Slowing";
-      const mixBits = [];
-      if (suvR && suvR.YoY_Change > 0) mixBits.push("SUV improving");
-      if (evR  && evR.YoY_Change  > 0) mixBits.push("EV improving");
-      if (expR && expR.YoY_Change > 0) mixBits.push("Exports improving");
-      const mix = mixBits.length ? mixBits.join(", ") : "Mix flat";
-
-      const rows = [
-        ["Demand",      demand],
-        ["Mix",         mix],
-        ["Competition", topR ? `${topR.Value} gaining most` : "—"],
-        ["Risk",        "Sub-Rs10L hatch demand soft"],
-        ["Trigger",     "Festive demand, EV launches"],
-      ];
-      box.innerHTML = rows.map(([k, v]) => `
-        <div class="bsr"><span class="bsr-label">${k}</span><span class="bsr-pill">${v}</span></div>`).join("");
-      return;
-    }
-    const bs = getBuySide(state.fy, state.company);
-    if (!bs) {
-      box.innerHTML = `<div class="text-xs text-inkMuted py-6 text-center">No metrics tracked for ${state.company} in ${state.fy} from primary sources yet.</div>`;
-      return;
-    }
-    const rows = [
-      ["Share", bs.Share_Read], ["Growth", bs.Growth_Read], ["Margin", bs.Margin_Read],
-      ["Mix", bs.Mix_Read], ["Risk", bs.Risk_Read], ["Trigger", bs.Trigger_Read],
-    ];
-    box.innerHTML = rows.map(([k, v]) => `
-      <div class="bsr"><span class="bsr-label">${k}</span><span class="bsr-pill">${v}</span></div>`).join("");
-  }
-
   /* ---------- vehicle cards ---------- */
   /* Build an expand-row only if the field has a real value.
      Returns "" for null/undefined/empty so the row is skipped. */
@@ -1746,12 +1703,7 @@
         vehRow("Key driver",   r.Key_Driver),
       ].filter(Boolean) : [];
 
-      const insightHtml = (!placeholder && r.Vehicle_Insight)
-        ? `<div class="veh-insight-box">${r.Vehicle_Insight}</div>`
-        : "";
-
-      const dividerHtml = (expandRows.length || insightHtml)
-        ? `<div class="veh-divider"></div>` : "";
+      const dividerHtml = expandRows.length ? `<div class="veh-divider"></div>` : "";
 
       /* Source link — small icon + name. Native title carries
          Source_URL + last-updated for unobtrusive hover detail.
@@ -1774,7 +1726,6 @@
           ${expandImage}
           ${dividerHtml}
           ${expandRows.join("")}
-          ${insightHtml}
           <div class="veh-foot">
             ${srcLink}
             <span class="veh-cta">View detail →</span>
@@ -2346,7 +2297,6 @@
       $("#modal-chart-sub").textContent   = "";
       $("#modal-chart-legend").innerHTML  = "";
       $("#modal-stats").innerHTML         = "";
-      $("#modal-insight").textContent     = "No history available yet for this metric.";
       $("#modal-source").textContent      = "—";
       $("#modal-updated").textContent     = "—";
       openModal();
@@ -2417,7 +2367,6 @@
         </span>
       </div>`;
 
-    $("#modal-insight").textContent = generateInsight(metric, values, labels, valued.length < 10);
     $("#modal-source").textContent  = (lastRow.Source && lastRow.Source !== "Pending") ? lastRow.Source : "—";
     $("#modal-updated").textContent = lastRow.Last_Updated
       ? new Date(lastRow.Last_Updated).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" })
@@ -2427,32 +2376,6 @@
     bindTrendHover($("#modal-chart"), labels, values, metric, benchValues);
   }
 
-  function generateInsight(metric, values, labels, limited) {
-    const first = values[0], last = values[values.length-1];
-    const pctChange = first !== 0 ? ((last - first) / Math.abs(first)) * 100 : 0;
-    const stable = Math.abs(pctChange) < 8;
-    const direction = stable ? "stayed broadly stable" : (last > first ? "improved" : "declined");
-    const period = `${labels[0]}–${labels[labels.length-1]}`;
-    const limitedNote = limited ? " (limited history available)" : "";
-
-    const flavors = {
-      "Market Share %":         d => `Market share has ${d} between ${period}${limitedNote}, reflecting ${d === "improved" ? "share gains, especially in SUV" : d === "declined" ? "competitive pressure" : "a steady competitive position"}.`,
-      "Volume Growth %":        d => `Volume growth has ${d} over ${period}${limitedNote}; volatility around the FY21 base reflects COVID-related demand disruption.`,
-      "Revenue Growth %":       d => `Revenue growth has ${d} over ${period}${limitedNote}, ${d === "improved" ? "supported by mix and pricing" : d === "declined" ? "with mix and price gains tapering" : "tracking volume closely"}.`,
-      "EBITDA Margin %":        d => `EBITDA margin has ${d} over ${period}${limitedNote}, ${d === "improved" ? "indicating better operating leverage and mix improvement" : d === "declined" ? "reflecting cost or pricing headwinds" : "with operating leverage broadly intact"}.`,
-      "SUV Revenue %":          d => `SUV revenue mix has ${d} over ${period}${limitedNote}, ${d === "improved" ? "improving the quality of growth" : d === "declined" ? "a sign of mix erosion" : "showing a stable structural mix"}.`,
-      "Stock Price (31-Mar)":   d => `Stock has ${d} between ${period}${limitedNote}; year-end values move with earnings momentum and share trajectory.`,
-      "Gross Margin %":         d => `Gross margin has ${d} over ${period}${limitedNote}, signalling ${d === "improved" ? "RM tailwinds and richer mix" : d === "declined" ? "input-cost or discount pressure" : "broadly steady unit economics"}.`,
-      "EV Revenue %":           d => `EV revenue contribution has ${d} over ${period}${limitedNote}, ${d === "improved" ? "indicating a credible electrification runway" : d === "declined" ? "suggesting an EV reset" : "with EV scale building gradually"}.`,
-      "Export Revenue %":       d => `Export contribution has ${d} over ${period}${limitedNote}, ${d === "improved" ? "diversifying the revenue base" : d === "declined" ? "with international demand softer" : "stable as a share of revenue"}.`,
-      "Capacity Utilisation %": d => `Capacity utilisation has ${d} over ${period}${limitedNote}, a useful read on demand-pull and operating leverage.`,
-      "Working Capital Days":   d => `Working capital days have ${d} over ${period}${limitedNote}, ${last < 0 ? "with negative working capital reflecting strong supplier and dealer terms" : "with the cash conversion cycle a watch item"}.`,
-      "Capex (Rs Cr)":          d => `Capex has ${d} over ${period}${limitedNote}, consistent with ${d === "improved" ? "an investment-led growth phase" : d === "declined" ? "a moderating capex cycle" : "a steady investment cadence"}.`,
-      "Realisation Growth %":   d => `Realisation growth has ${d} over ${period}${limitedNote}, ${d === "improved" ? "reflecting pricing and mix tailwinds" : d === "declined" ? "with weak pricing power" : "tracking inflation broadly"}.`,
-    };
-    const fn = flavors[metric];
-    return fn ? fn(direction) : `${metric} has ${direction} over ${period}${limitedNote}.`;
-  }
 
   /* ---------- modal open/close ---------- */
   function openModal() {
@@ -2633,24 +2556,6 @@
     }
     $("#vmodal-peer-fy").textContent = state.fy;
     $("#vmodal-peers").innerHTML = peerHTML;
-
-    /* Insight panel — when an analyst has curated a Vehicle_Insight
-       string, show it. Otherwise show ONLY the primary source line
-       (no 'insight pending' wording, no synthesised commentary).
-       The source tag is detached from any 'insight' framing per
-       the user spec. */
-    const ie = $("#vmodal-insight");
-    const insight = current && current.Vehicle_Insight ? current.Vehicle_Insight : null;
-    const hasSrc = current && current.Source && current.Source !== "Pending";
-    ie.classList.remove("text-inkMuted");
-    ie.style.fontStyle = "";
-    if (insight) {
-      ie.textContent = insight;
-    } else if (hasSrc) {
-      ie.textContent = `Source: ${current.Source}.`;
-    } else {
-      ie.textContent = "Source: OEM investor presentations / annual-report MD&A / monthly sales disclosures.";
-    }
 
     /* Source / updated — render as a real link when Source_URL exists,
        so a click opens the citation page. Plain text otherwise. */
