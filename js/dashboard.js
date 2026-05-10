@@ -36,7 +36,7 @@
 
   const state = {
     fy:        "FY25",
-    company:   "Maruti",
+    company:   "Industry",         // Industry view is the default landing page
     activeTab: "Growth",
     mixView:     "product",  // product | export | powertrain — drives chart2 for OEM view
     productView: "segment",  // segment | suv — sub-toggle when mixView === 'product'
@@ -1744,11 +1744,14 @@
 
   function renderTabs() {
     const isIndustry = state.company === "Industry";
-    $("#industry-tabs").classList.toggle("hidden", !isIndustry);
+    /* On Industry view, the trend module + KPI strip already cover
+       every metric the supporting-data tabs would have surfaced
+       (Total PV Volume / Volume Growth / SUV / EV / Export / Top
+       Gaining OEM). Hide the industry-tabs section to eliminate
+       that duplication. */
+    $("#industry-tabs").classList.add("hidden");
     $("#oem-hub").classList.toggle("hidden", isIndustry);
-    if (isIndustry) {
-      renderIndustryTabs();
-    } else {
+    if (!isIndustry) {
       renderMetricTable();
       renderGovernanceCard();
     }
