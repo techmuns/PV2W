@@ -76,7 +76,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-10T09:19:40.551Z",
+      "fetched_at": "2026-05-10T09:36:19.216Z",
       "source_url": "https://www.screener.in/company/MARUTI/consolidated/",
       "basis": "Maruti Suzuki India consolidated annual P&L + cash flow",
       "by_fy": {
@@ -426,15 +426,16 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-10T09:19:37.086Z",
+      "fetched_at": "2026-05-10T09:36:15.207Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
-        "no volume row found"
+        "no volume row found",
+        "no parseable yearly values"
       ]
     },
     "Screener": {
-      "fetched_at": "2026-05-10T09:19:41.560Z",
+      "fetched_at": "2026-05-10T09:36:20.307Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -640,7 +641,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-10T09:19:36.363Z",
+      "fetched_at": "2026-05-10T09:36:14.136Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
@@ -946,11 +947,12 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-05-10T09:19:37.975Z",
+      "fetched_at": "2026-05-10T09:36:16.616Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
-        "no volume row found"
+        "no volume row found",
+        "no parseable yearly values"
       ]
     }
   },
@@ -1048,11 +1050,12 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-10T09:19:38.737Z",
+      "fetched_at": "2026-05-10T09:36:17.193Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [
-        "no volume row found"
+        "no volume row found",
+        "no parseable yearly values"
       ]
     }
   }
