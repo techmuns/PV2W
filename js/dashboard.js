@@ -674,6 +674,37 @@
               <text x="${padL-6}" y="${yy+3}" text-anchor="end" font-size="10" fill="#6B7280">${val.toFixed(0)}${options.yUnit||""}</text>`;
     }).join("");
 
+    /* Shared rich payload for every bar — total + per-OEM share so
+       the tooltip shows the same composition view regardless of
+       which bar is hovered. Only include it when the metric is
+       additive (yUnit blank or units) — for non-additive % metrics
+       skip the share % so we don't show fake math. */
+    const total = items.reduce((s, it) => s + Math.max(it.value || 0, 0), 0);
+    const isShareMetric = total > 0 && options.yUnit !== "%";
+    const richSegments = items
+      .filter(it => it.value != null)
+      .map(it => ({
+        label: it.name,
+        value: it.value,
+        pct: isShareMetric ? (it.value / total) * 100 : null,
+        color: it.color,
+      }));
+    const richPayload = isShareMetric
+      ? JSON.stringify({
+          kind: "ranked-share",
+          fy: options.fy || "",
+          total,
+          totalLabel: options.totalLabel || `Total ${options.yUnit || ""}`.trim(),
+          unit: options.yUnit || "",
+          segments: richSegments,
+        })
+      : JSON.stringify({
+          kind: "ranked-list",
+          fy: options.fy || "",
+          unit: options.yUnit || "",
+          segments: richSegments,
+        });
+
     let bars = "";
     items.forEach((item, i) => {
       const cx = padL + groupW * (i + 0.5);
@@ -683,7 +714,7 @@
       const yTop = v >= 0 ? yy : zeroY;
       bars += `<rect class="bar hover-target" x="${cx - barW/2}" y="${yTop}" width="${barW}" height="${hh}" fill="${item.color}" rx="3"
         data-fy="${ATTR(options.fy || "")}" data-series="${ATTR(item.name)}" data-value="${ATTR(v)}"
-        data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(item.color)}"/>`;
+        data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(item.color)}" data-rich="${ATTR(richPayload)}"/>`;
       const label = item.value == null ? "—" : (Number.isInteger(v) ? v : v.toFixed(1)) + (options.yUnit || "");
       bars += `<text x="${cx}" y="${(v >= 0 ? yTop - 6 : yTop + hh + 12)}" text-anchor="middle" font-size="11" font-weight="600" fill="#1F2A37">${label}</text>`;
       bars += `<text x="${cx}" y="${h-12}" text-anchor="middle" font-size="10" fill="#475569">${item.name}</text>`;
@@ -878,7 +909,11 @@
 
     if (def.additive) {
       const slices = items.filter(s => s.value > 0).sort((a, b) => b.value - a.value);
-      chart2.innerHTML = pieChart(slices, { fy });
+      chart2.innerHTML = pieChart(slices, {
+        fy,
+        totalLabel: `Total ${def.label.toLowerCase()} · ${fy}`,
+        unit: def.unit === "lakh units" ? "lakh units" : (def.unit || ""),
+      });
       $("#chart2-legend").innerHTML = "";
     } else {
       const ranked = items
@@ -888,7 +923,13 @@
         chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">No OEM data for this metric in ${fy}.</div>`;
         $("#chart2-legend").innerHTML = "";
       } else {
-        chart2.innerHTML = rankedBarChart(ranked, { yUnit: def.unit === "%" ? "%" : "", fy });
+        chart2.innerHTML = rankedBarChart(ranked, {
+          yUnit: def.unit === "%" ? "%" : "",
+          fy,
+          totalLabel: def.unit === "%"
+            ? `Range across OEMs · ${fy}`
+            : `Total ${def.label.toLowerCase()} · ${fy}`,
+        });
         $("#chart2-legend").innerHTML = ranked.map(r => legendChip(r.color, r.name)).join("");
       }
     }
@@ -918,6 +959,22 @@
     const total = slices.reduce((s, x) => s + (x.value || 0), 0);
     if (total <= 0) return `<div class="text-xs text-inkMuted py-12 text-center">No share data</div>`;
 
+    /* Build a single rich payload listing every slice + total so the
+       tooltip shows the same composition view regardless of which
+       slice is hovered. */
+    const richPayload = JSON.stringify({
+      kind: "pie-share",
+      fy: options.fy || "",
+      total,
+      totalLabel: options.totalLabel || "Total",
+      unit: options.unit || "",
+      segments: slices.map(s => ({
+        label: s.name, value: s.value || 0,
+        pct: ((s.value || 0) / total) * 100,
+        color: s.color,
+      })),
+    });
+
     let angle = -Math.PI / 2;          // start at 12 o'clock
     let body = "";
     const positioned = [];
@@ -941,7 +998,7 @@
       const pct = (v / total) * 100;
       body += `<path class="bar hover-target" d="${path}" fill="${s.color}" stroke="#FFFFFF" stroke-width="2"
         data-fy="${ATTR(options.fy || "")}" data-series="${ATTR(s.name)}" data-value="${ATTR(v)}"
-        data-unit="%" data-color="${ATTR(s.color)}"/>`;
+        data-unit="%" data-color="${ATTR(s.color)}" data-rich="${ATTR(richPayload)}"/>`;
       if (pct >= 5) {
         body += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle"
           font-size="11" font-weight="700" fill="#FFFFFF" style="paint-order:stroke;stroke:rgba(0,0,0,0.18);stroke-width:0.6">${pct.toFixed(1)}%</text>`;
@@ -1052,6 +1109,77 @@
                                               with units + pct + basis  */
     if (el.dataset.rich) {
       let p; try { p = JSON.parse(el.dataset.rich); } catch { p = null; }
+
+      /* Composition charts (pie, ranked bars where total adds up,
+         volume-mix bars). One total + per-segment row with dot,
+         absolute, and share %. */
+      if (p && (p.kind === "pie-share" || p.kind === "ranked-share")) {
+        $("#cht-fy").textContent = p.fy || "";
+        simple.classList.add("hidden");
+        const fmt = (v) => {
+          /* Pick a unit-aware format. Lakhs for volumes, ₹ Cr for
+             revenue, % for share metrics, plain for counts. */
+          if (p.unit === "%")        return v.toFixed(1) + "%";
+          if (p.unit === "lakh units" || p.unit === " L" || p.unit === "L")
+                                     return v.toFixed(2) + " lakh units";
+          if (p.unit === "₹ Cr" || p.unit === "Rs Cr")
+                                     return "₹" + Math.round(v).toLocaleString("en-IN") + " Cr";
+          if (Math.abs(v) >= 1000)   return Math.round(v).toLocaleString("en-IN");
+          return v.toFixed(2);
+        };
+        const totalRow = p.total
+          ? `<div class="flex items-baseline justify-between gap-4">
+               <span class="text-[11px]" style="color:#6B7280;">${p.totalLabel || "Total"}</span>
+               <span class="text-[13px] font-semibold tabular-nums" style="color:#1F2A37;">${fmt(p.total)}</span>
+             </div>`
+          : "";
+        const segs = p.segments
+          .filter(s => s.value != null && s.value !== 0)
+          .map(s => `
+            <div class="flex items-center gap-2.5">
+              <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
+              <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
+              <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">
+                <span class="font-semibold" style="color:#1F2A37;">${fmt(s.value)}</span>
+                ${s.pct != null
+                  ? `<span class="font-normal ml-1" style="color:#6B7280;">(${s.pct.toFixed(1)}%)</span>`
+                  : ""}
+              </span>
+            </div>`).join("");
+        rich.innerHTML = totalRow
+          + `<div class="space-y-1.5 mt-2 pt-2" style="border-top:1px solid #EEF1F5;">${segs}</div>`;
+        rich.classList.remove("hidden");
+        tip.classList.remove("hidden");
+        positionTip(tip, e);
+        return;
+      }
+
+      /* Non-additive list (e.g. EBITDA Margin %, Volume Growth %)
+         where ranking matters but no total / share applies. */
+      if (p && p.kind === "ranked-list") {
+        $("#cht-fy").textContent = p.fy || "";
+        simple.classList.add("hidden");
+        const unit = p.unit || "";
+        const fmtVal = (v) => {
+          const sign = v > 0 ? "+" : "";
+          const body = unit === "%"
+            ? v.toFixed(1)
+            : (Math.abs(v) >= 100 ? Math.round(v).toString() : v.toFixed(1));
+          return `${sign}${body}${unit}`;
+        };
+        const segs = p.segments.map(s => `
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
+            <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
+            <span class="text-[12px] tabular-nums ml-auto font-semibold whitespace-nowrap" style="color:#1F2A37;">${fmtVal(s.value)}</span>
+          </div>`).join("");
+        rich.innerHTML = `<div class="space-y-1.5 mt-1">${segs}</div>`;
+        rich.classList.remove("hidden");
+        tip.classList.remove("hidden");
+        positionTip(tip, e);
+        return;
+      }
+
       if (p && p.kind === "multi-line") {
         $("#cht-fy").textContent = p.fy;
         simple.classList.add("hidden");
@@ -2188,7 +2316,8 @@
       const isPct = isPctMetric(metric);
       yoyText = (diff >= 0 ? "+" : "") + diff.toFixed(1) + (isPct ? "pp YoY" : " YoY");
     }
-    $("#trend-tt-fy").textContent = fy;
+    $("#trend-tt-fy").textContent  = fy;
+    $("#trend-tt-label").textContent = metric;
     $("#trend-tt-val").textContent = formatMetricValue(metric, v);
     $("#trend-tt-yoy").textContent = yoyText;
     if (benchValues && typeof benchValues[i] === "number") {
