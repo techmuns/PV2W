@@ -739,19 +739,23 @@
      renders as an industry-mix pie with an Others slice. The pie
      shows each OEM's contribution to the industry-level total of
      that metric (defined per-id below in METRIC_PIE). */
+  /* `oem` field carries the per-OEM metric name used by the
+     left-card trend fallback when no single industry series
+     exists. Without it the left card collapses to the empty
+     'series not currently tracked' state. */
   const IND_METRICS = [
-    { id: "volume",     label: "PV Volume",            unit: "lakh units",       industry: "Total PV Volume",       additive: true },
-    { id: "growth",     label: "Volume Growth %",      unit: "lakh units (Δ)",   industry: "PV Volume Growth %",    additive: true },
-    { id: "marketshare",label: "Market Share %",       unit: "%",                industry: null,                    additive: true },
-    { id: "export",     label: "Export Volume %",      unit: "lakh units",       industry: "Export Share %",        additive: true },
-    { id: "ev",         label: "EV Volume %",          unit: "lakh units",       industry: "EV Share %",            additive: true },
-    { id: "suv",        label: "SUV Volume %",         unit: "lakh units",       industry: "SUV Share %",           additive: true },
-    { id: "rev_growth", label: "Revenue Growth %",     unit: "₹ Cr (Δ)",         industry: null,                    additive: true },
-    { id: "ebitda",     label: "EBITDA Margin %",      unit: "₹ Cr (EBITDA)",    industry: null,                    additive: true },
-    { id: "real_growth",label: "Realisation Growth %", unit: "%",                industry: null,                    additive: true },
-    { id: "capex",      label: "Capex (Rs Cr)",        unit: "₹ Cr",             industry: null,                    additive: true },
-    { id: "newlaunches",label: "New Launches",         unit: "count",            industry: null,                    additive: true },
-    { id: "facelifts",  label: "Facelifts",            unit: "count",            industry: null,                    additive: true },
+    { id: "volume",     label: "PV Volume",            unit: "lakh units",       industry: "Total PV Volume",       oem: null,                    additive: true },
+    { id: "growth",     label: "Volume Growth %",      unit: "%",                industry: "PV Volume Growth %",    oem: "Volume Growth %",       additive: true },
+    { id: "marketshare",label: "Market Share %",       unit: "%",                industry: null,                    oem: "Market Share %",        additive: true },
+    { id: "export",     label: "Export Volume %",      unit: "%",                industry: "Export Share %",        oem: "Export Volume %",       additive: true },
+    { id: "ev",         label: "EV Volume %",          unit: "%",                industry: "EV Share %",            oem: "EV Volume %",           additive: true },
+    { id: "suv",        label: "SUV Volume %",         unit: "%",                industry: "SUV Share %",           oem: "SUV Volume %",          additive: true },
+    { id: "rev_growth", label: "Revenue Growth %",     unit: "%",                industry: null,                    oem: "Revenue Growth %",      additive: true },
+    { id: "ebitda",     label: "EBITDA Margin %",      unit: "%",                industry: null,                    oem: "EBITDA Margin %",       additive: true },
+    { id: "real_growth",label: "Realisation Growth %", unit: "%",                industry: null,                    oem: "Realisation Growth %",  additive: true },
+    { id: "capex",      label: "Capex (Rs Cr)",        unit: "₹ Cr",             industry: null,                    oem: "Capex (Rs Cr)",         additive: true },
+    { id: "newlaunches",label: "New Launches",         unit: "count",            industry: null,                    oem: "New Model Launches",    additive: true },
+    { id: "facelifts",  label: "Facelifts",            unit: "count",            industry: null,                    oem: "Facelift Launches",     additive: true },
   ];
 
   /* Per-metric pie-data resolver. Each entry returns:

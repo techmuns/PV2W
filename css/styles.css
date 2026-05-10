@@ -551,12 +551,19 @@ body::before {
 /* ====================================================
    Chart panels
    ==================================================== */
+/* Stable industry-page chart panels — fixed dimensions across
+   every metric so switching the dropdown doesn't reflow the
+   layout. The height = head(64) + body(380) + footer reserved
+   inside body. */
 .chart-panel {
   background: #FFFFFF;
   border-radius: 14px;
   border: 1px solid #E5EAF1;
   box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 460px;
 }
 .chart-panel-head {
   display: flex;
@@ -566,6 +573,8 @@ body::before {
   padding: 12px 18px;
   background: linear-gradient(180deg, #F4F8FE 0%, #FFFFFF 100%);
   border-bottom: 1px solid #EEF1F5;
+  min-height: 64px;
+  flex-shrink: 0;
 }
 .chart-panel-title {
   font-size: 14px;
@@ -579,7 +588,26 @@ body::before {
   margin-top: 3px;
   letter-spacing: 0.01em;
 }
-.chart-panel-body { padding: 16px 18px 18px; }
+.chart-panel-body {
+  padding: 16px 18px 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+/* Fixed chart canvas height — every chart helper renders into
+   the same vertical box regardless of helper kind (line, pie,
+   bar). Height tuned to the largest helper (volume mix bars). */
+.chart-panel-body > #chart1,
+.chart-panel-body > #chart2 {
+  height: 240px !important;
+  min-height: 240px;
+  flex-shrink: 0;
+}
+/* Reserve a fixed slot for the context strip + legend + source
+   so toggling those between metrics doesn't move anything. */
+#chart2-context { min-height: 22px; }
+#chart1-legend, #chart2-legend { min-height: 40px; }
+#chart1-source, #chart2-source { min-height: 28px; }
 
 /* ====================================================
    Charts (SVG)
