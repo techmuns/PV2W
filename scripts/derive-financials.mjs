@@ -97,13 +97,14 @@ function main() {
 
   for (const [company, meta] of Object.entries(OEMS)) {
     const screener = raw[meta.rawKey] && raw[meta.rawKey].Screener;
-    if (!screener || !screener.by_fy) {
-      console.log(`[derive-financials] no Screener raw for ${company} — skipping`);
+    const hasScreener = !!(screener && screener.by_fy);
+    if (!hasScreener) {
+      console.log(`[derive-financials] no Screener raw for ${company} — BS sub-lines only`);
       noRaw++;
-      continue;
+    } else {
+      console.log(`[derive-financials] ${company}:`);
     }
-    console.log(`[derive-financials] ${company}:`);
-    for (const [fy, vals] of Object.entries(screener.by_fy)) {
+    if (hasScreener) for (const [fy, vals] of Object.entries(screener.by_fy)) {
       const sales = vals.sales_cr;
       const pat   = vals.pat_cr;
       const inv   = vals.investing_cr;
