@@ -168,18 +168,13 @@
     { co: "M&M", metric: "COO", fromFY: "FY16", toFY: "FY24",
       label: "Not publicly disclosed", kind: "no-position" },
 
-    /* BS sub-lines — Moneycontrol only retains the last ~5 FYs. */
-    ...["Maruti", "Hyundai", "M&M"].flatMap(co =>
-      BS_SUB_LINES.map(m => ({
-        co, metric: m, fromFY: "FY16", toFY: "FY21",
-        label: "Earlier years not yet sourced — Annual Report backfill needed",
-        kind: "fetcher-window",
-      }))
-    ),
+    /* BS sub-lines — Annual-Report backfill seeded from Munshot
+       database covers Maruti / M&M / Tata PV all FYs and Hyundai
+       FY19+. Only Hyundai FY16-FY18 still needs the labelled pill. */
     ...BS_SUB_LINES.map(m => ({
-      co: "Tata Motors PV", metric: m, fromFY: "FY16", toFY: "FY20",
-      label: "Earlier years not yet sourced — Annual Report backfill needed",
-      kind: "fetcher-window",
+      co: "Hyundai", metric: m, fromFY: "FY16", toFY: "FY18",
+      label: "Pre-DRHP — MCA standalone filing not yet parsed",
+      kind: "pre-drhp",
     })),
   ];
   /* Back-compat: existing code references PRE_IPO_SPANS. */
