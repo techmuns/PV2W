@@ -467,21 +467,30 @@
          purple gradient header to read as a CTA. Click handler below
          opens the leaderboard modal instead of the trend modal. */
       if (isIndustry && metric === "Top Gaining OEM") {
+        /* Visual rhythm matches the other KPI cards (EV Share %, etc.):
+             icon + pill row → uppercase label → big-value → delta + descriptor.
+             Big value is the FY's top-gaining OEM (dynamic) with the
+             pp delta below — single useful signal that previews what
+             the leaderboard modal will reveal in full. */
+        const topRow  = getIndustryMetric(state.fy, "Top Gaining OEM");
+        const topText = (topRow && topRow.Value) ? String(topRow.Value) : "";
+        const m       = topText.match(/^(.+?)\s*\(([+-][\d.]+)\s*pp\)\s*$/);
+        const oemName = (m && m[1]) ? m[1].trim() : (topText || "—");
+        const ppValue = (m && m[2]) ? `${m[2]}pp` : "—";
+        const ppCls   = (m && parseFloat(m[2]) >= 0) ? "delta-up" : "delta-down";
         return `
           <div class="kpi-card kpi-card-cta" data-metric="${metric}" role="button" tabindex="0"
                aria-label="Open OEM Leaderboard">
             <div class="flex items-start justify-between mb-1.5">
               <span class="kpi-icon kpi-icon-cta">${iconFor(metric)}</span>
-              <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style="background:#EDE9FE;color:#5B21B6;">${state.fy}</span>
+              <span class="text-[10px] font-semibold px-2.5 py-0.5 rounded-full"
+                    style="background:#EDE9FE;color:#5B21B6;">${state.fy}</span>
             </div>
             <div class="text-[10.5px] uppercase tracking-wider font-semibold" style="color:#5B21B6;">OEM Leaderboard</div>
-            <div class="text-[17px] font-semibold leading-tight mt-0.5" style="color:#0B1F33;">${state.fy} metric leaders</div>
-            <div class="text-[10.5px] mt-0.5" style="color:#6B7280;line-height:1.35;">Click to view key OEM leadership metrics</div>
-            <div class="flex items-center gap-1 mt-2 text-[11px] font-semibold" style="color:#6D28D9;">
-              <span>View leaderboard</span>
-              <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M6 4l4 4-4 4"/>
-              </svg>
+            <div class="text-[22px] font-semibold text-navy leading-tight tabular-nums mt-0.5">${oemName}</div>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="text-[11.5px] ${ppCls} tabular-nums font-semibold">${ppValue}</span>
+              <span class="text-[10px] text-inkMuted">Top gainer · click for board</span>
             </div>
           </div>`;
       }
