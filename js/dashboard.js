@@ -838,8 +838,8 @@
         return (r && r.Value != null) ? r.Value : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "PV volume · industry mix",
-      subtitle: "Total domestic PV sales volume per OEM",
+      sliceTitle: "Industry volume mix",
+      subtitle: "Each OEM's share of total industry PV volume",
     },
     growth: {
       contribution: (co, fy) => {
@@ -856,8 +856,8 @@
           ? (cur.Value - pre.Value) : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "Volume Growth · industry mix (contribution)",
-      subtitle: "Each OEM's share of the industry's volume change vs prior FY",
+      sliceTitle: "Volume growth by OEM",
+      subtitle: "Each OEM's contribution to industry volume change",
     },
     marketshare: {
       contribution: (co, fy) => {
@@ -866,8 +866,8 @@
       },
       industryTotal: () => 100,
       unit: "%", scale: 1,
-      sliceTitle: "Market Share % · industry mix",
-      subtitle: "Each OEM's domestic PV volume as % of total industry domestic PV volume",
+      sliceTitle: "Market share by OEM",
+      subtitle: "Each OEM's share of total industry PV volume",
     },
     export: {
       contribution: (co, fy) => {
@@ -883,8 +883,8 @@
           ? (ind.Value * expShare.Value / 100) : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "Export volume · industry mix",
-      subtitle: "Each OEM's exports as a share of total industry PV exports",
+      sliceTitle: "Industry export mix",
+      subtitle: "Each OEM's share of total industry PV exports",
     },
     ev: {
       contribution: (co, fy) => {
@@ -900,8 +900,8 @@
           ? (ind.Value * evShare.Value / 100) : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "EV volume · industry mix",
-      subtitle: "Each OEM's BEV volume as a share of total industry BEV volume",
+      sliceTitle: "Industry EV mix",
+      subtitle: "Each OEM's share of total industry BEV volume",
     },
     suv: {
       contribution: (co, fy) => {
@@ -917,8 +917,8 @@
           ? (ind.Value * suvShare.Value / 100) : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "SUV volume · industry mix",
-      subtitle: "Each OEM's SUV / UV volume as a share of total industry SUV volume",
+      sliceTitle: "Industry SUV mix",
+      subtitle: "Each OEM's share of total industry SUV / UV volume",
     },
     rev_growth: {
       contribution: (co, fy) => {
@@ -929,8 +929,8 @@
       },
       industryTotal: () => null,    // sum of OEM contributions; no Others
       unit: "₹ Cr", scale: 1,
-      sliceTitle: "Revenue Growth · OEM contribution",
-      subtitle: "Each OEM's revenue change (Cur FY − Prior FY), in ₹ crore",
+      sliceTitle: "Revenue growth by OEM",
+      subtitle: "Each OEM's revenue change vs prior FY, in ₹ crore",
     },
     ebitda: {
       contribution: (co, fy) => {
@@ -939,8 +939,8 @@
       },
       industryTotal: () => null,
       unit: "₹ Cr", scale: 1,
-      sliceTitle: "EBITDA · OEM contribution to industry EBITDA",
-      subtitle: "Each OEM's EBITDA in ₹ crore; share = OEM EBITDA / sum(tracked OEM EBITDA)",
+      sliceTitle: "EBITDA by OEM",
+      subtitle: "Each OEM's EBITDA in ₹ crore; share of tracked-OEM total",
     },
     real_growth: {
       contribution: (co, fy) => {
@@ -949,8 +949,8 @@
       },
       industryTotal: () => null,
       unit: "%", scale: 1,
-      sliceTitle: "Realisation Growth · OEM comparison",
-      subtitle: "Each OEM's realisation growth %; pie shows positive contributors",
+      sliceTitle: "Realisation growth by OEM",
+      subtitle: "OEMs with positive realisation growth %",
     },
     capex: {
       contribution: (co, fy) => {
@@ -959,7 +959,7 @@
       },
       industryTotal: () => null,
       unit: "₹ Cr", scale: 1,
-      sliceTitle: "Capex · OEM contribution to industry capex",
+      sliceTitle: "Capex by OEM",
       subtitle: "Each OEM's annual capex in ₹ crore",
     },
     newlaunches: {
@@ -969,8 +969,8 @@
       },
       industryTotal: () => null,
       unit: "count", scale: 1,
-      sliceTitle: "New launches · OEM contribution",
-      subtitle: "Number of new models launched in the FY per OEM",
+      sliceTitle: "New launches by OEM",
+      subtitle: "Number of new models launched per OEM",
     },
     facelifts: {
       contribution: (co, fy) => {
@@ -979,8 +979,8 @@
       },
       industryTotal: () => null,
       unit: "count", scale: 1,
-      sliceTitle: "Facelifts · OEM contribution",
-      subtitle: "Number of facelifts / refreshes in the FY per OEM",
+      sliceTitle: "Facelifts by OEM",
+      subtitle: "Number of facelifts / refreshes per OEM",
     },
   };
 
@@ -1128,14 +1128,17 @@
     $("#chart2-product-sub").style.visibility = "hidden";
     const chart2 = $("#chart2");
     chart2.removeAttribute("style");
-    /* Smooth fade-in: mark both chart canvases as 'swapping'
-       (opacity 0) before re-render, then drop the class on the
-       next frame so CSS transition kicks in. Layout doesn't move
-       because the panel + canvas heights are CSS-locked. */
+    /* Soft swap: tag both chart-panel sections with is-swapping
+       so the title, subtitle, meta strip, chart, legend and
+       source line all fade together. Layout stays put because
+       the panel + canvas heights are CSS-locked. */
     const chart1El = $("#chart1");
+    const panels = document.querySelectorAll('.chart-panel');
+    panels.forEach(p => p.classList.add("is-swapping"));
     [chart1El, chart2].forEach(el => el && el.classList.add("is-swapping"));
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        panels.forEach(p => p.classList.remove("is-swapping"));
         [chart1El, chart2].forEach(el => el && el.classList.remove("is-swapping"));
       });
     });
@@ -1252,46 +1255,51 @@
     $("#chart2-sub").textContent   = `${fy} · ${(piedef && piedef.unit) || def.unit}`;
     $("#chart2-sub").classList.remove("hidden");
 
-    /* Context strip — industry total + benchmark for non-additive
-       % metrics so the user immediately sees the denominator. */
-    let ctxRows = [];
+    /* Meta strip — clean key:value pairs that read naturally:
+         Unit · Industry total · YoY growth vs FYxx
+       Replaces the busy 'Selected FY: FY25 · YoY base: FY24' copy
+       with simple, scannable phrasing. */
+    const metaPairs = [];
+    metaPairs.push(["Unit", (piedef && piedef.unit) || def.unit || ""]);
+
+    const indVolRow = getIndustryMetric(fy, "Total PV Volume");
+    if ((def.id === "volume" || def.id === "growth" || def.id === "marketshare"
+         || def.id === "export" || def.id === "ev" || def.id === "suv")
+        && indVolRow && indVolRow.Value != null) {
+      metaPairs.push(["Industry total", `${(indVolRow.Value/1e5).toFixed(1)} lakh units`]);
+    }
+
+    const prevFyLabel = prevFY(fy);
     if (mDef.benchmarkMetric) {
       const indBench = getIndustryMetric(fy, mDef.benchmarkMetric);
       if (indBench && indBench.Value != null) {
-        ctxRows.push(`Industry ${def.label.toLowerCase()}: <b>${indBench.Value > 0 ? "+" : ""}${indBench.Value.toFixed(1)}%</b>`);
+        const sign = indBench.Value > 0 ? "+" : "";
+        const label = prevFyLabel ? `YoY vs ${prevFyLabel}` : "YoY";
+        metaPairs.push([label, `${sign}${indBench.Value.toFixed(1)}%`]);
+      }
+    } else if (def.id === "growth" && prevFyLabel) {
+      /* Industry-level YoY computed directly from Total PV Volume. */
+      const cur = getIndustryMetric(fy, "Total PV Volume");
+      const pre = getIndustryMetric(prevFyLabel, "Total PV Volume");
+      if (cur && pre && cur.Value != null && pre.Value != null && pre.Value !== 0) {
+        const yoy = ((cur.Value / pre.Value) - 1) * 100;
+        metaPairs.push([`YoY vs ${prevFyLabel}`, `${yoy > 0 ? "+" : ""}${yoy.toFixed(1)}%`]);
       }
     }
-    if (def.id === "growth" || def.id === "volume") {
-      const indVol = getIndustryMetric(fy, "Total PV Volume");
-      if (indVol && indVol.Value != null) {
-        ctxRows.push(`Industry total volume: <b>${(indVol.Value/1e5).toFixed(2)} lakh units</b>`);
-      }
-    }
-    if (def.id === "marketshare") {
-      ctxRows.push(`Selected FY: <b>${fy}</b>`);
-      const indVol = getIndustryMetric(fy, "Total PV Volume");
-      if (indVol && indVol.Value != null) {
-        ctxRows.push(`Total industry domestic PV volume: <b>${(indVol.Value/1e5).toFixed(2)} lakh units</b>`);
-      }
-      ctxRows.push(`Total shown: <b>100.0%</b> (Maruti + Hyundai + M&amp;M + Tata Motors PV + Others)`);
-    }
-    const prevFyLabel = prevFY(fy);
-    if (mDef.kind === "yoy" && prevFyLabel) {
-      ctxRows.push(`Selected FY: <b>${fy}</b> · YoY base: <b>${prevFyLabel}</b>`);
-    }
-    /* Find or lazily create a context-strip element below the
-       chart subtitle. Inserted only once. */
+
     let ctxEl = document.getElementById("chart2-context");
     if (!ctxEl) {
       ctxEl = document.createElement("div");
       ctxEl.id = "chart2-context";
-      ctxEl.style.cssText = "font-size:10.5px;color:#475569;margin:4px 0 6px;line-height:1.5";
+      ctxEl.style.cssText = "display:flex;gap:18px;flex-wrap:wrap;font-size:11px;color:#475569;margin:6px 0 8px;line-height:1.45";
       const subEl = $("#chart2-sub");
       if (subEl && subEl.parentElement) subEl.parentElement.appendChild(ctxEl);
     }
-    ctxEl.innerHTML = ctxRows.length
-      ? ctxRows.map(t => `<span style="display:inline-block;margin-right:14px">${t}</span>`).join("")
-      : "";
+    ctxEl.innerHTML = metaPairs.map(([k, v]) => `
+      <span style="display:inline-flex;align-items:baseline;gap:6px">
+        <span style="color:#94A3B8;text-transform:uppercase;font-size:9.5px;letter-spacing:0.04em;font-weight:600">${k}</span>
+        <span style="color:#1F2A37;font-weight:600">${v}</span>
+      </span>`).join("");
 
     /* Always render as a pie. Sort tracked OEMs by value desc;
        pin Others last for visual consistency. */
