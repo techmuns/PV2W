@@ -76,7 +76,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-11T08:31:27.779Z",
+      "fetched_at": "2026-05-11T08:47:17.038Z",
       "source_url": "https://www.screener.in/company/MARUTI/consolidated/",
       "basis": "Maruti Suzuki India consolidated annual P&L + cash flow",
       "by_fy": {
@@ -324,7 +324,7 @@
       "problems": []
     },
     "Tickertape": {
-      "fetched_at": "2026-05-11T08:31:31.981Z",
+      "fetched_at": "2026-05-11T08:47:21.323Z",
       "source_url": "https://www.tickertape.in/stocks/maruti-suzuki-india-MARU",
       "by_fy": {},
       "problems": [
@@ -332,7 +332,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-11T08:31:40.711Z",
+      "fetched_at": "2026-05-11T08:47:26.530Z",
       "source_url": "https://www.moneycontrol.com/financials/marutisuzukiindia/balance-sheetVI/MS24",
       "by_fy": {
         "FY26": {
@@ -471,7 +471,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-11T08:31:24.424Z",
+      "fetched_at": "2026-05-11T08:47:13.769Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
@@ -480,123 +480,159 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-05-11T08:31:29.103Z",
+      "fetched_at": "2026-05-11T08:47:18.102Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
+        "FY19": {
+          "sales_cr": 43258,
+          "expenses_cr": 38415,
+          "ebitda_cr": 4843,
+          "ebitda_margin_pct": 11,
+          "interest_cr": 128,
+          "depreciation_cr": 1410,
+          "pbt_cr": 3968,
+          "tax_pct": 35,
+          "pat_cr": 2582,
+          "equity_capital_cr": 813,
+          "reserves_cr": 12938,
+          "borrowings_cr": 1069,
+          "total_assets_cr": 23078,
+          "cfo_cr": 4270,
+          "investing_cr": -1781,
+          "cff_cr": -465
+        },
+        "FY20": {
+          "sales_cr": 42979,
+          "expenses_cr": 38694,
+          "ebitda_cr": 4285,
+          "ebitda_margin_pct": 10,
+          "interest_cr": 156,
+          "depreciation_cr": 1616,
+          "pbt_cr": 3213,
+          "tax_pct": 27,
+          "pat_cr": 2355,
+          "equity_capital_cr": 813,
+          "reserves_cr": 12467,
+          "borrowings_cr": 1098,
+          "total_assets_cr": 22331,
+          "cfo_cr": 4072,
+          "investing_cr": -2357,
+          "cff_cr": -2898
+        },
         "FY21": {
-          "sales_cr": 40972,
-          "expenses_cr": 36724,
-          "ebitda_cr": 4249,
+          "sales_cr": 40674,
+          "expenses_cr": 36497,
+          "ebitda_cr": 4177,
           "ebitda_margin_pct": 10,
           "interest_cr": 165,
-          "depreciation_cr": 1973,
-          "pbt_cr": 2540,
+          "depreciation_cr": 1944,
+          "pbt_cr": 2493,
           "tax_pct": 26,
-          "pat_cr": 1881,
+          "pat_cr": 1847,
           "equity_capital_cr": 813,
-          "reserves_cr": 14499,
+          "reserves_cr": 14318,
           "borrowings_cr": 1354,
-          "total_assets_cr": 26731,
-          "cfo_cr": 5423,
-          "investing_cr": -2224,
+          "total_assets_cr": 26498,
+          "cfo_cr": 5365,
+          "investing_cr": -2157,
           "cff_cr": 143
         },
         "FY22": {
-          "sales_cr": 47378,
-          "expenses_cr": 41887,
-          "ebitda_cr": 5491,
+          "sales_cr": 47043,
+          "expenses_cr": 41628,
+          "ebitda_cr": 5415,
           "ebitda_margin_pct": 12,
           "interest_cr": 132,
-          "depreciation_cr": 2170,
-          "pbt_cr": 3772,
+          "depreciation_cr": 2136,
+          "pbt_cr": 3723,
           "tax_pct": 23,
-          "pat_cr": 2902,
+          "pat_cr": 2862,
           "equity_capital_cr": 813,
-          "reserves_cr": 16044,
-          "borrowings_cr": 1178,
-          "total_assets_cr": 28358,
-          "cfo_cr": 5138,
-          "investing_cr": -910,
+          "reserves_cr": 15823,
+          "borrowings_cr": 1175,
+          "total_assets_cr": 28084,
+          "cfo_cr": 5081,
+          "investing_cr": -875,
           "cff_cr": -1662
         },
         "FY23": {
-          "sales_cr": 60308,
-          "expenses_cr": 52753,
-          "ebitda_cr": 7554,
-          "ebitda_margin_pct": 13,
+          "sales_cr": 59761,
+          "expenses_cr": 52308,
+          "ebitda_cr": 7454,
+          "ebitda_margin_pct": 12,
           "interest_cr": 142,
-          "depreciation_cr": 2190,
-          "pbt_cr": 6346,
+          "depreciation_cr": 2155,
+          "pbt_cr": 6269,
           "tax_pct": 26,
-          "pat_cr": 4709,
+          "pat_cr": 4654,
           "equity_capital_cr": 813,
-          "reserves_cr": 19242,
-          "borrowings_cr": 1189,
-          "total_assets_cr": 34573,
-          "cfo_cr": 6564,
-          "investing_cr": -1383,
-          "cff_cr": -1579
+          "reserves_cr": 18965,
+          "borrowings_cr": 1188,
+          "total_assets_cr": 34159,
+          "cfo_cr": 6476,
+          "investing_cr": -1370,
+          "cff_cr": -1578
         },
         "FY24": {
-          "sales_cr": 69829,
-          "expenses_cr": 60750,
-          "ebitda_cr": 9079,
-          "ebitda_margin_pct": 13,
-          "interest_cr": 158,
-          "depreciation_cr": 2208,
-          "pbt_cr": 8240,
-          "tax_pct": 26,
-          "pat_cr": 6060,
-          "equity_capital_cr": 813,
-          "reserves_cr": 9853,
-          "borrowings_cr": 833,
-          "total_assets_cr": 26349,
-          "cfo_cr": 9252,
-          "investing_cr": -10090,
-          "cff_cr": -15930
-        },
-        "FY25": {
-          "sales_cr": 69193,
-          "expenses_cr": 60277,
+          "sales_cr": 68539,
+          "expenses_cr": 59623,
           "ebitda_cr": 8915,
           "ebitda_margin_pct": 13,
-          "interest_cr": 127,
-          "depreciation_cr": 2105,
-          "pbt_cr": 7591,
+          "interest_cr": 158,
+          "depreciation_cr": 2172,
+          "pbt_cr": 8095,
           "tax_pct": 26,
-          "pat_cr": 5640,
+          "pat_cr": 5954,
           "equity_capital_cr": 813,
-          "reserves_cr": 15484,
-          "borrowings_cr": 850,
-          "total_assets_cr": 30097,
-          "cfo_cr": 4345,
-          "investing_cr": -410,
-          "cff_cr": -63
+          "reserves_cr": 9472,
+          "borrowings_cr": 832,
+          "total_assets_cr": 25654,
+          "cfo_cr": 9113,
+          "investing_cr": -9814,
+          "cff_cr": -15929
+        },
+        "FY25": {
+          "sales_cr": 67654,
+          "expenses_cr": 58943,
+          "ebitda_cr": 8710,
+          "ebitda_margin_pct": 13,
+          "interest_cr": 127,
+          "depreciation_cr": 2075,
+          "pbt_cr": 7391,
+          "tax_pct": 26,
+          "pat_cr": 5492,
+          "equity_capital_cr": 813,
+          "reserves_cr": 14954,
+          "borrowings_cr": 847,
+          "total_assets_cr": 29372,
+          "cfo_cr": 4251,
+          "investing_cr": -322,
+          "cff_cr": -62
         },
         "FY26": {
-          "sales_cr": 70763,
-          "expenses_cr": 62165,
-          "ebitda_cr": 8598,
+          "sales_cr": 68991,
+          "expenses_cr": 60598,
+          "ebitda_cr": 8392,
           "ebitda_margin_pct": 12,
           "interest_cr": 106,
-          "depreciation_cr": 2198,
-          "pbt_cr": 7243,
+          "depreciation_cr": 2154,
+          "pbt_cr": 7082,
           "tax_pct": 25,
-          "pat_cr": 5432,
+          "pat_cr": 5322,
           "equity_capital_cr": 813,
-          "reserves_cr": 19202,
-          "borrowings_cr": 1098,
-          "total_assets_cr": 34404,
-          "cfo_cr": 7321,
-          "investing_cr": -1941,
-          "cff_cr": -1591
+          "reserves_cr": 18558,
+          "borrowings_cr": 1082,
+          "total_assets_cr": 33521,
+          "cfo_cr": 7174,
+          "investing_cr": -2022,
+          "cff_cr": -1587
         }
       },
       "problems": []
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-11T08:31:42.213Z",
+      "fetched_at": "2026-05-11T08:47:26.635Z",
       "source_url": "https://www.moneycontrol.com/financials/hyundaimotorindia/balance-sheetVI/HMI01",
       "by_fy": {
         "FY26": {
@@ -687,7 +723,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-11T08:31:22.975Z",
+      "fetched_at": "2026-05-11T08:47:12.630Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
@@ -993,7 +1029,7 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-05-11T08:31:25.440Z",
+      "fetched_at": "2026-05-11T08:47:14.702Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
@@ -1002,7 +1038,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-11T08:31:46.141Z",
+      "fetched_at": "2026-05-11T08:47:26.804Z",
       "source_url": "https://www.moneycontrol.com/financials/mahindramahindra/balance-sheetVI/MM",
       "by_fy": {
         "FY26": {
@@ -1133,7 +1169,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-11T08:31:25.912Z",
+      "fetched_at": "2026-05-11T08:47:15.077Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [
@@ -1142,7 +1178,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-11T08:31:47.868Z",
+      "fetched_at": "2026-05-11T08:47:26.940Z",
       "source_url": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
       "by_fy": {
         "FY25": {
