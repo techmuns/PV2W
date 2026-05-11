@@ -280,6 +280,13 @@
         }
       }
 
+      /* Parallel array of raw values from placeholder_data — used
+         both as the literal cell value when no formula applies AND
+         as the `result` cached value when a formula does apply, so
+         Excel renders the number immediately on open instead of
+         waiting for a recalc cycle (which Protected View / WPS
+         /  LibreOffice often defer, causing the cell to appear blank). */
+      const rawValues = new Array(yearCount).fill(null);
       for (let y = YEAR_START; y <= YEAR_END; y++) {
         const fy = yearToFY(y);
         let v = null;
@@ -296,17 +303,24 @@
             v = (raw === "—" || raw == null || raw === "") ? null : raw;
           }
         }
+        rawValues[y - YEAR_START] = v;
         r.push(v);
       }
       sheet.addRow(r);
-      /* If the row should be formula-driven, overwrite the value
-         cells with the formula references after the addRow. Track
-         counts on ctx so Model_Checks can report. */
+      /* Where we generated a formula, replace the cell with
+         { formula, result } so Excel always has a cached value to
+         display even before its recalc engine runs. result falls
+         back to the curated dashboard value from placeholder_data;
+         if we don't have either a formula-evaluated value or a raw
+         value, leave the literal already-written value alone. */
       if (formulas.some(Boolean)) {
         const last = sheet.lastRow;
         for (let i = 0; i < yearCount; i++) {
           if (formulas[i]) {
-            last.getCell(3 + i).value = { formula: formulas[i] };
+            const cached = rawValues[i];
+            last.getCell(3 + i).value = (cached != null && cached !== "")
+              ? { formula: formulas[i], result: cached }
+              : { formula: formulas[i] };
             if (ctx) ctx.formulaCount = (ctx.formulaCount || 0) + 1;
           }
         }
@@ -1585,6 +1599,13 @@
       wb.creator = "PV Industry Dashboard";
       wb.created = new Date();
       wb.title   = "Munshot PV Dashboard Export";
+      /* Force a full recalc when the file is opened so Protected
+         View / WPS / LibreOffice don't display cached-empty cells
+         for formulas. ExcelJS writes formula cells without a
+         `<v>` cache by default, which some viewers render blank
+         until they auto-recalc — this flag forces that recalc. */
+      wb.calcProperties = wb.calcProperties || {};
+      wb.calcProperties.fullCalcOnLoad = true;
 
       /* 3-tab workbook only: Absolute_Numbers (sourced data) →
          PV (formula-linked dashboard) → Sources (audit trail).
