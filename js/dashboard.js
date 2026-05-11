@@ -1596,6 +1596,11 @@
         if (p.shareMode) {
           const indUnit  = p.industryUnit || p.unit || "";
           const indScale = p.industryScale || 1;
+          /* When the metric's unit is '%' the value IS already the
+             share — showing both 'absolute' and 'share' columns
+             prints the same number twice ('41.4% 41.4%'). Collapse
+             to a single share-only column in that case. */
+          const valueIsShare = indUnit === "%";
           const fmtAbs = (v) => {
             if (v == null) return "";
             const sv = v * indScale;
@@ -1607,29 +1612,33 @@
             if (Math.abs(sv) >= 1000)     return Math.round(sv).toLocaleString("en-IN");
             return sv.toFixed(2);
           };
-          /* Industry total, computed from sum of slices to ensure
-             the visible mix always sums to 100.0%. */
           const indTotalAbs = p.industryAbsolute != null
             ? p.industryAbsolute
             : p.segments.reduce((s, x) => s + (x.value || 0), 0);
+          /* Total row: when value already IS the share, omit the
+             redundant '· 100.0%'. */
+          const totalValueDisplay = valueIsShare
+            ? `${fmtAbs(indTotalAbs)}`
+            : `${fmtAbs(indTotalAbs)} · 100.0%`;
           const totalRow = indTotalAbs != null
             ? `<div class="flex items-baseline justify-between gap-4">
                  <span class="text-[11px]" style="color:#6B7280;">${p.totalLabel || "Total"}</span>
-                 <span class="text-[13px] font-semibold tabular-nums" style="color:#1F2A37;">${fmtAbs(indTotalAbs)} · 100.0%</span>
+                 <span class="text-[13px] font-semibold tabular-nums" style="color:#1F2A37;">${totalValueDisplay}</span>
                </div>`
             : "";
           const segs = p.segments
             .filter(s => s.value != null && s.value !== 0)
             .map(s => {
               const sharePct = indTotalAbs ? (s.value / indTotalAbs) * 100 : 0;
+              const valueCol = valueIsShare
+                ? `<span class="font-semibold" style="color:#1F2A37;">${sharePct.toFixed(1)}%</span>`
+                : `<span class="font-normal mr-2" style="color:#1F2A37;">${fmtAbs(s.value)}</span>
+                   <span class="font-semibold" style="color:#1F2A37;">${sharePct.toFixed(1)}%</span>`;
               return `
               <div class="flex items-center gap-2.5">
                 <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
                 <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
-                <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">
-                  <span class="font-normal mr-2" style="color:#1F2A37;">${fmtAbs(s.value)}</span>
-                  <span class="font-semibold" style="color:#1F2A37;">${sharePct.toFixed(1)}%</span>
-                </span>
+                <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">${valueCol}</span>
               </div>`;
             }).join("");
           rich.innerHTML = totalRow
