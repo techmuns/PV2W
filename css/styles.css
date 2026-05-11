@@ -594,29 +594,19 @@ body::before {
    pushes the right-side unit pill out of place. */
 .chart-panel-title { line-height: 18px; max-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chart-panel-sub   { line-height: 16px; max-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Soft, premium swap motion when metric / FY changes — slow,
-   layered fade with a gentle vertical lift so the new view glides
-   in rather than snapping. Duration tuned for calm institutional
-   feel (420ms ease-in-out). */
+/* Soft swap motion — fades ONLY the chart canvas + legend.
+   Title / subtitle / meta strip / source line stay in place
+   so the card's framing reads as continuous; only the data
+   inside swaps. Quick ease-out for a snappy but smooth feel. */
 #chart1, #chart2,
-#chart1-title, #chart2-title,
-#chart1-help, #chart2-help,
-#chart1-sub, #chart2-sub,
-#chart1-legend, #chart2-legend,
-#chart1-source, #chart2-source,
-#chart2-context {
-  transition: opacity 420ms ease-in-out, transform 420ms ease-in-out;
-  will-change: opacity, transform;
+#chart1-legend, #chart2-legend {
+  transition: opacity 180ms ease-out;
+  will-change: opacity;
 }
-.is-swapping,
-.is-swapping #chart1-title, .is-swapping #chart2-title,
-.is-swapping #chart1-help, .is-swapping #chart2-help,
-.is-swapping #chart1-sub, .is-swapping #chart2-sub,
-.is-swapping #chart1-legend, .is-swapping #chart2-legend,
-.is-swapping #chart1-source, .is-swapping #chart2-source,
-.is-swapping #chart2-context {
+#chart1.is-swapping, #chart2.is-swapping,
+.is-swapping #chart1, .is-swapping #chart2,
+.is-swapping #chart1-legend, .is-swapping #chart2-legend {
   opacity: 0;
-  transform: translateY(3px);
 }
 .chart-panel-title {
   font-size: 14.5px;
