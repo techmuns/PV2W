@@ -594,9 +594,30 @@ body::before {
    pushes the right-side unit pill out of place. */
 .chart-panel-title { line-height: 18px; max-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chart-panel-sub   { line-height: 16px; max-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Smooth opacity fade when chart content swaps between metrics. */
-#chart1, #chart2 { transition: opacity 180ms ease-in-out; }
-#chart1.is-swapping, #chart2.is-swapping { opacity: 0; }
+/* Soft, premium swap motion when metric / FY changes — fades
+   the chart + title + subtitle + meta strip together with a
+   subtle vertical lift, so the new view glides in rather than
+   snapping. Duration calibrated to feel calm (220ms ease-out). */
+#chart1, #chart2,
+#chart1-title, #chart2-title,
+#chart1-help, #chart2-help,
+#chart1-sub, #chart2-sub,
+#chart1-legend, #chart2-legend,
+#chart1-source, #chart2-source,
+#chart2-context {
+  transition: opacity 220ms ease-out, transform 220ms ease-out;
+  will-change: opacity, transform;
+}
+.is-swapping,
+.is-swapping #chart1-title, .is-swapping #chart2-title,
+.is-swapping #chart1-help, .is-swapping #chart2-help,
+.is-swapping #chart1-sub, .is-swapping #chart2-sub,
+.is-swapping #chart1-legend, .is-swapping #chart2-legend,
+.is-swapping #chart1-source, .is-swapping #chart2-source,
+.is-swapping #chart2-context {
+  opacity: 0;
+  transform: translateY(3px);
+}
 .chart-panel-title {
   font-size: 14.5px;
   font-weight: 650;
