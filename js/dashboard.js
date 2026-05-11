@@ -851,7 +851,7 @@
         return (r && r.Value != null) ? r.Value : null;
       },
       unit: "%", scale: 1,
-      sliceTitle: "Volume growth by OEM",
+      sliceTitle: "Industry volume growth by OEM",
       subtitle: "Year-on-year volume growth per OEM vs prior FY",
     },
     marketshare: {
@@ -862,7 +862,7 @@
       },
       industryTotal: () => 100,
       unit: "%", scale: 1,
-      sliceTitle: "Market share by OEM",
+      sliceTitle: "Industry market share by OEM",
       subtitle: "Each OEM's share of total industry PV volume",
     },
     export: {
@@ -927,7 +927,7 @@
         return (r && r.Value != null) ? r.Value : null;
       },
       unit: "%", scale: 1,
-      sliceTitle: "Revenue growth by OEM",
+      sliceTitle: "Industry revenue growth by OEM",
       subtitle: "Year-on-year revenue growth per OEM vs prior FY",
     },
     ebitda: {
@@ -938,7 +938,7 @@
         return (r && r.Value != null) ? r.Value : null;
       },
       unit: "%", scale: 1,
-      sliceTitle: "EBITDA margin by OEM",
+      sliceTitle: "Industry EBITDA margin by OEM",
       subtitle: "EBITDA as % of revenue per OEM",
     },
     real_growth: {
@@ -949,7 +949,7 @@
         return (r && r.Value != null) ? r.Value : null;
       },
       unit: "%", scale: 1,
-      sliceTitle: "Realisation growth by OEM",
+      sliceTitle: "Industry realisation growth by OEM",
       subtitle: "Year-on-year change in per-unit revenue per OEM",
     },
     capex: {
@@ -960,7 +960,7 @@
       },
       industryTotal: () => null,
       unit: "₹ Cr", scale: 1,
-      sliceTitle: "Capex share by OEM",
+      sliceTitle: "Industry capex mix by OEM",
       subtitle: "Each OEM's share of tracked-OEM total annual capex",
     },
     newlaunches: {
@@ -971,7 +971,7 @@
       },
       industryTotal: () => null,
       unit: "count", scale: 1,
-      sliceTitle: "New launches by OEM",
+      sliceTitle: "Industry new launches mix by OEM",
       subtitle: "Each OEM's share of tracked-OEM total new model launches",
     },
     facelifts: {
@@ -982,7 +982,7 @@
       },
       industryTotal: () => null,
       unit: "count", scale: 1,
-      sliceTitle: "Facelifts share by OEM",
+      sliceTitle: "Industry facelifts mix by OEM",
       subtitle: "Each OEM's share of tracked-OEM total facelifts",
     },
   };
@@ -1286,8 +1286,18 @@
       else if (piedef && piedef.unit === "count")   industryTotalTxt = `${Math.round(scaled)}`;
       else if (piedef && piedef.unit === "%")       industryTotalTxt = "100.0%";
       else                                          industryTotalTxt = `${scaled.toFixed(1)}`;
-    } else if (chartKind === "bar" && indVolRow && indVolRow.Value != null) {
-      industryTotalTxt = `${(indVolRow.Value/1e5).toFixed(1)} lakh units`;
+    } else if (chartKind === "bar") {
+      /* Bar metrics show an industry-level RATE in the same slot,
+         relabelled as INDUSTRY (rate) so it doesn't read as a
+         total. E.g. Volume Growth shows industry's PV Volume
+         Growth %. Margin / Revenue Growth / Realisation Growth
+         have no industry-level rate published → '—'. */
+      if (def.id === "growth") {
+        const indGrowth = getIndustryMetric(fy, "PV Volume Growth %");
+        if (indGrowth && indGrowth.Value != null) {
+          industryTotalTxt = `${indGrowth.Value > 0 ? "+" : ""}${indGrowth.Value.toFixed(1)}%`;
+        }
+      }
     }
     let yoyTxt = "—";
     let yoyLabel = prevFyLabel ? `YoY vs ${prevFyLabel}` : "YoY";
@@ -1310,9 +1320,10 @@
     /* Three-slot strip — FY (just the year, no eyebrow label),
        INDUSTRY TOTAL (folds the unit in), YOY VS prior FY. The
        'FY' slot uses an empty key so only the value renders. */
+    const industryLabel = chartKind === "bar" ? "Industry" : "Industry total";
     const metaPairs = [
       ["", fy],
-      ["Industry total", industryTotalTxt],
+      [industryLabel, industryTotalTxt],
       [yoyLabel, yoyTxt],
     ];
 
