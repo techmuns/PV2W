@@ -514,6 +514,17 @@
               <text x="${padL-6}" y="${yy+3}" text-anchor="end" font-size="10" fill="#6B7280">${val.toFixed(0)}${options.yUnit||""}</text>`;
     }).join("");
 
+    /* Per-series gradient defs for the area fill — fades the line
+       colour from ~40% at the top to transparent at the baseline,
+       which reads more premium than a flat opacity rectangle. */
+    let defs = "";
+    series.forEach((s, idx) => {
+      defs += `<linearGradient id="ln-grad-${idx}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="${s.color}" stop-opacity="0.32"/>
+        <stop offset="100%" stop-color="${s.color}" stop-opacity="0"/>
+      </linearGradient>`;
+    });
+
     let lines = "";
     series.forEach((s, idx) => {
       const points = s.values.map((v, i) => v === null || v === undefined ? null : [x(i), y(v)]);
@@ -528,13 +539,22 @@
         const lastIdx  = points.length - 1 - points.slice().reverse().findIndex(Boolean);
         if (firstIdx >= 0) {
           const areaPath = `${path} L ${x(lastIdx)} ${y(yMin)} L ${x(firstIdx)} ${y(yMin)} Z`;
-          lines += `<path class="area" d="${areaPath}" fill="${s.color}"/>`;
+          lines += `<path d="${areaPath}" fill="url(#ln-grad-${idx})"/>`;
         }
       }
       lines += `<path class="line-path" d="${path}" stroke="${s.color}"/>`;
-      points.forEach((p) => {
+      /* Highlight the latest non-null point with a slightly larger
+         dot + outer ring, so the eye lands on 'where we are now'. */
+      const lastFilledIdx = points.length - 1 - [...points].reverse().findIndex(Boolean);
+      points.forEach((p, i) => {
         if (!p) return;
-        lines += `<circle class="dot" cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${s.color}"/>`;
+        const isLatest = i === lastFilledIdx;
+        if (isLatest) {
+          lines += `<circle cx="${p[0]}" cy="${p[1]}" r="6.5" fill="${s.color}" opacity="0.18"/>`;
+          lines += `<circle class="dot" cx="${p[0]}" cy="${p[1]}" r="4" fill="${s.color}"/>`;
+        } else {
+          lines += `<circle class="dot" cx="${p[0]}" cy="${p[1]}" r="3" fill="${s.color}"/>`;
+        }
       });
     });
 
@@ -577,6 +597,7 @@
     }).join("");
 
     return `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+      <defs>${defs}</defs>
       <g class="grid">${grid}</g>${lines}<g class="axis">${xAxis}</g>${hovers}
     </svg>`;
   }
@@ -1049,12 +1070,16 @@
     "₹ Cr":       (v) => `₹${Math.round(v).toLocaleString("en-IN")} Cr`,
     "count":      (v) => `${Math.round(v)}`,
   };
+  /* Coordinated buy-side palette — restrained tones, sufficient
+     contrast against white and the soft-purple page background.
+     Maruti deep navy, Hyundai indigo-blue, M&M warm amber,
+     Tata teal, Others slate-grey. */
   const OEM_COLOR = {
-    "Maruti":         "#173B63",
+    "Maruti":         "#1E3A5F",
     "Hyundai":        "#5B7CFA",
-    "Tata Motors PV": "#4DB6AC",
-    "M&M":            "#E7A64A",
-    "Others":         "#C9D2DF",
+    "M&M":            "#E9A23B",
+    "Tata Motors PV": "#4FB7A8",
+    "Others":         "#CBD5E1",
   };
 
   /* Populate (once) the metric + year selects in #industry-controls
