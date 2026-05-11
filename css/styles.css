@@ -594,10 +594,10 @@ body::before {
    pushes the right-side unit pill out of place. */
 .chart-panel-title { line-height: 18px; max-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chart-panel-sub   { line-height: 16px; max-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Soft, premium swap motion when metric / FY changes — fades
-   the chart + title + subtitle + meta strip together with a
-   subtle vertical lift, so the new view glides in rather than
-   snapping. Duration calibrated to feel calm (220ms ease-out). */
+/* Soft, premium swap motion when metric / FY changes — slow,
+   layered fade with a gentle vertical lift so the new view glides
+   in rather than snapping. Duration tuned for calm institutional
+   feel (420ms ease-in-out). */
 #chart1, #chart2,
 #chart1-title, #chart2-title,
 #chart1-help, #chart2-help,
@@ -605,7 +605,7 @@ body::before {
 #chart1-legend, #chart2-legend,
 #chart1-source, #chart2-source,
 #chart2-context {
-  transition: opacity 220ms ease-out, transform 220ms ease-out;
+  transition: opacity 420ms ease-in-out, transform 420ms ease-in-out;
   will-change: opacity, transform;
 }
 .is-swapping,

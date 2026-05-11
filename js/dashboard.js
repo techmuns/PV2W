@@ -1124,7 +1124,41 @@
 
   /* Render the Industry view's two-card module driven by
      state.indMetric + state.indYearRight. Called from renderCharts(). */
+  /* Cancellable swap timer — if the user clicks the dropdown again
+     during a fade we cancel the in-flight render and start a new
+     swap rather than queueing both. */
+  let _industrySwapTimer = null;
+  let _industryHasRendered = false;
+
   function renderIndustryPerformance() {
+    /* On the very first render don't run the fade cycle — the panel
+       is empty so there's nothing to fade out from. */
+    if (!_industryHasRendered) {
+      _industryHasRendered = true;
+      _renderIndustryPerformanceImpl();
+      return;
+    }
+    if (_industrySwapTimer) clearTimeout(_industrySwapTimer);
+    /* Slow cross-fade: fade-out (~280ms) → re-render → fade-in
+       (~420ms via CSS). Total perceived swap ~700ms — calm and
+       luxurious without feeling sluggish. */
+    const chart1El = $("#chart1");
+    const chart2El = $("#chart2");
+    const panels = document.querySelectorAll('.chart-panel');
+    panels.forEach(p => p.classList.add("is-swapping"));
+    [chart1El, chart2El].forEach(el => el && el.classList.add("is-swapping"));
+    _industrySwapTimer = setTimeout(() => {
+      _renderIndustryPerformanceImpl();
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          panels.forEach(p => p.classList.remove("is-swapping"));
+          [chart1El, chart2El].forEach(el => el && el.classList.remove("is-swapping"));
+        });
+      });
+    }, 280);
+  }
+
+  function _renderIndustryPerformanceImpl() {
     const def = IND_METRICS.find(m => m.id === state.indMetric) || IND_METRICS[0];
     const fyTrend = D.FYS_FULL;
     const fy = state.indYearRight;
@@ -1134,20 +1168,6 @@
     $("#chart2-product-sub").style.visibility = "hidden";
     const chart2 = $("#chart2");
     chart2.removeAttribute("style");
-    /* Soft swap: tag both chart-panel sections with is-swapping
-       so the title, subtitle, meta strip, chart, legend and
-       source line all fade together. Layout stays put because
-       the panel + canvas heights are CSS-locked. */
-    const chart1El = $("#chart1");
-    const panels = document.querySelectorAll('.chart-panel');
-    panels.forEach(p => p.classList.add("is-swapping"));
-    [chart1El, chart2].forEach(el => el && el.classList.add("is-swapping"));
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        panels.forEach(p => p.classList.remove("is-swapping"));
-        [chart1El, chart2].forEach(el => el && el.classList.remove("is-swapping"));
-      });
-    });
 
     /* ── Left card: 10-yr trend ── */
     if (def.industry) {
