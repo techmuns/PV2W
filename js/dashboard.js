@@ -832,34 +832,30 @@
   };
   const METRIC_PIE = {
     volume: {
+      chartKind: "pie",
       contribution: (co, fy) => oemAbsVolume(co, fy),
       industryTotal: (fy) => {
         const r = getIndustryMetric(fy, "Total PV Volume");
         return (r && r.Value != null) ? r.Value : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "Industry volume mix",
+      sliceTitle: "Industry volume mix by OEM",
       subtitle: "Each OEM's share of total industry PV volume",
     },
     growth: {
-      contribution: (co, fy) => {
-        const v = oemAbsVolume(co, fy);
-        const prev = prevFY(fy);
-        const vp = prev ? oemAbsVolume(co, prev) : null;
-        return (v != null && vp != null) ? (v - vp) : null;
+      /* Rate metric → ranked bar, not pie. Each bar is the OEM's
+         YoY volume growth %. */
+      chartKind: "bar",
+      barValue: (co, fy) => {
+        const r = getCompanyMetric(fy, co, "Volume Growth %");
+        return (r && r.Value != null) ? r.Value : null;
       },
-      industryTotal: (fy) => {
-        const cur = getIndustryMetric(fy, "Total PV Volume");
-        const prev = prevFY(fy);
-        const pre = prev ? getIndustryMetric(prev, "Total PV Volume") : null;
-        return (cur && pre && cur.Value != null && pre.Value != null)
-          ? (cur.Value - pre.Value) : null;
-      },
-      unit: "lakh units", scale: 1/1e5,
+      unit: "%", scale: 1,
       sliceTitle: "Volume growth by OEM",
-      subtitle: "Each OEM's contribution to industry volume change",
+      subtitle: "Year-on-year volume growth per OEM vs prior FY",
     },
     marketshare: {
+      chartKind: "pie",
       contribution: (co, fy) => {
         const r = getCompanyMetric(fy, co, "Market Share %");
         return (r && r.Value != null) ? r.Value : null;
@@ -870,6 +866,7 @@
       subtitle: "Each OEM's share of total industry PV volume",
     },
     export: {
+      chartKind: "pie",
       contribution: (co, fy) => {
         const tot = getCompanyMetric(fy, co, "Total Sales Volume");
         const exp = getCompanyMetric(fy, co, "Export Volume %");
@@ -883,10 +880,11 @@
           ? (ind.Value * expShare.Value / 100) : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "Industry export mix",
+      sliceTitle: "Industry export mix by OEM",
       subtitle: "Each OEM's share of total industry PV exports",
     },
     ev: {
+      chartKind: "pie",
       contribution: (co, fy) => {
         const tot = getCompanyMetric(fy, co, "Total Sales Volume");
         const evP = getCompanyMetric(fy, co, "EV Volume %");
@@ -900,10 +898,11 @@
           ? (ind.Value * evShare.Value / 100) : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "Industry EV mix",
+      sliceTitle: "Industry EV mix by OEM",
       subtitle: "Each OEM's share of total industry BEV volume",
     },
     suv: {
+      chartKind: "pie",
       contribution: (co, fy) => {
         const tot = getCompanyMetric(fy, co, "Total Sales Volume");
         const suvP = getCompanyMetric(fy, co, "SUV Volume %");
@@ -917,52 +916,55 @@
           ? (ind.Value * suvShare.Value / 100) : null;
       },
       unit: "lakh units", scale: 1/1e5,
-      sliceTitle: "Industry SUV mix",
+      sliceTitle: "Industry SUV mix by OEM",
       subtitle: "Each OEM's share of total industry SUV / UV volume",
     },
     rev_growth: {
-      contribution: (co, fy) => {
-        const cur = oemRevenueAbs(co, fy);
-        const prev = prevFY(fy);
-        const pre = prev ? oemRevenueAbs(co, prev) : null;
-        return (cur != null && pre != null) ? (cur - pre) : null;
-      },
-      industryTotal: () => null,    // sum of OEM contributions; no Others
-      unit: "₹ Cr", scale: 1,
-      sliceTitle: "Revenue growth by OEM",
-      subtitle: "Each OEM's revenue change vs prior FY, in ₹ crore",
-    },
-    ebitda: {
-      contribution: (co, fy) => {
-        const r = getCompanyMetric(fy, co, "EBITDA (Rs Cr)");
+      /* Rate metric → bar. */
+      chartKind: "bar",
+      barValue: (co, fy) => {
+        const r = getCompanyMetric(fy, co, "Revenue Growth %");
         return (r && r.Value != null) ? r.Value : null;
       },
-      industryTotal: () => null,
-      unit: "₹ Cr", scale: 1,
-      sliceTitle: "EBITDA by OEM",
-      subtitle: "Each OEM's EBITDA in ₹ crore; share of tracked-OEM total",
+      unit: "%", scale: 1,
+      sliceTitle: "Revenue growth by OEM",
+      subtitle: "Year-on-year revenue growth per OEM vs prior FY",
+    },
+    ebitda: {
+      /* Rate metric → bar. */
+      chartKind: "bar",
+      barValue: (co, fy) => {
+        const r = getCompanyMetric(fy, co, "EBITDA Margin %");
+        return (r && r.Value != null) ? r.Value : null;
+      },
+      unit: "%", scale: 1,
+      sliceTitle: "EBITDA margin by OEM",
+      subtitle: "EBITDA as % of revenue per OEM",
     },
     real_growth: {
-      contribution: (co, fy) => {
+      /* Rate metric → bar. */
+      chartKind: "bar",
+      barValue: (co, fy) => {
         const r = getCompanyMetric(fy, co, "Realisation Growth %");
-        return (r && r.Value != null && r.Value > 0) ? r.Value : null;
+        return (r && r.Value != null) ? r.Value : null;
       },
-      industryTotal: () => null,
       unit: "%", scale: 1,
       sliceTitle: "Realisation growth by OEM",
-      subtitle: "OEMs with positive realisation growth %",
+      subtitle: "Year-on-year change in per-unit revenue per OEM",
     },
     capex: {
+      chartKind: "pie",
       contribution: (co, fy) => {
         const r = getCompanyMetric(fy, co, "Capex (Rs Cr)");
         return (r && r.Value != null) ? r.Value : null;
       },
       industryTotal: () => null,
       unit: "₹ Cr", scale: 1,
-      sliceTitle: "Capex by OEM",
-      subtitle: "Each OEM's annual capex in ₹ crore",
+      sliceTitle: "Capex share by OEM",
+      subtitle: "Each OEM's share of tracked-OEM total annual capex",
     },
     newlaunches: {
+      chartKind: "pie",
       contribution: (co, fy) => {
         const r = getCompanyMetric(fy, co, "New Model Launches");
         return (r && r.Value != null) ? r.Value : null;
@@ -970,19 +972,23 @@
       industryTotal: () => null,
       unit: "count", scale: 1,
       sliceTitle: "New launches by OEM",
-      subtitle: "Number of new models launched per OEM",
+      subtitle: "Each OEM's share of tracked-OEM total new model launches",
     },
     facelifts: {
+      chartKind: "pie",
       contribution: (co, fy) => {
         const r = getCompanyMetric(fy, co, "Facelift Launches");
         return (r && r.Value != null) ? r.Value : null;
       },
       industryTotal: () => null,
       unit: "count", scale: 1,
-      sliceTitle: "Facelifts by OEM",
-      subtitle: "Number of facelifts / refreshes per OEM",
+      sliceTitle: "Facelifts share by OEM",
+      subtitle: "Each OEM's share of tracked-OEM total facelifts",
     },
   };
+  /* Backfill chartKind for the two pie entries that pre-date the
+     flag so we never hit an undefined branch downstream. */
+  if (METRIC_PIE.newlaunches) METRIC_PIE.newlaunches.chartKind = "pie";
 
   /* Per-metric meaning / base / phrasing — drives chart titles,
      subtitles, context strip, and tooltip rows so the user can
@@ -1210,8 +1216,10 @@
     const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
     let items = [];
     const piedef = METRIC_PIE[def.id] || null;
+    const chartKind = (piedef && piedef.chartKind) || "pie";
     let industryAbs = null;
-    if (piedef) {
+
+    if (piedef && chartKind === "pie") {
       let trackedSum = 0;
       oems.forEach(co => {
         const v = piedef.contribution(co, fy);
@@ -1221,9 +1229,10 @@
         if (v > 0) trackedSum += v;
       });
       industryAbs = piedef.industryTotal(fy);
-      /* Add Others if we know the industry total and tracked
-         contributions don't already cover it. Clamp negative
-         residuals to 0. */
+      /* Always add 'Others' when industry total > tracked sum
+         (clamp negative residuals to 0). When no industry total is
+         known, fall back to tracked sum so the pie still totals
+         100% across tracked OEMs (Capex / EBITDA / Launches paths). */
       if (industryAbs != null && Number.isFinite(industryAbs) && industryAbs > trackedSum) {
         items.push({
           name: "Others",
@@ -1231,11 +1240,15 @@
           color: OEM_COLOR.Others,
         });
       } else if (industryAbs == null) {
-        /* No industry-level absolute → industry total = sum of
-           tracked OEMs (Others slice not applicable for that
-           metric). Used for Capex / Launches / EBITDA / etc. */
         industryAbs = trackedSum;
       }
+    } else if (piedef && chartKind === "bar") {
+      /* Rate-metric path: ranked bar of each OEM's %. */
+      oems.forEach(co => {
+        const v = piedef.barValue(co, fy);
+        if (v == null || !Number.isFinite(v)) return;
+        items.push({ name: co, value: v, color: OEM_COLOR[co] });
+      });
     }
 
     /* Title / subtitle now describe what the % means and what the
@@ -1252,80 +1265,108 @@
     $("#chart2-title").textContent = title;
     $("#chart2-help").textContent  = (piedef && piedef.subtitle) || mDef.subtitle
       || "Share of industry";
-    $("#chart2-sub").textContent   = `${fy} · ${(piedef && piedef.unit) || def.unit}`;
-    $("#chart2-sub").classList.remove("hidden");
+    /* Hide the redundant 'FY · unit' line — that information now
+       lives in the fixed 4-slot meta strip below. */
+    $("#chart2-sub").textContent   = "";
+    $("#chart2-sub").classList.add("hidden");
 
-    /* Meta strip — clean key:value pairs that read naturally:
-         Unit · Industry total · YoY growth vs FYxx
-       Replaces the busy 'Selected FY: FY25 · YoY base: FY24' copy
-       with simple, scannable phrasing. */
-    const metaPairs = [];
-    metaPairs.push(["Unit", (piedef && piedef.unit) || def.unit || ""]);
-
-    const indVolRow = getIndustryMetric(fy, "Total PV Volume");
-    if ((def.id === "volume" || def.id === "growth" || def.id === "marketshare"
-         || def.id === "export" || def.id === "ev" || def.id === "suv")
-        && indVolRow && indVolRow.Value != null) {
-      metaPairs.push(["Industry total", `${(indVolRow.Value/1e5).toFixed(1)} lakh units`]);
-    }
-
+    /* Fixed 4-slot meta strip — same order every metric:
+         FY · UNIT · INDUSTRY TOTAL · YOY VS PRIOR FY
+       Missing slots show '—' to preserve alignment. */
     const prevFyLabel = prevFY(fy);
-    if (mDef.benchmarkMetric) {
-      const indBench = getIndustryMetric(fy, mDef.benchmarkMetric);
-      if (indBench && indBench.Value != null) {
-        const sign = indBench.Value > 0 ? "+" : "";
-        const label = prevFyLabel ? `YoY vs ${prevFyLabel}` : "YoY";
-        metaPairs.push([label, `${sign}${indBench.Value.toFixed(1)}%`]);
-      }
-    } else if (def.id === "growth" && prevFyLabel) {
-      /* Industry-level YoY computed directly from Total PV Volume. */
-      const cur = getIndustryMetric(fy, "Total PV Volume");
-      const pre = getIndustryMetric(prevFyLabel, "Total PV Volume");
-      if (cur && pre && cur.Value != null && pre.Value != null && pre.Value !== 0) {
-        const yoy = ((cur.Value / pre.Value) - 1) * 100;
-        metaPairs.push([`YoY vs ${prevFyLabel}`, `${yoy > 0 ? "+" : ""}${yoy.toFixed(1)}%`]);
+    const unitTxt = (piedef && piedef.unit) || def.unit || "—";
+    let industryTotalTxt = "—";
+    const indVolRow = getIndustryMetric(fy, "Total PV Volume");
+    if (chartKind === "pie" && industryAbs != null && Number.isFinite(industryAbs)) {
+      /* Show industry total in the metric's own unit. */
+      const scale = (piedef && piedef.scale) || 1;
+      const scaled = industryAbs * scale;
+      if (piedef && piedef.unit === "lakh units") industryTotalTxt = `${scaled.toFixed(1)} lakh units`;
+      else if (piedef && piedef.unit === "₹ Cr")    industryTotalTxt = `₹${Math.round(scaled).toLocaleString("en-IN")} Cr`;
+      else if (piedef && piedef.unit === "count")   industryTotalTxt = `${Math.round(scaled)}`;
+      else if (piedef && piedef.unit === "%")       industryTotalTxt = "100.0%";
+      else                                          industryTotalTxt = `${scaled.toFixed(1)}`;
+    } else if (chartKind === "bar" && indVolRow && indVolRow.Value != null) {
+      industryTotalTxt = `${(indVolRow.Value/1e5).toFixed(1)} lakh units`;
+    }
+    let yoyTxt = "—";
+    let yoyLabel = prevFyLabel ? `YoY vs ${prevFyLabel}` : "YoY";
+    if (prevFyLabel) {
+      if (mDef.benchmarkMetric) {
+        const indBench = getIndustryMetric(fy, mDef.benchmarkMetric);
+        if (indBench && indBench.Value != null) {
+          const sign = indBench.Value > 0 ? "+" : "";
+          yoyTxt = `${sign}${indBench.Value.toFixed(1)}%`;
+        }
+      } else if (def.id === "growth" || def.id === "volume") {
+        const cur = getIndustryMetric(fy, "Total PV Volume");
+        const pre = getIndustryMetric(prevFyLabel, "Total PV Volume");
+        if (cur && pre && cur.Value != null && pre.Value != null && pre.Value !== 0) {
+          const yoy = ((cur.Value / pre.Value) - 1) * 100;
+          yoyTxt = `${yoy > 0 ? "+" : ""}${yoy.toFixed(1)}%`;
+        }
       }
     }
+    const metaPairs = [
+      ["FY", fy],
+      ["Unit", unitTxt],
+      ["Industry total", industryTotalTxt],
+      [yoyLabel, yoyTxt],
+    ];
 
     let ctxEl = document.getElementById("chart2-context");
     if (!ctxEl) {
       ctxEl = document.createElement("div");
       ctxEl.id = "chart2-context";
-      ctxEl.style.cssText = "display:flex;gap:18px;flex-wrap:wrap;font-size:11px;color:#475569;margin:6px 0 8px;line-height:1.45";
+      ctxEl.style.cssText = "display:flex;gap:20px;flex-wrap:wrap;font-size:11px;color:#475569;margin:6px 0 10px;line-height:1.45";
       const subEl = $("#chart2-sub");
       if (subEl && subEl.parentElement) subEl.parentElement.appendChild(ctxEl);
     }
     ctxEl.innerHTML = metaPairs.map(([k, v]) => `
       <span style="display:inline-flex;align-items:baseline;gap:6px">
         <span style="color:#94A3B8;text-transform:uppercase;font-size:9.5px;letter-spacing:0.04em;font-weight:600">${k}</span>
-        <span style="color:#1F2A37;font-weight:600">${v}</span>
+        <span style="color:${v === "—" ? "#94A3B8" : "#1F2A37"};font-weight:600">${v}</span>
       </span>`).join("");
 
-    /* Always render as a pie. Sort tracked OEMs by value desc;
-       pin Others last for visual consistency. */
-    const others = items.find(s => s.name === "Others");
-    const slices = items.filter(s => s.name !== "Others" && s.value > 0)
-                        .sort((a, b) => b.value - a.value);
-    if (others && others.value > 0) slices.push(others);
-
-    if (!slices.length) {
-      chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">No OEM data for this metric in ${fy}.</div>`;
-      $("#chart2-legend").innerHTML = "";
+    /* Dispatch on chartKind — pie for mix/share metrics, ranked
+       bar for rate/ratio metrics (growth %, margin %). */
+    if (chartKind === "bar") {
+      const ranked = items.slice().sort((a, b) => (b.value || 0) - (a.value || 0));
+      if (!ranked.length) {
+        chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">No OEM data for this metric in ${fy}.</div>`;
+        $("#chart2-legend").innerHTML = "";
+      } else {
+        chart2.innerHTML = rankedBarChart(ranked, {
+          yUnit: "%", fy,
+          metric: piedef.sliceTitle.split(" by ")[0] || def.label,
+          metricBase: piedef.subtitle || "",
+        });
+        $("#chart2-legend").innerHTML = ranked
+          .map(r => legendChip(r.color, r.name)).join("");
+      }
     } else {
-      const unit = (piedef && piedef.unit) || def.unit;
-      chart2.innerHTML = pieChart(slices, {
-        fy,
-        totalLabel: `Total ${def.label.toLowerCase()} · ${fy}`,
-        unit,
-        /* shareMode renders 'XX absolute · YY.Y%' tooltips with no
-           parenthetical re-normalisation — consistent across all
-           industry-mix pies. */
-        shareMode: true,
-        industryAbsolute: industryAbs,
-        industryUnit: unit,
-        industryScale: (piedef && piedef.scale) || 1,
-      });
-      $("#chart2-legend").innerHTML = "";
+      /* Pie path. Sort tracked OEMs by value desc; pin Others last. */
+      const others = items.find(s => s.name === "Others");
+      const slices = items.filter(s => s.name !== "Others" && s.value > 0)
+                          .sort((a, b) => b.value - a.value);
+      if (others && others.value > 0) slices.push(others);
+
+      if (!slices.length) {
+        chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">No OEM data for this metric in ${fy}.</div>`;
+        $("#chart2-legend").innerHTML = "";
+      } else {
+        const unit = (piedef && piedef.unit) || def.unit;
+        chart2.innerHTML = pieChart(slices, {
+          fy,
+          totalLabel: `Total ${def.label.toLowerCase()} · ${fy}`,
+          unit,
+          shareMode: true,
+          industryAbsolute: industryAbs,
+          industryUnit: unit,
+          industryScale: (piedef && piedef.scale) || 1,
+        });
+        $("#chart2-legend").innerHTML = "";
+      }
     }
     /* Source line — credit SIAM for industry totals + company filings
        for the OEM-level numbers (market share for additive splits,
