@@ -747,7 +747,8 @@
             return `IFERROR(${pbt}-${pat},"")`;
           }, '#,##0');
         rowMap[`${co}|PAT`]        = inputRow(co, "P&L", "PAT", "₹ Cr",
-          (fy) => getAbs(co, fy, "PAT"), ABS_DATA[co], "company AR not parsed for this FY");
+          (fy) => getAbs(co, fy, "PAT") ?? getCM(D, co, fy, "Net Profit (Rs Cr)"),
+          ABS_DATA[co], "company AR not parsed for this FY");
       }
 
       /* ── Balance Sheet ── */
@@ -792,10 +793,13 @@
         /* Working Capital absolute = Working Capital Days × Revenue / 365.
            WC Days is sourced from Screener / AR ratios; this gives a
            usable Working Capital number while Receivables / Inventory /
-           Payables stay NA. */
+           Payables stay NA. Revenue uses the same fallback chain as
+           the Revenue row itself — getAbs first, then Net Sales (Rs Cr)
+           from placeholder_data — otherwise Tata PV (which has empty
+           ABS_DATA.byFY) would render blank here. */
         rowMap[`${co}|Working Capital`] = inputRow(co, "BS", "Working Capital", "₹ Cr",
           (fy) => {
-            const rev = getAbs(co, fy, "Revenue");
+            const rev = getAbs(co, fy, "Revenue") ?? getCM(D, co, fy, "Net Sales (Rs Cr)");
             const days = getCM(D, co, fy, "Working Capital Days");
             return (rev != null && days != null) ? Math.round(days * rev / 365) : null;
           },
