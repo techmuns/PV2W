@@ -27,18 +27,42 @@
   const ALL_OEMS = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
 
   /* Calendar years for the column header. Edit here to extend. */
-  /* Year range — auto-extends each fiscal year.
-       YEAR_START is fixed at 2016 (no source covers earlier FYs).
-       YEAR_END is computed dynamically: April marks the start of
-       a new Indian FY, so once we cross April N we want the column
-       for FY ending March (N+1) visible (Q1 partials land in May).
-     This means the Excel grows by one column every April with no
-     code change required. */
+  /* Year range — YEAR_START is fixed at 2016 (no source covers
+     earlier FYs). YEAR_END is *data-driven*: clampYearEnd() walks
+     the dataset and pins it to the latest FY that actually has
+     industry-level data AND ≥ 50 populated company-metric rows.
+     The extend-fys workflow adds a new FY to the config in April
+     so SIAM / Maruti / Hyundai / etc. can land their Q1 partials,
+     but until full-year data lands the FY column is mostly blank.
+     Clamping prevents the workbook from rendering 12+ FY columns
+     where the last two are 95% blank — instead it stops at the
+     latest populated FY (currently FY25). */
   const YEAR_START = 2016;
   const _now       = new Date();
   const _currentY  = _now.getFullYear();
   const _isPostApr = _now.getMonth() >= 3;   // 0-indexed; April = 3
-  const YEAR_END   = _isPostApr ? _currentY + 1 : _currentY;
+  let   YEAR_END   = _isPostApr ? _currentY + 1 : _currentY;
+
+  /* Pin YEAR_END to the most recent FY with real data so the Excel
+     never renders trailing FY columns full of blanks. Called from
+     runExport once window.PV_DATA is loaded. Mirrors pickLatestFY
+     in js/dashboard.js. */
+  function clampYearEnd(D) {
+    if (!D || !D.Company_FY_Metrics) return;
+    const ind = D.Industry_FY_Metrics || [];
+    const co  = D.Company_FY_Metrics  || [];
+    /* Walk from the configured YEAR_END down to YEAR_START and pick
+       the first year where both data conditions hold. */
+    for (let y = YEAR_END; y >= YEAR_START; y--) {
+      const fy = "FY" + String(y).slice(2);
+      const hasInd = ind.some(r => r.FY === fy && r.Value !== null && r.Value !== undefined);
+      const coCount = co.filter(r => r.FY === fy && r.Value !== null && r.Value !== undefined).length;
+      if (hasInd && coCount >= 50) {
+        YEAR_END = y;
+        return;
+      }
+    }
+  }
 
   /* Column 2010 → FY10, 2025 → FY25, etc. */
   function yearToFY(y) { return "FY" + String(y).slice(2); }
@@ -1551,6 +1575,11 @@
       if (typeof ExcelJS === "undefined") throw new Error("Excel library not loaded — refresh the page and retry.");
       const D = window.PV_DATA;
       if (!D || !D.Company_FY_Metrics) throw new Error("Dashboard data not loaded yet — wait for the page to finish loading.");
+
+      /* Clamp the FY column range to the latest year with real
+         data so the workbook doesn't render empty FY26 / FY27
+         columns while the auto-extend has pre-added them. */
+      clampYearEnd(D);
 
       const wb = new ExcelJS.Workbook();
       wb.creator = "PV Industry Dashboard";
