@@ -21572,11 +21572,11 @@
     {
       "FY": "FY23",
       "Metric": "Top Gaining OEM",
-      "Value": "Tata Motors PV (+0.6pp)",
+      "Value": "Tata Motors PV (+0.9 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
@@ -21632,11 +21632,11 @@
     {
       "FY": "FY24",
       "Metric": "Top Gaining OEM",
-      "Value": "M&M (+1.2pp)",
+      "Value": "M&M (+1.0 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
@@ -21692,11 +21692,11 @@
     {
       "FY": "FY25",
       "Metric": "Top Gaining OEM",
-      "Value": "M&M (+2.0pp)",
+      "Value": "M&M (+1.2 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
@@ -22052,61 +22052,61 @@
     {
       "FY": "FY17",
       "Metric": "Top Gaining OEM",
-      "Value": "Tata Motors PV (+0.5pp)",
+      "Value": "Tata Motors PV (+0.9 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
       "FY": "FY18",
       "Metric": "Top Gaining OEM",
-      "Value": "Maruti (+3.2pp)",
+      "Value": "Maruti (+2.6 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
       "FY": "FY19",
       "Metric": "Top Gaining OEM",
-      "Value": "M&M (+0.8pp)",
+      "Value": "Tata Motors PV (+1.8 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
       "FY": "FY20",
       "Metric": "Top Gaining OEM",
-      "Value": "Kia (+3.5pp)",
+      "Value": "Tata Motors PV (+0.9 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
       "FY": "FY21",
       "Metric": "Top Gaining OEM",
-      "Value": "Tata Motors PV (+3.2pp)",
+      "Value": "Tata Motors PV (+0.9 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
       "FY": "FY22",
       "Metric": "Top Gaining OEM",
-      "Value": "Tata Motors PV (+5.2pp)",
+      "Value": "Tata Motors PV (+0.9 pp)",
       "YoY_Change": null,
       "Signal": "Neutral",
-      "Source": "Munshot database \u2014 SIAM monthly domestic PV market-share series; YoY pp-change derived per OEM",
-      "Source_URL": "",
+      "Source": "Derived from OEM Market Share % (largest YoY gain)",
+      "Source_URL": "https://www.siam.in/statistics.aspx",
       "Last_Updated": "2026-05-11"
     },
     {
@@ -22411,7 +22411,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-11T19:02:29.384Z",
+    "last_refresh": "2026-05-11T19:08:51.245Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -22430,6 +22430,6 @@
       "hyundai_filings": "success",
       "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25691027787"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25691357931"
   }
 }
