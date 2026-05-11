@@ -1561,30 +1561,17 @@
 
   function buildSources(wb, D, absMap) {
     const sheet = wb.addWorksheet("Sources", { properties: { tabColor: { argb: "FF6B7280" } } });
-    /* Schema per the simplified spec:
-         Company | Metric | FY | Value | Unit | Source Name |
-         Source URL | Source Type | Notes
-       Source Type ∈ Annual Report / Investor Presentation /
-                    Exchange Filing / Dashboard Existing Data /
-                    Derived Formula / Not Available */
-    sheet.addRow(["Company", "Metric", "FY", "Value", "Unit", "Source Name", "Source URL", "Source Type", "Notes"]);
+    /* Simplified schema — Source Type and Source URL columns removed
+       per user feedback (the workbook is read by analysts who only
+       care about the source label / notes, not the URL or our
+       internal classifier enum). */
+    sheet.addRow(["Company", "Metric", "FY", "Value", "Unit", "Source Name", "Notes"]);
     const hr = sheet.getRow(1);
     hr.font = { bold: true, color: { argb: "FFFFFFFF" } };
     hr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1E3A8A" } };
     hr.alignment = { vertical: "middle", horizontal: "left" };
     hr.height = 24;
 
-    /* Source-Type classifier — maps each metric label to one of the
-       enumerated values. */
-    const classifyType = (label, value, sourceLabel) => {
-      if (value === "NA" || value == null) return "Not Available";
-      if (/^Derived:/i.test(sourceLabel || "")) return "Derived Formula";
-      if (/DRHP|Q4 Investor Presentation|Investor Presentation|Q4 IP/i.test(sourceLabel || "")) return "Investor Presentation";
-      if (/Annual Report/i.test(sourceLabel || "")) return "Annual Report";
-      if (/MCA|exchange|NSE|BSE|press release|sebi/i.test(sourceLabel || "")) return "Exchange Filing";
-      if (sourceLabel) return "Dashboard Existing Data";
-      return "Not Available";
-    };
     const unitFor = (label) => {
       if (/%$/.test(label)) return "%";
       if (/Days$/.test(label)) return "days";
@@ -1610,9 +1597,9 @@
         const item      = row.getCell(3).value;
         const unit      = row.getCell(4).value;
         if (!co || !item || statement == null) return;     // skip section/company headers
-        const srcName = row.getCell(16).value || "";
-        const srcUrl  = row.getCell(17).value || "";
-        const srcDate = row.getCell(18).value || "";
+        /* Source columns were removed from Absolute_Numbers in an
+           earlier PR — provenance now lives only on this Sources
+           sheet via the placeholder_data Source field below. */
         FYS_MODEL.forEach((fy, i) => {
           const v = row.getCell(FY_COL_OFFSET + i).value;
           let displayValue = v;
@@ -1621,11 +1608,10 @@
             displayValue = `=${v.formula}`;
             notes = "Excel formula";
           }
-          if (v === "NA") notes = srcName || "absolute not in captured summary";
+          if (v === "NA") notes = "absolute not in captured summary";
           sheet.addRow([
             co, item, fy, displayValue, unit || unitFor(item),
-            srcName, srcUrl,
-            classifyType(item, v, srcName),
+            "",      // Source Name (filled by pass 2 below for placeholder_data items)
             notes,
           ]);
         });
@@ -1647,17 +1633,15 @@
         (r.Value === "Pending" || r.Value === undefined) ? "NA" : r.Value,
         unitFor(r.Metric),
         (r.Source && r.Source !== "Pending") ? r.Source : "",
-        r.Source_URL || "",
-        classifyType(r.Metric, r.Value, r.Source || ""),
         r.Last_Updated ? `Last updated ${r.Last_Updated}` : "",
       ]);
     });
 
-    sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: sheet.rowCount, column: 9 } };
+    sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: sheet.rowCount, column: 7 } };
     sheet.views = [{ state: "frozen", ySplit: 1 }];
 
-    /* Per-column widths sized to the spec. */
-    [16, 30, 8, 14, 8, 56, 30, 22, 36].forEach((w, i) => sheet.getColumn(i + 1).width = w);
+    /* Per-column widths sized to the simplified schema. */
+    [16, 32, 8, 14, 9, 60, 38].forEach((w, i) => sheet.getColumn(i + 1).width = w);
 
     /* Style data rows. */
     sheet.eachRow({ includeEmpty: false }, (row, rowNum) => {
