@@ -640,6 +640,22 @@
     labels.forEach((label, i) => {
       const cx = padL + groupW * (i + 0.5);
       const startX = cx - (series.length * barW) / 2;
+      /* Multi-bar payload — hovering any bar in the column shows
+         every series's value for that FY (e.g. PV industry +X.X%
+         and selected company +Y.Y%). */
+      const segs = series
+        .map(s => {
+          const v = s.values[i];
+          if (v === null || v === undefined) return null;
+          return { label: s.name || "", value: v, color: s.color || "#2563EB" };
+        })
+        .filter(Boolean);
+      const groupPayload = JSON.stringify({
+        kind: "multi-line",
+        fy: label,
+        unit: options.yUnit || "",
+        segments: segs,
+      });
       series.forEach((s, si) => {
         const v = s.values[i];
         if (v === null || v === undefined) return;
@@ -648,7 +664,7 @@
         const yTop = v >= 0 ? yy : zeroY;
         bars += `<rect class="bar hover-target" x="${startX + si*barW}" y="${yTop}" width="${barW - 2}" height="${hh}" fill="${s.color}" rx="2"
           data-fy="${ATTR(label)}" data-series="${ATTR(s.name)}" data-value="${ATTR(v)}"
-          data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(s.color)}"/>`;
+          data-unit="${ATTR(options.yUnit||"")}" data-color="${ATTR(s.color)}" data-rich="${ATTR(groupPayload)}"/>`;
       });
       bars += `<text x="${cx}" y="${h-8}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
     });
@@ -1727,21 +1743,48 @@
     } else {
       const ctl = $("#industry-controls");
       if (ctl) { ctl.classList.add("hidden"); ctl.classList.remove("flex"); }
-      $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
-      $("#chart1-help").textContent  = "Volume growth comparison";
-      $("#chart1-sub").textContent   = "";
 
-      const oemVals = fyHistory.map(fy => (getCompanyMetric(fy, state.company, "Volume Growth %")||{}).Value ?? null);
-      const indVals = fyHistory.map(fy => (getIndustryMetric(fy, "PV Volume Growth %")||{}).Value ?? null);
+      /* 10-year rolling window: trailing 10 FYs from D.FYS_FULL,
+         which is already extended automatically each April by
+         scripts/extend-fys.mjs. */
+      const ROLL_YEARS = 10;
+      const fyWindow = (D.FYS_FULL || []).slice(-ROLL_YEARS);
+      const limitedNote = fyWindow.length < ROLL_YEARS ? " · Limited history available" : "";
+
+      $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
+      $("#chart1-help").textContent  = fyWindow.length
+        ? `Volume Growth % · ${fyWindow[0]}–${fyWindow[fyWindow.length-1]}${limitedNote}`
+        : "Volume growth comparison";
+      $("#chart1-sub").textContent   = "%";
+
+      /* Null = missing data (gap in the chart). Never substitute 0. */
+      const oemVals = fyWindow.map(fy => {
+        const r = getCompanyMetric(fy, state.company, "Volume Growth %");
+        return (r && r.Value != null && typeof r.Value === "number") ? r.Value : null;
+      });
+      const indVals = fyWindow.map(fy => {
+        const r = getIndustryMetric(fy, "PV Volume Growth %");
+        return (r && r.Value != null && typeof r.Value === "number") ? r.Value : null;
+      });
+
       $("#chart1").innerHTML = groupedBarChart([
-        { name: "PV industry", color: COLOR.greySft, values: indVals },
-        { name: state.company, color: COLOR.blue,    values: oemVals },
-      ], fyHistory, { yUnit: "%" });
+        { name: "PV industry",   color: COLOR.greySft, values: indVals },
+        { name: state.company,   color: COLOR.blue,    values: oemVals },
+      ], fyWindow, { yUnit: "%" });
       $("#chart1-legend").innerHTML =
         legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
-      $("#chart1-source").textContent = state.company === "Maruti"
-        ? "Source: SIAM (industry); Maruti Suzuki Q4 Investor Presentations / FY25 Annual Report."
-        : "Source: SIAM (industry); company filings (OEM volumes).";
+
+      /* Dynamic source line — pulls the most recent Source label
+         off the company's Volume Growth % row so it credits the
+         actual feed (Annual Report / Q4 IP / Screener etc.). */
+      const latestRow = (D.Company_FY_Metrics || [])
+        .filter(r => r.Company === state.company && r.Metric === "Volume Growth %" && r.Source && r.Source !== "Pending")
+        .sort((a, b) => (a.FY > b.FY ? 1 : -1))
+        .pop();
+      const oemSrc = latestRow && latestRow.Source
+        ? latestRow.Source
+        : `${state.company} Annual Reports / Q4 Investor Presentations`;
+      $("#chart1-source").textContent = `Source: SIAM (industry volume growth); ${oemSrc}.`;
 
       $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
       $("#chart2-help").textContent  = "Total sales volume by selected mix";
