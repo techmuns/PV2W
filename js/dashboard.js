@@ -3141,7 +3141,7 @@
       { metric: "SUV Growth Leader",         leader: "Mahindra & Mahindra",
         sub: "Outsized SUV portfolio gains" },
       { metric: "EV Leadership",             leader: "Tata Motors PV",
-        sub: "Highest EV mix among PV OEMs" },
+        sub: "Highest EV mix among tracked OEMs" },
       { metric: "Premium Mix",               leader: "Hyundai",
         sub: "Strongest premium-segment penetration" },
       { metric: "Highest Realisation Growth",leader: LEADERBOARD_DISPLAY_NAME[realisationLeader.oem] || "Mahindra & Mahindra",
