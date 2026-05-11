@@ -1307,9 +1307,11 @@
         }
       }
     }
+    /* Three-slot strip — FY (just the year, no eyebrow label),
+       INDUSTRY TOTAL (folds the unit in), YOY VS prior FY. The
+       'FY' slot uses an empty key so only the value renders. */
     const metaPairs = [
-      ["FY", fy],
-      ["Unit", unitTxt],
+      ["", fy],
       ["Industry total", industryTotalTxt],
       [yoyLabel, yoyTxt],
     ];
@@ -1322,11 +1324,15 @@
       const subEl = $("#chart2-sub");
       if (subEl && subEl.parentElement) subEl.parentElement.appendChild(ctxEl);
     }
-    ctxEl.innerHTML = metaPairs.map(([k, v]) => `
-      <span style="display:inline-flex;align-items:baseline;gap:6px">
-        <span style="color:#94A3B8;text-transform:uppercase;font-size:9.5px;letter-spacing:0.04em;font-weight:600">${k}</span>
+    ctxEl.innerHTML = metaPairs.map(([k, v]) => {
+      const eyebrow = k
+        ? `<span style="color:#94A3B8;text-transform:uppercase;font-size:9.5px;letter-spacing:0.04em;font-weight:600">${k}</span>`
+        : "";
+      return `<span style="display:inline-flex;align-items:baseline;gap:6px">
+        ${eyebrow}
         <span style="color:${v === "—" ? "#94A3B8" : "#1F2A37"};font-weight:600">${v}</span>
-      </span>`).join("");
+      </span>`;
+    }).join("");
 
     /* Dispatch on chartKind — pie for mix/share metrics, ranked
        bar for rate/ratio metrics (growth %, margin %). */
