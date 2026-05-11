@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260511g" />
+  <link rel="stylesheet" href="css/styles.css?v=20260511h" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -179,15 +179,20 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="chart-panel lg:col-span-1">
-          <div class="chart-panel-head" style="min-height:64px">
-            <div class="min-w-0">
-              <h2 id="chart1-title" class="chart-panel-title"></h2>
-              <p id="chart1-help" class="chart-panel-sub"></p>
+          <div class="chart-panel-head">
+            <div class="chart-panel-head-row chart-panel-head-row1">
+              <div class="chart-panel-head-titles">
+                <h2 id="chart1-title" class="chart-panel-title"></h2>
+                <p id="chart1-help" class="chart-panel-sub"></p>
+              </div>
+              <span id="chart1-sub" class="chart-panel-head-unit text-[11px] text-inkMuted font-medium"></span>
             </div>
-            <span id="chart1-sub" class="text-[11px] text-inkMuted font-medium flex-shrink-0"></span>
+            <div class="chart-panel-head-row chart-panel-head-row2">
+              <div class="chart-panel-head-subtoggle"></div>
+              <div id="chart1-meta" class="chart-panel-head-meta"></div>
+            </div>
           </div>
           <div class="chart-panel-body">
-            <div class="mb-1.5" style="min-height:28px"></div>
             <div id="chart1" style="min-height:240px"></div>
             <div id="chart1-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3" style="min-height:40px"></div>
             <p id="chart1-source" class="text-[10px] text-inkMuted mt-2 leading-snug" style="min-height:28px">&nbsp;</p>
@@ -195,25 +200,30 @@
         </div>
 
         <div class="chart-panel lg:col-span-1">
-          <div class="chart-panel-head" style="min-height:64px">
-            <div class="min-w-0">
-              <h2 id="chart2-title" class="chart-panel-title"></h2>
-              <p id="chart2-help" class="chart-panel-sub"></p>
+          <div class="chart-panel-head">
+            <div class="chart-panel-head-row chart-panel-head-row1">
+              <div class="chart-panel-head-titles">
+                <h2 id="chart2-title" class="chart-panel-title"></h2>
+                <p id="chart2-help" class="chart-panel-sub"></p>
+              </div>
+              <div id="chart2-toggle" class="hidden chart-panel-head-toggle inline-flex rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
+                <button data-mix="product"    class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
+                <button data-mix="export"     class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
+                <button data-mix="powertrain" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Powertrain</button>
+              </div>
+              <span id="chart2-sub" class="hidden chart-panel-head-unit text-[11px] text-inkMuted font-medium"></span>
             </div>
-            <div id="chart2-toggle" class="hidden inline-flex flex-shrink-0 rounded-lg bg-canvas border border-line p-0.5 text-[11px]">
-              <button data-mix="product"    class="mix-btn px-2.5 py-1 rounded-md font-semibold">Product</button>
-              <button data-mix="export"     class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
-              <button data-mix="powertrain" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Powertrain</button>
+            <div class="chart-panel-head-row chart-panel-head-row2">
+              <div id="chart2-product-sub" class="chart-panel-head-subtoggle">
+                <div class="inline-flex rounded-md bg-slate-50 p-0.5 text-[10.5px] border border-line/70">
+                  <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-medium">Detailed</button>
+                  <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-medium">SUV / Non-SUV</button>
+                </div>
+              </div>
+              <div id="chart2-meta" class="chart-panel-head-meta"></div>
             </div>
-            <span id="chart2-sub" class="hidden text-[11px] text-inkMuted font-medium flex-shrink-0"></span>
           </div>
           <div class="chart-panel-body">
-            <div id="chart2-product-sub" class="mb-1.5" style="min-height:28px">
-              <div class="inline-flex rounded-md bg-slate-50 p-0.5 text-[10.5px] border border-line/70">
-                <button data-product-view="segment" class="prod-btn px-2 py-0.5 rounded font-medium">Detailed</button>
-                <button data-product-view="suv"     class="prod-btn px-2 py-0.5 rounded font-medium">SUV / Non-SUV</button>
-              </div>
-            </div>
             <div id="chart2" style="min-height:240px"></div>
             <div id="chart2-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-3" style="min-height:40px"></div>
             <p id="chart2-source" class="text-[10px] text-inkMuted mt-2 leading-snug" style="min-height:28px">&nbsp;</p>
@@ -392,8 +402,8 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260511g"></script>
-  <script src="js/dashboard.js?v=20260511g"></script>
-  <script src="js/export.js?v=20260511g"></script>
+  <script src="js/data-loader.js?v=20260511h"></script>
+  <script src="js/dashboard.js?v=20260511h"></script>
+  <script src="js/export.js?v=20260511h"></script>
 </body>
 </html>

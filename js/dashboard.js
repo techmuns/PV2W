@@ -1367,14 +1367,7 @@
       [yoyLabel, yoyTxt],
     ];
 
-    let ctxEl = document.getElementById("chart2-context");
-    if (!ctxEl) {
-      ctxEl = document.createElement("div");
-      ctxEl.id = "chart2-context";
-      ctxEl.style.cssText = "display:flex;gap:20px;flex-wrap:wrap;font-size:11px;color:#475569;margin:6px 0 10px;line-height:1.45";
-      const subEl = $("#chart2-sub");
-      if (subEl && subEl.parentElement) subEl.parentElement.appendChild(ctxEl);
-    }
+    const ctxEl = $("#chart2-meta");
     ctxEl.innerHTML = metaPairs.map(([k, v]) => {
       const eyebrow = k
         ? `<span style="color:#94A3B8;text-transform:uppercase;font-size:9.5px;letter-spacing:0.04em;font-weight:600">${k}</span>`
@@ -1993,6 +1986,42 @@
         suvP:     suvRow   && suvRow.Value   !== null ? suvRow.Value   : null,
       };
     });
+
+    /* Populate the header meta strip for the OEM mix card. The
+       Industry view's meta strip uses the same #chart2-meta slot,
+       so we must rewrite it here (otherwise stale Industry-total
+       text leaks over when the user switches to an OEM). */
+    {
+      const latest = data[data.length - 1];
+      const prior  = data[data.length - 2];
+      const latestFy = latest && latest.fy;
+      const priorFy  = prior  && prior.fy;
+      const totalTxt = latest && latest.total != null
+        ? `${(latest.total / 1e5).toFixed(2)} L units`
+        : "—";
+      let yoyTxt = "—";
+      if (latest && prior && latest.total != null && prior.total != null && prior.total !== 0) {
+        const yoy = ((latest.total / prior.total) - 1) * 100;
+        yoyTxt = `${yoy > 0 ? "+" : ""}${yoy.toFixed(1)}%`;
+      }
+      const metaPairs = [
+        ["", latestFy || "—"],
+        ["Total volume", totalTxt],
+        [priorFy ? `YoY vs ${priorFy}` : "YoY", yoyTxt],
+      ];
+      const metaEl = $("#chart2-meta");
+      if (metaEl) {
+        metaEl.innerHTML = metaPairs.map(([k, v]) => {
+          const eyebrow = k
+            ? `<span style="color:#94A3B8;text-transform:uppercase;font-size:9.5px;letter-spacing:0.04em;font-weight:600">${k}</span>`
+            : "";
+          return `<span style="display:inline-flex;align-items:baseline;gap:6px">
+            ${eyebrow}
+            <span style="color:${v === "—" ? "#94A3B8" : "#1F2A37"};font-weight:600">${v}</span>
+          </span>`;
+        }).join("");
+      }
+    }
 
 
     /* Highlight the active top-level toggle. The Product sub-toggle
