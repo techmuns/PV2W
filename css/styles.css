@@ -574,25 +574,80 @@ body::before {
     0 1px 2px rgba(15, 23, 42, 0.04),
     0 8px 24px rgba(15, 23, 42, 0.06);
 }
+/* Two-row header — row1 = title block + main toggle / unit pill,
+   row2 = sub-toggle + meta strip. Stable min-height so swapping
+   between metric / FY never shifts the chart body up or down. */
 .chart-panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 18px 10px;
+  background: linear-gradient(180deg, #F4F8FE 0%, #FFFFFF 100%);
+  border-bottom: 1px solid #EEF1F5;
+  flex-shrink: 0;
+  min-height: 96px;
+}
+.chart-panel-head-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 18px;
-  background: linear-gradient(180deg, #F4F8FE 0%, #FFFFFF 100%);
-  border-bottom: 1px solid #EEF1F5;
-  /* Strict fixed height so the title-line / subtitle-line / unit
-     pill on the right never push the body up or down when copy
-     length changes between metrics. */
-  height: 64px;
-  flex-shrink: 0;
+  gap: 14px;
+  min-width: 0;
+}
+.chart-panel-head-row1 { min-height: 44px; }
+.chart-panel-head-row2 {
+  align-items: center;
+  min-height: 26px;
+}
+.chart-panel-head-titles {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.chart-panel-head-toggle,
+.chart-panel-head-unit,
+.chart-panel-head-subtoggle {
+  flex: 0 0 auto;
+}
+.chart-panel-head-meta {
+  display: flex;
+  gap: 18px;
+  font-size: 11px;
+  color: #475569;
+  line-height: 1.4;
+  flex: 0 1 auto;
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  min-height: 16px;
+}
+/* Titles can wrap to 2 lines so long copy is never hidden behind
+   the right-side toggle / unit pill. */
+.chart-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0B1F33;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
 }
-/* Truncate long titles / subtitles instead of wrapping — wrapping
-   pushes the right-side unit pill out of place. */
-.chart-panel-title { line-height: 18px; max-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.chart-panel-sub   { line-height: 16px; max-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chart-panel-sub {
+  font-size: 11.5px;
+  color: #6B7280;
+  line-height: 1.35;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-width: 720px) {
+  /* On narrow widths let the header rows wrap independently rather
+     than overlap — main toggle drops below the title block. */
+  .chart-panel-head-row { flex-wrap: wrap; }
+  .chart-panel-head-meta { margin-left: 0; justify-content: flex-start; }
+}
 /* Soft swap motion — fades ONLY the chart canvas + legend.
    Title / subtitle / meta strip / source line stay in place
    so the card's framing reads as continuous; only the data
@@ -649,9 +704,10 @@ body::before {
   min-height: 240px;
   flex-shrink: 0;
 }
-/* Reserve a fixed slot for the context strip + legend + source
-   so toggling those between metrics doesn't move anything. */
-#chart2-context { min-height: 22px; }
+/* Reserve a fixed slot for the legend + source so toggling those
+   between metrics doesn't move anything. The header now carries
+   the meta strip in row 2, so its slot is reserved in the header
+   CSS via .chart-panel-head-meta / .chart-panel-head-row2. */
 #chart1-legend, #chart2-legend { min-height: 40px; }
 #chart1-source, #chart2-source { min-height: 28px; }
 
