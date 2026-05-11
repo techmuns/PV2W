@@ -136,16 +136,29 @@
       fromFY: "FY16", toFY: "FY24",
       label: "Pre IPO — listed 22 Oct 2024", kind: "pre-ipo" },
 
-    /* Tata PV: items not separately disclosed at PV segment level. */
-    ...TATA_PV_SEGMENT_ONLY_METRICS.map(m => ({
+    /* Tata PV: items not disclosed at PV segment level for FY16-FY20.
+       FY21-FY25 now backfilled from Tata Motors Passenger Vehicles
+       Ltd. (TMPVL) standalone financials — the demerged subsidiary
+       that became a separate reporting entity from FY21 onwards.
+       FY16-FY20 stays as a labelled pill because TMPVL didn't exist
+       as a standalone entity then (segment-level disclosures inside
+       Tata Motors Ltd were the only view, and those segment lines
+       aren't separately disclosed under Ind AS 108). Net Worth keeps
+       the FY16-FY25 span since it's still not reported even in TMPVL
+       standalone — Capital Employed is the shown proxy. */
+    ...TATA_PV_SEGMENT_ONLY_METRICS.filter(m => m !== "Net Worth (Rs Cr)").map(m => ({
       co: "Tata Motors PV", metric: m,
-      fromFY: "FY16", toFY: "FY25",
-      label: "Not disclosed at PV segment level — Tata reports at consolidated entity level only (Ind AS 108)",
+      fromFY: "FY16", toFY: "FY20",
+      label: "Pre-demerger — TMPVL not a separate entity before FY21",
       kind: "segment-only",
     })),
-    { co: "Tata Motors PV", metric: "PAT Margin %",
+    { co: "Tata Motors PV", metric: "Net Worth (Rs Cr)",
       fromFY: "FY16", toFY: "FY25",
-      label: "Not disclosed — PV-segment PAT not separately reported",
+      label: "Not separately disclosed — Capital Employed shown as proxy",
+      kind: "segment-only" },
+    { co: "Tata Motors PV", metric: "PAT Margin %",
+      fromFY: "FY16", toFY: "FY20",
+      label: "Pre-demerger — TMPVL not a separate entity before FY21",
       kind: "segment-only" },
 
     /* Hyundai pre-DRHP financials (FY16-FY18) — Screener doesn't
