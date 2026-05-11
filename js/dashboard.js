@@ -462,6 +462,30 @@
     const list = isIndustry ? D.INDUSTRY_KPIS : D.OEM_KPIS;
 
     grid.innerHTML = list.map((metric, idx) => {
+      /* On the Industry view the "Top Gaining OEM" slot is repurposed
+         as the OEM Leaderboard CTA card — same visual frame, distinct
+         purple gradient header to read as a CTA. Click handler below
+         opens the leaderboard modal instead of the trend modal. */
+      if (isIndustry && metric === "Top Gaining OEM") {
+        return `
+          <div class="kpi-card kpi-card-cta" data-metric="${metric}" role="button" tabindex="0"
+               aria-label="Open OEM Leaderboard">
+            <div class="flex items-start justify-between mb-1.5">
+              <span class="kpi-icon kpi-icon-cta">${iconFor(metric)}</span>
+              <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style="background:#EDE9FE;color:#5B21B6;">${state.fy}</span>
+            </div>
+            <div class="text-[10.5px] uppercase tracking-wider font-semibold" style="color:#5B21B6;">OEM Leaderboard</div>
+            <div class="text-[17px] font-semibold leading-tight mt-0.5" style="color:#0B1F33;">${state.fy} metric leaders</div>
+            <div class="text-[10.5px] mt-0.5" style="color:#6B7280;line-height:1.35;">Click to view key OEM leadership metrics</div>
+            <div class="flex items-center gap-1 mt-2 text-[11px] font-semibold" style="color:#6D28D9;">
+              <span>View leaderboard</span>
+              <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 4l4 4-4 4"/>
+              </svg>
+            </div>
+          </div>`;
+      }
+
       const r = isIndustry
         ? getIndustryMetric(state.fy, metric)
         : getCompanyMetric(state.fy, state.company, metric);
@@ -500,6 +524,16 @@
 
     grid.querySelectorAll(".kpi-card").forEach(el => {
       const metric = el.dataset.metric;
+      /* Industry's Top Gaining OEM slot is the leaderboard CTA — wire
+         it to the leaderboard modal rather than the trend modal. */
+      if (state.company === "Industry" && metric === "Top Gaining OEM") {
+        const open = () => openLeaderboardModal();
+        el.addEventListener("click", open);
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+        });
+        return;
+      }
       const trendable = D.TREND_METRICS.has(metric)
         || (state.company === "Industry" && metric !== "Top Gaining OEM");
       if (!trendable) { el.style.cursor = "default"; return; }
@@ -3060,6 +3094,79 @@
   }
 
   /* ====================================================
+     OEM LEADERBOARD MODAL
+     ====================================================
+     Compact metric × leader table opened from the
+     "Top Gaining OEM" slot on the Industry view. Some rows
+     are static categorical leaders (Maruti for market share,
+     M&M for SUV growth, Tata PV for EV, Hyundai for premium
+     mix). Two rows are dynamic — Highest Realisation Growth
+     and Fastest Growing OEM (by Volume Growth %) — both pull
+     from state.fy so the table updates when the dashboard's
+     latest FY moves forward. */
+  const LEADERBOARD_DISPLAY_NAME = {
+    "Maruti":          "Maruti Suzuki",
+    "M&M":             "Mahindra & Mahindra",
+    "Hyundai":         "Hyundai",
+    "Tata Motors PV":  "Tata Motors PV",
+  };
+  function leaderByMetric(fy, metric) {
+    const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
+    let best = null;
+    oems.forEach(co => {
+      const row = getCompanyMetric(fy, co, metric);
+      if (row && typeof row.Value === "number") {
+        if (!best || row.Value > best.value) best = { oem: co, value: row.Value };
+      }
+    });
+    return best;
+  }
+  function buildLeaderboardRows(fy) {
+    const realisationLeader = leaderByMetric(fy, "Realisation Growth %") || { oem: "M&M", value: null };
+    const fastestGrowth     = leaderByMetric(fy, "Volume Growth %");
+    const fmtPct = (v, suffix = "%") => (typeof v === "number") ? `${v >= 0 ? "+" : ""}${v.toFixed(1)}${suffix}` : null;
+
+    return [
+      { metric: "Market Share Leader",       leader: "Maruti Suzuki",
+        sub: "Largest PV share — anchor incumbent" },
+      { metric: "SUV Growth Leader",         leader: "Mahindra & Mahindra",
+        sub: "Outsized SUV portfolio gains" },
+      { metric: "EV Leadership",             leader: "Tata Motors PV",
+        sub: "Highest EV mix among PV OEMs" },
+      { metric: "Premium Mix",               leader: "Hyundai",
+        sub: "Strongest premium-segment penetration" },
+      { metric: "Highest Realisation Growth",leader: LEADERBOARD_DISPLAY_NAME[realisationLeader.oem] || "Mahindra & Mahindra",
+        sub: realisationLeader.value != null ? `${fmtPct(realisationLeader.value)} YoY ASP movement (${fy})` : `Fallback — ${fy} realisation data pending` },
+      { metric: "Fastest Growing OEM",       leader: fastestGrowth ? (LEADERBOARD_DISPLAY_NAME[fastestGrowth.oem] || fastestGrowth.oem) : "—",
+        sub: fastestGrowth ? `${fmtPct(fastestGrowth.value)} YoY volume (${fy})` : `${fy} volume-growth data pending` },
+    ];
+  }
+  function openLeaderboardModal() {
+    const fy = state.fy;
+    $("#lmodal-title").textContent = `${fy} OEM Leaderboard`;
+    const rows = buildLeaderboardRows(fy);
+    $("#lmodal-rows").innerHTML = rows.map(r => `
+      <div class="grid grid-cols-[1fr_1.2fr] items-center px-5 py-3 hover:bg-bgSoft/60 transition-colors">
+        <div>
+          <div class="text-[12.5px] font-semibold text-navy leading-tight">${r.metric}</div>
+        </div>
+        <div>
+          <div class="text-[13px] font-semibold text-navy leading-tight">${r.leader}</div>
+          ${r.sub ? `<div class="text-[10.5px] text-inkMuted mt-0.5">${r.sub}</div>` : ""}
+        </div>
+      </div>`).join("");
+
+    const overlay = $("#lmodal-overlay");
+    overlay.classList.remove("hidden");
+    requestAnimationFrame(() => overlay.classList.add("open"));
+  }
+  function closeLeaderboardModal() {
+    const overlay = $("#lmodal-overlay");
+    overlay.classList.remove("open");
+    setTimeout(() => overlay.classList.add("hidden"), 220);
+  }
+
+  /* ====================================================
      VEHICLE DETAIL MODAL
      ==================================================== */
   function openVMod() {
@@ -3312,8 +3419,12 @@
     $("#vmodal-overlay").addEventListener("click", (e) => {
       if (e.target.id === "vmodal-overlay") closeVMod();
     });
+    $("#lmodal-close").addEventListener("click", closeLeaderboardModal);
+    $("#lmodal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "lmodal-overlay") closeLeaderboardModal();
+    });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") { closeModal(); closeVMod(); }
+      if (e.key === "Escape") { closeModal(); closeVMod(); closeLeaderboardModal(); }
     });
     /* Volume + Mix-split chart top-level toggle */
     document.querySelectorAll("#chart2-toggle .mix-btn").forEach(btn => {

@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260511u" />
+  <link rel="stylesheet" href="css/styles.css?v=20260511v" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -402,8 +402,46 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260511u"></script>
-  <script src="js/dashboard.js?v=20260511u"></script>
-  <script src="js/export.js?v=20260511u"></script>
+  <!-- ============== OEM LEADERBOARD MODAL ============== -->
+  <div id="lmodal-overlay"
+       class="hidden fixed inset-0 bg-navyDeep/45 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-200">
+    <div id="lmodal"
+         class="bg-card rounded-2xl shadow-modal border border-line/70 w-full max-w-[720px] max-h-[92vh] flex flex-col overflow-hidden transform scale-95 opacity-0 transition-all duration-200">
+      <header class="flex items-start justify-between gap-4 px-7 py-5 border-b border-line bg-gradient-to-r from-tint to-bgSoft">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+               style="background:linear-gradient(135deg,#6D28D9,#7C3AED);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 21h8M12 17v4M6 4h12l-1 8a5 5 0 0 1-10 0z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold">Leaderboard</div>
+            <h3 id="lmodal-title" class="text-[20px] font-semibold text-navy tracking-tight leading-tight mt-0.5"></h3>
+            <div id="lmodal-context" class="text-[12.5px] text-inkSoft mt-1">Metric-wise leadership across Indian PV OEMs</div>
+          </div>
+        </div>
+        <button id="lmodal-close"
+                class="w-9 h-9 rounded-lg hover:bg-white/70 flex items-center justify-center text-inkSoft text-2xl leading-none">×</button>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-7 py-6">
+        <div class="bg-white rounded-xl border border-line overflow-hidden">
+          <div class="grid grid-cols-[1fr_1.2fr] text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold px-5 py-2.5 bg-bgSoft border-b border-line">
+            <span>Metric</span>
+            <span>Leader</span>
+          </div>
+          <div id="lmodal-rows" class="divide-y divide-line/60"></div>
+        </div>
+        <div class="text-[10.5px] text-inkMuted pt-3 leading-relaxed">
+          Dynamic rows reflect the selected FY. Static categorical rows reflect long-term Indian PV market leadership positions per Munshot internal coverage.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data-loader.js?v=20260511v"></script>
+  <script src="js/dashboard.js?v=20260511v"></script>
+  <script src="js/export.js?v=20260511v"></script>
 </body>
 </html>
