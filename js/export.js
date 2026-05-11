@@ -292,13 +292,14 @@
         }
       }
 
-      /* Parallel array of raw values from placeholder_data — used
-         both as the literal cell value when no formula applies AND
-         as the `result` cached value when a formula does apply, so
-         Excel renders the number immediately on open instead of
-         waiting for a recalc cycle (which Protected View / WPS
-         /  LibreOffice often defer, causing the cell to appear blank). */
-      const rawValues = new Array(yearCount).fill(null);
+      /* The PV sheet is a values-only mirror of the dashboard.
+         We previously also wrote { formula, result } so the sheet
+         would recalc when Absolute_Numbers was edited, but
+         Protected View / WPS / LibreOffice repeatedly failed to
+         render the cached result, leaving cells visually blank.
+         Switched to pure literal values — guarantees the user
+         always sees the number. The Absolute_Numbers and Sources
+         sheets remain unchanged for analysts who need traceability. */
       for (let y = YEAR_START; y <= YEAR_END; y++) {
         const fy = yearToFY(y);
         let v = null;
@@ -308,6 +309,15 @@
         } else if (source === "company" && oem) {
           const row = D.Company_FY_Metrics.find(x => x.Company === oem && x.FY === fy && x.Metric === metric);
           v = row ? cellVal(row) : null;
+          /* Derive Depreciation = EBITDA − EBIT for OEMs where
+             the line isn't separately disclosed (Tata PV segment
+             reports only EBITDA / EBIT in its Q4 IPs). */
+          if (v == null && metric === "Depreciation (Rs Cr)") {
+            const e  = D.Company_FY_Metrics.find(x => x.Company === oem && x.FY === fy && x.Metric === "EBITDA (Rs Cr)");
+            const eb = D.Company_FY_Metrics.find(x => x.Company === oem && x.FY === fy && x.Metric === "EBIT (Rs Cr)");
+            const ev = e && cellVal(e), bv = eb && cellVal(eb);
+            if (typeof ev === "number" && typeof bv === "number") v = ev - bv;
+          }
         } else if (source === "info" && oem) {
           const info = D.Company_Info.find(x => x.Company === oem && x.FY === fy);
           if (info) {
@@ -315,28 +325,10 @@
             v = (raw === "—" || raw == null || raw === "") ? null : raw;
           }
         }
-        rawValues[y - YEAR_START] = v;
         r.push(v);
       }
       sheet.addRow(r);
-      /* Where we generated a formula, replace the cell with
-         { formula, result } so Excel always has a cached value to
-         display even before its recalc engine runs. result falls
-         back to the curated dashboard value from placeholder_data;
-         if we don't have either a formula-evaluated value or a raw
-         value, leave the literal already-written value alone. */
-      if (formulas.some(Boolean)) {
-        const last = sheet.lastRow;
-        for (let i = 0; i < yearCount; i++) {
-          if (formulas[i]) {
-            const cached = rawValues[i];
-            last.getCell(3 + i).value = (cached != null && cached !== "")
-              ? { formula: formulas[i], result: cached }
-              : { formula: formulas[i] };
-            if (ctx) ctx.formulaCount = (ctx.formulaCount || 0) + 1;
-          }
-        }
-      }
+      if (ctx && formulas.some(Boolean)) ctx.formulaCount = (ctx.formulaCount || 0) + formulas.filter(Boolean).length;
 
       /* Style the row — banded background + per-cell number format. */
       const last = sheet.lastRow;
