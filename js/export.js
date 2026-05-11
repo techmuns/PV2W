@@ -91,18 +91,100 @@
   const HEAD_BG = "FFE2E8F0";         // slate-200 for the first two header cells
   const ROW_BAND = "FFF8FAFC";        // slate-50 for alt-row banding
   const GROUP_BG = "FFEEF2FF";        // indigo-50 for group sub-headers
-  /* Soft amber band for spans where data legitimately doesn't
-     exist because the security wasn't listed yet (Hyundai Motor
-     India IPO'd 22 Oct 2024, so FY16-FY24 Stock Price is N/A).
-     Cells are merged so the user sees one clear "Pre IPO" pill
-     instead of 9 blank cells. */
-  const PRE_IPO_BG = "FFFEF3C7";      // amber-100
-  const PRE_IPO_FG = "FF92400E";      // amber-900
-  const PRE_IPO_SPANS = [
+  /* ────────────────────────────────────────────────────────────
+     Structural-gap registry — cells that are legitimately blank
+     for a specific, documentable reason. Each entry merges its
+     FY range into one labelled pill so the analyst sees the
+     reason instead of a sea of empty cells.
+
+     Categories:
+       pre-ipo         — security wasn't listed in those FYs
+       pre-drhp        — Hyundai FY16-FY18: pre-DRHP MCA filings
+                         not yet fetched by Screener (could be
+                         backfilled later)
+       segment-only    — Tata PV: line not disclosed at segment
+                         level under Ind AS 108 (entity-level only)
+       no-position     — Maruti / Tata don't have a publicly-named
+                         COO; Hyundai/M&M not publicly disclosed
+                         before recent FYs
+       fetcher-window  — Moneycontrol parser only retains the last
+                         ~5 FYs of BS sub-lines; earlier years
+                         need direct AR fetch
+     ──────────────────────────────────────────────────────────── */
+  const PALETTE = {
+    "pre-ipo":         { bg: "FFFEF3C7", fg: "FF92400E" }, // amber-100 / 900
+    "pre-drhp":        { bg: "FFFEF9C3", fg: "FF854D0E" }, // yellow-100 / 800
+    "segment-only":    { bg: "FFE0F2FE", fg: "FF075985" }, // sky-100 / 800
+    "no-position":     { bg: "FFF1F5F9", fg: "FF475569" }, // slate-100 / 600
+    "fetcher-window":  { bg: "FFECFDF5", fg: "FF065F46" }, // emerald-50 / 800
+  };
+  const HYUNDAI_PRE_DRHP_METRICS = [
+    "Borrowings (Rs Cr)", "CFO (Rs Cr)", "Cash from Financing (Rs Cr)",
+    "Cash from Investing (Rs Cr)", "Depreciation (Rs Cr)", "EBIT (Rs Cr)",
+    "Equity Capital (Rs Cr)", "Interest (Rs Cr)", "Net Worth (Rs Cr)",
+    "PBT (Rs Cr)", "Reserves (Rs Cr)", "Total Assets (Rs Cr)",
+  ];
+  const TATA_PV_SEGMENT_ONLY_METRICS = [
+    "Borrowings (Rs Cr)", "CFO (Rs Cr)", "Cash from Financing (Rs Cr)",
+    "Cash from Investing (Rs Cr)", "Interest (Rs Cr)", "Net Profit (Rs Cr)",
+    "Net Worth (Rs Cr)", "PBT (Rs Cr)", "Total Assets (Rs Cr)",
+  ];
+  const BS_SUB_LINES = ["Cash (Rs Cr)", "Receivables (Rs Cr)",
+                        "Inventory (Rs Cr)", "Payables (Rs Cr)"];
+  const STRUCTURAL_GAP_SPANS = [
+    /* Hyundai pre-IPO Stock Price — separate amber treatment. */
     { co: "Hyundai", metric: "Stock Price (31-Mar)",
       fromFY: "FY16", toFY: "FY24",
-      label: "Pre IPO — listed 22 Oct 2024" },
+      label: "Pre IPO — listed 22 Oct 2024", kind: "pre-ipo" },
+
+    /* Tata PV: items not separately disclosed at PV segment level. */
+    ...TATA_PV_SEGMENT_ONLY_METRICS.map(m => ({
+      co: "Tata Motors PV", metric: m,
+      fromFY: "FY16", toFY: "FY25",
+      label: "Not disclosed at PV segment level — Tata reports at consolidated entity level only (Ind AS 108)",
+      kind: "segment-only",
+    })),
+    { co: "Tata Motors PV", metric: "PAT Margin %",
+      fromFY: "FY16", toFY: "FY25",
+      label: "Not disclosed — PV-segment PAT not separately reported",
+      kind: "segment-only" },
+
+    /* Hyundai pre-DRHP financials (FY16-FY18) — Screener doesn't
+       cover, MCA filings exist but aren't yet parsed. */
+    ...HYUNDAI_PRE_DRHP_METRICS.map(m => ({
+      co: "Hyundai", metric: m,
+      fromFY: "FY16", toFY: "FY18",
+      label: "Pre-DRHP — MCA standalone filing not yet parsed",
+      kind: "pre-drhp",
+    })),
+
+    /* COO — Maruti & Tata don't have a publicly-named COO; Hyundai
+       and M&M only published one in FY25. */
+    { co: "Maruti", metric: "COO", fromFY: "FY16", toFY: "FY25",
+      label: "No publicly-named COO position", kind: "no-position" },
+    { co: "Tata Motors PV", metric: "COO", fromFY: "FY16", toFY: "FY25",
+      label: "No publicly-named COO position", kind: "no-position" },
+    { co: "Hyundai", metric: "COO", fromFY: "FY16", toFY: "FY24",
+      label: "Not publicly disclosed (pre-IPO)", kind: "no-position" },
+    { co: "M&M", metric: "COO", fromFY: "FY16", toFY: "FY24",
+      label: "Not publicly disclosed", kind: "no-position" },
+
+    /* BS sub-lines — Moneycontrol only retains the last ~5 FYs. */
+    ...["Maruti", "Hyundai", "M&M"].flatMap(co =>
+      BS_SUB_LINES.map(m => ({
+        co, metric: m, fromFY: "FY16", toFY: "FY21",
+        label: "Earlier years not in Moneycontrol fetch window — direct AR backfill needed",
+        kind: "fetcher-window",
+      }))
+    ),
+    ...BS_SUB_LINES.map(m => ({
+      co: "Tata Motors PV", metric: m, fromFY: "FY16", toFY: "FY20",
+      label: "Earlier years not in Moneycontrol fetch window — direct AR backfill needed",
+      kind: "fetcher-window",
+    })),
   ];
+  /* Back-compat: existing code references PRE_IPO_SPANS. */
+  const PRE_IPO_SPANS = STRUCTURAL_GAP_SPANS.filter(s => s.kind === "pre-ipo");
   const GROUP_FG = "FF3730A3";        // indigo-700 text on group headers
   const GRID = { style: "thin", color: { argb: "FFCBD5E1" } };
 
@@ -394,26 +476,32 @@
          borders so the analyst sees one annotated block, not 9
          separate empty cells. The trailing FY (e.g., FY25 for
          Hyundai's first listed-year close) keeps its own cell. */
-      const span = oem && PRE_IPO_SPANS.find(s => s.co === oem && s.metric === metric);
+      /* Structural-gap span — for rows where data legitimately
+         doesn't exist for a documentable reason (pre-IPO, segment-
+         only disclosure, no public position, fetcher-window limit).
+         Each span merges its FY range into one labelled pill so
+         the analyst sees the reason instead of a sea of empty
+         cells. A row can have multiple spans only if it appears
+         in multiple categories — currently every metric matches
+         at most one span. */
+      const span = oem && STRUCTURAL_GAP_SPANS.find(s => s.co === oem && s.metric === metric);
       if (span) {
         const fromIdx = Math.max(0, FYS_MODEL.indexOf(span.fromFY));
         const toIdx   = Math.min(yearCount - 1, FYS_MODEL.indexOf(span.toFY));
         if (toIdx >= fromIdx && fromIdx >= 0) {
           const startCol = 3 + fromIdx;
           const endCol   = 3 + toIdx;
-          /* Clear any literal value or formula that was written
-             into the cells we're about to merge — otherwise the
-             stale 0 / null shows through the merged label. */
           for (let c = startCol; c <= endCol; c++) {
             last.getCell(c).value = null;
             last.getCell(c).numFmt = "@";
           }
           sheet.mergeCells(last.number, startCol, last.number, endCol);
           const cell = last.getCell(startCol);
+          const palette = PALETTE[span.kind] || PALETTE["no-position"];
           cell.value = span.label;
           cell.alignment = { horizontal: "center", vertical: "middle", wrapText: false };
-          cell.font = { italic: true, size: 10, bold: true, color: { argb: PRE_IPO_FG } };
-          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: PRE_IPO_BG } };
+          cell.font = { italic: true, size: 10, bold: true, color: { argb: palette.fg } };
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: palette.bg } };
           cell.border = thinBorders();
         }
       }
