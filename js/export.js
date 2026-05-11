@@ -696,16 +696,24 @@
             : { src: `${co} Q4 Investor Presentation / Annual Report (segment revenue where applicable)`,
                 url: (ABS_DATA[co] && ABS_DATA[co].url) || "" },
           "company filing not parsed for this FY");
-        /* EBITDA absolute = Revenue × EBITDA Margin % (exact arithmetic
-           — not estimation. EBITDA Margin % is sourced from each
-           OEM's AR / Q4 IP and Revenue is the audited figure). */
+        /* EBITDA — prefer the absolute disclosed in placeholder_data
+           (Tata PV segment from Q4 IPs lands in `EBITDA (Rs Cr)`);
+           else derive = Revenue × EBITDA Margin %. */
+        const hasEbitdaAbs = (D.Company_FY_Metrics || []).some(r =>
+          r.Company === co && r.Metric === "EBITDA (Rs Cr)" && r.Value != null);
         rowMap[`${co}|EBITDA`]     = inputRow(co, "P&L", "EBITDA", "₹ Cr",
           (fy) => {
-            const rev = getAbs(co, fy, "Revenue");
+            if (hasEbitdaAbs) {
+              const e = getCM(D, co, fy, "EBITDA (Rs Cr)");
+              if (e != null) return e;
+            }
+            const rev = getAbs(co, fy, "Revenue") ?? getCM(D, co, fy, "Net Sales (Rs Cr)");
             const m   = getCM(D, co, fy, "EBITDA Margin %");
             return (rev != null && m != null) ? Math.round(rev * m / 100) : null;
           },
-          { src: `Derived: Revenue × EBITDA Margin % (${(ABS_DATA[co] && ABS_DATA[co].src) || "OEM AR"})`,
+          { src: hasEbitdaAbs
+              ? `${co} Q4 Investor Presentation — segment EBITDA`
+              : `Derived: Revenue × EBITDA Margin % (${(ABS_DATA[co] && ABS_DATA[co].src) || "OEM AR"})`,
             url:  (ABS_DATA[co] && ABS_DATA[co].url) || "" });
         /* P&L line items pulled from Screener (via derive-financials)
            where present; fall back to gap row when the metric hasn't
