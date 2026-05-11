@@ -300,6 +300,21 @@
          Switched to pure literal values — guarantees the user
          always sees the number. The Absolute_Numbers and Sources
          sheets remain unchanged for analysts who need traceability. */
+      /* Closures over (oem, fy) for cleaner derivation chains below. */
+      const pull = (m, _oem, _fy) => {
+        const row = D.Company_FY_Metrics.find(x => x.Company === _oem && x.FY === _fy && x.Metric === m);
+        return row ? cellVal(row) : null;
+      };
+      const pullRevenue = (_oem, _fy) => {
+        /* Revenue source order: placeholder Net Sales > ABS_DATA Revenue
+           hardcode > null. ABS_DATA covers FY16-FY18 for Hyundai where
+           Screener didn't fetch (pre-DRHP). */
+        const v = pull("Net Sales (Rs Cr)", _oem, _fy);
+        if (v != null) return v;
+        const abs = ABS_DATA[_oem] && ABS_DATA[_oem].byFY && ABS_DATA[_oem].byFY[_fy];
+        return abs && abs.Revenue != null ? abs.Revenue : null;
+      };
+
       for (let y = YEAR_START; y <= YEAR_END; y++) {
         const fy = yearToFY(y);
         let v = null;
@@ -309,14 +324,37 @@
         } else if (source === "company" && oem) {
           const row = D.Company_FY_Metrics.find(x => x.Company === oem && x.FY === fy && x.Metric === metric);
           v = row ? cellVal(row) : null;
-          /* Derive Depreciation = EBITDA − EBIT for OEMs where
-             the line isn't separately disclosed (Tata PV segment
-             reports only EBITDA / EBIT in its Q4 IPs). */
-          if (v == null && metric === "Depreciation (Rs Cr)") {
-            const e  = D.Company_FY_Metrics.find(x => x.Company === oem && x.FY === fy && x.Metric === "EBITDA (Rs Cr)");
-            const eb = D.Company_FY_Metrics.find(x => x.Company === oem && x.FY === fy && x.Metric === "EBIT (Rs Cr)");
-            const ev = e && cellVal(e), bv = eb && cellVal(eb);
-            if (typeof ev === "number" && typeof bv === "number") v = ev - bv;
+          /* Derivation cascade — only fires when placeholder_data is
+             null. Each rule uses ONLY data we already have, no
+             estimation. Order matters because EBITDA derivation
+             depends on Revenue which depends on its own fallback. */
+          if (v == null && oem) {
+            if (metric === "Net Sales (Rs Cr)") {
+              /* Hyundai FY16-FY18 land here from ABS_DATA. */
+              v = pullRevenue(oem, fy);
+            } else if (metric === "Net Profit (Rs Cr)") {
+              /* Pull from ABS_DATA where placeholder is null. */
+              const abs = ABS_DATA[oem] && ABS_DATA[oem].byFY && ABS_DATA[oem].byFY[fy];
+              if (abs && abs.PAT != null) v = abs.PAT;
+            } else if (metric === "EBITDA (Rs Cr)") {
+              /* Revenue × EBITDA Margin %. Margin is in placeholder
+                 for every OEM × FY; Revenue uses the same fallback
+                 chain as the Net Sales row above. */
+              const rev = pullRevenue(oem, fy);
+              const mar = pull("EBITDA Margin %", oem, fy);
+              if (typeof rev === "number" && typeof mar === "number") v = Math.round(rev * mar / 100);
+            } else if (metric === "Depreciation (Rs Cr)") {
+              /* EBITDA − EBIT. Tata PV segment uses this exclusively
+                 since neither is disclosed by Screener. */
+              const ev = pull("EBITDA (Rs Cr)", oem, fy);
+              const bv = pull("EBIT (Rs Cr)", oem, fy);
+              if (typeof ev === "number" && typeof bv === "number") v = ev - bv;
+            } else if (metric === "EBIT (Rs Cr)") {
+              /* EBITDA − Depreciation. */
+              const ev = pull("EBITDA (Rs Cr)", oem, fy);
+              const dv = pull("Depreciation (Rs Cr)", oem, fy);
+              if (typeof ev === "number" && typeof dv === "number") v = ev - dv;
+            }
           }
         } else if (source === "info" && oem) {
           const info = D.Company_Info.find(x => x.Company === oem && x.FY === fy);
