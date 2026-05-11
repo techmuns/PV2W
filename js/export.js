@@ -91,6 +91,18 @@
   const HEAD_BG = "FFE2E8F0";         // slate-200 for the first two header cells
   const ROW_BAND = "FFF8FAFC";        // slate-50 for alt-row banding
   const GROUP_BG = "FFEEF2FF";        // indigo-50 for group sub-headers
+  /* Soft amber band for spans where data legitimately doesn't
+     exist because the security wasn't listed yet (Hyundai Motor
+     India IPO'd 22 Oct 2024, so FY16-FY24 Stock Price is N/A).
+     Cells are merged so the user sees one clear "Pre IPO" pill
+     instead of 9 blank cells. */
+  const PRE_IPO_BG = "FFFEF3C7";      // amber-100
+  const PRE_IPO_FG = "FF92400E";      // amber-900
+  const PRE_IPO_SPANS = [
+    { co: "Hyundai", metric: "Stock Price (31-Mar)",
+      fromFY: "FY16", toFY: "FY24",
+      label: "Pre IPO — listed 22 Oct 2024" },
+  ];
   const GROUP_FG = "FF3730A3";        // indigo-700 text on group headers
   const GRID = { style: "thin", color: { argb: "FFCBD5E1" } };
 
@@ -343,6 +355,37 @@
         c.font = { size: 10, color: { argb: "FF1F2A37" } };
         c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: isAlt ? ROW_BAND : "FFFFFFFF" } };
         c.border = thinBorders();
+      }
+
+      /* Pre-IPO span — for rows where data legitimately doesn't
+         exist because the security wasn't listed in the relevant
+         FYs, merge those year cells into one visual block with a
+         clear "Pre IPO" label. The merge collapses the inner
+         borders so the analyst sees one annotated block, not 9
+         separate empty cells. The trailing FY (e.g., FY25 for
+         Hyundai's first listed-year close) keeps its own cell. */
+      const span = oem && PRE_IPO_SPANS.find(s => s.co === oem && s.metric === metric);
+      if (span) {
+        const fromIdx = Math.max(0, FYS_MODEL.indexOf(span.fromFY));
+        const toIdx   = Math.min(yearCount - 1, FYS_MODEL.indexOf(span.toFY));
+        if (toIdx >= fromIdx && fromIdx >= 0) {
+          const startCol = 3 + fromIdx;
+          const endCol   = 3 + toIdx;
+          /* Clear any literal value or formula that was written
+             into the cells we're about to merge — otherwise the
+             stale 0 / null shows through the merged label. */
+          for (let c = startCol; c <= endCol; c++) {
+            last.getCell(c).value = null;
+            last.getCell(c).numFmt = "@";
+          }
+          sheet.mergeCells(last.number, startCol, last.number, endCol);
+          const cell = last.getCell(startCol);
+          cell.value = span.label;
+          cell.alignment = { horizontal: "center", vertical: "middle", wrapText: false };
+          cell.font = { italic: true, size: 10, bold: true, color: { argb: PRE_IPO_FG } };
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: PRE_IPO_BG } };
+          cell.border = thinBorders();
+        }
       }
     });
     mergeCompanyColumn(sheet, startRow, sheet.rowCount, companyLabel);
