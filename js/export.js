@@ -100,16 +100,15 @@
      Categories:
        pre-ipo         — security wasn't listed in those FYs
        pre-drhp        — Hyundai FY16-FY18: pre-DRHP MCA filings
-                         not yet fetched by Screener (could be
-                         backfilled later)
+                         not yet parsed (could be backfilled later)
        segment-only    — Tata PV: line not disclosed at segment
                          level under Ind AS 108 (entity-level only)
        no-position     — Maruti / Tata don't have a publicly-named
                          COO; Hyundai/M&M not publicly disclosed
                          before recent FYs
-       fetcher-window  — Moneycontrol parser only retains the last
-                         ~5 FYs of BS sub-lines; earlier years
-                         need direct AR fetch
+       fetcher-window  — BS sub-lines only available for the last
+                         ~5 FYs; earlier years need direct
+                         Annual Report backfill
      ──────────────────────────────────────────────────────────── */
   const PALETTE = {
     "pre-ipo":         { bg: "FFFEF3C7", fg: "FF92400E" }, // amber-100 / 900
@@ -173,13 +172,13 @@
     ...["Maruti", "Hyundai", "M&M"].flatMap(co =>
       BS_SUB_LINES.map(m => ({
         co, metric: m, fromFY: "FY16", toFY: "FY21",
-        label: "Earlier years not in Moneycontrol fetch window — direct AR backfill needed",
+        label: "Earlier years not yet sourced — Annual Report backfill needed",
         kind: "fetcher-window",
       }))
     ),
     ...BS_SUB_LINES.map(m => ({
       co: "Tata Motors PV", metric: m, fromFY: "FY16", toFY: "FY20",
-      label: "Earlier years not in Moneycontrol fetch window — direct AR backfill needed",
+      label: "Earlier years not yet sourced — Annual Report backfill needed",
       kind: "fetcher-window",
     })),
   ];
@@ -660,8 +659,8 @@
     const r = [spec.co, spec.statement, spec.item, spec.unit];
     /* Year cells: empty for now, fill below depending on kind. */
     for (let i = 0; i < FYS_MODEL.length; i++) r.push(null);
-    /* Source columns blank; populated only for raw inputs. */
-    r.push(""); r.push(""); r.push("");
+    /* Source columns removed from Absolute_Numbers — provenance lives on
+       the Sources sheet. bestSrc is still tracked for logMissing only. */
     sheet.addRow(r);
     const row = sheet.lastRow;
     let bestSrc = { src: "", url: "", date: "" };
@@ -693,11 +692,8 @@
       }
     });
 
-    if (bestSrc.src) {
-      row.getCell(16).value = bestSrc.src;
-      row.getCell(17).value = bestSrc.url;
-      row.getCell(18).value = bestSrc.date;
-    }
+    /* Source columns dropped — bestSrc unused on the sheet but still
+       drives logMissing entries that surface on the Sources sheet. */
     styleModelRow(row, spec.kind);
     return row.number;
   }
@@ -745,7 +741,7 @@
       },
     },
     "M&M": {
-      src: "Mahindra & Mahindra Ltd — Consolidated annual report (Auto + Farm + Tech combined; Screener parsed)",
+      src: "Mahindra & Mahindra Ltd — Consolidated audited Annual Report (Auto + Farm + Tech combined)",
       url: "https://www.mahindra.com/investor-relations",
       byFY: {
         FY16: { Revenue: 75841,  PAT: 3554  },
@@ -787,10 +783,10 @@
     _missingLog = [];   // reset per export
     const sheet = wb.addWorksheet("Absolute_Numbers", { properties: { tabColor: { argb: "FF1D4ED8" } } });
 
-    /* Header row */
+    /* Header row — source / URL / last-updated columns intentionally
+       dropped; provenance lives on the dedicated Sources sheet now. */
     const head = ["Company", "Statement", "Line Item", "Unit"];
     FYS_MODEL.forEach(fy => head.push(fy));
-    head.push("Source"); head.push("Source URL"); head.push("Last Updated");
     sheet.addRow(head);
     const hr = sheet.getRow(1);
     hr.height = 26;
@@ -821,16 +817,7 @@
       }, D, item.includes("Volume") || item.includes("Capacity") || item === "Employees" || item === "Dealers" ? '#,##0'
         : item.includes("ASP") ? '0.00'
         : '#,##0');
-      /* If the row is genuinely blank everywhere, override the source
-         columns with the umbrella label so the analyst sees the
-         provenance reason. */
-      if (srcEntry) {
-        const r = sheet.getRow(rowNum);
-        if (!r.getCell(16).value) {
-          r.getCell(16).value = srcEntry.src;
-          r.getCell(17).value = srcEntry.url;
-        }
-      }
+      /* Source-column overrides removed alongside the columns. */
       return rowNum;
     };
 
@@ -842,8 +829,7 @@
     const gapRow = (co, statement, item, unit, reason) => {
       const rowNum = addModelRow(sheet, { co, statement, item, unit, kind: "gap" }, D, '#,##0');
       FYS_MODEL.forEach(fy => logMissing(co, fy, item, "—", reason || "absolute not sourced", "Manual fill required"));
-      const r = sheet.getRow(rowNum);
-      if (reason) r.getCell(16).value = reason;
+      /* Reason now lives in logMissing → Sources sheet, no source col on this sheet. */
       return rowNum;
     };
 
@@ -852,9 +838,13 @@
        (Earlier they were declared inside the P&L `else` block which
        caused ReferenceError when the BS / CF blocks tried to use
        them — that broke the export.) */
+    /* Provenance label for items derived from audited statutory
+       filings — used by the Sources sheet only (source columns
+       on Absolute_Numbers were removed). Deliberately generic,
+       no parser names. */
     const screenerSrcFor = (co) => ({
-      src: `Screener.in (parsed by fetch-${co.toLowerCase().replace(/\s+/g,'').replace('&','-and-')}-screener.mjs → derive-financials.mjs)`,
-      url: `https://www.screener.in/company/`,
+      src: `${co} — audited Annual Report / Q4 Investor Presentation`,
+      url: ``,
     });
     const orGap = (co, statement, item, unit, metric, reason) => {
       const has = (D.Company_FY_Metrics || []).some(r =>
@@ -924,7 +914,7 @@
           const hasD = (D.Company_FY_Metrics || []).some(r =>
             r.Company === co && r.Metric === "Depreciation (Rs Cr)" && r.Value != null);
           if (hasD) return orGap(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
-            "Depreciation (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+            "Depreciation (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
           const hasEbitda = (D.Company_FY_Metrics || []).some(r =>
             r.Company === co && r.Metric === "EBITDA (Rs Cr)" && r.Value != null);
           const hasEbit   = (D.Company_FY_Metrics || []).some(r =>
@@ -959,9 +949,9 @@
                 return `IFERROR(${e}-${d},"")`;
               }, '#,##0');
         rowMap[`${co}|Finance Cost`] = orGap(co, "P&L", "Finance Cost (Interest)", "₹ Cr",
-          "Interest (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          "Interest (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
         rowMap[`${co}|PBT`]          = orGap(co, "P&L", "PBT (Profit Before Tax)", "₹ Cr",
-          "PBT (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          "PBT (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
         rowMap[`${co}|Tax`]          = formulaRow(co, "P&L", "Tax Expense", "₹ Cr",
           (fy) => {
             const pbt = `${fyColLetter(fy)}${rowMap[`${co}|PBT`]}`;
@@ -977,7 +967,7 @@
       if (co !== "Industry") {
         addSectionHeader(sheet, "Balance Sheet");
         rowMap[`${co}|Total Assets`]    = orGap(co, "BS", "Total Assets", "₹ Cr",
-          "Total Assets (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          "Total Assets (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
         /* Net Worth — try Screener-derived first; for Tata PV
            segment the official Q4 IP discloses Capital Employed
            (a segment-level Net Worth + allocated Net Debt proxy)
@@ -986,7 +976,7 @@
           const hasNW = (D.Company_FY_Metrics || []).some(r =>
             r.Company === co && r.Metric === "Net Worth (Rs Cr)" && r.Value != null);
           if (hasNW) return orGap(co, "BS", "Net Worth / Equity", "₹ Cr",
-            "Net Worth (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+            "Net Worth (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
           const hasCE = (D.Company_FY_Metrics || []).some(r =>
             r.Company === co && r.Metric === "Capital Employed (Rs Cr)" && r.Value != null);
           if (hasCE) return inputRow(co, "BS", "Capital Employed (segment proxy for Net Worth)", "₹ Cr",
@@ -997,9 +987,9 @@
             "NA — entity-level only, segment Net Worth not separately disclosed");
         })();
         rowMap[`${co}|Total Debt`]      = orGap(co, "BS", "Total Debt (Borrowings)", "₹ Cr",
-          "Borrowings (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          "Borrowings (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
         rowMap[`${co}|Cash`]            = orGap(co, "BS", "Cash & Investments", "₹ Cr",
-          "Cash (Rs Cr)", "NA — Tijori fetch hasn't extracted the cash sub-line yet");
+          "Cash (Rs Cr)", "NA — Older years not yet sourced from audited filings");
         rowMap[`${co}|Net Debt`]        = formulaRow(co, "BS", "Net Debt", "₹ Cr",
           (fy) => {
             const td = `${fyColLetter(fy)}${rowMap[`${co}|Total Debt`]}`;
@@ -1007,11 +997,11 @@
             return `IFERROR(${td}-${cs},"")`;
           }, '#,##0');
         rowMap[`${co}|Receivables`]     = orGap(co, "BS", "Receivables", "₹ Cr",
-          "Receivables (Rs Cr)", "NA — Tijori fetch hasn't extracted this BS sub-line yet");
+          "Receivables (Rs Cr)", "NA — Older years not yet sourced from audited filings");
         rowMap[`${co}|Inventory`]       = orGap(co, "BS", "Inventory", "₹ Cr",
-          "Inventory (Rs Cr)", "NA — Tijori fetch hasn't extracted this BS sub-line yet");
+          "Inventory (Rs Cr)", "NA — Older years not yet sourced from audited filings");
         rowMap[`${co}|Payables`]        = orGap(co, "BS", "Payables", "₹ Cr",
-          "Payables (Rs Cr)", "NA — Tijori fetch hasn't extracted this BS sub-line yet");
+          "Payables (Rs Cr)", "NA — Older years not yet sourced from audited filings");
         /* Working Capital absolute = Working Capital Days × Revenue / 365.
            WC Days is sourced from Screener / AR ratios; this gives a
            usable Working Capital number while Receivables / Inventory /
@@ -1025,7 +1015,7 @@
             const days = getCM(D, co, fy, "Working Capital Days");
             return (rev != null && days != null) ? Math.round(days * rev / 365) : null;
           },
-          { src: "Derived: Working Capital Days × Revenue / 365 (Days from Screener / AR ratios)",
+          { src: "Derived: Working Capital Days × Revenue / 365 (Days from audited filings)",
             url: (ABS_DATA[co] && ABS_DATA[co].url) || "" });
       }
 
@@ -1033,7 +1023,7 @@
       if (co !== "Industry") {
         addSectionHeader(sheet, "Cash Flow");
         rowMap[`${co}|CFO`]   = orGap(co, "CF", "CFO (Cash from Operations)", "₹ Cr",
-          "CFO (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          "CFO (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
         rowMap[`${co}|Capex`] = inputRow(co, "CF", "Capex", "₹ Cr",
           (fy) => getCM(D, co, fy, "Capex (Rs Cr)"),
           { src: `${co} Annual Report — cash flow statement / Q4 IP`,
@@ -1045,9 +1035,9 @@
             return `IFERROR(${cfo}-${cx},"")`;
           }, '#,##0');
         rowMap[`${co}|CFI`]   = orGap(co, "CF", "Cash Flow from Investing", "₹ Cr",
-          "Cash from Investing (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          "Cash from Investing (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
         rowMap[`${co}|CFF`]   = orGap(co, "CF", "Cash Flow from Financing", "₹ Cr",
-          "Cash from Financing (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          "Cash from Financing (Rs Cr)", "NA — Not separately disclosed at segment level / audited filing not yet sourced for this FY");
       }
 
       /* ── Operating Data ── */
@@ -1099,15 +1089,12 @@
       }
     });
 
-    /* Column widths */
+    /* Column widths — source columns removed. */
     sheet.getColumn(1).width = 16;
     sheet.getColumn(2).width = 11;
     sheet.getColumn(3).width = 32;
     sheet.getColumn(4).width = 8;
     for (let i = FY_COL_OFFSET; i <= FY_COL_OFFSET + FYS_MODEL.length - 1; i++) sheet.getColumn(i).width = 13;
-    sheet.getColumn(16).width = 56;
-    sheet.getColumn(17).width = 30;
-    sheet.getColumn(18).width = 13;
     sheet.views = [{ state: "frozen", xSplit: 4, ySplit: 1 }];
 
     return rowMap;
@@ -1569,8 +1556,8 @@
     /* Schema per the simplified spec:
          Company | Metric | FY | Value | Unit | Source Name |
          Source URL | Source Type | Notes
-       Source Type ∈ Annual Report / Screener / Investor Presentation
-                    / Exchange Filing / Dashboard Existing Data /
+       Source Type ∈ Annual Report / Investor Presentation /
+                    Exchange Filing / Dashboard Existing Data /
                     Derived Formula / Not Available */
     sheet.addRow(["Company", "Metric", "FY", "Value", "Unit", "Source Name", "Source URL", "Source Type", "Notes"]);
     const hr = sheet.getRow(1);
@@ -1584,7 +1571,6 @@
     const classifyType = (label, value, sourceLabel) => {
       if (value === "NA" || value == null) return "Not Available";
       if (/^Derived:/i.test(sourceLabel || "")) return "Derived Formula";
-      if (/Screener/i.test(sourceLabel || "")) return "Screener";
       if (/DRHP|Q4 Investor Presentation|Investor Presentation|Q4 IP/i.test(sourceLabel || "")) return "Investor Presentation";
       if (/Annual Report/i.test(sourceLabel || "")) return "Annual Report";
       if (/MCA|exchange|NSE|BSE|press release|sebi/i.test(sourceLabel || "")) return "Exchange Filing";
@@ -1691,9 +1677,9 @@
       ["SUV Volume % (Ind.)",    "%",      "Industry-level UV share of domestic PV.",                                       "SIAM yearbook"],
       ["Industry Top Selling Model","—",   "Highest-volume model across all OEMs in the FY.",                               "SIAM model-wise"],
       ["Capacity Utilisation %", "%",      "Sales volume ÷ installed capacity (proxy where production not disclosed).",      "Company AR + Q4 IP"],
-      ["Capex (₹ Cr)",           "₹ Cr",   "Annual capex proxy = |Cash from Investing Activities| (Screener cash flow). Includes net of asset sales / divestments.", "Company AR cash flow"],
+      ["Capex (₹ Cr)",           "₹ Cr",   "Annual capex proxy = |Cash from Investing Activities| from audited cash flow statement. Includes net of asset sales / divestments.", "Company AR cash flow"],
       ["Capex Intensity %",      "%",      "Capex ÷ Sales × 100 — how reinvestment-heavy the OEM is per ₹ of revenue.",       "Derived from AR cash flow + P&L"],
-      ["PAT Margin %",           "%",      "Net Profit ÷ Sales × 100 — bottom-line margin per ₹ of revenue.",                  "Company AR / Screener consolidated P&L"],
+      ["PAT Margin %",           "%",      "Net Profit ÷ Sales × 100 — bottom-line margin per ₹ of revenue.",                  "Company AR — audited consolidated P&L"],
       ["Market Share %",         "%",      "Domestic PV market share (SIAM basis).",                                        "SIAM / company AR"],
       ["Revenue Growth %",       "%",      "YoY change in Revenue from Operations / Net Sales / Turnover.",                 "Company AR / Q4 IP"],
       ["Volume Growth %",        "%",      "YoY change in total sales volume (domestic + exports).",                        "Company AR / SIAM"],
@@ -1703,7 +1689,7 @@
       ["Export Volume %",        "%",      "Exports as a share of company total sales volume.",                              "Company AR / Q4 IP"],
       ["EV Volume %",            "%",      "BEV share of company domestic volume.",                                          "Company Q4 IP / VAHAN"],
       ["SUV Volume %",           "%",      "SUV / UV share of company domestic volume.",                                     "Company Q4 IP / DRHP"],
-      ["Working Capital Days",   "days",   "(Receivables + Inventory − Payables) × 365 ÷ revenue. Negative = supplier-funded.","Screener / AR balance sheet"],
+      ["Working Capital Days",   "days",   "(Receivables + Inventory − Payables) × 365 ÷ revenue. Negative = supplier-funded.","Company AR — audited balance sheet"],
       ["New Model launches (Nos.)","count","Count of newly launched models in the FY.",                                      "Company AR / Q4 IP"],
       ["Face Lift launches (Nos.)","count","Count of facelifts / refreshes in the FY.",                                      "Company AR / Q4 IP"],
       ["Top Selling Model",      "—",      "Highest-volume model in the FY at company level.",                               "Company sales PR"],
