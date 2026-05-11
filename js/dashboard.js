@@ -2870,11 +2870,20 @@
     const fy = labels[i];
     if (v === null || v === undefined) { tip.classList.add("hidden"); return; }
     const prev = i > 0 ? values[i-1] : null;
+    const prevLabel = i > 0 ? labels[i-1] : null;
     let yoyText = "—";
-    if (typeof prev === "number") {
-      const diff = v - prev;
+    if (typeof prev === "number" && prev !== 0) {
       const isPct = isPctMetric(metric);
-      yoyText = (diff >= 0 ? "+" : "") + diff.toFixed(1) + (isPct ? "pp YoY" : " YoY");
+      if (isPct) {
+        /* For rate metrics show absolute pp change. */
+        const dpp = v - prev;
+        yoyText = `${dpp >= 0 ? "+" : ""}${dpp.toFixed(1)}pp vs ${prevLabel}`;
+      } else {
+        /* For absolute metrics show YoY % change — far more
+           useful than the raw unit diff. */
+        const dPct = ((v - prev) / Math.abs(prev)) * 100;
+        yoyText = `${dPct >= 0 ? "+" : ""}${dPct.toFixed(1)}% vs ${prevLabel}`;
+      }
     }
     $("#trend-tt-fy").textContent  = fy;
     $("#trend-tt-label").textContent = metric;
@@ -2898,7 +2907,7 @@
     applyLogoMark($("#modal-logo"), company, "logo-mark-sm");
 
     $("#modal-title").textContent   = `${metric}  |  ${company}  |  10-Year Trend`;
-    $("#modal-context").textContent = `Selected FY ${state.fy} · YoY base ${prevFY(state.fy) || "—"}`;
+    $("#modal-context").textContent = `Latest FY ${state.fy} · 10-year history`;
 
     if (!valued.length) {
       $("#modal-chart").innerHTML = `<div class="text-sm text-inkMuted py-10 text-center">No history available from primary sources yet.</div>`;
