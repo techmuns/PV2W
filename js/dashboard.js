@@ -1139,23 +1139,21 @@
       return;
     }
     if (_industrySwapTimer) clearTimeout(_industrySwapTimer);
-    /* Slow cross-fade: fade-out (~280ms) → re-render → fade-in
-       (~420ms via CSS). Total perceived swap ~700ms — calm and
-       luxurious without feeling sluggish. */
+    /* Quick cross-fade — only the chart canvas + legend fade
+       (~180ms each way via CSS). Title / subtitle / meta strip
+       / source line stay put so the card framing feels stable.
+       Total perceived swap ~280ms — smooth but snappy. */
     const chart1El = $("#chart1");
     const chart2El = $("#chart2");
-    const panels = document.querySelectorAll('.chart-panel');
-    panels.forEach(p => p.classList.add("is-swapping"));
     [chart1El, chart2El].forEach(el => el && el.classList.add("is-swapping"));
     _industrySwapTimer = setTimeout(() => {
       _renderIndustryPerformanceImpl();
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          panels.forEach(p => p.classList.remove("is-swapping"));
           [chart1El, chart2El].forEach(el => el && el.classList.remove("is-swapping"));
         });
       });
-    }, 280);
+    }, 120);
   }
 
   function _renderIndustryPerformanceImpl() {
