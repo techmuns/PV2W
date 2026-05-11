@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260511e" />
+  <link rel="stylesheet" href="css/styles.css?v=20260511f" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -89,10 +89,10 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <label class="text-[10px] text-white/55 uppercase tracking-wider font-medium">FY</label>
-        <div class="hdr-select-wrap">
-          <select id="fy-select" class="hdr-select hdr-select-fy"></select>
-        </div>
+        <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Latest data</span>
+        <span id="latest-fy-label"
+              title="Dashboard auto-selects the most recent fiscal year with complete data."
+              class="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-white/10 border border-white/20 text-white"></span>
       </div>
 
       <div class="flex items-center gap-2">
@@ -392,8 +392,8 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260511e"></script>
-  <script src="js/dashboard.js?v=20260511e"></script>
-  <script src="js/export.js?v=20260511e"></script>
+  <script src="js/data-loader.js?v=20260511f"></script>
+  <script src="js/dashboard.js?v=20260511f"></script>
+  <script src="js/export.js?v=20260511f"></script>
 </body>
 </html>

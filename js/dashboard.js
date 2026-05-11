@@ -66,6 +66,24 @@
     const i = D.FYS_FULL.indexOf(fy);
     return i > 0 ? D.FYS_FULL[i - 1] : null;
   };
+  /* Walks FYS_FULL newest-first and returns the most recent FY that
+     actually has industry-level data populated. The data-refresh
+     workflow extends FYS each April (see scripts/extend-fys.mjs),
+     so the most recent listed FY can be empty for months until SIAM
+     publishes. Picking the latest *populated* FY keeps the dashboard
+     coherent without asking the user to choose. */
+  const pickLatestFY = (data) => {
+    const fys  = data.FYS_FULL || [];
+    const ind  = data.Industry_FY_Metrics || [];
+    const co   = data.Company_FY_Metrics  || [];
+    for (let i = fys.length - 1; i >= 0; i--) {
+      const fy = fys[i];
+      const hasInd = ind.some(r => r.FY === fy && r.Value !== null && r.Value !== undefined);
+      const hasCo  = co.filter(r => r.FY === fy && r.Value !== null && r.Value !== undefined).length >= 50;
+      if (hasInd && hasCo) return fy;
+    }
+    return fys[fys.length - 1] || "FY25";
+  };
   const signalClass = (s) => ({
     "Positive": "signal-pos",
     "Negative": "signal-neg",
@@ -161,7 +179,8 @@
 
   /* ---------- top header ---------- */
   function renderTopBar() {
-    $("#fy-select").innerHTML  = D.FYS.map(f => `<option value="${f}" ${f===state.fy?"selected":""}>${f}</option>`).join("");
+    const fyLabel = $("#latest-fy-label");
+    if (fyLabel) fyLabel.textContent = state.fy;
     $("#company-select").innerHTML = D.COMPANIES.map(c => `<option value="${c}" ${c===state.company?"selected":""}>${c}</option>`).join("");
     $("#hdr-brand-dot").style.background = BRAND[state.company].color;
 
@@ -188,11 +207,14 @@
     fEl.className = "text-xs font-semibold px-2.5 py-0.5 rounded-full " +
       (fresh === "Fresh" ? "signal-pos" : fresh === "Stale" ? "signal-warn" : "signal-neg");
 
+    /* Only flag the dataset itself; we no longer warn about the
+       selected FY because the dashboard auto-picks the latest FY
+       with data (pickLatestFY). */
     const warn = $("#stale-warning");
     if (fresh === "Stale" || fresh === "Missing") {
       warn.classList.remove("hidden");
       warn.textContent = fresh === "Missing"
-        ? "⚠ Data missing for selected FY"
+        ? "⚠ Dataset refresh status unknown"
         : "⚠ Some metrics last refreshed > 30 days ago";
     } else {
       warn.classList.add("hidden");
@@ -3244,10 +3266,9 @@
 
   /* ---------- listeners ---------- */
   function wire() {
-    $("#fy-select").addEventListener("change", (e) => {
-      state.fy = e.target.value;
-      renderAll();
-    });
+    /* FY is no longer user-selectable in the main header — it is
+       pinned to pickLatestFY(D) on boot. Trend/history charts carry
+       the multi-year context inline. */
     $("#company-select").addEventListener("change", (e) => {
       state.company = e.target.value;
       const tabs = state.company === "Industry" ? TABS_INDUSTRY : TABS_OEM;
@@ -3310,6 +3331,13 @@
     BRAND = D.BRANDS;
     TABS_OEM      = D.TABS && D.TABS.oem      ? D.TABS.oem      : {};
     TABS_INDUSTRY = D.TABS && D.TABS.industry ? D.TABS.industry : {};
+
+    /* Auto-pin to the latest populated FY so the user never lands on
+       a half-empty FY26 / FY27. The right-side Industry split also
+       defaults here. */
+    const latestFY = pickLatestFY(D);
+    state.fy = latestFY;
+    state.indYearRight = latestFY;
 
     wire();
     renderAll();
