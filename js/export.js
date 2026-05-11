@@ -716,10 +716,33 @@
               : `Derived: Revenue × EBITDA Margin % (${(ABS_DATA[co] && ABS_DATA[co].src) || "OEM AR"})`,
             url:  (ABS_DATA[co] && ABS_DATA[co].url) || "" });
         /* P&L line items pulled from Screener (via derive-financials)
-           where present; fall back to gap row when the metric hasn't
-           landed in placeholder_data yet. */
-        rowMap[`${co}|Depreciation`] = orGap(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
-          "Depreciation (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+           where present; for OEMs where Depreciation isn't in the
+           dataset but both EBITDA and EBIT are (Tata PV segment from
+           Q4 IPs), derive D&A = EBITDA − EBIT — accounting identity
+           that holds at segment level too. Falls back to a gap row
+           only when neither D&A nor the EBITDA/EBIT pair is sourced. */
+        rowMap[`${co}|Depreciation`] = (() => {
+          const hasD = (D.Company_FY_Metrics || []).some(r =>
+            r.Company === co && r.Metric === "Depreciation (Rs Cr)" && r.Value != null);
+          if (hasD) return orGap(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
+            "Depreciation (Rs Cr)", "NA — Screener fetch not yet run for this OEM");
+          const hasEbitda = (D.Company_FY_Metrics || []).some(r =>
+            r.Company === co && r.Metric === "EBITDA (Rs Cr)" && r.Value != null);
+          const hasEbit   = (D.Company_FY_Metrics || []).some(r =>
+            r.Company === co && r.Metric === "EBIT (Rs Cr)" && r.Value != null);
+          if (hasEbitda && hasEbit) {
+            return inputRow(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
+              (fy) => {
+                const e = getCM(D, co, fy, "EBITDA (Rs Cr)");
+                const b = getCM(D, co, fy, "EBIT (Rs Cr)");
+                return (e != null && b != null) ? e - b : null;
+              },
+              { src: `Derived: EBITDA − EBIT (both disclosed at segment level — ${co} Q4 Investor Presentation)`,
+                url: (ABS_DATA[co] && ABS_DATA[co].url) || "" });
+          }
+          return gapRow(co, "P&L", "Depreciation & Amortisation", "₹ Cr",
+            "NA — Depreciation not disclosed and EBITDA / EBIT pair not both sourced");
+        })();
         /* EBIT — prefer the absolute disclosed in placeholder_data
            (Tata PV segment from Q4 IPs lands here); else compute
            = EBITDA − D&A. */
