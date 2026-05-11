@@ -303,6 +303,24 @@ body::before {
 .kpi-card.tinted .kpi-icon { background: #FFFFFF; }
 .kpi-icon svg { width: 14px; height: 14px; stroke-width: 1.7; }
 
+/* CTA variant — used for the OEM Leaderboard slot on the Industry view.
+   Soft purple background tints the card so it reads as an action card
+   distinct from data KPI tiles, while keeping the same border, radius,
+   hover-lift, and top accent stripe as siblings. */
+.kpi-card.kpi-card-cta {
+  background: linear-gradient(135deg, #FAF5FF 0%, #EFEAFE 100%);
+  border-color: #D8CCF7;
+}
+.kpi-card.kpi-card-cta:hover {
+  border-color: #B7A1F2;
+  box-shadow: 0 10px 28px rgba(109, 40, 217, 0.14), 0 2px 6px rgba(109, 40, 217, 0.08);
+}
+.kpi-icon.kpi-icon-cta {
+  background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 100%);
+  color: #FFFFFF;
+}
+.kpi-icon.kpi-icon-cta svg { stroke: #FFFFFF; }
+
 .kpi-spark {
   margin-top: 8px;
   height: 32px;
@@ -1171,6 +1189,10 @@ body::before {
    ==================================================== */
 #modal-overlay.open { opacity: 1; }
 #modal-overlay.open #modal { transform: scale(1); opacity: 1; }
+/* OEM Leaderboard modal — reuse the same open-state animation
+   as the trend modal so the entry feels uniform. */
+#lmodal-overlay.open { opacity: 1; }
+#lmodal-overlay.open #lmodal { transform: scale(1); opacity: 1; }
 
 /* Stat tiles */
 .stat-tile {
