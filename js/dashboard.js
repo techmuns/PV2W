@@ -44,6 +44,9 @@
     /* Industry-view shared controls (left trend + right OEM split) */
     indMetric:    "volume",  // see IND_METRICS registry
     indYearRight: "FY25",
+    /* Segment switcher — PV is the only live module today. 2W / CV
+       open the under-construction overlay (no real data wired up). */
+    segment:     "PV",       // PV | 2W | CV
   };
 
   /* ---------- helpers ---------- */
@@ -3176,6 +3179,76 @@
   }
 
   /* ====================================================
+     SEGMENT SWITCHER + UNDER-CONSTRUCTION VIEW
+     ====================================================
+     PV is the only live module. 2W and CV open a premium
+     animated placeholder; segment menu toggles via the
+     header brand button. */
+  const SEGMENT_META = {
+    "2W": {
+      title: "2W Dashboard is being built",
+      sub:   "Data model and source pipeline coming soon. The same buy-side-research lens you see in the PV dashboard — adapted to two-wheeler OEMs.",
+      iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="5"  cy="17" r="3"/>
+          <circle cx="19" cy="17" r="3"/>
+          <path d="M5 17l4-7h5l3 4M14 10V7h3M9 10h5"/>
+        </svg>`,
+    },
+    "CV": {
+      title: "CV Dashboard is being built",
+      sub:   "Data model and source pipeline coming soon. Commercial-vehicle coverage — Tata, M&M, Ashok Leyland, VECV — coming after the PV foundation is locked.",
+      iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="7" width="12" height="9" rx="1"/>
+          <path d="M14 10h4l3 3v3h-7z"/>
+          <circle cx="6"  cy="18" r="2"/>
+          <circle cx="17" cy="18" r="2"/>
+        </svg>`,
+    },
+  };
+
+  function openSegmentMenu() {
+    const m = $("#segment-menu");
+    const btn = $("#segment-switcher-btn");
+    m.classList.remove("hidden");
+    btn.setAttribute("aria-expanded", "true");
+    requestAnimationFrame(() => m.classList.add("open"));
+    /* Highlight whichever segment is currently active. */
+    document.querySelectorAll(".segment-card").forEach(el => {
+      el.classList.toggle("segment-card-active", el.dataset.segment === state.segment);
+      const iconEl = el.querySelector(".segment-icon");
+      if (iconEl) iconEl.classList.toggle("segment-icon-active", el.dataset.segment === state.segment);
+    });
+  }
+  function closeSegmentMenu() {
+    const m = $("#segment-menu");
+    const btn = $("#segment-switcher-btn");
+    m.classList.remove("open");
+    btn.setAttribute("aria-expanded", "false");
+    setTimeout(() => m.classList.add("hidden"), 200);
+  }
+  function switchSegment(seg) {
+    state.segment = seg;
+    closeSegmentMenu();
+    const uc = $("#under-construction");
+    const main = document.querySelector("main");
+    if (seg === "PV") {
+      uc.classList.remove("open");
+      setTimeout(() => uc.classList.add("hidden"), 300);
+      if (main) main.style.display = "";
+      return;
+    }
+    /* 2W / CV — show under-construction overlay. */
+    const meta = SEGMENT_META[seg];
+    if (!meta) return;
+    $("#uc-title").textContent = meta.title;
+    $("#uc-sub").textContent   = meta.sub;
+    $("#uc-icon").innerHTML    = meta.iconSvg;
+    if (main) main.style.display = "none";
+    uc.classList.remove("hidden");
+    requestAnimationFrame(() => uc.classList.add("open"));
+  }
+
+  /* ====================================================
      VEHICLE DETAIL MODAL
      ==================================================== */
   function openVMod() {
@@ -3432,8 +3505,27 @@
     $("#lmodal-overlay").addEventListener("click", (e) => {
       if (e.target.id === "lmodal-overlay") closeLeaderboardModal();
     });
+    /* ---------- Segment switcher wiring ---------- */
+    const segBtn = $("#segment-switcher-btn");
+    if (segBtn) {
+      segBtn.addEventListener("click", () => {
+        const m = $("#segment-menu");
+        if (m.classList.contains("hidden")) openSegmentMenu();
+        else closeSegmentMenu();
+      });
+    }
+    document.querySelectorAll(".segment-card").forEach(card => {
+      card.addEventListener("click", () => switchSegment(card.dataset.segment));
+    });
+    const segBackdrop = $("#segment-menu-backdrop");
+    if (segBackdrop) segBackdrop.addEventListener("click", closeSegmentMenu);
+    const ucBack = $("#uc-back");
+    if (ucBack) ucBack.addEventListener("click", () => switchSegment("PV"));
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") { closeModal(); closeVMod(); closeLeaderboardModal(); }
+      if (e.key === "Escape") {
+        closeModal(); closeVMod(); closeLeaderboardModal();
+        if (!$("#segment-menu").classList.contains("hidden")) closeSegmentMenu();
+      }
     });
     /* Volume + Mix-split chart top-level toggle */
     document.querySelectorAll("#chart2-toggle .mix-btn").forEach(btn => {

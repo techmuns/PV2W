@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260511am" />
+  <link rel="stylesheet" href="css/styles.css?v=20260511an" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -80,13 +80,24 @@
   <!-- ============== TOP HEADER ============== -->
   <header class="bg-gradient-to-r from-[#4F46E5] via-[#6D28D9] to-[#7C3AED] text-white sticky top-0 z-30 shadow-md">
     <div class="max-w-[1480px] mx-auto px-8 py-4 flex items-center gap-6 flex-wrap">
-      <div class="flex items-center gap-3 mr-2">
-        <div class="w-10 h-10 rounded-md bg-white/15 backdrop-blur-sm flex items-center justify-center font-bold text-[15px] tracking-tight border border-white/20">PV</div>
-        <div class="leading-tight">
-          <div class="text-white font-semibold text-[16px] tracking-tight">PV Industry Dashboard</div>
-          <div class="text-[11.5px] text-white/65">Buy-side research view</div>
+      <button id="segment-switcher-btn" type="button"
+              class="segment-switcher flex items-center gap-3 mr-2"
+              aria-haspopup="menu" aria-expanded="false" aria-controls="segment-menu"
+              title="Switch segment">
+        <div class="w-10 h-10 rounded-md bg-white/15 backdrop-blur-sm flex items-center justify-center font-bold text-[15px] tracking-tight border border-white/20 relative">
+          <span>PV</span>
+          <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#6D28D9]" style="background:#34D399;"></span>
         </div>
-      </div>
+        <div class="leading-tight text-left">
+          <div class="flex items-center gap-1.5">
+            <span class="text-white font-semibold text-[16px] tracking-tight">PV Industry Dashboard</span>
+            <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/70 segment-switcher-chev" aria-hidden="true">
+              <path d="M4 6l4 4 4-4"/>
+            </svg>
+          </div>
+          <div class="text-[11.5px] text-white/65">Buy-side research view · switch segment</div>
+        </div>
+      </button>
 
       <div class="flex items-center gap-2">
         <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Latest data</span>
@@ -440,8 +451,114 @@
     </div>
   </div>
 
-  <script src="js/data-loader.js?v=20260511am"></script>
-  <script src="js/dashboard.js?v=20260511am"></script>
-  <script src="js/export.js?v=20260511am"></script>
+  <!-- ============== SEGMENT SWITCHER MENU ============== -->
+  <div id="segment-menu" class="hidden fixed inset-0 z-40 opacity-0 transition-opacity duration-150"
+       role="menu" aria-labelledby="segment-switcher-btn">
+    <div id="segment-menu-backdrop" class="absolute inset-0 bg-navyDeep/30 backdrop-blur-[2px]"></div>
+    <div id="segment-menu-panel"
+         class="absolute left-4 sm:left-8 top-[78px] w-[calc(100%-2rem)] sm:w-[400px] bg-card rounded-2xl shadow-modal border border-line/70 overflow-hidden transform -translate-y-1 scale-[0.98] opacity-0 transition-all duration-150">
+      <div class="px-5 py-4 border-b border-line bg-gradient-to-r from-tint to-bgSoft">
+        <div class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold">Switch segment</div>
+        <div class="text-[14px] font-semibold text-navy mt-0.5">Indian Auto Coverage</div>
+      </div>
+      <div class="p-2 space-y-1">
+        <button data-segment="PV"
+                class="segment-card segment-card-active w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg"
+                role="menuitem">
+          <span class="segment-icon segment-icon-active">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 13l1.8-5a2 2 0 0 1 1.9-1.4h10.6a2 2 0 0 1 1.9 1.4L21 13"/>
+              <path d="M3 13h18v5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1H7v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5z"/>
+              <circle cx="7" cy="16" r="1"/><circle cx="17" cy="16" r="1"/>
+            </svg>
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="flex items-center gap-2">
+              <span class="text-[13.5px] font-semibold text-navy">Passenger Vehicles</span>
+              <span class="text-[9.5px] font-bold tracking-wider px-1.5 py-0.5 rounded" style="background:#D1FAE5;color:#065F46;">ACTIVE</span>
+            </span>
+            <span class="block text-[11px] text-inkMuted mt-0.5">Cars · SUVs · MPVs — Maruti / Hyundai / M&amp;M / Tata</span>
+          </span>
+          <svg class="text-inkMuted flex-shrink-0" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>
+        </button>
+
+        <button data-segment="2W"
+                class="segment-card w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg"
+                role="menuitem">
+          <span class="segment-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/>
+              <path d="M5 17l4-7h5l3 4M14 10V7h3"/>
+            </svg>
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="flex items-center gap-2">
+              <span class="text-[13.5px] font-semibold text-navy">Two Wheelers</span>
+              <span class="text-[9.5px] font-bold tracking-wider px-1.5 py-0.5 rounded" style="background:#FEF3C7;color:#92400E;">SOON</span>
+            </span>
+            <span class="block text-[11px] text-inkMuted mt-0.5">Motorcycles · scooters — Hero · Bajaj · TVS · Royal Enfield</span>
+          </span>
+          <svg class="text-inkMuted flex-shrink-0" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>
+        </button>
+
+        <button data-segment="CV"
+                class="segment-card w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg"
+                role="menuitem">
+          <span class="segment-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="7" width="12" height="9" rx="1"/>
+              <path d="M14 10h4l3 3v3h-7z"/>
+              <circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+            </svg>
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="flex items-center gap-2">
+              <span class="text-[13.5px] font-semibold text-navy">Commercial Vehicles</span>
+              <span class="text-[9.5px] font-bold tracking-wider px-1.5 py-0.5 rounded" style="background:#FEF3C7;color:#92400E;">SOON</span>
+            </span>
+            <span class="block text-[11px] text-inkMuted mt-0.5">Trucks · buses · LCVs — Tata · M&amp;M · Ashok Leyland · VECV</span>
+          </span>
+          <svg class="text-inkMuted flex-shrink-0" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>
+        </button>
+      </div>
+      <div class="px-5 py-3 border-t border-line text-[10.5px] text-inkMuted bg-bgSoft/50">
+        2W and CV modules are under construction. The data pipeline lands next.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== UNDER-CONSTRUCTION SEGMENT VIEW ============== -->
+  <div id="under-construction"
+       class="hidden fixed inset-0 z-30 flex items-center justify-center p-6 opacity-0 transition-opacity duration-300"
+       style="background:linear-gradient(135deg,#F4F7FB 0%, #EAF2FF 100%); top:72px;">
+    <div class="max-w-md text-center relative">
+      <div class="uc-blob-stage relative mx-auto w-36 h-36 mb-7">
+        <div class="uc-gradient-blob"></div>
+        <div class="uc-gradient-blob uc-gradient-blob--two"></div>
+        <div class="uc-shimmer-ring"></div>
+        <div class="relative w-full h-full flex items-center justify-center">
+          <div id="uc-icon" class="uc-icon"></div>
+        </div>
+      </div>
+      <div class="text-[10.5px] uppercase tracking-[0.18em] font-semibold" style="color:#6D28D9;">Module in build</div>
+      <h2 id="uc-title" class="text-[28px] font-semibold text-navy mt-2 leading-tight" style="letter-spacing:-0.01em;">
+        2W Dashboard is being built
+      </h2>
+      <p id="uc-sub" class="text-[13px] text-inkSoft mt-3 max-w-sm mx-auto leading-relaxed">
+        Data model and source pipeline coming soon. The same buy-side-research lens you see in the PV dashboard — adapted to two-wheeler OEMs.
+      </p>
+      <button id="uc-back" type="button"
+              class="mt-7 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[13px] font-semibold bg-navy text-white hover:bg-navyDeep shadow-card transition-colors">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 4l-4 4 4 4"/>
+        </svg>
+        <span>Back to PV Dashboard</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="js/data-loader.js?v=20260511an"></script>
+  <script src="js/dashboard.js?v=20260511an"></script>
+  <script src="js/export.js?v=20260511an"></script>
 </body>
 </html>

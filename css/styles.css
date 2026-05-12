@@ -1231,3 +1231,130 @@ body::before {
 #tab-bar::-webkit-scrollbar { height: 0; }
 
 #hover-tip { font-weight: 500; letter-spacing: 0.01em; }
+
+/* ──────────────────────────────────────────
+   Segment switcher (PV / 2W / CV)
+   ────────────────────────────────────────── */
+.segment-switcher {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: opacity 150ms ease;
+}
+.segment-switcher:hover { opacity: 0.9; }
+.segment-switcher:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.6);
+  outline-offset: 4px;
+}
+.segment-switcher-chev {
+  transition: transform 180ms ease;
+}
+.segment-switcher[aria-expanded="true"] .segment-switcher-chev {
+  transform: rotate(180deg);
+  color: #FFFFFF;
+}
+
+/* Floating segment menu — open state animation */
+#segment-menu.open { opacity: 1; }
+#segment-menu.open #segment-menu-panel {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* Segment cards inside menu */
+.segment-card {
+  background: transparent;
+  border: 1px solid transparent;
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+  cursor: pointer;
+}
+.segment-card:hover {
+  background: #F4F7FB;
+  border-color: #E5EAF1;
+}
+.segment-card:active { transform: scale(0.99); }
+.segment-card-active {
+  background: #EFEAFE;
+  border-color: #D8CCF7;
+}
+.segment-card-active:hover { background: #E4D8FC; }
+
+.segment-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: #F1F5F9;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.segment-icon-active {
+  background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 100%);
+  color: #FFFFFF;
+}
+
+/* ──────────────────────────────────────────
+   Under-construction view (premium + animated)
+   ────────────────────────────────────────── */
+#under-construction.open { opacity: 1; }
+
+.uc-blob-stage {
+  overflow: visible;
+}
+.uc-gradient-blob {
+  position: absolute;
+  inset: -8px;
+  background: linear-gradient(135deg, #4F46E5, #6D28D9, #7C3AED);
+  border-radius: 50%;
+  opacity: 0.16;
+  filter: blur(28px);
+  animation: uc-pulse 4s ease-in-out infinite;
+}
+.uc-gradient-blob--two {
+  inset: 12px;
+  background: linear-gradient(135deg, #7C3AED, #4F46E5);
+  opacity: 0.22;
+  filter: blur(20px);
+  animation: uc-pulse 4.2s ease-in-out 0.6s infinite reverse;
+}
+@keyframes uc-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.16; }
+  50%      { transform: scale(1.18); opacity: 0.30; }
+}
+
+/* Sweeping shimmer ring */
+.uc-shimmer-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(124,58,237,0.55) 70deg, transparent 140deg, transparent 360deg);
+  mask: radial-gradient(closest-side, transparent 62%, #000 64%, #000 70%, transparent 72%);
+  -webkit-mask: radial-gradient(closest-side, transparent 62%, #000 64%, #000 70%, transparent 72%);
+  animation: uc-spin 3.6s linear infinite;
+  opacity: 0.85;
+}
+@keyframes uc-spin { to { transform: rotate(360deg); } }
+
+/* Vehicle icon floats subtly */
+.uc-icon {
+  position: relative;
+  z-index: 1;
+  width: 56px; height: 56px;
+  color: #6D28D9;
+  animation: uc-float 4s ease-in-out infinite;
+  filter: drop-shadow(0 6px 14px rgba(109, 40, 217, 0.35));
+}
+.uc-icon svg { width: 100%; height: 100%; }
+@keyframes uc-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+
+/* Mobile header reflow */
+@media (max-width: 720px) {
+  .segment-switcher .text-white { font-size: 14px; }
+  #segment-menu-panel { left: 1rem; right: 1rem; width: auto; }
+}
