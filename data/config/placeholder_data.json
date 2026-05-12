@@ -22411,7 +22411,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-12T18:08:49.518Z",
+    "last_refresh": "2026-05-12T18:14:02.795Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -22430,6 +22430,6 @@
       "hyundai_filings": "success",
       "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25753066657"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25753330453"
   }
 }
