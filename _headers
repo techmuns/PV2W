@@ -1,0 +1,34 @@
+# Cloudflare Workers Static Assets honours Cloudflare-Pages-style _headers.
+# Purpose: keep the dashboard's data layer fresh between workflow runs.
+#
+# The data-refresh workflow commits new data/config/*.json files every
+# day (and on every push to main). Without these directives, Cloudflare's
+# edge would cache the JSON for hours, so users would see stale numbers
+# even after a fresh commit landed.
+#
+# `no-cache` does NOT mean "never cache"; it means "always revalidate
+# with origin before serving". So Cloudflare sends a conditional request
+# and gets a 304 if nothing changed (fast) or a 200 with fresh JSON if
+# the file was rewritten (always current).
+
+/data/config/*
+  Cache-Control: no-cache, must-revalidate
+  Pragma: no-cache
+
+/data/config/placeholder_data.json
+  Cache-Control: no-cache, must-revalidate
+  Pragma: no-cache
+
+# JS / CSS already cache-bust via ?v=... query strings, so they can have
+# a long cache life — but explicitly set short-life for safety.
+/js/*
+  Cache-Control: public, max-age=300, must-revalidate
+/css/*
+  Cache-Control: public, max-age=300, must-revalidate
+
+# index.html must always be revalidated so cache-bust query strings
+# on JS/CSS take effect immediately on deploy.
+/
+  Cache-Control: no-cache, must-revalidate
+/index.html
+  Cache-Control: no-cache, must-revalidate
