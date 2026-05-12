@@ -1235,18 +1235,33 @@ body::before {
 /* ──────────────────────────────────────────
    Segment switcher (PV / 2W / CV)
    ────────────────────────────────────────── */
+/* Header brand block — reads as a clickable pill thanks to the
+   soft glass surface + border. Hover/focus deepen the surface and
+   border to confirm interactivity. */
 .segment-switcher {
-  background: transparent;
-  border: 0;
-  padding: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 6px 14px 6px 6px;
   cursor: pointer;
-  border-radius: 10px;
-  transition: opacity 150ms ease;
+  border-radius: 12px;
+  transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
 }
-.segment-switcher:hover { opacity: 0.9; }
+.segment-switcher:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 4px 14px rgba(11, 31, 51, 0.18);
+  transform: translateY(-0.5px);
+}
+.segment-switcher:active { transform: translateY(0); }
 .segment-switcher:focus-visible {
-  outline: 2px solid rgba(255,255,255,0.6);
-  outline-offset: 4px;
+  outline: 2px solid rgba(255,255,255,0.7);
+  outline-offset: 3px;
+}
+.segment-switcher[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.20);
+  border-color: rgba(255, 255, 255, 0.55);
 }
 .segment-switcher-chev {
   transition: transform 180ms ease;
