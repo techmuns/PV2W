@@ -3196,7 +3196,7 @@
     },
     "CV": {
       title: "CV Dashboard is being built",
-      sub:   "Data model and source pipeline coming soon. Commercial-vehicle coverage — Tata, M&M, Ashok Leyland, VECV — coming after the PV foundation is locked.",
+      sub:   "Data model and source pipeline coming soon. Commercial-vehicle coverage — Tata, M&M, Ashok Leyland, VECV — coming soon.",
       iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="2" y="7" width="12" height="9" rx="1"/>
           <path d="M14 10h4l3 3v3h-7z"/>
