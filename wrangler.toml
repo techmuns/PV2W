@@ -5,3 +5,26 @@ compatibility_date = "2025-01-01"
 [assets]
 directory = "."
 not_found_handling = "single-page-application"
+
+# ─── Preview environment ───────────────────────────────────────
+# A parallel Worker named `neha-preview` so feature branches can
+# be deployed for review without touching production.
+#
+# Deploy preview from a feature branch:
+#     npx wrangler deploy --env preview
+#
+# Preview URL (Cloudflare assigns based on your account subdomain):
+#     https://neha-preview.<your-subdomain>.workers.dev
+#
+# Production stays untouched — it still lives at:
+#     https://neha.<your-subdomain>.workers.dev
+#
+# Tear down the preview Worker when done:
+#     npx wrangler delete --name neha-preview
+# ───────────────────────────────────────────────────────────────
+[env.preview]
+name = "neha-preview"
+
+[env.preview.assets]
+directory = "."
+not_found_handling = "single-page-application"
