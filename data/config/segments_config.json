@@ -1,0 +1,63 @@
+{
+  "_notes": "Segment registry for the multi-segment Auto Industry Dashboard. PV is the live module (dataReady=true). 2W and CV use the same dashboard shell with placeholder/empty states until the data layer is uploaded. Each segment owns its own copy lists (companies, KPIs, vehicle cards) so the dashboard shell stays segment-agnostic. dataReady=false segments render the same layout but every value cell shows the placeholder copy below.",
+  "_placeholderCopy": {
+    "kpi":     "Source data not uploaded yet",
+    "chart":   "Add 10-year segment data to populate this view",
+    "vehicle": "Awaiting segment data",
+    "signal":  "Source/data readiness pending — buy-side signal will activate once the segment data layer is uploaded."
+  },
+  "_dataSchema": {
+    "fields": ["segment_id", "company", "fiscal_year", "metric", "value", "source_url", "last_updated"],
+    "note":   "Future per-segment data should arrive in this schema so the dashboard can filter by segment_id without code changes."
+  },
+  "segments": {
+    "PV": {
+      "id":            "PV",
+      "displayName":   "Passenger Vehicles",
+      "shortLabel":    "PV",
+      "title":         "Indian PV Industry Cockpit",
+      "subtitle":      "Demand · mix · competitive shifts across OEMs",
+      "companies":     ["Industry", "Maruti", "Hyundai", "M&M", "Tata Motors PV"],
+      "defaultCompany":"Industry",
+      "industryKpis":  ["Total PV Volume", "PV Volume Growth %", "SUV Share %", "EV Share %", "Export Share %", "Top Gaining OEM"],
+      "oemKpis":       ["Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %", "SUV Revenue %", "Stock Price (31-Mar)"],
+      "vehicleCards":  ["Swift", "Brezza", "Fronx", "Grand Vitara", "Ertiga", "Baleno"],
+      "chart1Title":   "Selected OEM growth vs PV industry growth",
+      "chart2Title":   "SUV / EV / Export mix",
+      "tabs":          ["Growth", "Margins", "Mix", "Operations", "Product", "Governance"],
+      "dataReady":     true
+    },
+    "2W": {
+      "id":            "2W",
+      "displayName":   "Two Wheelers",
+      "shortLabel":    "2W",
+      "title":         "Indian 2W Industry Cockpit",
+      "subtitle":      "Motorcycles · scooters · EV transition · export cycles",
+      "companies":     ["Industry", "Hero MotoCorp", "Honda Motorcycle & Scooter India", "TVS Motor", "Bajaj Auto", "Royal Enfield", "Ola Electric"],
+      "defaultCompany":"Industry",
+      "industryKpis":  ["Total 2W Volume", "2W Volume Growth %", "EV Share %", "Scooter Share %", "Export Share %", "Top Gaining OEM"],
+      "oemKpis":       ["Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %", "EV Mix %", "Export Mix %"],
+      "vehicleCards":  ["Motorcycles", "Scooters", "EV 2W", "Premium Bikes", "Exports", "Rural Demand"],
+      "chart1Title":   "Selected OEM growth vs 2W industry growth",
+      "chart2Title":   "Motorcycle / Scooter / EV / Export mix",
+      "tabs":          ["Growth", "Margins", "Mix", "Operations", "Product", "Governance"],
+      "dataReady":     false
+    },
+    "CV": {
+      "id":            "CV",
+      "displayName":   "Commercial Vehicles",
+      "shortLabel":    "CV",
+      "title":         "Indian CV Industry Cockpit",
+      "subtitle":      "Freight cycle · infra demand · fleet replacement · exports",
+      "companies":     ["Industry", "Tata Motors CV", "Ashok Leyland", "M&M CV", "Eicher Motors / VECV", "SML Isuzu"],
+      "defaultCompany":"Industry",
+      "industryKpis":  ["Total CV Volume", "CV Volume Growth %", "M&HCV Share %", "Bus Share %", "Export Share %", "Top Gaining OEM"],
+      "oemKpis":       ["Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %", "M&HCV Mix %", "Fleet/Infra Cycle Signal"],
+      "vehicleCards":  ["LCV", "M&HCV", "Buses", "Tippers", "Tractor Trailers", "Fleet Replacement"],
+      "chart1Title":   "Selected OEM growth vs CV industry growth",
+      "chart2Title":   "LCV / M&HCV / Bus / Export mix",
+      "tabs":          ["Growth", "Margins", "Mix", "Operations", "Product", "Governance"],
+      "dataReady":     false
+    }
+  }
+}

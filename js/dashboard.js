@@ -184,11 +184,25 @@
   function renderTopBar() {
     const fyLabel = $("#latest-fy-label");
     if (fyLabel) fyLabel.textContent = state.fy;
-    $("#company-select").innerHTML = D.COMPANIES.map(c => `<option value="${c}" ${c===state.company?"selected":""}>${c}</option>`).join("");
-    $("#hdr-brand-dot").style.background = BRAND[state.company].color;
+
+    /* Company selector — list driven by the active segment's
+       companies. PV pulls from segment config (which is the same
+       list legacy code used). 2W / CV expose their own OEMs. */
+    const seg = activeSegment();
+    const companies = (seg && seg.companies) || D.COMPANIES;
+    $("#company-select").innerHTML = companies
+      .map(c => `<option value="${c}" ${c===state.company?"selected":""}>${c}</option>`).join("");
+
+    /* Brand dot — fall back to a neutral grey on companies that don't
+       yet have a BRAND entry (e.g., 2W / CV OEMs). */
+    const brand = (BRAND && BRAND[state.company]) || { color: "#94A3B8" };
+    $("#hdr-brand-dot").style.background = brand.color;
 
     let overall = "Neutral";
-    if (state.company === "Industry") {
+    if (!isLiveSegment()) {
+      /* Placeholder shell — buy-side signal pending. */
+      overall = "Neutral";
+    } else if (state.company === "Industry") {
       const r = getIndustryMetric(state.fy, "PV Volume Growth %");
       overall = r ? r.Signal : "Neutral";
     } else {
@@ -393,6 +407,7 @@
 
   function renderIdentityRow() {
     const isIndustry = state.company === "Industry";
+    const seg = activeSegment();
 
     applyLogoMark($("#logo-mark"), state.company);
 
@@ -400,11 +415,13 @@
       <span class="fy-chip-label">FY</span>
       <span class="fy-chip-value">${state.fy}</span>`;
 
-    /* Two-line text stack: company / "Buy-side snapshot".
-       Industry is its own headline. */
+    /* Title/subtitle now drive from the active segment's config so
+       2W / CV inherit their own copy. Industry-view (the default
+       landing per segment) shows the segment headline; OEM view
+       shows the OEM name with a 'Buy-side snapshot' subline. */
     if (isIndustry) {
-      $("#view-title").textContent    = "Indian PV Industry Cockpit";
-      $("#view-subtitle").textContent = "Demand · mix · competitive shifts across OEMs";
+      $("#view-title").textContent    = (seg && seg.title)    || "Indian PV Industry Cockpit";
+      $("#view-subtitle").textContent = (seg && seg.subtitle) || "Demand · mix · competitive shifts across OEMs";
     } else {
       $("#view-title").textContent    = state.company;
       $("#view-subtitle").textContent = "Buy-side snapshot";
@@ -462,7 +479,37 @@
     const grid = $("#kpi-strip");
     if (!grid) return;   /* KPI strip retired in favour of Investor Lens table */
     const isIndustry = state.company === "Industry";
-    const list = isIndustry ? D.INDUSTRY_KPIS : D.OEM_KPIS;
+
+    /* Active-segment-driven KPI labels. PV currently uses the legacy
+       OEM_KPIS / INDUSTRY_KPIS lists from company_config (which match
+       the segment file exactly). 2W / CV pull their lists from the
+       segment registry. */
+    const seg = activeSegment();
+    const list = isIndustry
+      ? ((seg && seg.industryKpis) || D.INDUSTRY_KPIS)
+      : ((seg && seg.oemKpis)      || D.OEM_KPIS);
+
+    /* Placeholder mode for 2W / CV (or any segment with dataReady=false).
+       Renders the SAME 6-card frame but every value cell shows the
+       segment-placeholder copy. No fabricated values, no false signals. */
+    if (!isLiveSegment()) {
+      const ph = placeholderText("kpi");
+      grid.innerHTML = list.map((metric, idx) => {
+        const tinted = idx % 2 === 1 ? "tinted" : "";
+        return `
+          <div class="kpi-card kpi-card-placeholder ${tinted}" data-metric="${metric}" aria-disabled="true">
+            <div class="flex items-start justify-between mb-1.5">
+              <span class="kpi-icon">${iconFor(metric)}</span>
+              <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style="background:#FEF3C7;color:#92400E;">Pending</span>
+            </div>
+            <div class="text-[10.5px] uppercase tracking-wider text-inkMuted font-semibold">${metric}</div>
+            <div class="text-[18px] font-semibold leading-tight mt-0.5" style="color:#94A3B8;">—</div>
+            <div class="text-[10.5px] mt-0.5" style="color:#6B7280;line-height:1.35;">${ph}</div>
+          </div>`;
+      }).join("");
+      grid.querySelectorAll(".kpi-card").forEach(el => { el.style.cursor = "default"; });
+      return;
+    }
 
     grid.innerHTML = list.map((metric, idx) => {
       /* On the Industry view the "Top Gaining OEM" slot is repurposed
@@ -1911,6 +1958,43 @@
     const isIndustry = state.company === "Industry";
     const fyHistory = D.FYS;
 
+    /* Placeholder mode for 2W / CV. The chart panels stay mounted so
+       the layout reads as "ready, awaiting data". Industry controls
+       are hidden because they drive PV-specific live data. */
+    if (!isLiveSegment()) {
+      const seg = activeSegment();
+      const ctl = $("#industry-controls");
+      if (ctl) { ctl.classList.add("hidden"); ctl.classList.remove("flex"); }
+      const ph = placeholderText("chart");
+      const placeholderHtml = (subtitle) => `
+        <div class="flex flex-col items-center justify-center py-12 px-6 text-center">
+          <div class="w-12 h-12 rounded-full mb-3 flex items-center justify-center" style="background:#F3F4F6;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 15l5-5 4 4 8-8"/>
+            </svg>
+          </div>
+          <div class="text-[12.5px] font-semibold text-navy">Data table ready</div>
+          <div class="text-[11px] text-inkMuted mt-1 max-w-xs">${subtitle}</div>
+        </div>`;
+      $("#chart1-title").textContent = (seg && seg.chart1Title) || "Selected OEM growth vs industry";
+      $("#chart1-help").textContent  = "10-year history · placeholder";
+      $("#chart1").innerHTML         = placeholderHtml(ph);
+      $("#chart1-legend").innerHTML  = "";
+      $("#chart1-source").textContent = "Source: pending — upload segment data layer.";
+      $("#chart2-title").textContent = (seg && seg.chart2Title) || "Segment mix";
+      $("#chart2-help").textContent  = "Mix composition · placeholder";
+      $("#chart2").innerHTML         = placeholderHtml(ph);
+      $("#chart2-legend").innerHTML  = "";
+      $("#chart2-source").textContent = "Source: pending — upload segment data layer.";
+      const m1 = $("#chart1-meta"); if (m1) m1.innerHTML = "";
+      const m2 = $("#chart2-meta"); if (m2) m2.innerHTML = "";
+      $("#chart2-toggle").classList.add("hidden");
+      const subToggle = $("#chart2-product-sub");
+      if (subToggle) subToggle.style.visibility = "hidden";
+      return;
+    }
+
     if (isIndustry) {
       /* Show industry shared controls + dispatch the metric-driven
          two-card module. */
@@ -2360,10 +2444,36 @@
 
   function renderVehicleCards() {
     const section = $("#vehicle-section");
+    const grid = $("#vehicle-grid");
+
+    /* For 2W / CV (dataReady=false): always show the section as a
+       placeholder strip — even on Industry view — so the user sees
+       the reserved layout for vehicle/category cards. */
+    if (!isLiveSegment()) {
+      const seg = activeSegment();
+      const cards = (seg && seg.vehicleCards) || [];
+      section.style.display = "";
+      grid.style.removeProperty("--veh-rgb");
+      const ph = placeholderText("vehicle");
+      grid.innerHTML = cards.map(name => `
+        <div class="veh-card veh-card-placeholder" aria-disabled="true">
+          <div class="px-3 pt-3">
+            <div class="text-[12.5px] font-semibold" style="color:#0B1F33;">${name}</div>
+            <div class="text-[10.5px]" style="color:#94A3B8;">Awaiting data</div>
+            <div class="text-[18px] font-semibold leading-tight mt-2" style="color:#94A3B8;">—</div>
+            <div class="text-[10.5px] mt-1" style="color:#6B7280;">${ph}</div>
+            <div class="text-[9px] mt-3 inline-block px-1.5 py-0.5 rounded font-medium" style="background:#FEF3C7;color:#92400E;">Pending</div>
+          </div>
+          <div class="px-3 py-2 mt-2" style="border-top:1px solid #EEF1F5;background:#FAFBFC;">
+            <div class="text-[9.5px] uppercase tracking-wider font-semibold" style="color:#94A3B8;">Source TBC</div>
+          </div>
+        </div>`).join("");
+      return;
+    }
+
     if (state.company === "Industry") { section.style.display = "none"; return; }
     section.style.display = "";
 
-    const grid = $("#vehicle-grid");
     /* Drive the brand-tinted accent + hover state through a CSS var
        on the grid container — read by .veh-card / .veh-card::before
        via rgba(var(--veh-rgb), …). Defaults to primary blue if the
@@ -2539,6 +2649,36 @@
 
   function renderTabs() {
     const isIndustry = state.company === "Industry";
+
+    /* 2W / CV placeholder: hide the metric table/governance card and
+       show a single empty-state strip explaining the data is pending.
+       The tabs section retains its reserved height so the page layout
+       stays consistent. */
+    if (!isLiveSegment()) {
+      $("#industry-tabs").classList.add("hidden");
+      const hub = $("#oem-hub");
+      if (hub) {
+        hub.classList.remove("hidden");
+        const seg = activeSegment();
+        const segName = (seg && seg.displayName) || "this segment";
+        const ph = placeholderText("signal");
+        hub.innerHTML = `
+          <div class="bg-card rounded-xl shadow-card border border-line p-7 text-center">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center" style="background:#FEF3C7;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#92400E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 7v5l3 2"/>
+              </svg>
+            </div>
+            <div class="text-[10px] uppercase tracking-wider font-semibold" style="color:#92400E;">Buy-side Signal · pending</div>
+            <div class="text-[14px] font-semibold text-navy mt-1">${segName} data layer not yet uploaded</div>
+            <div class="text-[12px] text-inkSoft mt-2 max-w-md mx-auto leading-relaxed">${ph}</div>
+            <div class="text-[10.5px] text-inkMuted mt-4">Tabs: ${(activeSegment() && activeSegment().tabs || []).join(" · ")}</div>
+          </div>`;
+      }
+      return;
+    }
+
     /* On Industry view, the trend module + KPI strip already cover
        every metric the supporting-data tabs would have surfaced
        (Total PV Volume / Volume Growth / SUV / EV / Export / Top
@@ -3179,32 +3319,27 @@
   }
 
   /* ====================================================
-     SEGMENT SWITCHER + UNDER-CONSTRUCTION VIEW
+     SEGMENT SWITCHER  (PV  /  2W  /  CV)
      ====================================================
-     PV is the only live module. 2W and CV open a premium
-     animated placeholder; segment menu toggles via the
-     header brand button. */
-  const SEGMENT_META = {
-    "2W": {
-      title: "2W Dashboard is being built",
-      sub:   "Data model and source pipeline coming soon. The same buy-side-research lens you see in the PV dashboard — adapted to two-wheeler OEMs.",
-      iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="5"  cy="17" r="3"/>
-          <circle cx="19" cy="17" r="3"/>
-          <path d="M5 17l4-7h5l3 4M14 10V7h3M9 10h5"/>
-        </svg>`,
-    },
-    "CV": {
-      title: "CV Dashboard is being built",
-      sub:   "Data model and source pipeline coming soon. Commercial-vehicle coverage — Tata, M&M, Ashok Leyland, VECV — coming soon.",
-      iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="2" y="7" width="12" height="9" rx="1"/>
-          <path d="M14 10h4l3 3v3h-7z"/>
-          <circle cx="6"  cy="18" r="2"/>
-          <circle cx="17" cy="18" r="2"/>
-        </svg>`,
-    },
-  };
+     PV is the live module (segment.dataReady === true). 2W and CV
+     reuse the same dashboard shell — same header, KPI strip,
+     charts, vehicle cards, tabs — but every value cell renders a
+     placeholder once we detect dataReady === false.
+
+     activeSegment() resolves the config block for the currently
+     selected segment. renderAll() consults isLiveSegment() before
+     populating data-bound cells and otherwise falls through to
+     the per-section placeholder copy from D.SEGMENT_PLACEHOLDER. */
+  function activeSegment() {
+    return (D && D.SEGMENTS && D.SEGMENTS[state.segment]) || (D && D.SEGMENTS && D.SEGMENTS.PV) || null;
+  }
+  function isLiveSegment() {
+    const seg = activeSegment();
+    return !!(seg && seg.dataReady);
+  }
+  function placeholderText(key) {
+    return (D && D.SEGMENT_PLACEHOLDER && D.SEGMENT_PLACEHOLDER[key]) || "Data not yet available";
+  }
 
   function openSegmentMenu() {
     const m = $("#segment-menu");
@@ -3212,7 +3347,6 @@
     m.classList.remove("hidden");
     btn.setAttribute("aria-expanded", "true");
     requestAnimationFrame(() => m.classList.add("open"));
-    /* Highlight whichever segment is currently active. */
     document.querySelectorAll(".segment-card").forEach(el => {
       el.classList.toggle("segment-card-active", el.dataset.segment === state.segment);
       const iconEl = el.querySelector(".segment-icon");
@@ -3227,25 +3361,28 @@
     setTimeout(() => m.classList.add("hidden"), 200);
   }
   function switchSegment(seg) {
+    if (!D || !D.SEGMENTS || !D.SEGMENTS[seg]) return;
     state.segment = seg;
+    state.company = D.SEGMENTS[seg].defaultCompany || "Industry";
+    /* Tab selection — reset to first tab from the segment's tab list so
+       OEM-vs-Industry tab divergence doesn't carry over. */
+    const tabs = D.SEGMENTS[seg].tabs || ["Growth"];
+    state.activeTab = tabs[0];
     closeSegmentMenu();
+    /* The old under-construction overlay (PR #80) is no longer used —
+       2W / CV now render the same dashboard shell with placeholder
+       cells. Hide it if it's still in the DOM from a previous build. */
     const uc = $("#under-construction");
-    const main = document.querySelector("main");
-    if (seg === "PV") {
+    if (uc) {
       uc.classList.remove("open");
-      setTimeout(() => uc.classList.add("hidden"), 300);
-      if (main) main.style.display = "";
-      return;
+      uc.classList.add("hidden");
     }
-    /* 2W / CV — show under-construction overlay. */
-    const meta = SEGMENT_META[seg];
-    if (!meta) return;
-    $("#uc-title").textContent = meta.title;
-    $("#uc-sub").textContent   = meta.sub;
-    $("#uc-icon").innerHTML    = meta.iconSvg;
-    if (main) main.style.display = "none";
-    uc.classList.remove("hidden");
-    requestAnimationFrame(() => uc.classList.add("open"));
+    const main = document.querySelector("main");
+    if (main) main.style.display = "";
+    /* Mark <body> with the active segment so CSS can scope any
+       segment-specific styling cleanly. */
+    document.body.dataset.segment = seg;
+    renderAll();
   }
 
   /* ====================================================
@@ -3519,8 +3656,7 @@
     });
     const segBackdrop = $("#segment-menu-backdrop");
     if (segBackdrop) segBackdrop.addEventListener("click", closeSegmentMenu);
-    const ucBack = $("#uc-back");
-    if (ucBack) ucBack.addEventListener("click", () => switchSegment("PV"));
+    /* uc-back button is gone — 2W / CV now render inline in the shell. */
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeModal(); closeVMod(); closeLeaderboardModal();

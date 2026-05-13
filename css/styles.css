@@ -1373,3 +1373,33 @@ body::before {
   .segment-switcher .text-white { font-size: 14px; }
   #segment-menu-panel { left: 1rem; right: 1rem; width: auto; }
 }
+
+/* ──────────────────────────────────────────
+   Multi-segment shell — placeholder visuals
+   used by 2W / CV until segment data is uploaded.
+   ────────────────────────────────────────── */
+.kpi-card.kpi-card-placeholder {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFD 100%);
+  border-color: #E5EAF1;
+  cursor: default;
+}
+.kpi-card.kpi-card-placeholder:hover {
+  transform: none;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
+}
+.veh-card.veh-card-placeholder {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFD 100%);
+  border: 1px solid #E5EAF1;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: default;
+}
+.veh-card.veh-card-placeholder:hover {
+  transform: none;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
+}
+/* Tag the body so segment-scoped styling can hook into it later. */
+body[data-segment="2W"] .segment-switcher .text-white,
+body[data-segment="CV"] .segment-switcher .text-white {
+  /* slight title tint shift if needed in future */
+}

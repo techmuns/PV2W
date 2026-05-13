@@ -112,9 +112,9 @@
 
   /* ---------- main entry ---------- */
   async function loadAll() {
-    let companyCfg, vehicleCfg, placeholder, logoMap, imageMap, sourceMap;
+    let companyCfg, vehicleCfg, placeholder, logoMap, imageMap, sourceMap, segmentsCfg;
     try {
-      [companyCfg, vehicleCfg, placeholder, logoMap, imageMap, sourceMap] =
+      [companyCfg, vehicleCfg, placeholder, logoMap, imageMap, sourceMap, segmentsCfg] =
         await Promise.all([
           fetchJSON("company_config.json", { required: true }),
           fetchJSON("vehicle_config.json", { required: true }),
@@ -122,6 +122,10 @@
           fetchJSON("logo_map.json"),
           fetchJSON("image_map.json"),
           fetchJSON("source_map.json"),
+          /* New: multi-segment registry (PV / 2W / CV). Not strictly
+             required — if the file is missing the dashboard falls
+             back to PV-only behavior. */
+          fetchJSON("segments_config.json"),
         ]);
     } catch (err) {
       return { ok: false, error: err };
@@ -137,6 +141,29 @@
     overlayImages(vehicleMetrics, imageMap);
     overlaySources(companyMetrics, sourceMap);
 
+    /* Multi-segment registry. The PV block is the live one; 2W / CV
+       are placeholder shells. If segments_config.json is missing the
+       dashboard auto-falls back to a single PV segment built from the
+       legacy company_config.json fields. */
+    const SEGMENTS = (segmentsCfg && segmentsCfg.segments) ? segmentsCfg.segments : {
+      PV: {
+        id: "PV",
+        displayName: "Passenger Vehicles",
+        shortLabel:  "PV",
+        title:       "Indian PV Industry Cockpit",
+        subtitle:    "Demand · mix · competitive shifts across OEMs",
+        companies:   companyCfg.companies,
+        defaultCompany: "Industry",
+        industryKpis:  companyCfg.industry_kpis,
+        oemKpis:       companyCfg.oem_kpis,
+        vehicleCards:  (vehicleCfg.default_vehicles && vehicleCfg.default_vehicles.Maruti) || [],
+        chart1Title:   "Selected OEM growth vs PV industry growth",
+        chart2Title:   "SUV / EV / Export mix",
+        tabs:          ["Growth","Margins","Mix","Operations","Product","Governance"],
+        dataReady:     true,
+      },
+    };
+
     const data = {
       COMPANIES:           companyCfg.companies,
       FYS:                 companyCfg.fys,
@@ -147,6 +174,13 @@
       DEFAULT_VEHICLES:    vehicleCfg.default_vehicles,
       BRANDS:              companyCfg.brands,
       TABS:                companyCfg.tabs,
+      SEGMENTS:            SEGMENTS,
+      SEGMENT_PLACEHOLDER: (segmentsCfg && segmentsCfg._placeholderCopy) || {
+        kpi:     "Source data not uploaded yet",
+        chart:   "Add 10-year segment data to populate this view",
+        vehicle: "Awaiting segment data",
+        signal:  "Source/data readiness pending — buy-side signal will activate once the segment data layer is uploaded.",
+      },
       Company_FY_Metrics:  companyMetrics,
       Vehicle_FY_Metrics:  vehicleMetrics,
       BuySide_Signals:     buysideSignals,

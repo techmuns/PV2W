@@ -6,7 +6,7 @@
   <title>PV Industry Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=20260511ap" />
+  <link rel="stylesheet" href="css/styles.css?v=20260511aq" />
   <!-- ExcelJS for the workbook export feature -->
   <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script>
@@ -527,38 +527,14 @@
     </div>
   </div>
 
-  <!-- ============== UNDER-CONSTRUCTION SEGMENT VIEW ============== -->
-  <div id="under-construction"
-       class="hidden fixed inset-0 z-30 flex items-center justify-center p-6 opacity-0 transition-opacity duration-300"
-       style="background:linear-gradient(135deg,#F4F7FB 0%, #EAF2FF 100%); top:72px;">
-    <div class="max-w-md text-center relative">
-      <div class="uc-blob-stage relative mx-auto w-36 h-36 mb-7">
-        <div class="uc-gradient-blob"></div>
-        <div class="uc-gradient-blob uc-gradient-blob--two"></div>
-        <div class="uc-shimmer-ring"></div>
-        <div class="relative w-full h-full flex items-center justify-center">
-          <div id="uc-icon" class="uc-icon"></div>
-        </div>
-      </div>
-      <div class="text-[10.5px] uppercase tracking-[0.18em] font-semibold" style="color:#6D28D9;">Module in build</div>
-      <h2 id="uc-title" class="text-[28px] font-semibold text-navy mt-2 leading-tight" style="letter-spacing:-0.01em;">
-        2W Dashboard is being built
-      </h2>
-      <p id="uc-sub" class="text-[13px] text-inkSoft mt-3 max-w-sm mx-auto leading-relaxed">
-        Data model and source pipeline coming soon. The same buy-side-research lens you see in the PV dashboard — adapted to two-wheeler OEMs.
-      </p>
-      <button id="uc-back" type="button"
-              class="mt-7 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[13px] font-semibold bg-navy text-white hover:bg-navyDeep shadow-card transition-colors">
-        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M10 4l-4 4 4 4"/>
-        </svg>
-        <span>Back to PV Dashboard</span>
-      </button>
-    </div>
-  </div>
+  <!-- The standalone under-construction view (PR #80) has been
+       replaced by inline placeholder cells inside the dashboard
+       shell. 2W and CV now reuse the same KPI / chart / vehicle-card
+       / tab layout with "Source data not uploaded yet" copy. -->
 
-  <script src="js/data-loader.js?v=20260511ap"></script>
-  <script src="js/dashboard.js?v=20260511ap"></script>
-  <script src="js/export.js?v=20260511ap"></script>
+
+  <script src="js/data-loader.js?v=20260511aq"></script>
+  <script src="js/dashboard.js?v=20260511aq"></script>
+  <script src="js/export.js?v=20260511aq"></script>
 </body>
 </html>
