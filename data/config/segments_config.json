@@ -33,7 +33,7 @@
       "shortLabel":    "2W",
       "title":         "Indian 2W Industry Cockpit",
       "subtitle":      "Motorcycles · scooters · EV transition · export cycles",
-      "companies":     ["Industry", "Hero MotoCorp", "Honda Motorcycle & Scooter India", "TVS Motor", "Bajaj Auto", "Royal Enfield", "Ola Electric"],
+      "companies":     ["Industry", "TVS", "Bajaj Auto", "Eicher Motors", "Hero MotoCorp", "Ola Electric", "Ather Energy", "Honda", "Yamaha", "Suzuki"],
       "defaultCompany":"Industry",
       "industryKpis":  ["Total 2W Volume", "2W Volume Growth %", "EV Share %", "Scooter Share %", "Export Share %", "Top Gaining OEM"],
       "oemKpis":       ["Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %", "EV Mix %", "Export Mix %"],
