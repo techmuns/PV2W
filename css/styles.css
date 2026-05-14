@@ -1373,3 +1373,171 @@ body::before {
   .segment-switcher .text-white { font-size: 14px; }
   #segment-menu-panel { left: 1rem; right: 1rem; width: auto; }
 }
+
+/* ==============================================================
+   Two-Wheeler view — KPI cards + supporting-data table.
+   Scoped under .tw- and #tw-main IDs so they cannot bleed into
+   the PV dashboard.
+   ============================================================== */
+#tw-main .tw-kpi-card {
+  background: #FFFFFF;
+  border: 1px solid #E5EAF1;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+#tw-main .tw-kpi-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6D28D9 0%, #7C3AED 100%);
+  opacity: 0.55;
+}
+.tw-kpi-label {
+  font-size: 11px;
+  color: #6B7280;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+}
+.tw-kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #102A43;
+  letter-spacing: -0.01em;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.tw-kpi-foot {
+  font-size: 10.5px;
+  color: #6B7280;
+  font-variant-numeric: tabular-nums;
+}
+.tw-kpi-delta {
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.tw-kpi-pill {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tw-kpi-pill-of-pos     { background: #E1F0E2; color: #2E7D32; }
+.tw-kpi-pill-of-neg     { background: #FBE3E3; color: #C62828; }
+.tw-kpi-pill-of-stable  { background: #EEF1F5; color: #475569; }
+.tw-kpi-pill-of-watch   { background: #FEF3C7; color: #92400E; }
+
+/* Supporting-data table */
+.tw-mtbl-scroll {
+  overflow-x: auto;
+}
+table.tw-mtbl {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: inherit;
+}
+.tw-mtbl thead th {
+  background: #F8FAFC;
+  border-bottom: 1px solid #E5EAF1;
+}
+.tw-mtbl-corner {
+  padding: 10px 12px;
+  width: 28%;
+  text-align: left;
+}
+.tw-mtbl-col-head {
+  padding: 10px 12px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: #475569;
+  text-align: left;
+  border-left: 1px solid #EEF1F5;
+  letter-spacing: 0.005em;
+  line-height: 1.25;
+}
+.tw-mtbl-row-head {
+  padding: 12px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  background: #FFFFFF;
+  border-top: 1px solid #EEF1F5;
+}
+.tw-mtbl-cell {
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1F2A37;
+  font-variant-numeric: tabular-nums;
+  border-top: 1px solid #EEF1F5;
+  border-left: 1px solid #EEF1F5;
+  text-align: left;
+  white-space: nowrap;
+}
+.tw-mtbl-prior {
+  color: #94A3B8;
+  font-weight: 500;
+}
+.tw-mtbl-curr {
+  color: #102A43;
+  font-weight: 700;
+}
+.tw-mtbl-pos { color: #2E7D32; }
+.tw-mtbl-neg { color: #C62828; }
+
+.tw-mtbl-select {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4F46E5;
+  background: #FFFFFF;
+  border: 1px solid #DDD0F2;
+  border-radius: 8px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16' fill='none' stroke='%236D28D9' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.tw-mtbl-select:focus {
+  outline: none;
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+}
+
+.tw-mtbl-foot {
+  padding: 10px 14px;
+  font-size: 10.5px;
+  color: #94A3B8;
+  background: #FCFCFD;
+  border-top: 1px solid #EEF1F5;
+  line-height: 1.5;
+}
+
+/* Read-label pills (Positive / Negative / Stable / Watch) */
+.tw-read {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+}
+.tw-read-pos    { background: #E1F0E2; color: #2E7D32; }
+.tw-read-neg    { background: #FBE3E3; color: #C62828; }
+.tw-read-stable { background: #EEF1F5; color: #475569; }
+.tw-read-watch  { background: #FEF3C7; color: #92400E; }

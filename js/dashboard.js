@@ -3230,20 +3230,33 @@
     state.segment = seg;
     closeSegmentMenu();
     const uc = $("#under-construction");
-    const main = document.querySelector("main");
+    const pvMain = document.querySelector("main:not(#tw-main)");
+    const twMain = document.getElementById("tw-main");
+
+    /* Always start by tearing down the secondary views; the active
+       branch will re-show the one it wants. */
+    uc.classList.remove("open");
+    setTimeout(() => uc.classList.add("hidden"), 300);
+    if (twMain) twMain.classList.add("hidden");
+    if (pvMain) pvMain.style.display = "none";
+
     if (seg === "PV") {
-      uc.classList.remove("open");
-      setTimeout(() => uc.classList.add("hidden"), 300);
-      if (main) main.style.display = "";
+      if (pvMain) pvMain.style.display = "";
       return;
     }
-    /* 2W / CV — show under-construction overlay. */
+    if (seg === "2W") {
+      if (twMain) twMain.classList.remove("hidden");
+      if (window.TwoWheeler && typeof window.TwoWheeler.show === "function") {
+        window.TwoWheeler.show();
+      }
+      return;
+    }
+    /* CV — under-construction overlay. */
     const meta = SEGMENT_META[seg];
     if (!meta) return;
     $("#uc-title").textContent = meta.title;
     $("#uc-sub").textContent   = meta.sub;
     $("#uc-icon").innerHTML    = meta.iconSvg;
-    if (main) main.style.display = "none";
     uc.classList.remove("hidden");
     requestAnimationFrame(() => uc.classList.add("open"));
   }

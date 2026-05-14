@@ -299,6 +299,76 @@
     </footer>
   </main>
 
+  <!-- ============== TWO-WHEELER VIEW ==============
+       Independent of the PV main above. The PV main stays
+       locked; switchSegment toggles visibility between the
+       two. CV still shows the under-construction overlay. -->
+  <main id="tw-main" class="hidden max-w-[1400px] mx-auto px-6 py-7 space-y-7 relative z-10">
+
+    <!-- Identity row -->
+    <section class="rounded-xl shadow-card overflow-hidden"
+             style="background: #F5F0FB; border: 1px solid #DDD0F2;">
+      <div class="px-6 py-3.5 flex items-center gap-5 flex-wrap">
+        <div id="tw-logo-mark" class="logo-mark logo-mark-header flex-shrink-0"></div>
+
+        <div class="flex-1 min-w-0">
+          <h1 id="tw-view-title" class="text-[20px] font-semibold text-navy leading-tight" style="letter-spacing:-0.012em;"></h1>
+          <p id="tw-view-subtitle" class="text-[11.5px] text-inkSoft mt-1" style="letter-spacing:0.015em;"></p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <label class="text-[10px] text-inkMuted uppercase tracking-wider font-semibold">Company</label>
+          <select id="tw-company-select" class="cat-select-inline" style="width:auto;min-width:170px"></select>
+        </div>
+
+        <div id="tw-fy-chip" class="fy-chip fy-chip-sm flex-shrink-0">
+          <span class="fy-chip-label">Latest</span>
+          <span class="fy-chip-value">FY25</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI strip (4-6 cards) -->
+    <section>
+      <div class="section-head">
+        <span class="section-eyebrow">Key Metrics</span>
+        <span class="section-hint">Buy-side snapshot · FY25 vs FY24</span>
+      </div>
+      <div id="tw-kpi-strip" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+    </section>
+
+    <!-- Supporting data: dropdown + table on left, chart on right -->
+    <section>
+      <div class="section-head">
+        <span class="section-eyebrow">Supporting data</span>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-6 gap-3 items-stretch">
+        <div class="bg-card rounded-xl shadow-card border border-line overflow-hidden flex flex-col lg:col-span-2">
+          <div id="tw-metric-table" class="flex-1 flex flex-col"></div>
+        </div>
+        <div id="tw-metric-chart-panel"
+             class="rounded-xl shadow-card border px-3 py-5 flex flex-col lg:col-span-4"
+             style="background: linear-gradient(180deg, #F8F4FC 0%, #FCFAFE 100%); border-color: #E2D7F2;">
+          <div class="flex items-baseline justify-between mb-1 px-2">
+            <h3 id="tw-metric-chart-title" class="text-[13px] font-semibold text-navy"></h3>
+            <span id="tw-metric-chart-current" class="text-[11px] text-inkMuted tabular-nums">FY25</span>
+          </div>
+          <p id="tw-metric-chart-help" class="text-[11px] text-inkMuted mb-3 px-2"></p>
+          <div id="tw-metric-chart" class="flex-1 min-h-[260px]"></div>
+          <div id="tw-metric-chart-legend" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-inkSoft mt-2 px-2"></div>
+          <p id="tw-metric-chart-foot" class="text-[10px] text-inkMuted mt-3 leading-snug px-2"></p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-[11px] text-inkMuted pt-2 pb-8 flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex flex-col gap-0.5">
+        <span>Buy-side research view · Two-Wheeler segment · Illustrative figures pending pipeline integration.</span>
+      </div>
+      <img src="assets/munshot-logo.png" alt="Munshot" class="h-7 opacity-55 flex-shrink-0">
+    </footer>
+  </main>
+
   <!-- ============== HOVER TIPS ============== -->
   <div id="hover-tip" class="hidden pointer-events-none fixed z-40 bg-navy text-white text-[11px] px-2 py-1 rounded shadow-lg">
     Click to view 10-year trend
@@ -560,5 +630,6 @@
   <script src="js/data-loader.js?v=20260511ap"></script>
   <script src="js/dashboard.js?v=20260511ap"></script>
   <script src="js/export.js?v=20260511ap"></script>
+  <script src="js/two-wheeler.js?v=20260514tw"></script>
 </body>
 </html>
