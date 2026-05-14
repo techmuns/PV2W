@@ -20,6 +20,7 @@ const DATA_PATH = path.join(__dirname, '..', 'data', 'config', 'placeholder_data
 
 const fetchers = {
   stock_prices:        process.env.STOCK_OUTCOME        || 'unknown',
+  stock_prices_2w:     process.env.STOCK_2W_OUTCOME     || 'unknown',
   maruti_press:        process.env.MARUTI_PRESS_OUTCOME || 'unknown',
   hyundai:             process.env.HYUNDAI_OUTCOME      || 'unknown',
   mm:                  process.env.MM_OUTCOME           || 'unknown',
