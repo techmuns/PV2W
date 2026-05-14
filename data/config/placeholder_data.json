@@ -22842,6 +22842,1016 @@
       "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
       "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
       "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Total Sales Volume",
+      "value": 2568000,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Motorcycle Volume",
+      "value": 1017000,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Scooter Volume",
+      "value": 813000,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Three-Wheeler Volume",
+      "value": 111000,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Export Volume",
+      "value": 454000,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Domestic Volume",
+      "value": 2114000,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Revenue (Rs Cr)",
+      "value": 11244,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "PAT (Rs Cr)",
+      "value": 432,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Export Volume %",
+      "value": 17.7,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Motorcycle Volume %",
+      "value": 39.6,
+      "source": "TVS Motor FY 2015-16 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Total Sales Volume",
+      "value": 2927000,
+      "source": "TVS Motor FY 2016-17 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Revenue (Rs Cr)",
+      "value": 13363,
+      "source": "TVS Motor FY 2016-17 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Total Sales Volume",
+      "value": 3466000,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Two-Wheeler Volume",
+      "value": 3367000,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Motorcycle Volume",
+      "value": 1356000,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Scooter Volume",
+      "value": 1135000,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Three-Wheeler Volume",
+      "value": 99000,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Revenue (Rs Cr)",
+      "value": 15274,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "EBITDA Margin %",
+      "value": 7.7,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "PAT (Rs Cr)",
+      "value": 663,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Motorcycle Volume %",
+      "value": 40.3,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Two-Wheeler Volume",
+      "value": 3757000,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Motorcycle Volume",
+      "value": 1559000,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Scooter Volume",
+      "value": 1301000,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Revenue (Rs Cr)",
+      "value": 18218,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "EBITDA Margin %",
+      "value": 7.9,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "PAT (Rs Cr)",
+      "value": 670,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Motorcycle Volume %",
+      "value": 41.5,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Motorcycle Volume",
+      "value": 1364000,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Scooter Volume",
+      "value": 1075000,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Three-Wheeler Volume",
+      "value": 174000,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Export Volume",
+      "value": 841000,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Revenue (Rs Cr)",
+      "value": 16423,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "EBITDA Margin %",
+      "value": 8.2,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Operating PBT (Rs Cr)",
+      "value": 754,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "PAT (Rs Cr)",
+      "value": 592,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Motorcycle Volume",
+      "value": 1342000,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Scooter Volume",
+      "value": 961000,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Three-Wheeler Volume",
+      "value": 124000,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Export Volume",
+      "value": 879000,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Revenue (Rs Cr)",
+      "value": 16751,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "EBITDA Margin %",
+      "value": 8.5,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Operating PBT (Rs Cr)",
+      "value": 826,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "PAT (Rs Cr)",
+      "value": 612,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Total Sales Volume",
+      "value": 3310000,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Motorcycle Volume",
+      "value": 1732000,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Scooter Volume",
+      "value": 923000,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "EV Volume",
+      "value": 11000,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Export Volume",
+      "value": 1253000,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Domestic Volume",
+      "value": 2057000,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Revenue (Rs Cr)",
+      "value": 20791,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "EBITDA Margin %",
+      "value": 9.4,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Operating PBT (Rs Cr)",
+      "value": 1243,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "PAT (Rs Cr)",
+      "value": 894,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Export Volume %",
+      "value": 37.9,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Motorcycle Volume %",
+      "value": 52.3,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "EV Mix %",
+      "value": 0.3,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "EV Volume %",
+      "value": 0.3,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Total Sales Volume",
+      "value": 3682000,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Motorcycle Volume",
+      "value": 1733000,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Scooter Volume",
+      "value": 1334000,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Three-Wheeler Volume",
+      "value": 169000,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "EV Volume",
+      "value": 97000,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Revenue (Rs Cr)",
+      "value": 26378,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "EBITDA Margin %",
+      "value": 10.1,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Operating PBT (Rs Cr)",
+      "value": 2003,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "PAT (Rs Cr)",
+      "value": 1491,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Motorcycle Volume %",
+      "value": 47.1,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "EV Mix %",
+      "value": 2.6,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "EV Volume %",
+      "value": 2.6,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "PAT (Rs Cr)",
+      "value": 2083,
+      "source": "TVS Motor FY 2024-25 annual press release (FY24 comparative column)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Three-Wheeler Volume",
+      "value": 135000,
+      "source": "TVS Motor FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "PAT (Rs Cr)",
+      "value": 2711,
+      "source": "TVS Motor FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Motorcycle Volume %",
+      "value": 46.1,
+      "source": "TVS Motor FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "EV Mix %",
+      "value": 6.3,
+      "source": "TVS Motor FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "EV Volume %",
+      "value": 6.3,
+      "source": "TVS Motor FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Volume Growth %",
+      "value": 14,
+      "source": "TVS Motor FY 2016-17 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Revenue Growth %",
+      "value": 18.8,
+      "source": "TVS Motor FY 2016-17 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Realisation Growth %",
+      "value": 4.3,
+      "source": "TVS Motor FY 2016-17 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Volume Growth %",
+      "value": 18.4,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Revenue Growth %",
+      "value": 14.3,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Realisation Growth %",
+      "value": -3.5,
+      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Volume Growth %",
+      "value": 11.6,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Revenue Growth %",
+      "value": 19.3,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "PAT Growth %",
+      "value": 1.1,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Realisation Growth %",
+      "value": 10,
+      "source": "TVS Motor FY 2018-19 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Revenue Growth %",
+      "value": -9.9,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "PAT Growth %",
+      "value": -11.6,
+      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Revenue Growth %",
+      "value": 2,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "PAT Growth %",
+      "value": 3.4,
+      "source": "TVS Motor FY 2020-21 annual press release",
+      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Revenue Growth %",
+      "value": 24.1,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "PAT Growth %",
+      "value": 46.1,
+      "source": "TVS Motor FY 2021-22 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-registers-highest-ever-turnover-and-profit-during-fy-2021-22",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Volume Growth %",
+      "value": 11.2,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Revenue Growth %",
+      "value": 26.9,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "PAT Growth %",
+      "value": 66.8,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Realisation Growth %",
+      "value": 14.1,
+      "source": "TVS Motor FY 2022-23 annual press release",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-company-achieves-record-revenue-and-profit-during-fy-2022-23",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Volume Growth %",
+      "value": 13.8,
+      "source": "TVS Motor FY 2024-25 annual press release (FY24 comparative column)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Revenue Growth %",
+      "value": 20.5,
+      "source": "TVS Motor FY 2024-25 annual press release (FY24 comparative column)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "PAT Growth %",
+      "value": 39.7,
+      "source": "TVS Motor FY 2024-25 annual press release (FY24 comparative column)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Realisation Growth %",
+      "value": 5.8,
+      "source": "TVS Motor FY 2024-25 annual press release (FY24 comparative column)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "PAT Growth %",
+      "value": 30.1,
+      "source": "TVS Motor FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
     }
   ]
 }
