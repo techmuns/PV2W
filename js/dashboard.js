@@ -3242,6 +3242,10 @@
 
     if (seg === "PV") {
       if (pvMain) pvMain.style.display = "";
+      /* If 2W had taken over the top header, restore PV chrome. */
+      if (window.TwoWheeler && typeof window.TwoWheeler.hide === "function") {
+        window.TwoWheeler.hide();
+      }
       return;
     }
     if (seg === "2W") {
@@ -3596,6 +3600,14 @@
     wire();
     renderAll();
     if (loader) loader.remove();
+
+    /* Header takeover hook for the 2W view. The 2W module owns the
+       header while its segment is active and calls back into this
+       refresher when the user returns to PV. */
+    window.PVDashboard = {
+      refreshHeader: renderTopBar,
+      refreshAll:    renderAll,
+    };
   }
 
   document.addEventListener("DOMContentLoaded", init);

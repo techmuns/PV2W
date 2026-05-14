@@ -484,7 +484,7 @@
   }
 
   /* ============================================================
-     IDENTITY ROW + COMPANY SELECT
+     IDENTITY ROW (in the 2W main body, below the header)
      ============================================================ */
   function renderIdentity() {
     const company = COMPANIES[state.companyKey];
@@ -500,20 +500,88 @@
     if (sub)   sub.textContent   = company.tag;
   }
 
-  function populateCompanySelect() {
-    const sel = document.getElementById("tw-company-select");
-    if (!sel) return;
-    sel.innerHTML = Object.entries(COMPANIES).map(([k, c]) =>
-      `<option value="${k}" ${k === state.companyKey ? "selected" : ""}>${c.name}</option>`
-    ).join("");
-    sel.addEventListener("change", () => {
-      state.companyKey = sel.value;
-      renderAll();
+  /* ============================================================
+     HEADER TAKEOVER
+     ------------------------------------------------------------
+     The top header is shared chrome. When 2W is active we
+     re-skin its label / badge / company dropdown, hide the
+     PV-only signal + freshness chips, and route the dropdown
+     change event to the 2W renderer. Returning to PV restores
+     everything by calling window.PVDashboard.refreshHeader().
+     ============================================================ */
+  let headerHandlerBound = false;
+  function headerCaptureHandler(e) {
+    /* Only intercept while 2W is the active segment; otherwise
+       let the PV dashboard's bubble-phase listener handle it. */
+    if (!state.active) return;
+    e.stopImmediatePropagation();
+    const sel = e.target;
+    if (!sel || !(sel.value in COMPANIES)) return;
+    state.companyKey = sel.value;
+    syncHeaderCompanyDot();
+    renderAll();
+  }
+
+  function syncHeaderCompanyDot() {
+    const company = COMPANIES[state.companyKey];
+    const dot = document.getElementById("hdr-brand-dot");
+    if (dot && company) dot.style.background = company.color;
+  }
+
+  function takeoverHeader() {
+    state.active = true;
+
+    const badge = document.getElementById("segment-badge-text");
+    if (badge) badge.textContent = "2W";
+    const titleSpan = document.getElementById("segment-title-text");
+    if (titleSpan) titleSpan.textContent = "Two-Wheeler Dashboard";
+
+    const fyLabel = document.getElementById("latest-fy-label");
+    if (fyLabel) fyLabel.textContent = "FY25";
+
+    const sel = document.getElementById("company-select");
+    if (sel) {
+      sel.innerHTML = Object.entries(COMPANIES).map(([k, c]) =>
+        `<option value="${k}" ${k === state.companyKey ? "selected" : ""}>${c.name}</option>`
+      ).join("");
+      if (!headerHandlerBound) {
+        /* Capturing-phase so we run before PV's bubble-phase
+           change listener and can stopImmediatePropagation it
+           cleanly. */
+        sel.addEventListener("change", headerCaptureHandler, true);
+        headerHandlerBound = true;
+      }
+    }
+    syncHeaderCompanyDot();
+
+    /* Hide PV-only header indicators while 2W is active. */
+    ["hdr-signal-wrap", "hdr-updated-wrap", "hdr-data-wrap", "stale-warning"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
     });
   }
 
+  function restoreHeader() {
+    state.active = false;
+    const badge = document.getElementById("segment-badge-text");
+    if (badge) badge.textContent = "PV";
+    const titleSpan = document.getElementById("segment-title-text");
+    if (titleSpan) titleSpan.textContent = "PV Industry Dashboard";
+
+    ["hdr-signal-wrap", "hdr-updated-wrap", "hdr-data-wrap"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("hidden");
+    });
+    /* stale-warning is conditionally re-shown by PV's refreshHeader,
+       so we let that toggle it back rather than force-show it here. */
+
+    if (window.PVDashboard && typeof window.PVDashboard.refreshHeader === "function") {
+      window.PVDashboard.refreshHeader();
+    }
+  }
+
   /* ============================================================
-     ENTRY POINT
+     ENTRY POINTS
      ============================================================ */
   function renderAll() {
     renderIdentity();
@@ -523,12 +591,13 @@
   }
 
   function show() {
-    if (!state.initialized) {
-      populateCompanySelect();
-      state.initialized = true;
-    }
+    takeoverHeader();
     renderAll();
   }
 
-  window.TwoWheeler = { show };
+  function hide() {
+    restoreHeader();
+  }
+
+  window.TwoWheeler = { show, hide };
 })();

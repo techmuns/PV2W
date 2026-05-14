@@ -85,12 +85,12 @@
               aria-haspopup="menu" aria-expanded="false" aria-controls="segment-menu"
               title="Switch segment">
         <div class="w-10 h-10 rounded-md bg-white/15 backdrop-blur-sm flex items-center justify-center font-bold text-[15px] tracking-tight border border-white/20 relative">
-          <span>PV</span>
-          <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#6D28D9]" style="background:#34D399;"></span>
+          <span id="segment-badge-text">PV</span>
+          <span id="segment-badge-dot" class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#6D28D9]" style="background:#34D399;"></span>
         </div>
         <div class="leading-tight text-left">
           <div class="flex items-center gap-1.5">
-            <span class="text-white font-semibold text-[16px] tracking-tight">PV Industry Dashboard</span>
+            <span id="segment-title-text" class="text-white font-semibold text-[16px] tracking-tight">PV Industry Dashboard</span>
             <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/70 segment-switcher-chev" aria-hidden="true">
               <path d="M4 6l4 4 4-4"/>
             </svg>
@@ -114,17 +114,17 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2 pl-4 border-l border-white/15">
+      <div id="hdr-signal-wrap" class="flex items-center gap-2 pl-4 border-l border-white/15">
         <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Signal</span>
         <span id="overall-signal" class="text-xs font-semibold px-2.5 py-0.5 rounded-full"></span>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div id="hdr-updated-wrap" class="flex items-center gap-2">
         <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Updated</span>
         <span id="last-updated" class="text-xs text-white/85 font-medium"></span>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div id="hdr-data-wrap" class="flex items-center gap-2">
         <span class="text-[10px] text-white/55 uppercase tracking-wider font-medium">Data</span>
         <span id="freshness-badge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full"></span>
       </div>
@@ -314,11 +314,6 @@
         <div class="flex-1 min-w-0">
           <h1 id="tw-view-title" class="text-[20px] font-semibold text-navy leading-tight" style="letter-spacing:-0.012em;"></h1>
           <p id="tw-view-subtitle" class="text-[11.5px] text-inkSoft mt-1" style="letter-spacing:0.015em;"></p>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <label class="text-[10px] text-inkMuted uppercase tracking-wider font-semibold">Company</label>
-          <select id="tw-company-select" class="cat-select-inline" style="width:auto;min-width:170px"></select>
         </div>
 
         <div id="tw-fy-chip" class="fy-chip fy-chip-sm flex-shrink-0">
