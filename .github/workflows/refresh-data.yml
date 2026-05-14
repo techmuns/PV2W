@@ -106,6 +106,21 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-2w-stock.mjs
 
+      # 2W press-release fetcher — one unified step covering all six
+      # listed 2W OEMs (TVS / Bajaj / Eicher / Hero / Ola / Ather).
+      # Each OEM is wrapped in its own try/catch inside the script;
+      # the IR URL config lives in the SOURCES map at the top of
+      # scripts/fetch-2w-press.mjs (single place to update when an
+      # OEM reshuffles its investor-relations site). Writes into
+      # the `segment_metrics` block in placeholder_data.json:
+      #   Total/Domestic/Export Volume, Net Sales, Revenue, EBITDA,
+      #   EBITDA Margin %, PAT — plus derived Volume Growth %,
+      #   Revenue Growth %, Realisation Growth %, Export Volume %.
+      - name: 2W press releases — all six listed OEMs (best-effort)
+        id: press_2w
+        continue-on-error: true
+        run: node scripts/fetch-2w-press.mjs
+
       # NOTE: scripts/fetch-maruti.mjs (Yahoo Finance quoteSummary) is
       # disabled — Yahoo's API rate-limits GitHub Actions runner IPs,
       # and the press-release fetcher below already covers Net Sales,
@@ -217,6 +232,7 @@ jobs:
         env:
           STOCK_OUTCOME:        ${{ steps.stock.outcome }}
           STOCK_2W_OUTCOME:     ${{ steps.stock_2w.outcome }}
+          PRESS_2W_OUTCOME:     ${{ steps.press_2w.outcome }}
           MARUTI_PRESS_OUTCOME: ${{ steps.maruti_press.outcome }}
           HYUNDAI_OUTCOME:      ${{ steps.hyundai.outcome }}
           MM_OUTCOME:           ${{ steps.mm.outcome }}
