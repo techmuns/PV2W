@@ -135,6 +135,14 @@
     const vehicleMetrics  = (placeholder.vehicle_fy_metrics  || []).map(r => ({ ...r }));
     const buysideSignals  = (placeholder.buyside_signals     || []).map(r => ({ ...r }));
     const companyInfo     = (placeholder.company_info        || []).map(r => ({ ...r }));
+    /* Segment-aware metric rows in the canonical schema described in
+       data/config/segments_config.json._dataSchema:
+         { segment_id, company, fiscal_year, metric, value,
+           source_url, last_updated }
+       Populated incrementally by per-segment fetchers (e.g.
+       scripts/fetch-2w-stock.mjs). Empty array is the legitimate
+       starting state — non-PV cells fall back to placeholder copy. */
+    const segmentMetrics  = (placeholder.segment_metrics     || []).map(r => ({ ...r }));
     const industryMetrics = (placeholder.industry_fy_metrics || []).map(r => ({ ...r }));
 
     overlayLogos(companyInfo, logoMap);
@@ -186,6 +194,7 @@
       BuySide_Signals:     buysideSignals,
       Company_Info:        companyInfo,
       Industry_FY_Metrics: industryMetrics,
+      Segment_Metrics:     segmentMetrics,
       _meta:               placeholder._meta || null,
     };
 
