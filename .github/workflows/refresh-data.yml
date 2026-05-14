@@ -234,8 +234,15 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       # ────────── commit & push ──────────
+      # Pushes back to whichever branch the workflow was triggered on
+      # (the checkout step above already left us on that branch). On
+      # the daily cron that's main; on workflow_dispatch it's whatever
+      # branch the user selected — which is how we populate data on
+      # feature branches without touching main.
       - name: Commit + push if changed
         run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Target branch: $BRANCH"
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config pull.rebase true
@@ -246,15 +253,15 @@ jobs:
           fi
           git commit -m "data: auto-refresh ($(date -u +'%Y-%m-%d %H:%M UTC'))"
           # Rebase-and-push retry — handles the race where another
-          # commit landed on main between the workflow's checkout
-          # and this push step. Up to 4 attempts with backoff.
+          # commit landed on the target branch between checkout and
+          # this push step. Up to 4 attempts with backoff.
           for i in 1 2 3 4; do
-            if git push origin main; then
+            if git push origin "HEAD:$BRANCH"; then
               echo "pushed on attempt $i"
               exit 0
             fi
             echo "push rejected on attempt $i — pulling --rebase and retrying"
-            git pull --rebase origin main || { echo "rebase failed"; exit 1; }
+            git pull --rebase origin "$BRANCH" || { echo "rebase failed"; exit 1; }
             sleep $((i * 2))
           done
           echo "push failed after 4 attempts"
