@@ -22431,5 +22431,417 @@
       "derived_financials": "success"
     },
     "run_url": "https://github.com/techmuns/neha/actions/runs/25753066657"
-  }
+  },
+  "segment_metrics": [
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Total Sales Volume",
+      "value": 4191000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Two-Wheeler Volume",
+      "value": 3851000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Motorcycle Volume",
+      "value": 1990000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Scooter Volume",
+      "value": 1570000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "EV Volume",
+      "value": 194000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Export Volume",
+      "value": 1013000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Domestic Volume",
+      "value": 3178000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Revenue (Rs Cr)",
+      "value": 31776,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "EBITDA Margin %",
+      "value": 11.1,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Export Volume %",
+      "value": 24.2,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Motorcycle Volume %",
+      "value": 51.7,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "EV Mix %",
+      "value": 5,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "EV Volume %",
+      "value": 5,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Total Sales Volume",
+      "value": 4744000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Two-Wheeler Volume",
+      "value": 4330000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Motorcycle Volume",
+      "value": 2195000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Scooter Volume",
+      "value": 1904000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "EV Volume",
+      "value": 279000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Export Volume",
+      "value": 1195000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Domestic Volume",
+      "value": 3549000,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Revenue (Rs Cr)",
+      "value": 36251,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "EBITDA Margin %",
+      "value": 12.3,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Operating PBT (Rs Cr)",
+      "value": 3563,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Export Volume %",
+      "value": 25.2,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Motorcycle Volume %",
+      "value": 50.7,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "EV Mix %",
+      "value": 6.4,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "EV Volume %",
+      "value": 6.4,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Total Sales Volume",
+      "value": 5889000,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Motorcycle Volume",
+      "value": 2713000,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Scooter Volume",
+      "value": 2413000,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "EV Volume",
+      "value": 371000,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Three-Wheeler Volume",
+      "value": 219000,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Revenue (Rs Cr)",
+      "value": 47270,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "EBITDA Margin %",
+      "value": 12.9,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Operating PBT (Rs Cr)",
+      "value": 4975,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Volume Growth %",
+      "value": 13.2,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Revenue Growth %",
+      "value": 14.1,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Realisation Growth %",
+      "value": 0.8,
+      "source": "TVS Motor Company FY 2024-25 annual press release (28 Apr 2025)",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Volume Growth %",
+      "value": 24.1,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Revenue Growth %",
+      "value": 30.4,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Realisation Growth %",
+      "value": 5,
+      "source": "TVS Motor Company FY 2025-26 annual press release (14 May 2026)",
+      "source_url": "https://www.tvsmotor.com/media-centre/press-releases",
+      "last_updated": "2026-05-14"
+    }
+  ]
 }
