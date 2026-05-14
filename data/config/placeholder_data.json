@@ -26325,6 +26325,226 @@
       "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
       "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "CEO",
+      "value": "K N Radhakrishnan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "CFO",
+      "value": "K Gopala Desikan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Chairman",
+      "value": "Sir Ralf Speth",
+      "source": "TVS Motor Annual Reports FY23-FY25 — Sir Ralf Speth, Chairman",
+      "source_url": "https://www.tvsmotor.com/annual-report",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Capacity (units)",
+      "value": 6400000,
+      "source": "TVS Motor manufacturing capacity — Hosur + Mysore + Nalagarh plants (Indian + Indonesian press coverage of plant expansions)",
+      "source_url": "https://www.autocarindia.com/bike-news/tvs-motor-to-add-15-million-units-of-manufacturing-capacity-in-next-12-months-439728",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "CEO",
+      "value": "K N Radhakrishnan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "CFO",
+      "value": "K Gopala Desikan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Chairman",
+      "value": "Sir Ralf Speth",
+      "source": "TVS Motor Annual Reports FY23-FY25 — Sir Ralf Speth, Chairman",
+      "source_url": "https://www.tvsmotor.com/annual-report",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Capacity (units)",
+      "value": 6400000,
+      "source": "TVS Motor manufacturing capacity — Hosur + Mysore + Nalagarh plants (Indian + Indonesian press coverage of plant expansions)",
+      "source_url": "https://www.autocarindia.com/bike-news/tvs-motor-to-add-15-million-units-of-manufacturing-capacity-in-next-12-months-439728",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Market Share %",
+      "value": 18.9,
+      "source": "CARE Ratings rationale (June 2025) — domestic 2W market share, ICE + EV",
+      "source_url": "https://www.careratings.com/upload/CompanyFiles/PR/202506140657_TVS_Motor_Company_Limited.pdf",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "EV Market Share %",
+      "value": 19.3,
+      "source": "CARE Ratings rationale (June 2025) — domestic 2W market share, ICE + EV",
+      "source_url": "https://www.careratings.com/upload/CompanyFiles/PR/202506140657_TVS_Motor_Company_Limited.pdf",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "CEO",
+      "value": "K N Radhakrishnan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "CFO",
+      "value": "K Gopala Desikan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Chairman",
+      "value": "Sir Ralf Speth",
+      "source": "TVS Motor Annual Reports FY23-FY25 — Sir Ralf Speth, Chairman",
+      "source_url": "https://www.tvsmotor.com/annual-report",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Credit Rating",
+      "value": "CARE AA+ / Stable",
+      "source": "CARE Ratings — TVS Motor Company Limited: CARE AA+; Stable / CARE A1+",
+      "source_url": "https://www.careratings.com/upload/CompanyFiles/PR/202506140657_TVS_Motor_Company_Limited.pdf",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Capacity (units)",
+      "value": 6400000,
+      "source": "TVS Motor manufacturing capacity — Hosur + Mysore + Nalagarh plants (Indian + Indonesian press coverage of plant expansions)",
+      "source_url": "https://www.autocarindia.com/bike-news/tvs-motor-to-add-15-million-units-of-manufacturing-capacity-in-next-12-months-439728",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Market Share %",
+      "value": 19.4,
+      "source": "CARE Ratings rationale (June 2025) — domestic 2W market share, ICE + EV",
+      "source_url": "https://www.careratings.com/upload/CompanyFiles/PR/202506140657_TVS_Motor_Company_Limited.pdf",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "EV Market Share %",
+      "value": 20.7,
+      "source": "CARE Ratings rationale (June 2025) — domestic 2W market share, ICE + EV",
+      "source_url": "https://www.careratings.com/upload/CompanyFiles/PR/202506140657_TVS_Motor_Company_Limited.pdf",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "CEO",
+      "value": "K N Radhakrishnan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "CFO",
+      "value": "K Gopala Desikan",
+      "source": "TVS Motor board of directors + KMP filings (CEO disclosures, CFO appointments)",
+      "source_url": "https://www.tvsmotor.com/about-us/board-of-directors",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "MD",
+      "value": "Sudarshan Venu",
+      "source": "TVS Motor PR — Sudarshan Venu appointed Chairman effective 25 Aug 2025",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-sudarshan-venu-appointed-chairman-august-2025",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Chairman",
+      "value": "Sudarshan Venu",
+      "source": "TVS Motor PR — Sudarshan Venu appointed Chairman effective 25 Aug 2025",
+      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-sudarshan-venu-appointed-chairman-august-2025",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Capacity (units)",
+      "value": 6800000,
+      "source": "TVS Motor manufacturing capacity — Hosur + Mysore + Nalagarh plants (Indian + Indonesian press coverage of plant expansions)",
+      "source_url": "https://www.autocarindia.com/bike-news/tvs-motor-to-add-15-million-units-of-manufacturing-capacity-in-next-12-months-439728",
+      "last_updated": "2026-05-14"
     }
   ]
 }
