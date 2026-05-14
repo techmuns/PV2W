@@ -54,10 +54,15 @@ const TWO_W_TICKERS = {
   "Ather Energy":  "ATHERENERG.NS",
 };
 
-/* Pull the same FY window as the PV fetcher. Ola listed Aug 2024
-   and Ather listed Aug 2024, so FY23/FY24 attempts will return
-   "no March close in window" for those tickers and be skipped. */
-const FY_LIST = ["FY23", "FY24", "FY25"];
+/* Full 10-year FY window so the dashboard's FY16-FY25 history fills
+   in for the four long-listed OEMs (TVS / Bajaj Auto / Eicher / Hero
+   MotoCorp). Ola Electric listed Aug 2024 and Ather Energy listed
+   Aug 2024, so any pre-FY25 March close lookup for those tickers
+   returns "no March close in window" and is gracefully skipped. */
+const FY_LIST = [
+  "FY16","FY17","FY18","FY19","FY20",
+  "FY21","FY22","FY23","FY24","FY25",
+];
 
 const fyToMarchYear = (fy) => 2000 + parseInt(fy.replace(/^FY/, ""), 10);
 

@@ -86,6 +86,21 @@ jobs:
       # subsidiaries and have no public share price. Writes into the
       # new `segment_metrics` block in placeholder_data.json per the
       # schema documented in data/config/segments_config.json.
+      #
+      # Coverage: full FY16-FY25 history (10 years × 4 long-listed OEMs
+      # = 40 cells; Ola/Ather only post-IPO FY25). Pre-IPO years return
+      # "no March close in window" and are skipped gracefully.
+      #
+      # ROADMAP — additional 2W fetchers (not yet implemented):
+      #   • TVS / Bajaj / Eicher / Hero monthly volume press releases
+      #     (mirror scripts/fetch-maruti-press.mjs pattern — each OEM
+      #     publishes a Mar / FY-total sales PDF on its investor site).
+      #   • SIAM 2W industry totals + segment mix (extend
+      #     scripts/fetch-industry.mjs with 2W tables).
+      #   • Annual revenue / EBITDA / margins — Yahoo quoteSummary is
+      #     rate-limited from Actions runners (see PV-side note on
+      #     fetch-maruti.mjs). Best path is per-OEM annual-report
+      #     fetchers, same as the PV Screener / Tickertape stack.
       - name: 2W stock prices (Yahoo Finance / NSE)
         id: stock_2w
         continue-on-error: true
