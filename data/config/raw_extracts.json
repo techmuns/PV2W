@@ -7,35 +7,35 @@
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "sales_volume_domestic": {
         "value": 1793644,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "sales_volume_export": {
         "value": 283067,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "net_sales_cr": {
         "value": 134938,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-announces-financial-results-for-fy2023-24",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pat_cr": {
         "value": 13209,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-announces-financial-results-for-fy2023-24",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "FY25": {
@@ -44,39 +44,39 @@
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "sales_volume_domestic": {
         "value": 1795259,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "sales_volume_export": {
         "value": 332585,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "net_sales_cr": {
         "value": 145115,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pat_cr": {
         "value": 13955,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-12T18:08:31.299Z",
+      "fetched_at": "2026-05-14T18:27:40.290Z",
       "source_url": "https://www.screener.in/company/MARUTI/consolidated/",
       "basis": "Maruti Suzuki India consolidated annual P&L + cash flow",
       "by_fy": {
@@ -324,7 +324,7 @@
       "problems": []
     },
     "Tickertape": {
-      "fetched_at": "2026-05-12T18:08:35.192Z",
+      "fetched_at": "2026-05-14T18:27:44.436Z",
       "source_url": "https://www.tickertape.in/stocks/maruti-suzuki-india-MARU",
       "by_fy": {},
       "problems": [
@@ -332,41 +332,12 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-12T18:08:41.693Z",
+      "fetched_at": "2026-05-14T18:27:47.502Z",
       "source_url": "https://www.moneycontrol.com/financials/marutisuzukiindia/balance-sheetVI/MS24",
-      "by_fy": {
-        "FY26": {
-          "receivables_cr": 5336,
-          "inventory_cr": 11314.7,
-          "payables_cr": 22131.4,
-          "cash_bank_cr": 1576.4
-        },
-        "FY25": {
-          "receivables_cr": 6537.7,
-          "inventory_cr": 5123,
-          "payables_cr": 17421.1,
-          "cash_bank_cr": 446.4
-        },
-        "FY24": {
-          "receivables_cr": 4601.3,
-          "inventory_cr": 4119.6,
-          "payables_cr": 14582.4,
-          "cash_bank_cr": 460
-        },
-        "FY23": {
-          "receivables_cr": 3295.8,
-          "inventory_cr": 4283.8,
-          "payables_cr": 11780.4,
-          "cash_bank_cr": 37.7
-        },
-        "FY22": {
-          "receivables_cr": 2030.1,
-          "inventory_cr": 3533.1,
-          "payables_cr": 9761,
-          "cash_bank_cr": 3036.2
-        }
-      },
-      "problems": []
+      "by_fy": {},
+      "problems": [
+        "no BS sub-lines parsed"
+      ]
     }
   },
   "Hyundai": {
@@ -377,7 +348,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "export_volume": {
         "value": 599,
@@ -393,7 +364,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "ebitda_margin_pct": {
         "value": 13.1,
@@ -401,7 +372,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pat_cr": {
         "value": 6060,
@@ -409,7 +380,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "FY25": {
@@ -419,7 +390,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "export_volume": {
         "value": 163000,
@@ -427,7 +398,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "suv_mix_pct": {
         "value": 68.5,
@@ -435,7 +406,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "revenue_cr": {
         "value": 69193,
@@ -443,7 +414,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "ebitda_margin_pct": {
         "value": 12.9,
@@ -451,7 +422,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pat_cr": {
         "value": 5640,
@@ -459,7 +430,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "domestic_volume": {
         "value": 599000,
@@ -467,11 +438,11 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-12T18:08:25.893Z",
+      "fetched_at": "2026-05-14T18:27:36.849Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
@@ -480,7 +451,7 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-05-12T18:08:32.312Z",
+      "fetched_at": "2026-05-14T18:27:41.393Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -632,41 +603,12 @@
       "problems": []
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-12T18:08:43.780Z",
+      "fetched_at": "2026-05-14T18:27:47.888Z",
       "source_url": "https://www.moneycontrol.com/financials/hyundaimotorindia/balance-sheetVI/HMI01",
-      "by_fy": {
-        "FY26": {
-          "receivables_cr": 2016.78,
-          "inventory_cr": 3593.51,
-          "payables_cr": 7071.11,
-          "cash_bank_cr": 10042.67
-        },
-        "FY25": {
-          "receivables_cr": 2241.4,
-          "inventory_cr": 3404.36,
-          "payables_cr": 6972.62,
-          "cash_bank_cr": 8135.35
-        },
-        "FY24": {
-          "receivables_cr": 2288.31,
-          "inventory_cr": 3315.63,
-          "payables_cr": 7269.39,
-          "cash_bank_cr": 8657.9
-        },
-        "FY23": {
-          "receivables_cr": 2802.72,
-          "inventory_cr": 3422.41,
-          "payables_cr": 7366.14,
-          "cash_bank_cr": 17493.21
-        },
-        "FY22": {
-          "receivables_cr": 2149.09,
-          "inventory_cr": 2881.12,
-          "payables_cr": 5398.59,
-          "cash_bank_cr": 13965.84
-        }
-      },
-      "problems": []
+      "by_fy": {},
+      "problems": [
+        "no BS sub-lines parsed"
+      ]
     }
   },
   "M&M": {
@@ -685,7 +627,7 @@
         "scope": "Auto segment",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/mm-results-q4-fy24-and-fy24",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "FY25": {
@@ -695,7 +637,7 @@
         "scope": "Consolidated",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "consol_pat_cr": {
         "value": 12929,
@@ -703,7 +645,7 @@
         "scope": "Consolidated",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "auto_revenue_cr": {
         "value": 90825,
@@ -711,7 +653,7 @@
         "scope": "Auto segment",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "suv_volume": {
         "value": 551487,
@@ -719,11 +661,11 @@
         "scope": "Auto segment",
         "source": "M&M monthly auto sales PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mahindra-auto-sells-48048-SUVs-a-growth-of-18-percents-and-total-volumes-of-83894-a-growth-of-23-percents-in-march-2025",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-12T18:08:24.622Z",
+      "fetched_at": "2026-05-14T18:27:36.052Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
@@ -1029,7 +971,7 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-05-12T18:08:28.216Z",
+      "fetched_at": "2026-05-14T18:27:37.867Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
@@ -1038,41 +980,12 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-12T18:08:46.242Z",
+      "fetched_at": "2026-05-14T18:27:48.292Z",
       "source_url": "https://www.moneycontrol.com/financials/mahindramahindra/balance-sheetVI/MM",
-      "by_fy": {
-        "FY26": {
-          "receivables_cr": 6485.75,
-          "inventory_cr": 10305.86,
-          "payables_cr": 29499.9,
-          "cash_bank_cr": 18479.91
-        },
-        "FY25": {
-          "receivables_cr": 5725.57,
-          "inventory_cr": 10333.34,
-          "payables_cr": 23405.77,
-          "cash_bank_cr": 10790.55
-        },
-        "FY24": {
-          "receivables_cr": 4549.46,
-          "inventory_cr": 9504.82,
-          "payables_cr": 18591.95,
-          "cash_bank_cr": 5525.92
-        },
-        "FY23": {
-          "receivables_cr": 4041.73,
-          "inventory_cr": 8881.35,
-          "payables_cr": 17145.62,
-          "cash_bank_cr": 4481.75
-        },
-        "FY22": {
-          "receivables_cr": 3035.11,
-          "inventory_cr": 5882.85,
-          "payables_cr": 12893.54,
-          "cash_bank_cr": 3650.53
-        }
-      },
-      "problems": []
+      "by_fy": {},
+      "problems": [
+        "no BS sub-lines parsed"
+      ]
     }
   },
   "Tata Motors PV": {
@@ -1083,7 +996,7 @@
         "scope": "Tata PV segment",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "consol_revenue_cr": {
         "value": 437900,
@@ -1091,7 +1004,7 @@
         "scope": "Consolidated",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "consol_pat_cr": {
         "value": 31800,
@@ -1099,7 +1012,7 @@
         "scope": "Consolidated",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pv_ebitda_margin": {
         "value": 6.5,
@@ -1107,7 +1020,7 @@
         "scope": "Tata PV segment",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pv_ebit_margin": {
         "value": 2,
@@ -1115,7 +1028,7 @@
         "scope": "Tata PV segment",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy24-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "FY25": {
@@ -1125,7 +1038,7 @@
         "scope": "Tata PV segment",
         "source": "Tata Motors Q4/FY sales PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-registered-total-sales-of-252642-units-in-q4-fy25/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pv_revenue_cr": {
         "value": 48445,
@@ -1133,7 +1046,7 @@
         "scope": "Tata PV segment",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pv_ebitda_margin": {
         "value": 6.9,
@@ -1141,7 +1054,7 @@
         "scope": "Tata PV segment",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "pv_ebit_margin": {
         "value": 0.9,
@@ -1149,7 +1062,7 @@
         "scope": "Tata PV segment",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "consol_revenue_cr": {
         "value": 439700,
@@ -1157,7 +1070,7 @@
         "scope": "Consolidated",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       },
       "consol_pat_cr": {
         "value": 28100,
@@ -1165,11 +1078,11 @@
         "scope": "Consolidated",
         "source": "Tata Motors Q4/FY results PR",
         "source_url": "https://www.tatamotors.com/press-releases/tata-motors-consolidated-q4-fy25-results/",
-        "last_updated": "2026-05-12"
+        "last_updated": "2026-05-14"
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-12T18:08:29.492Z",
+      "fetched_at": "2026-05-14T18:27:38.283Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [
@@ -1178,38 +1091,294 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-12T18:08:49.214Z",
+      "fetched_at": "2026-05-14T18:27:48.726Z",
       "source_url": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
+      "by_fy": {},
+      "problems": [
+        "no BS sub-lines parsed"
+      ]
+    }
+  },
+  "_2w_press_last_run": {
+    "at": "2026-05-14T18:27:04.559Z",
+    "summary": [
+      {
+        "company": "TVS",
+        "writes": 0,
+        "ok": true
+      },
+      {
+        "company": "Bajaj Auto",
+        "writes": 0,
+        "ok": true
+      },
+      {
+        "company": "Eicher Motors",
+        "writes": 0,
+        "ok": true
+      },
+      {
+        "company": "Hero MotoCorp",
+        "writes": 7,
+        "ok": true
+      },
+      {
+        "company": "Ola Electric",
+        "writes": 0,
+        "ok": true
+      },
+      {
+        "company": "Ather Energy",
+        "writes": 0,
+        "ok": true
+      }
+    ]
+  },
+  "TVS": {
+    "Screener": {
+      "fetched_at": "2026-05-14T18:27:42.487Z",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "basis": "TVS Motor Company consolidated annual P&L + balance sheet + cash flow",
       "by_fy": {
-        "FY25": {
-          "receivables_cr": 2280,
-          "inventory_cr": 3154,
-          "payables_cr": 13267,
-          "cash_bank_cr": 1601
+        "FY15": {
+          "sales_cr": 10256,
+          "expenses_cr": 9650,
+          "ebitda_cr": 605,
+          "ebitda_margin_pct": 6,
+          "interest_cr": 62,
+          "depreciation_cr": 179,
+          "pbt_cr": 444,
+          "tax_pct": 28,
+          "pat_cr": 328,
+          "equity_capital_cr": 48,
+          "reserves_cr": 1277,
+          "borrowings_cr": 1119,
+          "fixed_assets_cr": 1637,
+          "investments_cr": 539,
+          "total_assets_cr": 4570,
+          "cfo_cr": 83,
+          "investing_cr": -415,
+          "cff_cr": 261
         },
-        "FY24": {
-          "receivables_cr": 2765.16,
-          "inventory_cr": 3470.38,
-          "payables_cr": 8826.46,
-          "cash_bank_cr": 5150.96
+        "FY16": {
+          "sales_cr": 11377,
+          "expenses_cr": 10558,
+          "ebitda_cr": 819,
+          "ebitda_margin_pct": 7,
+          "interest_cr": 70,
+          "depreciation_cr": 262,
+          "pbt_cr": 580,
+          "tax_pct": 26,
+          "pat_cr": 429,
+          "equity_capital_cr": 48,
+          "reserves_cr": 1771,
+          "borrowings_cr": 1091,
+          "fixed_assets_cr": 2038,
+          "investments_cr": 943,
+          "total_assets_cr": 5146,
+          "cfo_cr": 936,
+          "investing_cr": -605,
+          "cff_cr": -319
         },
-        "FY23": {
-          "receivables_cr": 2307.72,
-          "inventory_cr": 3027.9,
-          "payables_cr": 7162.6,
-          "cash_bank_cr": 1414.65
+        "FY17": {
+          "sales_cr": 12463,
+          "expenses_cr": 11591,
+          "ebitda_cr": 871,
+          "ebitda_margin_pct": 7,
+          "interest_cr": 60,
+          "depreciation_cr": 317,
+          "pbt_cr": 658,
+          "tax_pct": 23,
+          "pat_cr": 509,
+          "equity_capital_cr": 48,
+          "reserves_cr": 2169,
+          "borrowings_cr": 1311,
+          "fixed_assets_cr": 2362,
+          "investments_cr": 1155,
+          "total_assets_cr": 6128,
+          "cfo_cr": 689,
+          "investing_cr": -709,
+          "cff_cr": -59
         },
-        "FY22": {
-          "receivables_cr": 2111.78,
-          "inventory_cr": 3718.49,
-          "payables_cr": 6102.1,
-          "cash_bank_cr": 2605.43
+        "FY18": {
+          "sales_cr": 16340,
+          "expenses_cr": 14769,
+          "ebitda_cr": 1571,
+          "ebitda_margin_pct": 10,
+          "interest_cr": 338,
+          "depreciation_cr": 374,
+          "pbt_cr": 931,
+          "tax_pct": 29,
+          "pat_cr": 665,
+          "equity_capital_cr": 48,
+          "reserves_cr": 2630,
+          "borrowings_cr": 6928,
+          "fixed_assets_cr": 3094,
+          "investments_cr": 421,
+          "total_assets_cr": 13190,
+          "cfo_cr": 354,
+          "investing_cr": -1095,
+          "cff_cr": 897
+        },
+        "FY19": {
+          "sales_cr": 20160,
+          "expenses_cr": 17997,
+          "ebitda_cr": 2163,
+          "ebitda_margin_pct": 11,
+          "interest_cr": 663,
+          "depreciation_cr": 442,
+          "pbt_cr": 1083,
+          "tax_pct": 33,
+          "pat_cr": 725,
+          "equity_capital_cr": 48,
+          "reserves_cr": 3123,
+          "borrowings_cr": 9298,
+          "fixed_assets_cr": 3367,
+          "investments_cr": 440,
+          "total_assets_cr": 16696,
+          "cfo_cr": -918,
+          "investing_cr": -1104,
+          "cff_cr": 2210
+        },
+        "FY20": {
+          "sales_cr": 18849,
+          "expenses_cr": 16585,
+          "ebitda_cr": 2264,
+          "ebitda_margin_pct": 12,
+          "interest_cr": 855,
+          "depreciation_cr": 556,
+          "pbt_cr": 865,
+          "tax_pct": 25,
+          "pat_cr": 647,
+          "equity_capital_cr": 48,
+          "reserves_cr": 3235,
+          "borrowings_cr": 11591,
+          "fixed_assets_cr": 3811,
+          "investments_cr": 371,
+          "total_assets_cr": 19272,
+          "cfo_cr": 373,
+          "investing_cr": -1090,
+          "cff_cr": 1619
         },
         "FY21": {
-          "receivables_cr": 2087.51,
-          "inventory_cr": 4551.71,
-          "payables_cr": 8115.01,
-          "cash_bank_cr": 4318.94
+          "sales_cr": 19421,
+          "expenses_cr": 17189,
+          "ebitda_cr": 2232,
+          "ebitda_margin_pct": 11,
+          "interest_cr": 881,
+          "depreciation_cr": 565,
+          "pbt_cr": 822,
+          "tax_pct": 26,
+          "pat_cr": 608,
+          "equity_capital_cr": 48,
+          "reserves_cr": 3779,
+          "borrowings_cr": 12179,
+          "fixed_assets_cr": 4221,
+          "investments_cr": 468,
+          "total_assets_cr": 21865,
+          "cfo_cr": 1151,
+          "investing_cr": -882,
+          "cff_cr": 264
+        },
+        "FY22": {
+          "sales_cr": 24355,
+          "expenses_cr": 21601,
+          "ebitda_cr": 2755,
+          "ebitda_margin_pct": 11,
+          "interest_cr": 940,
+          "depreciation_cr": 743,
+          "pbt_cr": 1067,
+          "tax_pct": 31,
+          "pat_cr": 731,
+          "equity_capital_cr": 48,
+          "reserves_cr": 4352,
+          "borrowings_cr": 15827,
+          "fixed_assets_cr": 5975,
+          "investments_cr": 605,
+          "total_assets_cr": 26919,
+          "cfo_cr": -1575,
+          "investing_cr": -1471,
+          "cff_cr": 2918
+        },
+        "FY23": {
+          "sales_cr": 31974,
+          "expenses_cr": 27947,
+          "ebitda_cr": 4027,
+          "ebitda_margin_pct": 13,
+          "interest_cr": 1368,
+          "depreciation_cr": 859,
+          "pbt_cr": 1936,
+          "tax_pct": 32,
+          "pat_cr": 1309,
+          "equity_capital_cr": 48,
+          "reserves_cr": 5457,
+          "borrowings_cr": 22376,
+          "fixed_assets_cr": 5748,
+          "investments_cr": 967,
+          "total_assets_cr": 35025,
+          "cfo_cr": -4405,
+          "investing_cr": -1308,
+          "cff_cr": 6118
+        },
+        "FY24": {
+          "sales_cr": 38779,
+          "expenses_cr": 33344,
+          "ebitda_cr": 5435,
+          "ebitda_margin_pct": 14,
+          "interest_cr": 1917,
+          "depreciation_cr": 956,
+          "pbt_cr": 2693,
+          "tax_pct": 34,
+          "pat_cr": 1779,
+          "equity_capital_cr": 48,
+          "reserves_cr": 6736,
+          "borrowings_cr": 26006,
+          "fixed_assets_cr": 5891,
+          "investments_cr": 1123,
+          "total_assets_cr": 42024,
+          "cfo_cr": -1253,
+          "investing_cr": -1481,
+          "cff_cr": 3239
+        },
+        "FY25": {
+          "sales_cr": 44089,
+          "expenses_cr": 37514,
+          "ebitda_cr": 6575,
+          "ebitda_margin_pct": 15,
+          "interest_cr": 2093,
+          "depreciation_cr": 1046,
+          "pbt_cr": 3535,
+          "tax_pct": 33,
+          "pat_cr": 2380,
+          "equity_capital_cr": 48,
+          "reserves_cr": 8456,
+          "borrowings_cr": 28609,
+          "fixed_assets_cr": 7644,
+          "investments_cr": 1247,
+          "total_assets_cr": 47651,
+          "cfo_cr": 3503,
+          "investing_cr": -2899,
+          "cff_cr": 1155
+        },
+        "FY26": {
+          "sales_cr": 56070,
+          "expenses_cr": 47717,
+          "ebitda_cr": 8352,
+          "ebitda_margin_pct": 15,
+          "interest_cr": 2230,
+          "depreciation_cr": 1273,
+          "pbt_cr": 4822,
+          "tax_pct": 34,
+          "pat_cr": 3186,
+          "equity_capital_cr": 48,
+          "reserves_cr": 9517,
+          "borrowings_cr": 32791,
+          "fixed_assets_cr": 10200,
+          "investments_cr": 1147,
+          "total_assets_cr": 56501,
+          "cfo_cr": 1867,
+          "investing_cr": -2964,
+          "cff_cr": 909
         }
       },
       "problems": []

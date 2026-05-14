@@ -9160,7 +9160,7 @@
       "Signal": "Positive",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow",
       "Source_URL": "https://www.screener.in/company/M%26M/consolidated/",
-      "Last_Updated": "2026-05-12"
+      "Last_Updated": "2026-05-14"
     },
     {
       "FY": "FY25",
@@ -21008,7 +21008,7 @@
       "Dealers": 4235,
       "Source": "KMP per https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MARUTI.html · Dealers / employees per https://www.marutisuzuki.com/corporate/investors/financial-and-other-information/annual-reports",
       "Source_URL": "https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management",
-      "Last_Updated": "2026-05-12"
+      "Last_Updated": "2026-05-14"
     },
     {
       "FY": "FY25",
@@ -21021,7 +21021,7 @@
       "Dealers": 1419,
       "Source": "KMP per https://www.hyundai.com/in/en/about-us/our-leaders · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.HYUNDAIMOTORINDIA.html · Dealers / employees per https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
       "Source_URL": "https://www.hyundai.com/in/en/about-us/our-leaders",
-      "Last_Updated": "2026-05-12"
+      "Last_Updated": "2026-05-14"
     },
     {
       "FY": "FY25",
@@ -21034,7 +21034,7 @@
       "Dealers": 1500,
       "Source": "KMP per https://www.mahindra.com/about-us/management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MAHINDRAANDMAHINDRA.html · Dealers / employees per https://www.mahindra.com/investor-relations/annual-reports",
       "Source_URL": "https://www.mahindra.com/about-us/management",
-      "Last_Updated": "2026-05-12"
+      "Last_Updated": "2026-05-14"
     },
     {
       "FY": "FY25",
@@ -21047,7 +21047,7 @@
       "Dealers": 1500,
       "Source": "KMP per https://www.tatamotors.com/board-management/ · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.TATAMOTORS.html · Dealers / employees per https://www.tatamotors.com/investors/annual-reports/",
       "Source_URL": "https://www.tatamotors.com/board-management/",
-      "Last_Updated": "2026-05-12"
+      "Last_Updated": "2026-05-14"
     },
     {
       "FY": "FY24",
@@ -22411,10 +22411,12 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-12T18:08:49.518Z",
+    "last_refresh": "2026-05-14T18:27:49.089Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
+      "stock_prices_2w": "success",
+      "press_2w": "success",
       "maruti_press": "success",
       "hyundai": "success",
       "mm": "success",
@@ -22428,9 +22430,10 @@
       "seed_volumes": "success",
       "maruti_filings": "success",
       "hyundai_filings": "success",
+      "tvs_filings": "success",
       "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25753066657"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25877797592"
   },
   "segment_metrics": [
     {
@@ -23018,9 +23021,9 @@
       "company": "TVS",
       "fiscal_year": "FY18",
       "metric": "Revenue (Rs Cr)",
-      "value": 15274,
-      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
-      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "value": 16340,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
     },
     {
@@ -23028,9 +23031,9 @@
       "company": "TVS",
       "fiscal_year": "FY18",
       "metric": "EBITDA Margin %",
-      "value": 7.7,
-      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
-      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "value": 10,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
     },
     {
@@ -23038,9 +23041,9 @@
       "company": "TVS",
       "fiscal_year": "FY18",
       "metric": "PAT (Rs Cr)",
-      "value": 663,
-      "source": "TVS Motor FY 2017-18 results — cited via FY 2018-19 PR comparative column",
-      "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-companys-revenue-grew-by-193percent-operating-ebitda-grew-by-22percent-total-sales-grew-by-129percent-in-fy-2018-19",
+      "value": 665,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
     },
     {
@@ -23168,9 +23171,9 @@
       "company": "TVS",
       "fiscal_year": "FY20",
       "metric": "Revenue (Rs Cr)",
-      "value": 16423,
-      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
-      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "value": 18849,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
     },
     {
@@ -23178,9 +23181,9 @@
       "company": "TVS",
       "fiscal_year": "FY20",
       "metric": "EBITDA Margin %",
-      "value": 8.2,
-      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
-      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "value": 12,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
     },
     {
@@ -23198,9 +23201,9 @@
       "company": "TVS",
       "fiscal_year": "FY20",
       "metric": "PAT (Rs Cr)",
-      "value": 592,
-      "source": "TVS Motor FY 2019-20 results — cited via FY 2020-21 PR comparative column",
-      "source_url": "https://www.tvsmotor.com/investors/financial-reports",
+      "value": 647,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
     },
     {
@@ -23851,6 +23854,2476 @@
       "value": 30.1,
       "source": "TVS Motor FY 2024-25 annual press release (28 Apr 2025)",
       "source_url": "https://www.tvsmotor.com/media/press-release/tvs-motor-records-highest-ever-sales",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Stock Price (31-Mar)",
+      "value": 322.8,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2016-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Stock Price (31-Mar)",
+      "value": 430.8,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2017-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Stock Price (31-Mar)",
+      "value": 619.3,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2018-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Stock Price (31-Mar)",
+      "value": 471.5,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2019-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Stock Price (31-Mar)",
+      "value": 297.55,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2020-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Stock Price (31-Mar)",
+      "value": 585.05,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2021-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Stock Price (31-Mar)",
+      "value": 625.65,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2022-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Stock Price (31-Mar)",
+      "value": 1077.2,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2023-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2151.85,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2024-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2419.85,
+      "source_url": "https://finance.yahoo.com/quote/TVSMOTOR.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2025-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY16",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2405.95,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2016-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY17",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2805.45,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2017-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY18",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2744.7,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2018-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY19",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2948.8,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2019-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY20",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2022.35,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2020-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY21",
+      "metric": "Stock Price (31-Mar)",
+      "value": 3670.6,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2021-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY22",
+      "metric": "Stock Price (31-Mar)",
+      "value": 3653,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2022-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY23",
+      "metric": "Stock Price (31-Mar)",
+      "value": 3884.75,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2023-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY24",
+      "metric": "Stock Price (31-Mar)",
+      "value": 9148.15,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2024-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Bajaj Auto",
+      "fiscal_year": "FY25",
+      "metric": "Stock Price (31-Mar)",
+      "value": 7878.85,
+      "source_url": "https://finance.yahoo.com/quote/BAJAJ-AUTO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2025-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY16",
+      "metric": "Stock Price (31-Mar)",
+      "value": 1918.06,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2016-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY17",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2558.75,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2017-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY18",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2837.26,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2018-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY19",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2089.9,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2019-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY20",
+      "metric": "Stock Price (31-Mar)",
+      "value": 1309.59,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2020-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY21",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2603.95,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2021-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY22",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2457.15,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2022-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY23",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2948.85,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2023-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY24",
+      "metric": "Stock Price (31-Mar)",
+      "value": 4019.3,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2024-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Eicher Motors",
+      "fiscal_year": "FY25",
+      "metric": "Stock Price (31-Mar)",
+      "value": 5347.7,
+      "source_url": "https://finance.yahoo.com/quote/EICHERMOT.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2025-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY16",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2945.7,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2016-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY17",
+      "metric": "Stock Price (31-Mar)",
+      "value": 3221.95,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2017-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY18",
+      "metric": "Stock Price (31-Mar)",
+      "value": 3542.8,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2018-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY19",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2525.75,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2019-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY20",
+      "metric": "Stock Price (31-Mar)",
+      "value": 1596.45,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2020-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY21",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2913.6,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2021-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY22",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2294.15,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2022-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY23",
+      "metric": "Stock Price (31-Mar)",
+      "value": 2347.35,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2023-03-31"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY24",
+      "metric": "Stock Price (31-Mar)",
+      "value": 4722.3,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2024-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY25",
+      "metric": "Stock Price (31-Mar)",
+      "value": 3722.95,
+      "source_url": "https://finance.yahoo.com/quote/HEROMOTOCO.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2025-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Ola Electric",
+      "fiscal_year": "FY25",
+      "metric": "Stock Price (31-Mar)",
+      "value": 53.05,
+      "source_url": "https://finance.yahoo.com/quote/OLAELEC.NS/history",
+      "last_updated": "2026-05-14",
+      "note": "Yahoo Finance NSE close on 2025-03-28"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY24",
+      "metric": "Revenue (Rs Cr)",
+      "value": 1856,
+      "source": "Hero MotoCorp investor relations",
+      "source_url": "https://www.heromotocorp.com/en-in/investors/financial-results.html",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY24",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 1401,
+      "source": "Hero MotoCorp investor relations",
+      "source_url": "https://www.heromotocorp.com/en-in/investors/financial-results.html",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY24",
+      "metric": "EBITDA Margin %",
+      "value": 75.5,
+      "source": "Hero MotoCorp investor relations",
+      "source_url": "https://www.heromotocorp.com/en-in/investors/financial-results.html",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY25",
+      "metric": "Revenue (Rs Cr)",
+      "value": 1856,
+      "source": "Hero MotoCorp investor relations",
+      "source_url": "https://www.heromotocorp.com/en-in/investors/financial-results.html",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY25",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 1401,
+      "source": "Hero MotoCorp investor relations",
+      "source_url": "https://www.heromotocorp.com/en-in/investors/financial-results.html",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY25",
+      "metric": "EBITDA Margin %",
+      "value": 75.5,
+      "source": "Hero MotoCorp investor relations",
+      "source_url": "https://www.heromotocorp.com/en-in/investors/financial-results.html",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "Hero MotoCorp",
+      "fiscal_year": "FY25",
+      "metric": "Revenue Growth %",
+      "value": 0,
+      "source": "Hero MotoCorp investor relations",
+      "source_url": "https://www.heromotocorp.com/en-in/investors/financial-results.html",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Revenue (Rs Cr)",
+      "value": 10256,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 605,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "EBITDA Margin %",
+      "value": 6,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Interest (Rs Cr)",
+      "value": 62,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 179,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "PBT (Rs Cr)",
+      "value": 444,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Tax %",
+      "value": 28,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "PAT (Rs Cr)",
+      "value": 328,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 1119,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Reserves (Rs Cr)",
+      "value": 1277,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 1637,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Investments (Rs Cr)",
+      "value": 539,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 4570,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "CFO (Rs Cr)",
+      "value": 83,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "CFI (Rs Cr)",
+      "value": -415,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Capex (Rs Cr)",
+      "value": 415,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "CFF (Rs Cr)",
+      "value": 261,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "PAT Margin %",
+      "value": 3.2,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY15",
+      "metric": "Capex Intensity %",
+      "value": 4,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 819,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "EBITDA Margin %",
+      "value": 7,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Interest (Rs Cr)",
+      "value": 70,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 262,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "PBT (Rs Cr)",
+      "value": 580,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Tax %",
+      "value": 26,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 1091,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Reserves (Rs Cr)",
+      "value": 1771,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 2038,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Investments (Rs Cr)",
+      "value": 943,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 5146,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "CFO (Rs Cr)",
+      "value": 936,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "CFI (Rs Cr)",
+      "value": -605,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Capex (Rs Cr)",
+      "value": 605,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "CFF (Rs Cr)",
+      "value": -319,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "PAT Margin %",
+      "value": 3.8,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY16",
+      "metric": "Capex Intensity %",
+      "value": 5.3,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 871,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "EBITDA Margin %",
+      "value": 7,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Interest (Rs Cr)",
+      "value": 60,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 317,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "PBT (Rs Cr)",
+      "value": 658,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Tax %",
+      "value": 23,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "PAT (Rs Cr)",
+      "value": 509,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 1311,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Reserves (Rs Cr)",
+      "value": 2169,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 2362,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Investments (Rs Cr)",
+      "value": 1155,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 6128,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "CFO (Rs Cr)",
+      "value": 689,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "CFI (Rs Cr)",
+      "value": -709,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Capex (Rs Cr)",
+      "value": 709,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "CFF (Rs Cr)",
+      "value": -59,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "PAT Margin %",
+      "value": 4.1,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY17",
+      "metric": "Capex Intensity %",
+      "value": 5.7,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 1571,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Interest (Rs Cr)",
+      "value": 338,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 374,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "PBT (Rs Cr)",
+      "value": 931,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Tax %",
+      "value": 29,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 6928,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Reserves (Rs Cr)",
+      "value": 2630,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 3094,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Investments (Rs Cr)",
+      "value": 421,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 13190,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "CFO (Rs Cr)",
+      "value": 354,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "CFI (Rs Cr)",
+      "value": -1095,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Capex (Rs Cr)",
+      "value": 1095,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "CFF (Rs Cr)",
+      "value": 897,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "PAT Margin %",
+      "value": 4.1,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY18",
+      "metric": "Capex Intensity %",
+      "value": 6.7,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 2163,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Interest (Rs Cr)",
+      "value": 663,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 442,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "PBT (Rs Cr)",
+      "value": 1083,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Tax %",
+      "value": 33,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 9298,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Reserves (Rs Cr)",
+      "value": 3123,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 3367,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Investments (Rs Cr)",
+      "value": 440,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 16696,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "CFO (Rs Cr)",
+      "value": -918,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "CFI (Rs Cr)",
+      "value": -1104,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Capex (Rs Cr)",
+      "value": 1104,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "CFF (Rs Cr)",
+      "value": 2210,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "PAT Margin %",
+      "value": 3.6,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY19",
+      "metric": "Capex Intensity %",
+      "value": 5.5,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 2264,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Interest (Rs Cr)",
+      "value": 855,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 556,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "PBT (Rs Cr)",
+      "value": 865,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Tax %",
+      "value": 25,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 11591,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Reserves (Rs Cr)",
+      "value": 3235,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 3811,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Investments (Rs Cr)",
+      "value": 371,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 19272,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "CFO (Rs Cr)",
+      "value": 373,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "CFI (Rs Cr)",
+      "value": -1090,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Capex (Rs Cr)",
+      "value": 1090,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "CFF (Rs Cr)",
+      "value": 1619,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "PAT Margin %",
+      "value": 3.4,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY20",
+      "metric": "Capex Intensity %",
+      "value": 5.8,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 2232,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Interest (Rs Cr)",
+      "value": 881,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 565,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "PBT (Rs Cr)",
+      "value": 822,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Tax %",
+      "value": 26,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 12179,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Reserves (Rs Cr)",
+      "value": 3779,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 4221,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Investments (Rs Cr)",
+      "value": 468,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 21865,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "CFO (Rs Cr)",
+      "value": 1151,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "CFI (Rs Cr)",
+      "value": -882,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Capex (Rs Cr)",
+      "value": 882,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "CFF (Rs Cr)",
+      "value": 264,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "PAT Margin %",
+      "value": 3.1,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY21",
+      "metric": "Capex Intensity %",
+      "value": 4.5,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 2755,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Interest (Rs Cr)",
+      "value": 940,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 743,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "PBT (Rs Cr)",
+      "value": 1067,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Tax %",
+      "value": 31,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 15827,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Reserves (Rs Cr)",
+      "value": 4352,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 5975,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Investments (Rs Cr)",
+      "value": 605,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 26919,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "CFO (Rs Cr)",
+      "value": -1575,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "CFI (Rs Cr)",
+      "value": -1471,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Capex (Rs Cr)",
+      "value": 1471,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "CFF (Rs Cr)",
+      "value": 2918,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "PAT Margin %",
+      "value": 3,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY22",
+      "metric": "Capex Intensity %",
+      "value": 6,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 4027,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Interest (Rs Cr)",
+      "value": 1368,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 859,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "PBT (Rs Cr)",
+      "value": 1936,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Tax %",
+      "value": 32,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 22376,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Reserves (Rs Cr)",
+      "value": 5457,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 5748,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Investments (Rs Cr)",
+      "value": 967,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 35025,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "CFO (Rs Cr)",
+      "value": -4405,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "CFI (Rs Cr)",
+      "value": -1308,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Capex (Rs Cr)",
+      "value": 1308,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "CFF (Rs Cr)",
+      "value": 6118,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "PAT Margin %",
+      "value": 4.1,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY23",
+      "metric": "Capex Intensity %",
+      "value": 4.1,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 5435,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Interest (Rs Cr)",
+      "value": 1917,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 956,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "PBT (Rs Cr)",
+      "value": 2693,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Tax %",
+      "value": 34,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 26006,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Reserves (Rs Cr)",
+      "value": 6736,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 5891,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Investments (Rs Cr)",
+      "value": 1123,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 42024,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "CFO (Rs Cr)",
+      "value": -1253,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "CFI (Rs Cr)",
+      "value": -1481,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Capex (Rs Cr)",
+      "value": 1481,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "CFF (Rs Cr)",
+      "value": 3239,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "PAT Margin %",
+      "value": 4.6,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY24",
+      "metric": "Capex Intensity %",
+      "value": 3.8,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 6575,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Interest (Rs Cr)",
+      "value": 2093,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 1046,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "PBT (Rs Cr)",
+      "value": 3535,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Tax %",
+      "value": 33,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 28609,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Reserves (Rs Cr)",
+      "value": 8456,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 7644,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Investments (Rs Cr)",
+      "value": 1247,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 47651,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "CFO (Rs Cr)",
+      "value": 3503,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "CFI (Rs Cr)",
+      "value": -2899,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Capex (Rs Cr)",
+      "value": 2899,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "CFF (Rs Cr)",
+      "value": 1155,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "PAT Margin %",
+      "value": 5.4,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY25",
+      "metric": "Capex Intensity %",
+      "value": 6.6,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "EBITDA (Rs Cr)",
+      "value": 8352,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Interest (Rs Cr)",
+      "value": 2230,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Depreciation (Rs Cr)",
+      "value": 1273,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "PBT (Rs Cr)",
+      "value": 4822,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Tax %",
+      "value": 34,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "PAT (Rs Cr)",
+      "value": 3186,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Borrowings (Rs Cr)",
+      "value": 32791,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Reserves (Rs Cr)",
+      "value": 9517,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Fixed Assets (Rs Cr)",
+      "value": 10200,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Investments (Rs Cr)",
+      "value": 1147,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Total Assets (Rs Cr)",
+      "value": 56501,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "CFO (Rs Cr)",
+      "value": 1867,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "CFI (Rs Cr)",
+      "value": -2964,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Capex (Rs Cr)",
+      "value": 2964,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "CFF (Rs Cr)",
+      "value": 909,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "PAT Margin %",
+      "value": 5.7,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
+      "last_updated": "2026-05-14"
+    },
+    {
+      "segment_id": "2W",
+      "company": "TVS",
+      "fiscal_year": "FY26",
+      "metric": "Capex Intensity %",
+      "value": 5.3,
+      "source": "TVS Motor Company — Screener.in consolidated annual P&L / balance sheet / cash flow",
+      "source_url": "https://www.screener.in/company/TVSMOTOR/consolidated/",
       "last_updated": "2026-05-14"
     }
   ]
