@@ -36,11 +36,18 @@
       "companies":     ["Industry", "TVS", "Bajaj Auto", "Eicher Motors", "Hero MotoCorp", "Ola Electric", "Ather Energy", "Honda", "Yamaha", "Suzuki"],
       "defaultCompany":"Industry",
       "industryKpis":  ["Total 2W Volume", "2W Volume Growth %", "EV Share %", "Scooter Share %", "Export Share %", "Top Gaining OEM"],
-      "oemKpis":       ["Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %", "EV Mix %", "Export Mix %", "Stock Price (31-Mar)"],
+      "oemKpis":       ["Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %", "Realisation Growth %", "Gross Margin %", "EV Mix %", "Stock Price (31-Mar)"],
       "vehicleCards":  ["Motorcycles", "Scooters", "EV 2W", "Premium Bikes", "Exports", "Rural Demand"],
       "chart1Title":   "Selected OEM growth vs 2W industry growth",
       "chart2Title":   "Motorcycle / Scooter / EV / Export mix",
-      "tabs":          ["Growth", "Margins", "Mix", "Operations", "Product", "Governance"],
+      "tabs":          ["Overview", "Growth & Profitability", "Mix & Segments", "Operations & Network", "Corporate & Market"],
+      "tabMetrics": {
+        "Overview":                ["Market Share %", "Volume Growth %", "Revenue Growth %", "EBITDA Margin %", "Realisation Growth %", "Gross Margin %", "EV Mix %", "Stock Price (31-Mar)"],
+        "Growth & Profitability":  ["Revenue Growth %", "Volume Growth %", "Realisation Growth %", "Gross Margin %", "EBITDA Margin %", "Market Share %"],
+        "Mix & Segments":          ["Export Volume %", "Export Revenue %", "EV Volume %", "EV Revenue %", "Motorcycle Volume %", "Motorcycle Revenue %", "CC-wise Volume", "CC-wise Market Share", "Premiumisation Signal"],
+        "Operations & Network":    ["Capacity (units)", "Capacity Utilisation %", "Capex (Rs Cr)", "Working Capital Days", "Dealers", "Employees"],
+        "Corporate & Market":      ["CEO", "CFO", "COO", "Stock Price (31-Mar)", "Credit Rating", "New Model Launches", "Facelift Launches", "Top Selling Model"]
+      },
       "dataReady":     false
     },
     "CV": {
