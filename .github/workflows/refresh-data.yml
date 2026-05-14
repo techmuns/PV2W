@@ -191,6 +191,11 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-hyundai-screener.mjs
 
+      - name: TVS Motor Screener.in financials (2W segment, best-effort)
+        id: tvs_screener
+        continue-on-error: true
+        run: node scripts/fetch-tvs-screener.mjs
+
       - name: Tickertape balance-sheet sub-lines (best-effort)
         id: tickertape
         continue-on-error: true
@@ -246,6 +251,7 @@ jobs:
           TATA_SCREENER_OUTCOME:  ${{ steps.tata_screener.outcome }}
           MARUTI_SCREENER_OUTCOME:  ${{ steps.maruti_screener.outcome }}
           HYUNDAI_SCREENER_OUTCOME: ${{ steps.hyundai_screener.outcome }}
+          TVS_SCREENER_OUTCOME:     ${{ steps.tvs_screener.outcome }}
           DERIVE_FINANCIALS_OUTCOME: ${{ steps.derive_financials.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 

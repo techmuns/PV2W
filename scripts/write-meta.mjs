@@ -35,6 +35,7 @@ const fetchers = {
   seed_volumes:        process.env.SEED_VOLUMES_OUTCOME   || 'unknown',
   maruti_filings:      process.env.MARUTI_SCREENER_OUTCOME  || 'unknown',
   hyundai_filings:     process.env.HYUNDAI_SCREENER_OUTCOME || 'unknown',
+  tvs_filings:         process.env.TVS_SCREENER_OUTCOME     || 'unknown',
   derived_financials:  process.env.DERIVE_FINANCIALS_OUTCOME || 'unknown',
 };
 
