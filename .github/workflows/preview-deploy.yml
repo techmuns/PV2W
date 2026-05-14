@@ -1,0 +1,84 @@
+# Preview deploy for feature branches.
+#
+# Why this exists
+# ───────────────
+# Cloudflare Pages / Workers doesn't auto-deploy feature branches
+# unless you wire it up. This workflow does the wiring: every push
+# to any branch other than `main` runs `wrangler deploy --env preview`,
+# which publishes a fresh build to the `neha-preview` Worker
+# (configured in wrangler.toml).
+#
+# Then it posts the preview URL as a commit comment so non-technical
+# reviewers can click straight through from the GitHub UI — no CLI,
+# no Cloudflare dashboard, no `npm install`.
+#
+# One-time setup (must be done in GitHub UI, not here)
+# ────────────────────────────────────────────────────
+# Repo → Settings → Secrets and variables → Actions → New secret:
+#
+#   CLOUDFLARE_API_TOKEN
+#     Create at https://dash.cloudflare.com/profile/api-tokens
+#     using the "Edit Cloudflare Workers" template, scoped to the
+#     account that hosts the `neha` Worker.
+#
+#   CLOUDFLARE_ACCOUNT_ID
+#     The Account ID shown on the right-hand sidebar of any page in
+#     the Cloudflare dashboard.
+#
+# After both secrets exist, push any commit to a feature branch and
+# the preview URL will appear as a comment on the commit + Actions
+# tab summary.
+
+name: Preview deploy (feature branches)
+
+on:
+  push:
+    branches-ignore:
+      - main
+    # Skip the bot's own data-refresh commits — no UI implications
+    # and they fire every day.
+    paths-ignore:
+      - 'data/config/placeholder_data.json'
+      - 'data/config/raw_extracts.json'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Deploy to Cloudflare preview env
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --env preview
+
+      - name: Post preview URL as commit comment
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = `${{ steps.deploy.outputs.deployment-url }}`
+              || 'https://neha-preview.workers.dev (check Cloudflare dash for exact subdomain)';
+            const branch = context.ref.replace('refs/heads/', '');
+            await github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              commit_sha: context.sha,
+              body: `Preview deployed for **${branch}** → ${url}\n\nThis URL serves the latest commit on this branch. It updates every time you push.`,
+            });
