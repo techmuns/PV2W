@@ -9155,12 +9155,12 @@
       "FY": "FY25",
       "Company": "M&M",
       "Metric": "Revenue Growth %",
-      "Value": 19.3,
+      "Value": 14.5,
       "YoY_Change": -3,
       "Signal": "Positive",
-      "Source": "M&M Q4 + FY results PR (Auto segment)",
-      "Source_URL": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
-      "Last_Updated": "2026-05-14"
+      "Source": "Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow",
+      "Source_URL": "https://www.screener.in/company/M%26M/consolidated/",
+      "Last_Updated": "2026-05-15"
     },
     {
       "FY": "FY25",
@@ -19094,6 +19094,50 @@
       "Source": "Tata Motors Ltd — annual reports + quarterly investor presentations",
       "Source_URL": "https://www.tatamotors.com/investors/",
       "Last_Updated": "2025-12-01"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Tata Motors PV",
+      "Metric": "Receivables (Rs Cr)",
+      "Value": 454,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Moneycontrol — Tata Motors PV balance sheet sub-lines",
+      "Source_URL": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
+      "Last_Updated": "2026-05-15"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Tata Motors PV",
+      "Metric": "Inventory (Rs Cr)",
+      "Value": 3261,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Moneycontrol — Tata Motors PV balance sheet sub-lines",
+      "Source_URL": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
+      "Last_Updated": "2026-05-15"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Tata Motors PV",
+      "Metric": "Payables (Rs Cr)",
+      "Value": 10462,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Moneycontrol — Tata Motors PV balance sheet sub-lines",
+      "Source_URL": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
+      "Last_Updated": "2026-05-15"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Tata Motors PV",
+      "Metric": "Cash (Rs Cr)",
+      "Value": 4466,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Moneycontrol — Tata Motors PV balance sheet sub-lines",
+      "Source_URL": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
+      "Last_Updated": "2026-05-15"
     }
   ],
   "vehicle_fy_metrics": [
@@ -21008,7 +21052,7 @@
       "Dealers": 4235,
       "Source": "KMP per https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MARUTI.html · Dealers / employees per https://www.marutisuzuki.com/corporate/investors/financial-and-other-information/annual-reports",
       "Source_URL": "https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management",
-      "Last_Updated": "2026-05-14"
+      "Last_Updated": "2026-05-15"
     },
     {
       "FY": "FY25",
@@ -21021,7 +21065,7 @@
       "Dealers": 1419,
       "Source": "KMP per https://www.hyundai.com/in/en/about-us/our-leaders · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.HYUNDAIMOTORINDIA.html · Dealers / employees per https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
       "Source_URL": "https://www.hyundai.com/in/en/about-us/our-leaders",
-      "Last_Updated": "2026-05-14"
+      "Last_Updated": "2026-05-15"
     },
     {
       "FY": "FY25",
@@ -21034,7 +21078,7 @@
       "Dealers": 1500,
       "Source": "KMP per https://www.mahindra.com/about-us/management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MAHINDRAANDMAHINDRA.html · Dealers / employees per https://www.mahindra.com/investor-relations/annual-reports",
       "Source_URL": "https://www.mahindra.com/about-us/management",
-      "Last_Updated": "2026-05-14"
+      "Last_Updated": "2026-05-15"
     },
     {
       "FY": "FY25",
@@ -21047,7 +21091,7 @@
       "Dealers": 1500,
       "Source": "KMP per https://www.tatamotors.com/board-management/ · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.TATAMOTORS.html · Dealers / employees per https://www.tatamotors.com/investors/annual-reports/",
       "Source_URL": "https://www.tatamotors.com/board-management/",
-      "Last_Updated": "2026-05-14"
+      "Last_Updated": "2026-05-15"
     },
     {
       "FY": "FY24",
@@ -22411,7 +22455,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-05-14T11:23:26.665Z",
+    "last_refresh": "2026-05-15T11:34:04.783Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -22430,6 +22474,6 @@
       "hyundai_filings": "success",
       "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/25857307500"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/25915581335"
   }
 }
