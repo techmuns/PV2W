@@ -56,6 +56,11 @@
          best view (bars when units align, table otherwise); explicit
          clicks on the Table | Bars toggle pin the choice until Reset. */
       snapshotView: "auto",  // "auto" | "table" | "bars"
+      /* Which basis the Bars snapshot renders against. "value" is the
+         selected-FY absolute level (default); "yoy" / "period" pivot
+         the bars to the corresponding delta. Indexed view forces
+         "value" regardless. */
+      barsBasis: "value",    // "value" | "yoy" | "period"
     },
     /* Segment switcher — PV is the only live module today. 2W / CV
        open the under-construction overlay (no real data wired up). */
@@ -1951,6 +1956,7 @@
           fyTo:      null,
           view:      "actual",
           snapshotView: "auto",
+          barsBasis: "value",
         };
         _explorerColorAssigned.clear();
         _explorerPaletteCursor = 0;
@@ -1971,6 +1977,20 @@
       });
       btn.dataset.wired = "1";
     });
+
+    /* Bars-basis selector (Absolute Value | YoY Δ | Period Δ). The
+       buttons are re-rendered inside #chart2 every snapshot pass, so
+       attach a delegated listener once at the container level. */
+    const chart2El = $("#chart2");
+    if (chart2El && !chart2El.dataset.basisWired) {
+      chart2El.addEventListener("click", (ev) => {
+        const btn = ev.target.closest(".bars-basis-btn");
+        if (!btn || btn.disabled) return;
+        state.explorer.barsBasis = btn.getAttribute("data-bars-basis");
+        renderIndustryExplorer();
+      });
+      chart2El.dataset.basisWired = "1";
+    }
 
     explorerSyncToolbarUI();
   }
@@ -2288,18 +2308,92 @@
     return { effective, barsAllowed, tooMany, sameUnit, indexed, forcedReason, units };
   }
 
-  function _explorerFmtDelta(def, cur, base) {
+  /* Per-registry-entry flag: true for "growth-rate" metrics (Volume
+     Growth %, Revenue Growth %, Realisation Growth %). These display
+     with an explicit +/− sign on the level value so analysts can tell
+     the SELECTED FY rate apart from a SHARE/MARGIN level. */
+  const _EXPLORER_GROWTH_METRIC_KEYS = new Set([
+    "volumeGrowth", "revenueGrowth", "realisationGrowth",
+  ]);
+
+  /* Format an absolute level for one snapshot cell.
+     - format pct + growth metric → "+4.6%" (signed)
+     - format pct                 → "57.0%"
+     - format lakh                → "0.64 lakh units"
+     - format rsCr                → "₹1,234 Cr"
+     - format count               → "4,235"
+     Indexed-view values arrive pre-normalised and use a "112.4" shape. */
+  function _explorerSnapshotLevelText(def, rawVal, indexedVal) {
+    if (indexedVal != null) {
+      return `${indexedVal.toFixed(1)}`;
+    }
+    if (rawVal == null || !Number.isFinite(rawVal)) return "—";
+    if (def.format === "pct") {
+      if (_EXPLORER_GROWTH_METRIC_KEYS.has(def.key)) {
+        return `${rawVal >= 0 ? "+" : ""}${rawVal.toFixed(1)}%`;
+      }
+      return `${rawVal.toFixed(1)}%`;
+    }
+    if (def.format === "lakh")  return `${(rawVal * (def.scaleToDisplay || 1)).toFixed(2)} lakh units`;
+    if (def.format === "rsCr")  return `₹${Math.round(rawVal).toLocaleString("en-IN")} Cr`;
+    if (def.format === "count") return `${Math.round(rawVal).toLocaleString("en-IN")}`;
+    return `${rawVal.toFixed(1)}`;
+  }
+
+  /* Format a delta for one snapshot cell.
+       cur, base — raw values from the data (in registry units).
+       view      — "actual" | "yoy" | "indexed". For "indexed" the
+                   caller passes already-indexed cur and base so we
+                   simply subtract and tag the result as "pts".
+     Output styling:
+       - Percentage metrics  → "+7.0 pp"            (pp delta)
+       - Absolute (lakh)     → "+0.06 lakh units"   (level delta)
+       - Absolute (rsCr)     → "+₹150 Cr"
+       - Absolute (count)    → "+119"
+       - Indexed             → "+12.4 pts"
+     Missing inputs render "—". The "base === 0" edge case used to
+     suppress percent change is no longer needed since we now report
+     absolute change in the same unit. */
+  function _explorerSnapshotDeltaText(def, cur, base, view) {
     if (cur == null || base == null) return { text: "—", cls: "ss-flat" };
+    if (view === "indexed") {
+      const d = cur - base;
+      const cls = d > 0.05 ? "ss-up" : d < -0.05 ? "ss-down" : "ss-flat";
+      return { text: `${d > 0 ? "+" : ""}${d.toFixed(1)} pts`, cls };
+    }
     if (def.format === "pct") {
       const d = cur - base;
       const cls = d > 0.05 ? "ss-up" : d < -0.05 ? "ss-down" : "ss-flat";
       return { text: `${d > 0 ? "+" : ""}${d.toFixed(1)} pp`, cls };
     }
-    if (base === 0) return { text: "—", cls: "ss-flat" };
-    const pct = ((cur - base) / Math.abs(base)) * 100;
-    if (!Number.isFinite(pct)) return { text: "—", cls: "ss-flat" };
-    const cls = pct > 0.05 ? "ss-up" : pct < -0.05 ? "ss-down" : "ss-flat";
-    return { text: `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`, cls };
+    const dRaw = cur - base;
+    const cls = dRaw > 0 ? "ss-up" : dRaw < 0 ? "ss-down" : "ss-flat";
+    if (def.format === "lakh") {
+      const dDisp = dRaw * (def.scaleToDisplay || 1);
+      return { text: `${dDisp > 0 ? "+" : ""}${dDisp.toFixed(2)} lakh units`, cls };
+    }
+    if (def.format === "rsCr") {
+      return { text: `${dRaw > 0 ? "+" : ""}₹${Math.round(dRaw).toLocaleString("en-IN")} Cr`, cls };
+    }
+    if (def.format === "count") {
+      return { text: `${dRaw > 0 ? "+" : ""}${Math.round(dRaw).toLocaleString("en-IN")}`, cls };
+    }
+    return { text: `${dRaw > 0 ? "+" : ""}${dRaw.toFixed(1)}`, cls };
+  }
+
+  /* Indexed-value helper — used by both table and bars when view is
+     "indexed". Base = first non-null value in the active FY range.
+     Returns null when the base is unusable (missing or zero). */
+  function _explorerIndexedValue(s, fy, fysList) {
+    const cur = explorerLookup(s.company, s.def, fy);
+    if (cur == null) return null;
+    let base = null;
+    for (let i = 0; i < fysList.length; i++) {
+      const v = explorerLookup(s.company, s.def, fysList[i]);
+      if (v != null) { base = v; break; }
+    }
+    if (base == null || base === 0) return null;
+    return (cur / base) * 100;
   }
 
   function _renderExplorerRightCard(seriesIndex, fys) {
@@ -2420,24 +2514,49 @@
   }
 
   function _renderExplorerTable(rowsPre, bestSet, fyTo, fyPrev, fyFrom, mode) {
-    /* Group rows by unit so we can fold the Unit column into a single
-       group header — drops the repetitive "lakh units"/"%"/"₹ Cr" cell
-       on every row. Preserves the order each unit first appears so the
-       grouping is deterministic and reads naturally. */
+    const indexed = state.explorer.view === "indexed";
+    const fysList = explorerFyList();
+
+    /* For Indexed view, separate-group the indexed rows under one
+       "Indexed Metrics · base year = {fyFrom}" header (units normalise
+       away). For Actual/YoY views, group by unit so the unit string
+       only appears once per group. */
     const groups = [];
     rowsPre.forEach(r => {
-      const u = r.s.def.unit;
-      let g = groups.find(x => x.unit === u);
-      if (!g) { g = { unit: u, label: _explorerUnitGroupLabel(r.s.def), rows: [] }; groups.push(g); }
+      const groupKey = indexed ? "__indexed__" : r.s.def.unit;
+      const label = indexed
+        ? `Indexed Metrics · base year = ${fyFrom}`
+        : _explorerUnitGroupLabel(r.s.def);
+      let g = groups.find(x => x.unit === groupKey);
+      if (!g) { g = { unit: groupKey, label, rows: [] }; groups.push(g); }
       g.rows.push(r);
     });
 
-    const prevCol  = fyPrev ? `vs ${fyPrev}` : "vs prior FY";
-    const periodCol = (fyFrom && fyFrom !== fyTo) ? `${fyFrom}→${fyTo}` : "Period";
-
-    /* When all rows share a single unit we surface it once in the
-       header band (single-group case). */
-    const singleGroup = groups.length === 1;
+    /* Explicit basis labels — every column states the calculation
+       formula so the basis is unambiguous (no more "Vs FY24"). */
+    const valueColLabel  = indexed ? `${fyTo} Indexed Value`
+                                   : `${fyTo} Absolute Value`;
+    const yoyColLabel    = fyPrev
+      ? (indexed ? `YoY Δ: ${fyTo} − ${fyPrev} index pts`
+                 : `YoY Δ: ${fyTo} − ${fyPrev}`)
+      : "YoY Δ";
+    const periodColLabel = (fyFrom && fyFrom !== fyTo)
+      ? (indexed ? `Period Δ: ${fyTo} − ${fyFrom} index pts`
+                 : `Period Δ: ${fyTo} − ${fyFrom}`)
+      : "Period Δ";
+    const valueColTip = indexed
+      ? `Indexed value at ${fyTo} (base year ${fyFrom} = 100).`
+      : `Absolute value of the metric at ${fyTo}.`;
+    const yoyColTip   = fyPrev
+      ? (indexed
+          ? `Δ in index points: ${fyTo} index minus ${fyPrev} index.`
+          : `Δ: ${fyTo} value minus ${fyPrev} value. pp = percentage-point change.`)
+      : "Year-over-year change.";
+    const periodColTip = (fyFrom && fyFrom !== fyTo)
+      ? (indexed
+          ? `Δ in index points: ${fyTo} index minus ${fyFrom} index.`
+          : `Δ: ${fyTo} value minus ${fyFrom} value (full period). pp = percentage-point change.`)
+      : "Period change.";
 
     return `
       <div class="snapshot-wrap">
@@ -2445,21 +2564,46 @@
           <thead>
             <tr>
               <th>Series</th>
-              <th class="num">${fyTo}</th>
-              <th class="num">${prevCol}</th>
-              <th class="num">${periodCol}</th>
+              <th class="num" title="${ATTR(valueColTip)}">${valueColLabel}</th>
+              <th class="num" title="${ATTR(yoyColTip)}">${yoyColLabel}</th>
+              <th class="num" title="${ATTR(periodColTip)}">${periodColLabel}</th>
             </tr>
           </thead>
           <tbody>
             ${groups.map(g => `
-              ${singleGroup
-                ? `<tr class="snapshot-group-row snapshot-group-single"><td colspan="4">${g.label}</td></tr>`
-                : `<tr class="snapshot-group-row"><td colspan="4">${g.label}</td></tr>`}
+              <tr class="snapshot-group-row${groups.length === 1 ? " snapshot-group-single" : ""}">
+                <td colspan="4">${g.label}</td>
+              </tr>
               ${g.rows.map(r => {
-                const dPrev = _explorerFmtDelta(r.s.def, r.cur, r.prev);
-                const dPeriod = (fyFrom && fyFrom !== fyTo)
-                  ? _explorerFmtDelta(r.s.def, r.cur, r.from)
-                  : { text: "—", cls: "ss-flat" };
+                let valueText, dPrev, dPeriod, valueTip;
+                if (indexed) {
+                  const ixCur  = _explorerIndexedValue(r.s, fyTo,   fysList);
+                  const ixPrev = fyPrev ? _explorerIndexedValue(r.s, fyPrev, fysList) : null;
+                  const ixFrom = fyFrom ? _explorerIndexedValue(r.s, fyFrom, fysList) : null;
+                  valueText = _explorerSnapshotLevelText(r.s.def, null, ixCur);
+                  dPrev   = _explorerSnapshotDeltaText(r.s.def, ixCur, ixPrev, "indexed");
+                  dPeriod = (fyFrom && fyFrom !== fyTo)
+                    ? _explorerSnapshotDeltaText(r.s.def, ixCur, ixFrom, "indexed")
+                    : { text: "—", cls: "ss-flat" };
+                  valueTip = `${fyTo} Indexed Value: ${r.s.company} ${r.s.def.label} normalised so ${fyFrom} = 100.`;
+                } else {
+                  valueText = _explorerSnapshotLevelText(r.s.def, r.cur, null);
+                  dPrev   = _explorerSnapshotDeltaText(r.s.def, r.cur, r.prev, "actual");
+                  dPeriod = (fyFrom && fyFrom !== fyTo)
+                    ? _explorerSnapshotDeltaText(r.s.def, r.cur, r.from, "actual")
+                    : { text: "—", cls: "ss-flat" };
+                  valueTip = `${fyTo} Absolute Value: ${r.s.company} ${r.s.def.label} at ${fyTo}.`;
+                }
+                const prevTip = fyPrev
+                  ? (indexed
+                      ? `YoY Δ: ${fyTo} index − ${fyPrev} index (in index points).`
+                      : `YoY Δ: ${fyTo} minus ${fyPrev}.`)
+                  : "YoY change.";
+                const periodTip = (fyFrom && fyFrom !== fyTo)
+                  ? (indexed
+                      ? `Period Δ: ${fyTo} index − ${fyFrom} index (in index points).`
+                      : `Period Δ: ${fyTo} minus ${fyFrom}.`)
+                  : "Period change.";
                 return `
                 <tr>
                   <td>
@@ -2469,9 +2613,9 @@
                       ${bestSet.has(r) ? `<span class="ss-best-badge">Best</span>` : ""}
                     </span>
                   </td>
-                  <td class="num">${explorerFormatValue(r.s.def, r.cur, "actual")}</td>
-                  <td class="num ${dPrev.cls}">${dPrev.text}</td>
-                  <td class="num ${dPeriod.cls}">${dPeriod.text}</td>
+                  <td class="num" title="${ATTR(valueTip)}">${valueText}</td>
+                  <td class="num ${dPrev.cls}" title="${ATTR(prevTip)}">${dPrev.text}</td>
+                  <td class="num ${dPeriod.cls}" title="${ATTR(periodTip)}">${dPeriod.text}</td>
                 </tr>`;
               }).join("")}`).join("")}
           </tbody>
@@ -2481,62 +2625,77 @@
 
   function _explorerUnitGroupLabel(def) {
     /* Human-friendly group header per unit. Maps the registry unit
-       string to a copywriter-style label that reads naturally above
-       the rows. */
+       string to a copywriter-style label. Capitalised "Metrics" per
+       spec wording (e.g. "Volume Metrics · lakh units"). */
     const u = def.unit;
-    if (u === "%") {
-      /* Distinguish margin/share-style metrics from rate-style metrics
-         only when both appear — but per the registry both share unit
-         "%", so we use one common header. */
-      return "Percentage metrics · %";
-    }
-    if (u === "lakh units") return "Volume metrics · lakh units";
-    if (u === "₹ Cr")       return "Rupee metrics · ₹ Cr";
-    if (u === "days")       return "Cycle metrics · days";
-    if (u === "count")      return "Count metrics";
+    if (u === "%")          return "Percentage Metrics · %";
+    if (u === "lakh units") return "Volume Metrics · lakh units";
+    if (u === "₹ Cr")       return "Revenue Metrics · ₹ Cr";
+    if (u === "days")       return "Cycle Metrics · days";
+    if (u === "count")      return "Count Metrics";
     return `Metrics · ${u}`;
   }
 
   function _renderExplorerBars(rowsPre, bestSet, fyTo, mode) {
-    /* Horizontal HTML bars. Indexed view: bars represent each series'
-       index value (base FY = 100); otherwise bars are the raw display
-       value. Scale is computed across all valid rows; bars are placed
-       on a zero-anchored axis so negative growth points the other way. */
+    /* Three bar bases user can choose between (Actual view only):
+         "value"  — selected FY absolute level
+         "yoy"    — YoY Δ: fyTo − fyPrev (same unit)
+         "period" — Period Δ: fyTo − fyFrom (same unit)
+       Indexed view forces "value" with the indexed scale (units are
+       normalised away so bases other than the level read confusingly). */
     const view = state.explorer.view;
+    const indexed = view === "indexed";
+    const fysList = explorerFyList();
+    const fyFrom  = state.explorer.fyFrom;
+    const idxTo   = fysList.indexOf(fyTo);
+    const fyPrev  = idxTo > 0 ? fysList[idxTo - 1] : null;
+
+    /* Resolve effective basis given the view constraint. */
+    const userBasis = state.explorer.barsBasis || "value";
+    let basis = userBasis;
+    if (indexed) basis = "value";
+    if (basis === "yoy"    && !fyPrev) basis = "value";
+    if (basis === "period" && (!fyFrom || fyFrom === fyTo)) basis = "value";
+
+    /* For each row, compute the value to BAR + the value to LABEL. */
     const displayRows = rowsPre.map(r => {
-      let displayVal;
-      let displayText;
-      if (r.cur == null) {
-        displayVal = null;
-        displayText = "—";
-      } else if (view === "indexed") {
-        /* Pull the indexed value from the LineChart pipeline so the
-           bar matches the trend. Index base = first non-null point in
-           the from-FY end of the series. */
-        const all = explorerFyList();
-        const baseRaw = (() => {
-          for (let i = 0; i < all.length; i++) {
-            const v = explorerLookup(r.s.company, r.s.def, all[i]);
-            if (v != null) return v;
-          }
-          return null;
-        })();
-        if (baseRaw == null || baseRaw === 0) {
-          displayVal = null; displayText = "—";
-        } else {
-          displayVal = (r.cur / baseRaw) * 100;
-          displayText = `${displayVal.toFixed(1)}`;
+      const def = r.s.def;
+      let barVal = null;   // numeric axis value (scaled to display unit)
+      let labelText = "—"; // human label at end of bar
+      if (indexed) {
+        const ix = _explorerIndexedValue(r.s, fyTo, fysList);
+        if (ix != null) { barVal = ix; labelText = ix.toFixed(1); }
+      } else if (basis === "value") {
+        if (r.cur != null) {
+          barVal = (def.format === "pct")
+            ? r.cur
+            : r.cur * (def.scaleToDisplay || 1);
+          labelText = _explorerSnapshotLevelText(def, r.cur, null);
         }
-      } else {
-        displayVal = r.cur * (r.s.def.scaleToDisplay || 1);
-        displayText = explorerFormatValue(r.s.def, r.cur, "actual");
+      } else if (basis === "yoy") {
+        if (r.cur != null && r.prev != null) {
+          const dRaw = r.cur - r.prev;
+          barVal = (def.format === "pct")
+            ? dRaw
+            : dRaw * (def.scaleToDisplay || 1);
+          const dt = _explorerSnapshotDeltaText(def, r.cur, r.prev, "actual");
+          labelText = dt.text;
+        }
+      } else if (basis === "period") {
+        if (r.cur != null && r.from != null) {
+          const dRaw = r.cur - r.from;
+          barVal = (def.format === "pct")
+            ? dRaw
+            : dRaw * (def.scaleToDisplay || 1);
+          const dt = _explorerSnapshotDeltaText(def, r.cur, r.from, "actual");
+          labelText = dt.text;
+        }
       }
-      return { r, displayVal, displayText };
+      return { r, barVal, labelText };
     });
 
-    /* Compute axis bounds — symmetric when any negative values are
-       present, otherwise [0, max * 1.10]. */
-    const values = displayRows.map(d => d.displayVal).filter(v => v != null);
+    /* Compute axis bounds — symmetric when any negative values present. */
+    const values = displayRows.map(d => d.barVal).filter(v => v != null);
     if (!values.length) {
       return `<div class="snapshot-empty">No data available for the current selection.</div>`;
     }
@@ -2549,19 +2708,45 @@
     const range = hi - lo || 1;
     const zeroPct = ((0 - lo) / range) * 100;
 
-    /* Single-line header band — shows the shared unit once when
-       applicable. Indexed view always reads "Index (base FY = 100)". */
-    let unitBanner = "";
-    if (view === "indexed") {
-      unitBanner = `Index · base ${state.explorer.fyFrom} = 100`;
-    } else if (mode.sameUnit) {
-      const sample = rowsPre[0] && rowsPre[0].s.def;
-      if (sample) unitBanner = _explorerUnitGroupLabel(sample);
+    /* Banner — explicit basis + unit. Per spec the title MUST state
+       what is being shown ("FY25 Absolute Value · lakh units",
+       "YoY Δ: FY25 − FY24 · lakh units", etc.). */
+    const sampleDef = rowsPre[0] && rowsPre[0].s.def;
+    const unitPart = (() => {
+      if (indexed) return `base ${state.explorer.fyFrom} = 100`;
+      if (!mode.sameUnit) return "";
+      if (sampleDef && sampleDef.unit) return sampleDef.unit;
+      return "";
+    })();
+    const basisHeading = (() => {
+      if (indexed)            return `${fyTo} Indexed Value`;
+      if (basis === "yoy")    return `YoY Δ: ${fyTo} − ${fyPrev}`;
+      if (basis === "period") return `Period Δ: ${fyTo} − ${fyFrom}`;
+      return `${fyTo} Absolute Value`;
+    })();
+    const banner = `${basisHeading}${unitPart ? " · " + unitPart : ""}`;
+
+    /* Basis selector — three compact buttons. Indexed view collapses
+       to a single "Indexed Value" pill since YoY / Period deltas read
+       awkwardly on a normalised scale. */
+    let basisToggle = "";
+    if (!indexed) {
+      const mkBtn = (key, label) => {
+        const dis = (key === "yoy" && !fyPrev) || (key === "period" && (!fyFrom || fyFrom === fyTo));
+        return `<button type="button" class="bars-basis-btn ${basis === key ? "is-active" : ""} ${dis ? "is-disabled" : ""}"
+                        data-bars-basis="${key}" ${dis ? "disabled" : ""}>${label}</button>`;
+      };
+      basisToggle = `
+        <div class="bars-basis-toggle" role="tablist" aria-label="Bar basis">
+          ${mkBtn("value",  "Absolute Value")}
+          ${mkBtn("yoy",    "YoY Δ")}
+          ${mkBtn("period", "Period Δ")}
+        </div>`;
     }
 
     const rowsHTML = displayRows.map(d => {
       const r = d.r;
-      const v = d.displayVal;
+      const v = d.barVal;
       let leftPct, widthPct, fillCls;
       if (v == null) {
         leftPct = zeroPct; widthPct = 0; fillCls = "is-empty";
@@ -2574,8 +2759,9 @@
         leftPct = zeroPct - widthPct;
         fillCls = "is-neg";
       }
+      const rowTip = `${r.s.company} · ${r.s.def.label} — ${banner}`;
       return `
-        <div class="hbar-row" title="${ATTR(r.s.company + " · " + r.s.def.label)}">
+        <div class="hbar-row" title="${ATTR(rowTip)}">
           <div class="hbar-label">
             <span class="swatch" style="background:${r.s.color}"></span>
             <span class="hbar-name">${r.s.company} · ${r.s.def.label}</span>
@@ -2586,13 +2772,14 @@
             <div class="hbar-fill ${fillCls}"
                  style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;background:${r.s.color}"></div>
           </div>
-          <div class="hbar-value">${d.displayText}</div>
+          <div class="hbar-value">${d.labelText}</div>
         </div>`;
     }).join("");
 
     return `
       <div class="snapshot-wrap snapshot-bars-wrap">
-        ${unitBanner ? `<div class="snapshot-bars-banner">${unitBanner} · ${fyTo}</div>` : ""}
+        <div class="snapshot-bars-banner">${banner}</div>
+        ${basisToggle}
         <div class="snapshot-bars" role="list">
           ${rowsHTML}
         </div>
