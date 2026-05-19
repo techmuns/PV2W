@@ -2135,11 +2135,13 @@
   function renderCharts() {
     const bar = $("#perf-explorer-controls");
     if (state.company === "Industry") {
-      if (bar) bar.classList.remove("hidden");
+      /* Inline style wins over the .pex-bar display:flex rule that
+         would otherwise defeat the .hidden Tailwind utility. */
+      if (bar) { bar.style.display = ""; bar.classList.remove("hidden"); }
       ensurePerfExplorerControls();
       renderPerformanceExplorer();
     } else {
-      if (bar) bar.classList.add("hidden");
+      if (bar) { bar.style.display = "none"; bar.classList.add("hidden"); }
       renderOemCharts();
     }
     bindChartHovers($("#chart1"));
