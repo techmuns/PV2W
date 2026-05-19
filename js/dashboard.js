@@ -44,14 +44,19 @@
     /* Industry-view shared controls (left trend + right OEM split) */
     indMetric:    "volume",  // see IND_METRICS registry
     indYearRight: "FY25",
-    /* Performance Explorer (new unified toolbar) — drives both
-       chart1 + chart2 across Industry / OEM views. Defaults reproduce
-       the original Industry landing (Volume · PV Volume · FY25). */
+    /* Performance Explorer (Bloomberg-style flexible comparison) —
+       only mounted on the Industry section. Cross-product of selected
+       companies × selected metrics drives both Performance cards. Two
+       metric pickers (% / absolute) keep unit-mixed combos rare, but
+       when they happen the View transform auto-falls-back to Indexed
+       so the chart never breaks. */
     explorer: {
-      category: "Volume",
-      metrics:  ["volume"],
-      compare:  "off",     // off | industry | peers
-      view:     "absolute", // absolute | yoy | indexed
+      companies:  ["Industry"],   // industry-section default
+      pctMetrics: ["volumeGrowth"],
+      absMetrics: [],
+      fyFrom:     "FY18",
+      fyTo:       "FY25",         // reset to latest populated FY at boot
+      view:       "absolute",     // absolute (Actual) | yoy | indexed
     },
     /* Segment switcher — PV is the only live module today. 2W / CV
        open the under-construction overlay (no real data wired up). */
@@ -989,12 +994,68 @@
       industryMetric:null,               companyMetric:"Facelift Launches",      allowedEntities:["Maruti","Hyundai","M&M","Tata Motors PV"], chartDefault:"line" },
     { key:"topSelling",    label:"Top Selling Model",    category:"Product Drivers", unit:"",      scale:1,     format:"string",
       industryMetric:null,               companyMetric:"Top Selling Model",      allowedEntities:["Maruti","Hyundai","M&M","Tata Motors PV"], chartDefault:"line" },
+
+    /* Footprint — sourced from Company_Info (not Company_FY_Metrics),
+       so these go through a resolver instead of the default metric
+       lookup. Both are reported per-FY in the Company_Info table. */
+    { key:"dealers",       label:"Dealer Count",          category:"Operations",  unit:"dealers",    scale:1,     format:"count",
+      resolver: (entity, fy) => companyInfoField(entity, fy, "Dealers"),
+      allowedEntities:["Maruti","Hyundai","M&M","Tata Motors PV"], chartDefault:"line" },
+    { key:"employees",     label:"Employee Count",        category:"Operations",  unit:"employees",  scale:1,     format:"count",
+      resolver: (entity, fy) => companyInfoField(entity, fy, "Employees"),
+      allowedEntities:["Maruti","Hyundai","M&M","Tata Motors PV"], chartDefault:"line" },
+
+    /* Computed absolute mix metrics — derived from share % × total
+       volume so the explorer can plot SUV / EV / Export units (not
+       just shares). Industry path multiplies industry-level shares
+       against Total PV Volume. */
+    { key:"exportVolAbs",  label:"Export Volume",        category:"Mix",         unit:"lakh units", scale:1/1e5, format:"lakh",
+      resolver: (entity, fy) => computeMixAbs(entity, fy, "Export Volume %", "Export Share %"),
+      allowedEntities:"all", chartDefault:"line" },
+    { key:"suvVolAbs",     label:"SUV Volume",           category:"Mix",         unit:"lakh units", scale:1/1e5, format:"lakh",
+      resolver: (entity, fy) => computeMixAbs(entity, fy, "SUV Volume %", "SUV Share %"),
+      allowedEntities:"all", chartDefault:"line" },
+    { key:"evVolAbs",      label:"EV Volume",            category:"Mix",         unit:"lakh units", scale:1/1e5, format:"lakh",
+      resolver: (entity, fy) => computeMixAbs(entity, fy, "EV Volume %", "EV Share %"),
+      allowedEntities:"all", chartDefault:"line" },
   ];
+
+  /* Normalise registry: derive `type` (percentage / absolute / text)
+     and `chartable` so the explorer pickers can be generated purely
+     from the registry without hardcoding metric names. Some metrics
+     (Top Selling Model) are text-typed and intentionally excluded
+     from chart series. */
+  METRIC_REGISTRY.forEach(m => {
+    m.type = m.format === "pct" ? "percentage"
+           : m.format === "string" ? "text"
+           : "absolute";
+    if (m.chartable == null) m.chartable = m.format !== "string";
+  });
   const METRIC_BY_KEY = Object.fromEntries(METRIC_REGISTRY.map(m => [m.key, m]));
-  /* Stable category order in the toolbar's category select. */
+  /* Stable category order — used only by the legacy Industry pie
+     renderer. The Performance Explorer no longer surfaces category. */
   const PEX_CATEGORIES = ["Volume","Revenue","Margins","Market Share","Mix","Operations","Financials","Product Drivers"];
 
   /* ---------- METRIC_REGISTRY helpers ---------- */
+  function companyInfoField(entity, fy, field) {
+    /* Company_Info rows are per-FY; fall back to the latest row when
+       the requested FY is missing so chips can still render. */
+    const exact = D.Company_Info.find(r => r.FY === fy && r.Company === entity);
+    const v = exact ? exact[field] : null;
+    return (v == null || v === "") ? null : v;
+  }
+  function computeMixAbs(entity, fy, oemShareMetric, indShareMetric) {
+    if (entity === "Industry") {
+      const tot = getIndustryMetric(fy, "Total PV Volume");
+      const sh  = getIndustryMetric(fy, indShareMetric);
+      if (!tot || !sh || tot.Value == null || sh.Value == null) return null;
+      return tot.Value * sh.Value / 100;
+    }
+    const tot = getCompanyMetric(fy, entity, "Total Sales Volume");
+    const sh  = getCompanyMetric(fy, entity, oemShareMetric);
+    if (!tot || !sh || tot.Value == null || sh.Value == null) return null;
+    return tot.Value * sh.Value / 100;
+  }
   function entitySupportsMetric(entity, m) {
     if (!m) return false;
     if (m.allowedEntities === "all") return true;
@@ -1002,6 +1063,7 @@
   }
   function rawMetricValue(entity, fy, m) {
     if (!m) return null;
+    if (typeof m.resolver === "function") return m.resolver(entity, fy);
     if (entity === "Industry") {
       if (!m.industryMetric) return null;
       const r = getIndustryMetric(fy, m.industryMetric);
@@ -2065,14 +2127,79 @@
      </span>`;
 
   /* ---------- main-page charts ----------
-     Unified Performance Explorer drives chart1 + chart2 for every
-     entity. The toolbar (#perf-explorer-controls) is always visible
-     and stays in sync with state.company + state.explorer. */
+     Industry view → Performance Explorer (multi-company / multi-
+     metric / timeline / view toggle). OEM views → original premium
+     pair: company-vs-industry growth bar (left) + volume mix toggle
+     (right). The Explorer toolbar is only shown on the Industry page
+     so OEM pages stay focused on a single company. */
   function renderCharts() {
-    ensurePerfExplorerControls();
-    renderPerformanceExplorer();
+    const bar = $("#perf-explorer-controls");
+    if (state.company === "Industry") {
+      if (bar) bar.classList.remove("hidden");
+      ensurePerfExplorerControls();
+      renderPerformanceExplorer();
+    } else {
+      if (bar) bar.classList.add("hidden");
+      renderOemCharts();
+    }
     bindChartHovers($("#chart1"));
     bindChartHovers($("#chart2"));
+  }
+
+  /* ----- OEM page charts (pre-Explorer layout) -----
+     Left: OEM volume growth % vs PV industry, 10-year window.
+     Right: OEM volume mix toggle (Product / Export / Powertrain). */
+  function renderOemCharts() {
+    const ROLL_YEARS = 10;
+    const fyWindow = (D.FYS_FULL || []).slice(-ROLL_YEARS);
+    const limitedNote = fyWindow.length < ROLL_YEARS ? " · Limited history available" : "";
+
+    $("#chart1-title").textContent = `${state.company} growth vs PV industry`;
+    $("#chart1-help").textContent  = fyWindow.length
+      ? `Volume Growth % · ${fyWindow[0]}–${fyWindow[fyWindow.length-1]}${limitedNote}`
+      : "Volume growth comparison";
+    $("#chart1-sub").textContent   = "%";
+
+    /* Null = missing data (gap in the chart). Never substitute 0. */
+    const oemVals = fyWindow.map(fy => {
+      const r = getCompanyMetric(fy, state.company, "Volume Growth %");
+      return (r && r.Value != null && typeof r.Value === "number") ? r.Value : null;
+    });
+    const indVals = fyWindow.map(fy => {
+      const r = getIndustryMetric(fy, "PV Volume Growth %");
+      return (r && r.Value != null && typeof r.Value === "number") ? r.Value : null;
+    });
+
+    $("#chart1").innerHTML = groupedBarChart([
+      { name: "PV industry", color: COLOR.greySft, values: indVals },
+      { name: state.company, color: COLOR.blue,    values: oemVals },
+    ], fyWindow, { yUnit: "%" });
+    $("#chart1-legend").innerHTML =
+      legendChip(COLOR.greySft, "PV industry") + legendChip(COLOR.blue, state.company);
+
+    /* Dynamic source line — pulls the most recent Source label off
+       the company's Volume Growth % row so it credits the actual feed
+       (Annual Report / Q4 IP / Screener etc.). */
+    const latestRow = (D.Company_FY_Metrics || [])
+      .filter(r => r.Company === state.company && r.Metric === "Volume Growth %" && r.Source && r.Source !== "Pending")
+      .sort((a, b) => (a.FY > b.FY ? 1 : -1))
+      .pop();
+    const oemSrc = latestRow && latestRow.Source
+      ? latestRow.Source
+      : `${state.company} Annual Reports / Q4 Investor Presentations`;
+    $("#chart1-source").textContent = `Source: SIAM (industry volume growth); ${oemSrc}.`;
+
+    /* Right card: clear any explorer leftover meta + show the mix
+       toggle and the volume-mix chart. */
+    $("#chart2-meta").innerHTML = "";
+    $("#chart2-title").textContent = `Where ${state.company}'s volume is coming from`;
+    $("#chart2-help").textContent  = "Total sales volume by selected mix";
+    $("#chart2-sub").textContent   = "";
+    $("#chart2-sub").classList.add("hidden");
+    $("#chart2-toggle").classList.remove("hidden");
+    const chart2 = $("#chart2");
+    chart2.removeAttribute("style");
+    renderVolumeMixChart();
   }
 
   /* ---------- Performance Explorer: toolbar wiring ----------
@@ -2081,146 +2208,113 @@
      metrics scoped to (a) the active category and (b) the active
      entity's allowed-metrics set, so the user can never land on an
      impossible combination. */
+  /* ---------- Performance Explorer: state helpers ----------
+     The explorer holds three multi-selects (companies / pct metrics /
+     abs metrics) plus a timeline range. Series are the cross-product
+     of selected companies and selected metrics, filtered to the
+     (company, metric) pairs that actually have data. */
+  function explorerSelectedMetrics() {
+    const keys = state.explorer.pctMetrics.concat(state.explorer.absMetrics);
+    return keys.map(k => METRIC_BY_KEY[k]).filter(m => m && m.chartable);
+  }
+  function explorerPrimaryCompany() {
+    return state.explorer.companies[0] || "Industry";
+  }
+  function explorerWindowFYs() {
+    const all = D.FYS_FULL || [];
+    const i1 = all.indexOf(state.explorer.fyFrom);
+    const i2 = all.indexOf(state.explorer.fyTo);
+    if (i1 < 0 || i2 < 0) return all.slice(-10);
+    const lo = Math.min(i1, i2), hi = Math.max(i1, i2);
+    return all.slice(lo, hi + 1);
+  }
+
+  /* Reconcile state with the data layer: drop selections that no
+     longer exist, snap timeline bounds, default empty selections to
+     sensible seeds. Called on every render so the toolbar is always
+     consistent with current data. */
+  function reconcileExplorerState() {
+    const fys = D.FYS_FULL || [];
+    const companies = D.COMPANIES || [];
+
+    /* Companies: drop unknowns; if empty, default to "Industry"
+       (the section the explorer lives in), else first company. */
+    state.explorer.companies = state.explorer.companies.filter(c => companies.includes(c));
+    if (!state.explorer.companies.length) {
+      state.explorer.companies = companies.includes("Industry") ? ["Industry"] : (companies[0] ? [companies[0]] : []);
+    }
+
+    /* Metric selections: drop unknowns / wrong type / not chartable. */
+    state.explorer.pctMetrics = state.explorer.pctMetrics.filter(k => {
+      const m = METRIC_BY_KEY[k];
+      return m && m.chartable && m.type === "percentage";
+    });
+    state.explorer.absMetrics = state.explorer.absMetrics.filter(k => {
+      const m = METRIC_BY_KEY[k];
+      return m && m.chartable && m.type === "absolute";
+    });
+    /* Seed a default if both lists are empty — preserves the
+       landing experience (a single trend line out of the box). */
+    if (!state.explorer.pctMetrics.length && !state.explorer.absMetrics.length) {
+      if (METRIC_BY_KEY.volumeGrowth) state.explorer.pctMetrics = ["volumeGrowth"];
+      else if (METRIC_BY_KEY.volume)  state.explorer.absMetrics = ["volume"];
+    }
+
+    /* Timeline: snap to known FYs; ensure From ≤ To. */
+    if (!fys.includes(state.explorer.fyFrom)) state.explorer.fyFrom = fys[0] || "FY18";
+    if (!fys.includes(state.explorer.fyTo))   state.explorer.fyTo   = fys[fys.length - 1] || "FY25";
+    if (fys.indexOf(state.explorer.fyFrom) > fys.indexOf(state.explorer.fyTo)) {
+      const tmp = state.explorer.fyFrom;
+      state.explorer.fyFrom = state.explorer.fyTo;
+      state.explorer.fyTo = tmp;
+    }
+  }
+
   function ensurePerfExplorerControls() {
     const bar = $("#perf-explorer-controls");
     if (!bar) return;
+    reconcileExplorerState();
 
-    /* Reconcile state with available data for the current entity. */
-    const entity = state.company;
-    /* Metrics that have *any* numeric data for this entity. */
-    const allForEntity = metricRegistryFor(entity);
-    /* Categories with ≥1 metric that has data for this entity. Industry
-       data is only published for Volume + a single Financials slot
-       (PAT), so the other six categories are hidden from the toolbar
-       rather than presented as a dropdown full of N/A items with a
-       silent fallback metric from another category. */
-    const availableCats = PEX_CATEGORIES.filter(c =>
-      allForEntity.some(m => m.category === c)
-    );
+    /* === Multi-select pickers === */
+    renderPexCompaniesPills();
+    renderPexMetricPills("pct");
+    renderPexMetricPills("abs");
+    wirePexMenu("companies");
+    wirePexMenu("pct");
+    wirePexMenu("abs");
 
-    /* Snap category to one that actually has data for this entity. */
-    if (!availableCats.includes(state.explorer.category)) {
-      state.explorer.category = availableCats[0] || "Volume";
-    }
-
-    if (!allForEntity.length) {
-      /* Nothing to plot — preserve the toolbar shape and render
-         an empty-state in chart1/chart2. */
-      state.explorer.metrics = [];
-    } else {
-      /* Drop any selected metrics that aren't valid for this entity. */
-      state.explorer.metrics = state.explorer.metrics.filter(k => {
-        const m = METRIC_BY_KEY[k];
-        return m && entityHasAnyMetricData(entity, m);
-      });
-      if (!state.explorer.metrics.length) {
-        /* Pick a sensible default *inside the current category* so the
-           pill row and the category select always agree. Prefer the
-           landing seeds (PV Volume for Industry, Volume Growth % for
-           OEMs) when they live in the active category. */
-        const inCat = allForEntity.filter(m => m.category === state.explorer.category);
-        const seed = (entity === "Industry") ? "volume" : "volumeGrowth";
-        let fallback = inCat.find(m => m.key === seed)
-          || inCat[0]
-          || allForEntity[0];
-        if (fallback) state.explorer.metrics = [fallback.key];
-      }
-    }
-
-    /* If entity == Industry, peer comparison doesn't apply — reset. */
-    if (entity === "Industry" && state.explorer.compare === "peers") {
-      state.explorer.compare = "off";
-    }
-
-    /* Entity select */
-    const coSel = $("#pex-company");
-    if (coSel) {
-      const html = (D.COMPANIES || []).map(c =>
-        `<option value="${c}" ${c === entity ? "selected" : ""}>${c}</option>`
+    /* === Timeline From / To === */
+    const fys = D.FYS_FULL || [];
+    const fromSel = $("#pex-fy-from");
+    const toSel   = $("#pex-fy-to");
+    if (fromSel && toSel) {
+      const optsFrom = fys.map(fy =>
+        `<option value="${fy}" ${fy === state.explorer.fyFrom ? "selected" : ""}>${fy}</option>`
       ).join("");
-      if (coSel.innerHTML !== html) coSel.innerHTML = html;
-      coSel.value = entity;
-      if (!coSel.dataset.wired) {
-        coSel.addEventListener("change", () => {
-          state.company = coSel.value;
-          /* Keep the top-bar company switcher in sync (and any tabs
-             keyed off it). */
-          const topSel = $("#company-select");
-          if (topSel) topSel.value = state.company;
-          const tabs = state.company === "Industry" ? TABS_INDUSTRY : TABS_OEM;
-          if (!Object.keys(tabs).includes(state.activeTab)) state.activeTab = Object.keys(tabs)[0];
-          renderAll();
-        });
-        coSel.dataset.wired = "1";
-      }
-    }
-
-    /* Category select — only categories with data for this entity. */
-    const catSel = $("#pex-category");
-    if (catSel) {
-      const cats = availableCats.length ? availableCats : ["Volume"];
-      const html = cats.map(c =>
-        `<option value="${c}" ${c === state.explorer.category ? "selected" : ""}>${c}</option>`
+      const optsTo = fys.map(fy =>
+        `<option value="${fy}" ${fy === state.explorer.fyTo ? "selected" : ""}>${fy}</option>`
       ).join("");
-      if (catSel.innerHTML !== html) catSel.innerHTML = html;
-      catSel.value = state.explorer.category;
-      if (!catSel.dataset.wired) {
-        catSel.addEventListener("change", () => {
-          state.explorer.category = catSel.value;
-          /* Seed metrics: pick the first metric in this category
-             that's available for the current entity. Replace existing
-             selection so the metric pills make sense for the chosen
-             category. */
-          const inCat = METRIC_REGISTRY.filter(m =>
-            m.category === state.explorer.category && entityHasAnyMetricData(state.company, m) && m.format !== "string"
-          );
-          state.explorer.metrics = inCat.length ? [inCat[0].key] : [];
+      if (fromSel.innerHTML !== optsFrom) fromSel.innerHTML = optsFrom;
+      if (toSel.innerHTML   !== optsTo)   toSel.innerHTML   = optsTo;
+      fromSel.value = state.explorer.fyFrom;
+      toSel.value   = state.explorer.fyTo;
+      if (!fromSel.dataset.wired) {
+        fromSel.addEventListener("change", () => {
+          state.explorer.fyFrom = fromSel.value;
           renderCharts();
         });
-        catSel.dataset.wired = "1";
+        fromSel.dataset.wired = "1";
       }
-    }
-
-    /* Year select — populate with FYS_FULL newest-first. */
-    const ySel = $("#pex-year");
-    if (ySel) {
-      const html = (D.FYS_FULL || []).slice().reverse().map(fy =>
-        `<option value="${fy}" ${fy === state.indYearRight ? "selected" : ""}>${fy}</option>`
-      ).join("");
-      if (ySel.innerHTML !== html) ySel.innerHTML = html;
-      ySel.value = state.indYearRight;
-      if (!ySel.dataset.wired) {
-        ySel.addEventListener("change", () => {
-          state.indYearRight = ySel.value;
-          state.indMetric = state.explorer.metrics[0] || state.indMetric;
+      if (!toSel.dataset.wired) {
+        toSel.addEventListener("change", () => {
+          state.explorer.fyTo = toSel.value;
           renderCharts();
         });
-        ySel.dataset.wired = "1";
+        toSel.dataset.wired = "1";
       }
     }
 
-    /* Compare select */
-    const cmpSel = $("#pex-compare");
-    if (cmpSel) {
-      /* Filter out 'All Peers' on Industry view. */
-      const opts = entity === "Industry"
-        ? [["off","Off"],["industry","vs Industry"]]
-        : [["off","Off"],["industry","vs Industry"],["peers","All Peers"]];
-      const html = opts.map(([v,l]) =>
-        `<option value="${v}" ${v === state.explorer.compare ? "selected" : ""}>${l}</option>`
-      ).join("");
-      if (cmpSel.innerHTML !== html) cmpSel.innerHTML = html;
-      cmpSel.value = state.explorer.compare;
-      if (!cmpSel.dataset.wired) {
-        cmpSel.addEventListener("change", () => {
-          state.explorer.compare = cmpSel.value;
-          renderCharts();
-        });
-        cmpSel.dataset.wired = "1";
-      }
-    }
-
-    /* View segmented control */
+    /* === View segmented control === */
     const viewEl = $("#pex-view");
     if (viewEl) {
       viewEl.querySelectorAll(".pex-seg-btn").forEach(btn => {
@@ -2237,109 +2331,216 @@
       }
     }
 
-    /* Metric multi-select pills + dropdown menu. */
-    renderPexMetricPills();
-    wirePexMetricMenu();
-    /* If the menu is open, refresh it so it reflects the new entity /
-       category instead of showing stale items. */
-    const menu = $("#pex-metric-menu");
-    if (menu && !menu.classList.contains("hidden")) renderPexMetricMenu();
+    /* Refresh any currently-open dropdown so it reflects the new
+       selections without forcing a close-and-reopen. */
+    ["companies","pct","abs"].forEach(kind => {
+      const menu = $(`#pex-${kind}-menu`);
+      if (menu && !menu.classList.contains("hidden")) renderPexMenu(kind);
+    });
   }
 
-  function renderPexMetricPills() {
-    const pillsEl = $("#pex-metric-pills");
+  /* ----- Companies multi-select ----- */
+  function renderPexCompaniesPills() {
+    const pillsEl = $("#pex-companies-pills");
     if (!pillsEl) return;
-    const html = state.explorer.metrics.map(k => {
-      const m = METRIC_BY_KEY[k];
-      if (!m) return "";
-      const color = pexColorFor(k);
-      return `<span class="pex-pill" data-key="${k}">
+    if (!state.explorer.companies.length) {
+      pillsEl.innerHTML = `<span class="pex-empty-pill">Pick a company</span>`;
+      return;
+    }
+    const html = state.explorer.companies.map(co => {
+      const color = OEM_COLOR[co] || COLOR.blue;
+      return `<span class="pex-pill" data-co="${co}">
         <span class="pex-pill-dot" style="background:${color}"></span>
-        ${m.label}
-        <button type="button" class="pex-pill-x" data-remove="${k}" aria-label="Remove">×</button>
+        ${co}
+        <button type="button" class="pex-pill-x" data-remove-co="${co}" aria-label="Remove">×</button>
       </span>`;
     }).join("");
     pillsEl.innerHTML = html;
-    pillsEl.querySelectorAll("[data-remove]").forEach(b => {
+    pillsEl.querySelectorAll("[data-remove-co]").forEach(b => {
       b.addEventListener("click", (e) => {
         e.stopPropagation();
-        const k = b.dataset.remove;
-        state.explorer.metrics = state.explorer.metrics.filter(x => x !== k);
-        renderCharts();
+        const co = b.dataset.removeCo;
+        state.explorer.companies = state.explorer.companies.filter(x => x !== co);
+        renderAll();
       });
     });
   }
 
-  function wirePexMetricMenu() {
-    const addBtn = $("#pex-metric-add");
-    const menu   = $("#pex-metric-menu");
-    if (!addBtn || !menu) return;
-    if (!addBtn.dataset.wired) {
-      addBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (menu.classList.contains("hidden")) {
-          renderPexMetricMenu();
-          menu.classList.remove("hidden");
-        } else {
-          menu.classList.add("hidden");
-        }
-      });
-      document.addEventListener("click", (e) => {
-        if (!menu.classList.contains("hidden") &&
-            !menu.contains(e.target) && e.target !== addBtn) {
-          menu.classList.add("hidden");
-        }
-      });
-      addBtn.dataset.wired = "1";
-    }
-  }
-
-  function renderPexMetricMenu() {
-    const menu = $("#pex-metric-menu");
-    if (!menu) return;
-    const entity = state.company;
-    const cat = state.explorer.category;
-    /* List metrics that (a) are in the current category and (b) have
-       data for this entity. Already-selected metrics from OTHER
-       categories still appear in the pill row — but the dropdown
-       only shows the current category to keep the menu compact. */
-    const items = METRIC_REGISTRY
-      .filter(m => m.category === cat && m.format !== "string")
-      .map(m => ({ m, available: entityHasAnyMetricData(entity, m) }));
-    if (!items.length) {
-      menu.innerHTML = `<div class="pex-menu-empty">No metrics in this category.</div>`;
+  /* ----- Metric multi-select (kind = "pct" | "abs") ----- */
+  function renderPexMetricPills(kind) {
+    const pillsEl = $(`#pex-${kind}-pills`);
+    if (!pillsEl) return;
+    const stateKey = kind === "pct" ? "pctMetrics" : "absMetrics";
+    const keys = state.explorer[stateKey];
+    if (!keys.length) {
+      pillsEl.innerHTML = `<span class="pex-empty-pill">${kind === "pct" ? "Add a % metric" : "Add an absolute metric"}</span>`;
       return;
     }
-    const html = items.map(({ m, available }) => {
-      const selected = state.explorer.metrics.includes(m.key);
-      const disabled = !available && !selected;
-      return `<label class="pex-menu-item ${disabled ? "is-disabled" : ""}">
-        <input type="checkbox" data-key="${m.key}" ${selected ? "checked" : ""} ${disabled ? "disabled" : ""}/>
-        <span>${m.label}</span>
-        ${!available ? `<span style="margin-left:auto;color:#CBD5E1;font-size:10px">N/A</span>` : ""}
+    const html = keys.map(k => {
+      const m = METRIC_BY_KEY[k];
+      if (!m) return "";
+      const color = pexMetricColor(k);
+      return `<span class="pex-pill" data-key="${k}">
+        <span class="pex-pill-dot" style="background:${color}"></span>
+        ${m.label}
+        <button type="button" class="pex-pill-x" data-remove-metric="${k}" data-kind="${kind}" aria-label="Remove">×</button>
+      </span>`;
+    }).join("");
+    pillsEl.innerHTML = html;
+    pillsEl.querySelectorAll("[data-remove-metric]").forEach(b => {
+      b.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const k = b.dataset.removeMetric;
+        const kk = b.dataset.kind === "pct" ? "pctMetrics" : "absMetrics";
+        state.explorer[kk] = state.explorer[kk].filter(x => x !== k);
+        renderCharts();
+      });
+    });
+  }
+
+  /* ----- Generic dropdown wiring (one handler per kind) ----- */
+  function wirePexMenu(kind) {
+    const addBtn = $(`#pex-${kind}-add`);
+    const menu   = $(`#pex-${kind}-menu`);
+    if (!addBtn || !menu) return;
+    if (addBtn.dataset.wired) return;
+    addBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      /* Close other open menus so only one is up at a time. */
+      ["companies","pct","abs"].forEach(k => {
+        if (k !== kind) {
+          const m2 = $(`#pex-${k}-menu`);
+          if (m2) m2.classList.add("hidden");
+        }
+      });
+      if (menu.classList.contains("hidden")) {
+        renderPexMenu(kind);
+        menu.classList.remove("hidden");
+      } else {
+        menu.classList.add("hidden");
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (!menu.classList.contains("hidden") &&
+          !menu.contains(e.target) && e.target !== addBtn) {
+        menu.classList.add("hidden");
+      }
+    });
+    addBtn.dataset.wired = "1";
+  }
+
+  function renderPexMenu(kind) {
+    const menu = $(`#pex-${kind}-menu`);
+    if (!menu) return;
+    if (kind === "companies") return renderPexCompaniesMenu(menu);
+    return renderPexMetricMenu(menu, kind);
+  }
+
+  function renderPexCompaniesMenu(menu) {
+    const companies = D.COMPANIES || [];
+    const html = companies.map(co => {
+      const selected = state.explorer.companies.includes(co);
+      const color = OEM_COLOR[co] || COLOR.blue;
+      return `<label class="pex-menu-item">
+        <input type="checkbox" data-co="${co}" ${selected ? "checked" : ""} />
+        <span class="pex-pill-dot" style="background:${color};margin-right:2px"></span>
+        <span>${co}</span>
       </label>`;
     }).join("");
-    menu.innerHTML = html;
+    menu.innerHTML = html || `<div class="pex-menu-empty">No companies loaded.</div>`;
     menu.querySelectorAll("input[type=checkbox]").forEach(cb => {
       cb.addEventListener("change", () => {
-        const k = cb.dataset.key;
+        const co = cb.dataset.co;
         if (cb.checked) {
-          if (!state.explorer.metrics.includes(k)) state.explorer.metrics.push(k);
+          if (!state.explorer.companies.includes(co)) state.explorer.companies.push(co);
         } else {
-          state.explorer.metrics = state.explorer.metrics.filter(x => x !== k);
+          state.explorer.companies = state.explorer.companies.filter(x => x !== co);
+        }
+        renderAll();
+      });
+    });
+  }
+
+  function renderPexMetricMenu(menu, kind) {
+    const wantType = kind === "pct" ? "percentage" : "absolute";
+    const stateKey = kind === "pct" ? "pctMetrics" : "absMetrics";
+    const selected = new Set(state.explorer[stateKey]);
+    const selectedCompanies = state.explorer.companies;
+    /* Group by category for a faintly structured menu without
+       exposing category as a toolbar control. Metrics with no data
+       for any selected company are rendered disabled with an N/A
+       tag rather than hidden entirely — keeps the menu shape stable
+       as the user adds / removes companies. */
+    const grouped = new Map();
+    METRIC_REGISTRY
+      .filter(m => m.chartable && m.type === wantType)
+      .forEach(m => {
+        const cat = m.category || "Other";
+        if (!grouped.has(cat)) grouped.set(cat, []);
+        grouped.get(cat).push(m);
+      });
+
+    const sections = [];
+    grouped.forEach((metrics, cat) => {
+      const items = metrics.map(m => {
+        const sel = selected.has(m.key);
+        const available = selectedCompanies.length
+          ? selectedCompanies.some(co => entityHasAnyMetricData(co, m))
+          : true;
+        const disabled = !available && !sel;
+        return `<label class="pex-menu-item ${disabled ? "is-disabled" : ""}">
+          <input type="checkbox" data-key="${m.key}" data-kind="${kind}" ${sel ? "checked" : ""} ${disabled ? "disabled" : ""}/>
+          <span>${m.label}</span>
+          ${!available ? `<span style="margin-left:auto;color:#CBD5E1;font-size:10px">N/A</span>` : ""}
+        </label>`;
+      }).join("");
+      sections.push(`<div class="pex-menu-section">${cat}</div>${items}`);
+    });
+
+    menu.innerHTML = sections.join("") || `<div class="pex-menu-empty">No ${wantType} metrics available.</div>`;
+    menu.querySelectorAll("input[type=checkbox]").forEach(cb => {
+      cb.addEventListener("change", () => {
+        const k  = cb.dataset.key;
+        const kk = cb.dataset.kind === "pct" ? "pctMetrics" : "absMetrics";
+        if (cb.checked) {
+          if (!state.explorer[kk].includes(k)) state.explorer[kk].push(k);
+        } else {
+          state.explorer[kk] = state.explorer[kk].filter(x => x !== k);
         }
         renderCharts();
       });
     });
   }
 
-  /* Deterministic colour for explorer metric N (stable across
-     re-renders so a metric keeps the same colour). */
-  const PEX_COLORS = ["#1E3A5F", "#5B7CFA", "#E9A23B", "#4FB7A8", "#A78BFA", "#DC2626"];
-  function pexColorFor(metricKey) {
-    const idx = state.explorer.metrics.indexOf(metricKey);
-    const safe = idx < 0 ? METRIC_REGISTRY.findIndex(m => m.key === metricKey) : idx;
-    return PEX_COLORS[((safe % PEX_COLORS.length) + PEX_COLORS.length) % PEX_COLORS.length];
+  /* Deterministic colour for series N. Companies use OEM_COLOR, but
+     we still need a metric palette when one company × multiple
+     metrics are plotted. */
+  const PEX_COLORS = ["#1E3A5F", "#5B7CFA", "#E9A23B", "#4FB7A8", "#A78BFA", "#DC2626", "#0EA5E9", "#84CC16"];
+  function pexMetricColor(metricKey) {
+    const keys = state.explorer.pctMetrics.concat(state.explorer.absMetrics);
+    const idx = keys.indexOf(metricKey);
+    const safe = idx < 0 ? Math.max(0, METRIC_REGISTRY.findIndex(m => m.key === metricKey)) : idx;
+    return PEX_COLORS[safe % PEX_COLORS.length];
+  }
+  /* Series colour: company-driven when ≥2 companies, metric-driven
+     when 1 company × ≥1 metric. With a single (company, metric) pair
+     we fall back to the company colour. */
+  function explorerSeriesColor(company, metric, companies, metrics) {
+    if (companies.length >= 2 && metrics.length === 1) {
+      return OEM_COLOR[company] || COLOR.blue;
+    }
+    if (companies.length === 1 && metrics.length >= 2) {
+      return pexMetricColor(metric.key);
+    }
+    if (companies.length >= 2 && metrics.length >= 2) {
+      /* Mixed grid: company colour, metric index modulates lightness
+         by alpha suffix so peers stay grouped. */
+      const base = OEM_COLOR[company] || COLOR.blue;
+      const mIdx = metrics.findIndex(x => x.key === metric.key);
+      const alpha = mIdx === 0 ? "" : (mIdx === 1 ? "B3" : (mIdx === 2 ? "80" : "66"));
+      return base + alpha;
+    }
+    return OEM_COLOR[company] || pexMetricColor(metric.key);
   }
 
   /* ---------- Performance Explorer: render ---------- */
@@ -2369,25 +2570,21 @@
   }
 
   function _renderPerformanceExplorerImpl() {
-    const entity   = state.company;
-    const fy       = state.indYearRight;
-    const selKeys  = state.explorer.metrics;
-    const selected = selKeys.map(k => METRIC_BY_KEY[k]).filter(Boolean);
-    const compare  = state.explorer.compare;
-    const view     = state.explorer.view;
-    /* 10-year rolling window from FYS_FULL. */
-    const ROLL_YEARS = 10;
-    const fyWindow = (D.FYS_FULL || []).slice(-ROLL_YEARS);
+    const companies = state.explorer.companies.slice();
+    const metrics   = explorerSelectedMetrics();
+    const fyWindow  = explorerWindowFYs();
+    const view      = state.explorer.view;
+    const fyLatest  = fyWindow[fyWindow.length - 1] || state.indYearRight;
 
-    /* ===== LEFT CARD: Performance Trend ===== */
-    renderExplorerLeftCard(entity, selected, fyWindow, compare, view);
+    /* ===== LEFT CARD: Performance Trend Explorer ===== */
+    renderExplorerLeftCard(companies, metrics, fyWindow, view);
 
-    /* ===== RIGHT CARD: Composition / Peer Mix ===== */
-    renderExplorerRightCard(entity, selected, fy, compare);
+    /* ===== RIGHT CARD: Composition (1 company) | Peer comparison (multi) ===== */
+    renderExplorerRightCard(companies, metrics, fyLatest);
   }
 
   /* ----- LEFT CARD ----- */
-  function renderExplorerLeftCard(entity, selected, fyWindow, compare, viewMode) {
+  function renderExplorerLeftCard(companies, metrics, fyWindow, viewMode) {
     const titleEl = $("#chart1-title");
     const helpEl  = $("#chart1-help");
     const subEl   = $("#chart1-sub");
@@ -2395,80 +2592,62 @@
     const legendEl= $("#chart1-legend");
     const srcEl   = $("#chart1-source");
 
-    /* Reset OEM-view leftover toggle visibility. */
-    if (!selected.length) {
-      titleEl.textContent = "Performance Trend";
-      helpEl.textContent  = "Select at least one metric";
+    titleEl.textContent = "Performance Trend Explorer";
+
+    if (!companies.length || !metrics.length) {
+      helpEl.textContent  = !companies.length ? "Pick at least one company" : "Pick at least one metric";
       subEl.textContent   = "";
-      chartEl.innerHTML   = `<div class="text-xs text-inkMuted py-12 text-center">Data unavailable for this entity. Pick a metric to begin.</div>`;
+      chartEl.innerHTML   = `<div class="text-xs text-inkMuted py-12 text-center">Select a company and metric to begin.</div>`;
       legendEl.innerHTML  = "";
       srcEl.textContent   = "";
       return;
     }
 
-    /* Build series for each selected metric (entity values across
-       fyWindow). For Industry-only metrics + OEM entity → fall back
-       to industry trend so the user still gets a useful curve. */
-    const baseSeries = selected.map((m, idx) => {
-      const vals = fyWindow.map(fy => rawMetricValue(entity, fy, m));
-      /* Apply display scale (e.g. raw 4.3M → 43 lakh units). */
-      const scaled = vals.map(v => v == null ? null : +(v * (m.scale || 1)).toFixed(2));
-      return {
-        metric: m,
-        name: m.label,
-        color: pexColorFor(m.key),
-        rawValues: vals,
-        values: scaled,
-      };
+    /* Build the cross-product of (company × metric) series, dropping
+       any pair that has no data at all. Pairs with sparse data still
+       render as lines with gaps so the user can see coverage. */
+    const allSeries = [];
+    companies.forEach(co => {
+      metrics.forEach(m => {
+        if (!entitySupportsMetric(co, m)) return;
+        const vals = fyWindow.map(fy => rawMetricValue(co, fy, m));
+        if (!vals.some(v => v != null && typeof v === "number")) return;
+        const scaled = vals.map(v => v == null ? null : +(v * (m.scale || 1)).toFixed(2));
+        const seriesName = (companies.length === 1 && metrics.length >= 2) ? m.label
+                         : (metrics.length === 1) ? co
+                         : `${co} · ${m.label}`;
+        allSeries.push({
+          company: co,
+          metric:  m,
+          name:    seriesName,
+          color:   explorerSeriesColor(co, m, companies, metrics),
+          rawValues: vals,
+          values:    scaled,
+        });
+      });
     });
 
-    /* Compare overlays. */
-    let series = baseSeries.slice();
-    if (compare === "industry" && entity !== "Industry") {
-      /* Overlay the industry track for each selected metric that has
-         an industry-level series. */
-      selected.forEach(m => {
-        if (!m.industryMetric) return;
-        const vals = fyWindow.map(fy => {
-          const r = getIndustryMetric(fy, m.industryMetric);
-          return r && r.Value != null ? r.Value : null;
-        });
-        const scaled = vals.map(v => v == null ? null : +(v * (m.scale || 1)).toFixed(2));
-        series.push({
-          metric: m,
-          name: `Industry · ${m.label}`,
-          color: "#CBD5E1",
-          rawValues: vals,
-          values: scaled,
-          dashed: true,
-        });
-      });
-    } else if (compare === "peers" && entity !== "Industry" && selected.length === 1) {
-      /* Single-metric peers overlay — one line per OEM. */
-      const m = selected[0];
-      const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
-      series = oems.map(co => {
-        const vals = fyWindow.map(fy => rawMetricValue(co, fy, m));
-        const scaled = vals.map(v => v == null ? null : +(v * (m.scale || 1)).toFixed(2));
-        return {
-          metric: m,
-          name: co,
-          color: OEM_COLOR[co],
-          rawValues: vals,
-          values: scaled,
-        };
-      });
+    if (!allSeries.length) {
+      helpEl.textContent  = "Data unavailable for this combination";
+      subEl.textContent   = "";
+      chartEl.innerHTML   = `<div class="text-xs text-inkMuted py-12 text-center">No data for the selected company/metric pairs.</div>`;
+      legendEl.innerHTML  = "";
+      srcEl.textContent   = "";
+      return;
     }
 
-    /* Apply view transform: absolute / yoy / indexed. */
-    const units = new Set(series.map(s => s.metric.unit));
+    /* Apply view transform: actual / yoy / indexed. Mixed display
+       units → auto-switch to indexed so a single y-axis still makes
+       sense. */
+    const units = new Set(allSeries.map(s => s.metric.unit));
     const mixedUnits = units.size > 1;
     let effectiveView = viewMode;
-    let warn = "";
+    let mixedNotice = "";
     if (mixedUnits && viewMode !== "indexed") {
       effectiveView = "indexed";
-      warn = "Auto-indexed (metrics use different units)";
+      mixedNotice = "Mixed units — switched to Indexed";
     }
+    let series = allSeries.slice();
     if (effectiveView === "yoy") {
       series = series.map(s => {
         const v = s.rawValues.map((cur, i) => {
@@ -2489,42 +2668,36 @@
       });
     }
 
-    /* Drop empty series. */
     const usable = series.filter(s => s.values.some(v => v != null));
     if (!usable.length) {
-      titleEl.textContent = `${selected.map(m => m.label).join(" · ")} — ${entity}`;
-      helpEl.textContent  = "10-year rolling history";
+      helpEl.textContent  = "Data unavailable for this combination";
       subEl.textContent   = "";
-      chartEl.innerHTML   = `<div class="text-xs text-inkMuted py-12 text-center">Data unavailable for this combination.</div>`;
+      chartEl.innerHTML   = `<div class="text-xs text-inkMuted py-12 text-center">No data for the selected company/metric pairs.</div>`;
       legendEl.innerHTML  = "";
       srcEl.textContent   = "";
       return;
     }
 
-    /* Titles + meta. */
-    const primary = selected[0];
+    /* Sub-headline: timeline + view + (optional) mixed-units warn. */
     const fyFirst = fyWindow[0];
     const fyLast  = fyWindow[fyWindow.length - 1];
-    const titlePrefix = (entity === "Industry") ? "Industry" : entity;
-    titleEl.textContent = selected.length === 1
-      ? `${primary.label} · ${titlePrefix} trend`
-      : `${titlePrefix} · ${selected.length} metrics`;
-
     const viewLabel = effectiveView === "yoy" ? "YoY change"
                     : effectiveView === "indexed" ? "Indexed to 100"
-                    : "Absolute";
-    helpEl.textContent = `${fyFirst}–${fyLast} · ${viewLabel}${warn ? " · " + warn : ""}`;
+                    : "Actual";
+    const seriesCount = usable.length;
+    helpEl.innerHTML = `${fyFirst}–${fyLast} · ${viewLabel} · ${seriesCount} series` +
+      (mixedNotice ? ` <span class="pex-mixed-warn">⚠ ${mixedNotice}</span>` : "");
 
     /* Unit pill (top-right) reflects current view. */
+    const primaryUnit = allSeries[0].metric.unit;
     const unitTxt = effectiveView === "indexed" ? "index = 100"
                   : effectiveView === "yoy" ? "%"
-                  : (mixedUnits ? "mixed" : primary.unit);
+                  : (mixedUnits ? "mixed" : primaryUnit);
     subEl.textContent = unitTxt;
 
-    /* Plot. */
     const lineOpts = {
       xLabels: fyWindow,
-      yUnit: (effectiveView === "yoy" || effectiveView === "indexed" || primary.unit === "%") ? (effectiveView === "indexed" ? "" : "%") : "",
+      yUnit: (effectiveView === "yoy" || (effectiveView === "absolute" && primaryUnit === "%")) ? "%" : "",
       tooltipUnit: unitTxt,
       area: usable.length === 1,
     };
@@ -2534,30 +2707,28 @@
 
     legendEl.innerHTML = usable.map(s => legendChip(s.color, s.name)).join("");
 
-    /* Source line. */
+    /* Source line — concatenate per-entity attribution. */
     const srcParts = [];
-    if (entity === "Industry") {
-      srcParts.push("SIAM yearbook / monthly press releases");
-    } else {
-      srcParts.push(`${entity} Annual Reports + Q4 investor presentations`);
-      if (compare === "industry") srcParts.push("SIAM (industry)");
-      if (compare === "peers")    srcParts.push("peer OEM filings");
-    }
-    srcEl.textContent = `Source: ${srcParts.join("; ")}.`;
+    if (companies.includes("Industry")) srcParts.push("SIAM yearbook / monthly press releases");
+    const oemList = companies.filter(c => c !== "Industry");
+    if (oemList.length) srcParts.push(`${oemList.join(" · ")} annual reports + investor presentations`);
+    srcEl.textContent = srcParts.length ? `Source: ${srcParts.join("; ")}.` : "";
   }
 
-  /* ----- RIGHT CARD ----- */
-  function renderExplorerRightCard(entity, selected, fy, compare) {
+  /* ----- RIGHT CARD -----
+     Context-aware:
+       1 company   → composition (Industry pie / OEM mix toggle)
+       2+ companies → peer comparison ranked bar + latest value + 3y CAGR
+     Card geometry stays fixed in both modes. */
+  function renderExplorerRightCard(companies, metrics, fy) {
     const chart2 = $("#chart2");
     chart2.removeAttribute("style");
-    /* Reset the OEM-view product/export/powertrain top toggle —
-       only the OEM compare=off path uses it. */
     $("#chart2-toggle").classList.add("hidden");
     $("#chart2-product-sub").style.visibility = "hidden";
 
-    if (!selected.length) {
+    if (!companies.length || !metrics.length) {
       $("#chart2-title").textContent = "Composition";
-      $("#chart2-help").textContent  = "Pick a metric to see composition";
+      $("#chart2-help").textContent  = "Pick a company and metric to see composition";
       $("#chart2-sub").textContent   = "";
       $("#chart2-sub").classList.add("hidden");
       chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">Data unavailable.</div>`;
@@ -2567,45 +2738,135 @@
       return;
     }
 
-    const primary = selected[0];
-    /* Industry entity → fall back to the existing METRIC_PIE OEM
-       composition (preserves the original premium right-card UX). */
-    if (entity === "Industry") {
-      const pieKey = pickIndPieKey(primary);
-      if (pieKey) {
-        /* Drive the legacy renderer with the chosen metric + year. */
-        state.indMetric = pieKey;
-        renderIndustryRightCard(pieKey, fy);
+    const primaryMetric = metrics[0];
+
+    /* ===== Single-company → composition (legacy premium card) ===== */
+    if (companies.length === 1) {
+      const entity = companies[0];
+      if (entity === "Industry") {
+        const pieKey = pickIndPieKey(primaryMetric);
+        if (pieKey) {
+          state.indMetric = pieKey;
+          renderIndustryRightCard(pieKey, fy);
+          return;
+        }
+        $("#chart2-title").textContent = `${primaryMetric.label} · industry mix (${fy})`;
+        $("#chart2-help").textContent  = "OEM split not tracked for this metric";
+        $("#chart2-sub").textContent   = "";
+        $("#chart2-sub").classList.add("hidden");
+        chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">OEM-level data unavailable for ${primaryMetric.label}.</div>`;
+        $("#chart2-legend").innerHTML = "";
+        $("#chart2-source").textContent = "";
+        $("#chart2-meta").innerHTML = "";
         return;
       }
-      /* Fallback: empty state. */
-      $("#chart2-title").textContent = `${primary.label} · industry mix (${fy})`;
-      $("#chart2-help").textContent  = "OEM split not tracked for this metric";
+      /* OEM: keep the existing premium product/export/powertrain mix. */
+      $("#chart2-title").textContent = `Where ${entity}'s volume is coming from`;
+      $("#chart2-help").textContent  = "Total sales volume by selected mix";
       $("#chart2-sub").textContent   = "";
       $("#chart2-sub").classList.add("hidden");
-      chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">OEM-level data unavailable for ${primary.label}.</div>`;
+      $("#chart2-toggle").classList.remove("hidden");
+      renderVolumeMixChart();
+      return;
+    }
+
+    /* ===== Multi-company → peer comparison ===== */
+    renderExplorerPeerComparison(companies, primaryMetric, fy);
+  }
+
+  /* Multi-company peer comparison card. Latest-FY ranked bar + a
+     compact value/CAGR table beneath. Stays inside the existing card
+     frame so layout doesn't jump. */
+  function renderExplorerPeerComparison(companies, m, fy) {
+    const chart2 = $("#chart2");
+    $("#chart2-title").textContent = `${m.label} · peer comparison (${fy})`;
+    $("#chart2-help").textContent  = `${companies.length} companies · latest value + 3y change`;
+    $("#chart2-sub").textContent   = m.unit;
+    $("#chart2-sub").classList.remove("hidden");
+
+    const fys = D.FYS_FULL || [];
+    const fyIdx = fys.indexOf(fy);
+    const fy3yAgo = fyIdx >= 3 ? fys[fyIdx - 3] : null;
+
+    /* Build per-company row: latest value, value 3 years ago, change. */
+    const rows = companies.map(co => {
+      if (!entitySupportsMetric(co, m)) {
+        return { co, raw: null, latest: null, change: null, cagr: null };
+      }
+      const raw = rawMetricValue(co, fy, m);
+      const old = fy3yAgo ? rawMetricValue(co, fy3yAgo, m) : null;
+      const latest = raw == null ? null : +(raw * (m.scale || 1)).toFixed(2);
+      let change = null, cagr = null;
+      if (raw != null && old != null && old !== 0) {
+        if (m.type === "percentage") {
+          change = +(raw - old).toFixed(1);   // percentage-point change
+        } else {
+          cagr = +(((Math.pow(raw / old, 1 / 3) - 1) * 100)).toFixed(1);
+        }
+      }
+      return { co, raw, latest, change, cagr };
+    });
+
+    /* Items for the ranked bar chart (omit companies with no value). */
+    const items = rows
+      .filter(r => r.latest != null && Number.isFinite(r.latest))
+      .map(r => ({ name: r.co, value: r.latest, color: OEM_COLOR[r.co] || COLOR.blue }))
+      .sort((a, b) => (b.value || 0) - (a.value || 0));
+
+    if (!items.length) {
+      chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">Peer data unavailable for ${fy}.</div>`;
       $("#chart2-legend").innerHTML = "";
       $("#chart2-source").textContent = "";
       $("#chart2-meta").innerHTML = "";
       return;
     }
 
-    /* OEM entity. */
-    if (compare === "peers") {
-      renderPeerComparisonRight(entity, primary, fy);
-      return;
-    }
-    if (compare === "industry") {
-      renderEntityVsIndustryRight(entity, primary, fy);
-      return;
-    }
-    /* compare === off → keep the existing premium mix toggle. */
-    $("#chart2-title").textContent = `Where ${entity}'s volume is coming from`;
-    $("#chart2-help").textContent  = "Total sales volume by selected mix";
-    $("#chart2-sub").textContent   = "";
-    $("#chart2-sub").classList.add("hidden");
-    $("#chart2-toggle").classList.remove("hidden");
-    renderVolumeMixChart();
+    /* Header meta strip: best performer + 3y view. */
+    const best = items[0];
+    const metaPairs = [
+      ["", fy],
+      ["Best", `${best.name}`],
+      [fy3yAgo ? `vs ${fy3yAgo}` : "3y view", fy3yAgo ? `${rows.length} OEMs` : "—"],
+    ];
+    const metaEl = $("#chart2-meta");
+    metaEl.innerHTML = metaPairs.map(([k, v]) => {
+      const eyebrow = k
+        ? `<span style="color:#94A3B8;text-transform:uppercase;font-size:9.5px;letter-spacing:0.04em;font-weight:600">${k}</span>`
+        : "";
+      return `<span style="display:inline-flex;align-items:baseline;gap:6px">${eyebrow}<span style="color:${v === "—" ? "#94A3B8" : "#1F2A37"};font-weight:600">${v}</span></span>`;
+    }).join("");
+
+    /* Render: ranked bar chart on top, compact value+change table below. */
+    const barHtml = rankedBarChart(items, {
+      yUnit: m.unit === "%" ? "%" : "", fy,
+      metric: m.label, metricBase: "",
+    });
+    const tableRows = rows.map(r => {
+      const valTxt = r.raw == null ? "—" : formatMetricValue(r.raw, m);
+      let chgTxt = "—";
+      if (m.type === "percentage" && r.change != null) {
+        chgTxt = `${r.change > 0 ? "+" : ""}${r.change.toFixed(1)} pp`;
+      } else if (m.type === "absolute" && r.cagr != null) {
+        chgTxt = `${r.cagr > 0 ? "+" : ""}${r.cagr.toFixed(1)}% CAGR`;
+      }
+      const isBest = r.co === best.name;
+      const dot = `<span style="display:inline-block;width:7px;height:7px;border-radius:999px;background:${OEM_COLOR[r.co] || COLOR.blue}"></span>`;
+      return `<div class="pex-peer-row${isBest ? ' is-best' : ''}">
+        <span class="pex-peer-co">${dot}<span>${r.co}${isBest ? ' <span class="pex-peer-best">★</span>' : ''}</span></span>
+        <span class="pex-peer-val">${valTxt}</span>
+        <span class="pex-peer-chg">${chgTxt}</span>
+      </div>`;
+    }).join("");
+
+    chart2.innerHTML = `${barHtml}
+      <div class="pex-peer-table">
+        <div class="pex-peer-head">
+          <span>OEM</span><span>${fy}</span><span>${m.type === "percentage" ? "Δ vs 3y" : "3y CAGR"}</span>
+        </div>
+        ${tableRows}
+      </div>`;
+    $("#chart2-legend").innerHTML = items.slice(0, 4).map(r => legendChip(r.color, r.name)).join("");
+    $("#chart2-source").textContent = `Source: ${m.label} per OEM, ${fy} — company annual reports + investor presentations.`;
   }
 
   /* Map a registry metric back to the legacy IND_METRICS pie key
@@ -4422,6 +4683,11 @@
     const latestFY = pickLatestFY(D);
     state.fy = latestFY;
     state.indYearRight = latestFY;
+    /* Explorer timeline: default to FY18 → latest populated FY, but
+       clamp From to the earliest available FY if FY18 isn't tracked. */
+    const fysAll = D.FYS_FULL || [];
+    state.explorer.fyTo = latestFY;
+    state.explorer.fyFrom = fysAll.includes("FY18") ? "FY18" : (fysAll[0] || "FY18");
 
     wire();
     renderAll();

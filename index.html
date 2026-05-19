@@ -178,45 +178,53 @@
         <span class="section-hint">Growth · Mix · Composition</span>
       </div>
 
-      <!-- Performance Explorer toolbar — drives both Performance cards.
-           One row, soft pills, premium feel: Entity · Category ·
-           Metrics multi-select · Year · Compare · View. Sync'd with
-           state.explorer + the top company switcher. -->
+      <!-- Performance Explorer toolbar — Bloomberg-style flexible
+           comparison. Three multi-select pickers (Companies · %
+           Metrics · Absolute Metrics) cross-product into chart series,
+           a From/To FY timeline drives the window, and a View toggle
+           (Actual / YoY / Indexed) controls the transform. Mixed-unit
+           selections auto-fall-back to Indexed with a small notice. -->
       <div id="perf-explorer-controls" class="pex-bar mb-3">
-        <div class="pex-group">
-          <span class="pex-label">Entity</span>
-          <select id="pex-company" class="pex-select"></select>
-        </div>
-        <div class="pex-group">
-          <span class="pex-label">Category</span>
-          <select id="pex-category" class="pex-select"></select>
-        </div>
-        <div class="pex-group pex-group-metrics">
-          <span class="pex-label">Metrics</span>
-          <div class="pex-multi" id="pex-metrics">
-            <div class="pex-pills" id="pex-metric-pills"></div>
-            <button type="button" class="pex-add" id="pex-metric-add" aria-label="Add metric">
+        <div class="pex-group pex-group-multi">
+          <span class="pex-label">Companies</span>
+          <div class="pex-multi" id="pex-companies-multi">
+            <div class="pex-pills" id="pex-companies-pills"></div>
+            <button type="button" class="pex-add" id="pex-companies-add" aria-label="Add company">
               <span>+ Add</span>
             </button>
-            <div class="pex-menu hidden" id="pex-metric-menu"></div>
+            <div class="pex-menu hidden" id="pex-companies-menu"></div>
           </div>
         </div>
-        <div class="pex-group">
-          <span class="pex-label">Year</span>
-          <select id="pex-year" class="pex-select"></select>
+        <div class="pex-group pex-group-multi">
+          <span class="pex-label">% Metrics</span>
+          <div class="pex-multi" id="pex-pct-multi">
+            <div class="pex-pills" id="pex-pct-pills"></div>
+            <button type="button" class="pex-add" id="pex-pct-add" aria-label="Add % metric">
+              <span>+ Add</span>
+            </button>
+            <div class="pex-menu hidden" id="pex-pct-menu"></div>
+          </div>
         </div>
-        <div class="pex-group">
-          <span class="pex-label">Compare</span>
-          <select id="pex-compare" class="pex-select">
-            <option value="off">Off</option>
-            <option value="industry">vs Industry</option>
-            <option value="peers">All Peers</option>
-          </select>
+        <div class="pex-group pex-group-multi">
+          <span class="pex-label">Absolute</span>
+          <div class="pex-multi" id="pex-abs-multi">
+            <div class="pex-pills" id="pex-abs-pills"></div>
+            <button type="button" class="pex-add" id="pex-abs-add" aria-label="Add absolute metric">
+              <span>+ Add</span>
+            </button>
+            <div class="pex-menu hidden" id="pex-abs-menu"></div>
+          </div>
+        </div>
+        <div class="pex-group pex-group-timeline">
+          <span class="pex-label">Timeline</span>
+          <select id="pex-fy-from" class="pex-select pex-select-sm"></select>
+          <span class="pex-timeline-sep">–</span>
+          <select id="pex-fy-to" class="pex-select pex-select-sm"></select>
         </div>
         <div class="pex-group">
           <span class="pex-label">View</span>
           <div class="pex-seg" id="pex-view">
-            <button type="button" data-view="absolute" class="pex-seg-btn">Abs</button>
+            <button type="button" data-view="absolute" class="pex-seg-btn">Actual</button>
             <button type="button" data-view="yoy"      class="pex-seg-btn">YoY</button>
             <button type="button" data-view="indexed"  class="pex-seg-btn">Indexed</button>
           </div>
