@@ -52,6 +52,10 @@
       fyFrom:    null,
       fyTo:      null,
       view:      "actual",   // "actual" | "yoy" | "indexed"
+      /* Right-card snapshot view. "auto" lets the renderer pick the
+         best view (bars when units align, table otherwise); explicit
+         clicks on the Table | Bars toggle pin the choice until Reset. */
+      snapshotView: "auto",  // "auto" | "table" | "bars"
     },
     /* Segment switcher — PV is the only live module today. 2W / CV
        open the under-construction overlay (no real data wired up). */
@@ -1946,6 +1950,7 @@
           fyFrom:    null,
           fyTo:      null,
           view:      "actual",
+          snapshotView: "auto",
         };
         _explorerColorAssigned.clear();
         _explorerPaletteCursor = 0;
@@ -1955,6 +1960,17 @@
       });
       reset.dataset.wired = "1";
     }
+
+    /* Snapshot view toggle (Table | Bars) inside the right card head. */
+    document.querySelectorAll(".snap-btn").forEach(btn => {
+      if (btn.dataset.wired) return;
+      btn.addEventListener("click", () => {
+        if (btn.disabled) return;
+        state.explorer.snapshotView = btn.getAttribute("data-snapshot-view");
+        renderIndustryExplorer();
+      });
+      btn.dataset.wired = "1";
+    });
 
     explorerSyncToolbarUI();
   }
@@ -2135,13 +2151,16 @@
     const units = new Set(seriesIndex.map(s => s.def.unit));
     const mixedUnits = units.size > 1;
 
-    /* Hide OEM-only chart2 toggles (Industry never uses them). */
+    /* Hide OEM-only chart2 toggles (Industry never uses them) and
+       reveal the Industry-only Snapshot view toggle. */
     const chart2Toggle = $("#chart2-toggle");
     const chart2Sub    = $("#chart2-product-sub");
     if (chart2Toggle) chart2Toggle.classList.add("hidden");
     if (chart2Sub) chart2Sub.style.visibility = "hidden";
     $("#chart2-sub") && $("#chart2-sub").classList.add("hidden");
     $("#chart2-meta") && ($("#chart2-meta").innerHTML = "");
+    const snapTog = $("#snapshot-toggle");
+    if (snapTog) snapTog.classList.remove("hidden");
 
     /* Mark the left panel for side-legend layout */
     const leftPanel = $("#chart1") && $("#chart1").closest(".chart-panel");
@@ -2233,13 +2252,56 @@
   }
 
   /* Selected Year Snapshot — right card.
-     One row per active (company × metric) series. Columns:
-       SERIES | FY (to) value | vs prior FY | From → To change | UNIT
-     For percent metrics the deltas are reported in pp; for absolute
-     metrics they are reported as percent changes. Missing inputs
-     always render as "—" (no fabrication). When multiple series
-     share the same metric a "Best" badge marks the top performer
-     (highest current value) for that metric. */
+     Renders one of two views, picked adaptively:
+       - "table" — rows grouped by unit (Unit column is folded into a
+         group header); use when units are mixed OR series count > 8.
+       - "bars"  — horizontal bar snapshot; use when units align OR the
+         left chart is in Indexed mode (which normalises units).
+     The user can override the auto pick via the Table | Bars toggle in
+     the card header. Missing inputs render "—" — never fabricated. */
+  const SNAPSHOT_BAR_LIMIT = 8;
+
+  function _explorerComputeRightCardMode(seriesIndex) {
+    const userPick = state.explorer.snapshotView || "auto";
+    const indexed = state.explorer.view === "indexed";
+    const units = new Set(seriesIndex.map(s => s.def.unit));
+    const sameUnit = units.size <= 1;
+    const tooMany = seriesIndex.length > SNAPSHOT_BAR_LIMIT;
+    const barsAllowed = !tooMany && (sameUnit || indexed);
+
+    let effective, forcedReason = null;
+    if (tooMany) {
+      effective = "table";
+      if (userPick === "bars") forcedReason = "many";
+    } else if (userPick === "table") {
+      effective = "table";
+    } else if (userPick === "bars") {
+      if (barsAllowed) effective = "bars";
+      else { effective = "table"; forcedReason = "mixed"; }
+    } else {
+      /* auto */
+      effective = (sameUnit || indexed) ? "bars" : "table";
+      /* But if there's only a single series, the bar chart degenerates
+         into one bar — table reads better there. */
+      if (seriesIndex.length <= 1) effective = "table";
+    }
+    return { effective, barsAllowed, tooMany, sameUnit, indexed, forcedReason, units };
+  }
+
+  function _explorerFmtDelta(def, cur, base) {
+    if (cur == null || base == null) return { text: "—", cls: "ss-flat" };
+    if (def.format === "pct") {
+      const d = cur - base;
+      const cls = d > 0.05 ? "ss-up" : d < -0.05 ? "ss-down" : "ss-flat";
+      return { text: `${d > 0 ? "+" : ""}${d.toFixed(1)} pp`, cls };
+    }
+    if (base === 0) return { text: "—", cls: "ss-flat" };
+    const pct = ((cur - base) / Math.abs(base)) * 100;
+    if (!Number.isFinite(pct)) return { text: "—", cls: "ss-flat" };
+    const cls = pct > 0.05 ? "ss-up" : pct < -0.05 ? "ss-down" : "ss-flat";
+    return { text: `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`, cls };
+  }
+
   function _renderExplorerRightCard(seriesIndex, fys) {
     const chart2   = $("#chart2");
     const titleEl  = $("#chart2-title");
@@ -2251,10 +2313,8 @@
     chart2.removeAttribute("style");
     if (legendEl) legendEl.innerHTML = "";
 
-    /* Selected FY = state.explorer.fyTo, snapped back to the last FY in
-       the range that actually has at least one populated value across
-       the active series. Keeps the snapshot meaningful when the user's
-       To FY extends past published data. */
+    /* Selected FY = state.explorer.fyTo, snapped to last in-range FY
+       with at least one populated value across the active series. */
     const fallbackTo = state.explorer.fyTo;
     const fyTo = (() => {
       for (let i = fys.length - 1; i >= 0; i--) {
@@ -2274,21 +2334,24 @@
       helpEl.textContent = `${fyTo} · ${count} ${count === 1 ? "series" : "series"} · period ${range}`;
     }
 
+    /* Refresh the Table | Bars toggle UI — active state + bars-disabled. */
+    const mode = _explorerComputeRightCardMode(seriesIndex);
+    _explorerUpdateSnapshotToggleUI(mode);
+
     if (!seriesIndex.length) {
       chart2.innerHTML = `<div class="snapshot-empty">Select at least one company and metric to populate the snapshot.</div>`;
       if (sourceEl) sourceEl.textContent = "";
       return;
     }
 
-    /* Best-marker grouping — for each metric appearing in more than one
-       row, mark the row with the highest current value as "Best". */
-    const byMetric = new Map();
+    /* Pre-compute row values + best markers. */
     const rowsPre = seriesIndex.map(s => ({
       s,
       cur:  explorerLookup(s.company, s.def, fyTo),
       prev: fyPrev ? explorerLookup(s.company, s.def, fyPrev) : null,
       from: explorerLookup(s.company, s.def, fyFrom),
     }));
+    const byMetric = new Map();
     rowsPre.forEach(r => {
       if (r.cur == null) return;
       if (!byMetric.has(r.s.metricKey)) byMetric.set(r.s.metricKey, []);
@@ -2301,42 +2364,82 @@
       if (best) bestSet.add(best);
     });
 
-    const fmtDeltaForDef = (def, cur, base) => {
-      if (cur == null || base == null) return { text: "—", cls: "ss-flat" };
-      if (def.format === "pct") {
-        const d = cur - base;
-        const cls = d > 0.05 ? "ss-up" : d < -0.05 ? "ss-down" : "ss-flat";
-        return { text: `${d > 0 ? "+" : ""}${d.toFixed(1)} pp`, cls };
-      }
-      if (base === 0) return { text: "—", cls: "ss-flat" };
-      const pct = ((cur - base) / Math.abs(base)) * 100;
-      if (!Number.isFinite(pct)) return { text: "—", cls: "ss-flat" };
-      const cls = pct > 0.05 ? "ss-up" : pct < -0.05 ? "ss-down" : "ss-flat";
-      return { text: `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`, cls };
-    };
+    /* Compose the notice line — only shown when the auto/user pick was
+       overridden by an environmental constraint (too many series, or
+       mixed units while the user explicitly picked Bars in Actual/YoY). */
+    let noticeHTML = "";
+    if (mode.forcedReason === "many") {
+      noticeHTML = `<div class="snapshot-notice">Many series selected. Table view is used for readability.</div>`;
+    } else if (mode.forcedReason === "mixed") {
+      noticeHTML = `<div class="snapshot-notice">Mixed units selected. Use Indexed view to compare as bars.</div>`;
+    } else if (mode.effective === "bars" && mode.indexed && !mode.sameUnit) {
+      noticeHTML = `<div class="snapshot-notice is-info">Indexed view normalizes selected series for comparison.</div>`;
+    }
 
-    const rows = rowsPre.map(r => {
-      const dPrev = fmtDeltaForDef(r.s.def, r.cur, r.prev);
-      const dPeriod = (fyFrom && fyFrom !== fyTo)
-        ? fmtDeltaForDef(r.s.def, r.cur, r.from)
-        : { text: "—", cls: "ss-flat" };
-      return {
-        seriesKey: r.s.key,
-        company: r.s.company,
-        metricLabel: r.s.def.label,
-        color: r.s.color,
-        valueText: explorerFormatValue(r.s.def, r.cur, "actual"),
-        prevDeltaText: dPrev.text, prevDeltaCls: dPrev.cls,
-        periodDeltaText: dPeriod.text, periodDeltaCls: dPeriod.cls,
-        unit: r.s.def.unit,
-        isBest: bestSet.has(r),
-      };
+    if (mode.effective === "bars") {
+      chart2.innerHTML = noticeHTML + _renderExplorerBars(rowsPre, bestSet, fyTo, mode);
+    } else {
+      chart2.innerHTML = noticeHTML + _renderExplorerTable(rowsPre, bestSet, fyTo, fyPrev, fyFrom, mode);
+    }
+
+    /* Source footer — collapse identical sources across the visible
+       rows. Show first 2 verbatim then "+N more"; full list lives in
+       the title attribute for hover. */
+    if (sourceEl) {
+      const sources = Array.from(new Set(
+        seriesIndex.map(s => explorerSourceFor(s.company, s.def, fyTo)).filter(Boolean)
+      ));
+      if (!sources.length) {
+        sourceEl.textContent = "";
+        sourceEl.removeAttribute("title");
+      } else {
+        const visible = sources.slice(0, 2).join("; ");
+        const more = sources.length > 2 ? `; +${sources.length - 2} more` : "";
+        sourceEl.textContent = `Source: ${visible}${more}.`;
+        sourceEl.setAttribute("title", `Source: ${sources.join("; ")}.`);
+      }
+    }
+  }
+
+  function _explorerUpdateSnapshotToggleUI(mode) {
+    document.querySelectorAll(".snap-btn").forEach(btn => {
+      const v = btn.getAttribute("data-snapshot-view");
+      btn.classList.toggle("is-active", v === mode.effective);
+      const disable = v === "bars" && !mode.barsAllowed;
+      btn.disabled = disable;
+      btn.classList.toggle("is-disabled", disable);
+      btn.setAttribute(
+        "title",
+        v === "bars" && !mode.barsAllowed
+          ? (mode.tooMany
+              ? "Many series selected — table view only."
+              : "Mixed units. Use Indexed view to compare as bars.")
+          : ""
+      );
+    });
+  }
+
+  function _renderExplorerTable(rowsPre, bestSet, fyTo, fyPrev, fyFrom, mode) {
+    /* Group rows by unit so we can fold the Unit column into a single
+       group header — drops the repetitive "lakh units"/"%"/"₹ Cr" cell
+       on every row. Preserves the order each unit first appears so the
+       grouping is deterministic and reads naturally. */
+    const groups = [];
+    rowsPre.forEach(r => {
+      const u = r.s.def.unit;
+      let g = groups.find(x => x.unit === u);
+      if (!g) { g = { unit: u, label: _explorerUnitGroupLabel(r.s.def), rows: [] }; groups.push(g); }
+      g.rows.push(r);
     });
 
     const prevCol  = fyPrev ? `vs ${fyPrev}` : "vs prior FY";
     const periodCol = (fyFrom && fyFrom !== fyTo) ? `${fyFrom}→${fyTo}` : "Period";
 
-    chart2.innerHTML = `
+    /* When all rows share a single unit we surface it once in the
+       header band (single-group case). */
+    const singleGroup = groups.length === 1;
+
+    return `
       <div class="snapshot-wrap">
         <table class="snapshot-table" aria-label="Selected year snapshot">
           <thead>
@@ -2345,39 +2448,155 @@
               <th class="num">${fyTo}</th>
               <th class="num">${prevCol}</th>
               <th class="num">${periodCol}</th>
-              <th class="num">Unit</th>
             </tr>
           </thead>
           <tbody>
-            ${rows.map(r => `
-              <tr>
-                <td>
-                  <span class="ss-series" title="${ATTR(r.company + " · " + r.metricLabel)}">
-                    <span class="swatch" style="background:${r.color}"></span>
-                    <span class="ss-label">${r.company} · ${r.metricLabel}</span>
-                  </span>
-                  ${r.isBest ? `<span class="ss-best-badge">Best</span>` : ""}
-                </td>
-                <td class="num">${r.valueText}</td>
-                <td class="num ${r.prevDeltaCls}">${r.prevDeltaText}</td>
-                <td class="num ${r.periodDeltaCls}">${r.periodDeltaText}</td>
-                <td class="num ss-unit">${r.unit}</td>
-              </tr>`).join("")}
+            ${groups.map(g => `
+              ${singleGroup
+                ? `<tr class="snapshot-group-row snapshot-group-single"><td colspan="4">${g.label}</td></tr>`
+                : `<tr class="snapshot-group-row"><td colspan="4">${g.label}</td></tr>`}
+              ${g.rows.map(r => {
+                const dPrev = _explorerFmtDelta(r.s.def, r.cur, r.prev);
+                const dPeriod = (fyFrom && fyFrom !== fyTo)
+                  ? _explorerFmtDelta(r.s.def, r.cur, r.from)
+                  : { text: "—", cls: "ss-flat" };
+                return `
+                <tr>
+                  <td>
+                    <span class="ss-series" title="${ATTR(r.s.company + " · " + r.s.def.label)}">
+                      <span class="swatch" style="background:${r.s.color}"></span>
+                      <span class="ss-label">${r.s.company} · ${r.s.def.label}</span>
+                      ${bestSet.has(r) ? `<span class="ss-best-badge">Best</span>` : ""}
+                    </span>
+                  </td>
+                  <td class="num">${explorerFormatValue(r.s.def, r.cur, "actual")}</td>
+                  <td class="num ${dPrev.cls}">${dPrev.text}</td>
+                  <td class="num ${dPeriod.cls}">${dPeriod.text}</td>
+                </tr>`;
+              }).join("")}`).join("")}
           </tbody>
         </table>
       </div>`;
+  }
 
-    /* Source footer — collapse identical sources across the visible
-       rows. Reuses explorerSourceFor() so the credit lines stay in
-       lockstep with what the chart shows. */
-    if (sourceEl) {
-      const sources = Array.from(new Set(
-        seriesIndex.map(s => explorerSourceFor(s.company, s.def, fyTo)).filter(Boolean)
-      ));
-      sourceEl.textContent = sources.length
-        ? `Source: ${sources.slice(0, 3).join("; ")}${sources.length > 3 ? "; +" + (sources.length - 3) + " more" : ""}.`
-        : "";
+  function _explorerUnitGroupLabel(def) {
+    /* Human-friendly group header per unit. Maps the registry unit
+       string to a copywriter-style label that reads naturally above
+       the rows. */
+    const u = def.unit;
+    if (u === "%") {
+      /* Distinguish margin/share-style metrics from rate-style metrics
+         only when both appear — but per the registry both share unit
+         "%", so we use one common header. */
+      return "Percentage metrics · %";
     }
+    if (u === "lakh units") return "Volume metrics · lakh units";
+    if (u === "₹ Cr")       return "Rupee metrics · ₹ Cr";
+    if (u === "days")       return "Cycle metrics · days";
+    if (u === "count")      return "Count metrics";
+    return `Metrics · ${u}`;
+  }
+
+  function _renderExplorerBars(rowsPre, bestSet, fyTo, mode) {
+    /* Horizontal HTML bars. Indexed view: bars represent each series'
+       index value (base FY = 100); otherwise bars are the raw display
+       value. Scale is computed across all valid rows; bars are placed
+       on a zero-anchored axis so negative growth points the other way. */
+    const view = state.explorer.view;
+    const displayRows = rowsPre.map(r => {
+      let displayVal;
+      let displayText;
+      if (r.cur == null) {
+        displayVal = null;
+        displayText = "—";
+      } else if (view === "indexed") {
+        /* Pull the indexed value from the LineChart pipeline so the
+           bar matches the trend. Index base = first non-null point in
+           the from-FY end of the series. */
+        const all = explorerFyList();
+        const baseRaw = (() => {
+          for (let i = 0; i < all.length; i++) {
+            const v = explorerLookup(r.s.company, r.s.def, all[i]);
+            if (v != null) return v;
+          }
+          return null;
+        })();
+        if (baseRaw == null || baseRaw === 0) {
+          displayVal = null; displayText = "—";
+        } else {
+          displayVal = (r.cur / baseRaw) * 100;
+          displayText = `${displayVal.toFixed(1)}`;
+        }
+      } else {
+        displayVal = r.cur * (r.s.def.scaleToDisplay || 1);
+        displayText = explorerFormatValue(r.s.def, r.cur, "actual");
+      }
+      return { r, displayVal, displayText };
+    });
+
+    /* Compute axis bounds — symmetric when any negative values are
+       present, otherwise [0, max * 1.10]. */
+    const values = displayRows.map(d => d.displayVal).filter(v => v != null);
+    if (!values.length) {
+      return `<div class="snapshot-empty">No data available for the current selection.</div>`;
+    }
+    const minV = Math.min(...values, 0);
+    const maxV = Math.max(...values, 0);
+    const span = Math.max(Math.abs(minV), Math.abs(maxV)) || 1;
+    const hasNeg = minV < 0;
+    const lo = hasNeg ? -span * 1.05 : 0;
+    const hi = hasNeg ?  span * 1.05 : maxV * 1.10 || 1;
+    const range = hi - lo || 1;
+    const zeroPct = ((0 - lo) / range) * 100;
+
+    /* Single-line header band — shows the shared unit once when
+       applicable. Indexed view always reads "Index (base FY = 100)". */
+    let unitBanner = "";
+    if (view === "indexed") {
+      unitBanner = `Index · base ${state.explorer.fyFrom} = 100`;
+    } else if (mode.sameUnit) {
+      const sample = rowsPre[0] && rowsPre[0].s.def;
+      if (sample) unitBanner = _explorerUnitGroupLabel(sample);
+    }
+
+    const rowsHTML = displayRows.map(d => {
+      const r = d.r;
+      const v = d.displayVal;
+      let leftPct, widthPct, fillCls;
+      if (v == null) {
+        leftPct = zeroPct; widthPct = 0; fillCls = "is-empty";
+      } else if (v >= 0) {
+        leftPct = zeroPct;
+        widthPct = (v / range) * 100;
+        fillCls = "is-pos";
+      } else {
+        widthPct = (Math.abs(v) / range) * 100;
+        leftPct = zeroPct - widthPct;
+        fillCls = "is-neg";
+      }
+      return `
+        <div class="hbar-row" title="${ATTR(r.s.company + " · " + r.s.def.label)}">
+          <div class="hbar-label">
+            <span class="swatch" style="background:${r.s.color}"></span>
+            <span class="hbar-name">${r.s.company} · ${r.s.def.label}</span>
+            ${bestSet.has(r) ? `<span class="ss-best-badge">Best</span>` : ""}
+          </div>
+          <div class="hbar-track" aria-hidden="true">
+            ${hasNeg ? `<div class="hbar-zero" style="left:${zeroPct.toFixed(2)}%"></div>` : ""}
+            <div class="hbar-fill ${fillCls}"
+                 style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;background:${r.s.color}"></div>
+          </div>
+          <div class="hbar-value">${d.displayText}</div>
+        </div>`;
+    }).join("");
+
+    return `
+      <div class="snapshot-wrap snapshot-bars-wrap">
+        ${unitBanner ? `<div class="snapshot-bars-banner">${unitBanner} · ${fyTo}</div>` : ""}
+        <div class="snapshot-bars" role="list">
+          ${rowsHTML}
+        </div>
+      </div>`;
   }
 
   function pieChart(slices, options = {}) {
@@ -2823,6 +3042,9 @@
       /* Strip Industry-only side-legend layout when switching to an OEM. */
       const leftPanel = $("#chart1") && $("#chart1").closest(".chart-panel");
       if (leftPanel) leftPanel.classList.remove("chart-panel-explorer");
+      /* Hide the Industry-only Snapshot view toggle. */
+      const snapTog = $("#snapshot-toggle");
+      if (snapTog) snapTog.classList.add("hidden");
 
       /* 10-year rolling window: trailing 10 FYs from D.FYS_FULL,
          which is already extended automatically each April by
@@ -2871,6 +3093,8 @@
       $("#chart2-sub").textContent   = "";
       $("#chart2-sub").classList.add("hidden");
       $("#chart2-toggle").classList.remove("hidden");
+      const snapTogMix = $("#snapshot-toggle");
+      if (snapTogMix) snapTogMix.classList.add("hidden");
       renderVolumeMixChart();
     }
 

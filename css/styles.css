@@ -1701,3 +1701,157 @@ body::before {
   font-size: 11.5px;
   padding: 36px 12px;
 }
+
+/* Snapshot view toggle (Table | Bars) in the right card head */
+#snapshot-toggle .snap-btn {
+  border: none;
+  background: transparent;
+  color: #64748B;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+}
+#snapshot-toggle .snap-btn.is-active {
+  background: #FFFFFF;
+  color: #0B1F33;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.08);
+}
+#snapshot-toggle .snap-btn.is-disabled,
+#snapshot-toggle .snap-btn:disabled {
+  color: #CBD5E1;
+  cursor: not-allowed;
+}
+
+/* Grouped-table group header — folds the Unit column into one row */
+.snapshot-table .snapshot-group-row td {
+  background: #F8FAFC;
+  color: #475569;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  padding: 6px 8px;
+  border-bottom: 1px solid #E5EAF1;
+}
+.snapshot-table .snapshot-group-row.snapshot-group-single td {
+  background: #FBFCFE;
+  color: #64748B;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+/* Series cell — let long names wrap onto two lines instead of
+   truncating aggressively, per spec. */
+.snapshot-table .ss-series {
+  white-space: normal;
+  flex-wrap: wrap;
+  align-items: center;
+  line-height: 1.3;
+  gap: 6px;
+}
+.snapshot-table .ss-series .ss-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.snapshot-table .ss-best-badge {
+  margin-left: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Subtle notice line above the snapshot body */
+.snapshot-notice {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #92400E;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 0 0 10px;
+}
+.snapshot-notice.is-info {
+  color: #1E40AF;
+  background: #DBEAFE;
+  border-color: #BFDBFE;
+}
+
+/* Horizontal-bar snapshot */
+.snapshot-bars-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+.snapshot-bars-banner {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: #475569;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E5EAF1;
+  padding: 6px 8px;
+  border-radius: 6px 6px 0 0;
+}
+.snapshot-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 2px 0;
+}
+.hbar-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) minmax(0, 2fr) minmax(56px, auto);
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0;
+}
+.hbar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #1F2A37;
+  line-height: 1.25;
+  flex-wrap: wrap;
+}
+.hbar-label .swatch {
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.hbar-label .hbar-name {
+  word-break: break-word;
+  white-space: normal;
+}
+.hbar-track {
+  position: relative;
+  height: 12px;
+  background: #F1F5F9;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hbar-zero {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: #CBD5E1;
+}
+.hbar-fill {
+  position: absolute;
+  top: 0; bottom: 0;
+  border-radius: 6px;
+  transition: width 0.22s ease, left 0.22s ease;
+}
+.hbar-fill.is-empty {
+  background: #E5EAF1 !important;
+}
+.hbar-value {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #0B1F33;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 56px;
+}

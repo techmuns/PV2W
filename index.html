@@ -256,6 +256,12 @@
                 <button data-mix="export"     class="mix-btn px-2.5 py-1 rounded-md font-semibold">Export</button>
                 <button data-mix="powertrain" class="mix-btn px-2.5 py-1 rounded-md font-semibold">Powertrain</button>
               </div>
+              <!-- Industry-only Snapshot view toggle (Table | Bars).
+                   Toggled visible by JS only when state.company === 'Industry'. -->
+              <div id="snapshot-toggle" class="hidden chart-panel-head-toggle inline-flex rounded-lg bg-canvas border border-line p-0.5 text-[11px]" role="tablist" aria-label="Snapshot view">
+                <button type="button" data-snapshot-view="table" class="snap-btn px-2.5 py-1 rounded-md font-semibold">Table</button>
+                <button type="button" data-snapshot-view="bars"  class="snap-btn px-2.5 py-1 rounded-md font-semibold">Bars</button>
+              </div>
               <span id="chart2-sub" class="hidden chart-panel-head-unit text-[11px] text-inkMuted font-medium"></span>
             </div>
             <div class="chart-panel-head-row chart-panel-head-row2">
