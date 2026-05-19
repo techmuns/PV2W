@@ -178,14 +178,49 @@
         <span class="section-hint">Growth · Mix · Composition</span>
       </div>
 
-      <!-- Industry-only shared controls — drive both Performance cards
-           with one metric + year selection. Toggled visible by JS only
-           when state.company === 'Industry'. -->
-      <div id="industry-controls" class="hidden items-center gap-3 mb-3 flex-wrap">
-        <span class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold">Metric</span>
-        <select id="ind-metric-select" class="cat-select-inline" style="width:auto;min-width:170px"></select>
-        <span class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold ml-2">Year (right)</span>
-        <select id="ind-year-select" class="cat-select-inline" style="width:auto;min-width:90px"></select>
+      <!-- Performance Explorer toolbar — drives both Performance cards.
+           One row, soft pills, premium feel: Entity · Category ·
+           Metrics multi-select · Year · Compare · View. Sync'd with
+           state.explorer + the top company switcher. -->
+      <div id="perf-explorer-controls" class="pex-bar mb-3">
+        <div class="pex-group">
+          <span class="pex-label">Entity</span>
+          <select id="pex-company" class="pex-select"></select>
+        </div>
+        <div class="pex-group">
+          <span class="pex-label">Category</span>
+          <select id="pex-category" class="pex-select"></select>
+        </div>
+        <div class="pex-group pex-group-metrics">
+          <span class="pex-label">Metrics</span>
+          <div class="pex-multi" id="pex-metrics">
+            <div class="pex-pills" id="pex-metric-pills"></div>
+            <button type="button" class="pex-add" id="pex-metric-add" aria-label="Add metric">
+              <span>+ Add</span>
+            </button>
+            <div class="pex-menu hidden" id="pex-metric-menu"></div>
+          </div>
+        </div>
+        <div class="pex-group">
+          <span class="pex-label">Year</span>
+          <select id="pex-year" class="pex-select"></select>
+        </div>
+        <div class="pex-group">
+          <span class="pex-label">Compare</span>
+          <select id="pex-compare" class="pex-select">
+            <option value="off">Off</option>
+            <option value="industry">vs Industry</option>
+            <option value="peers">All Peers</option>
+          </select>
+        </div>
+        <div class="pex-group">
+          <span class="pex-label">View</span>
+          <div class="pex-seg" id="pex-view">
+            <button type="button" data-view="absolute" class="pex-seg-btn">Abs</button>
+            <button type="button" data-view="yoy"      class="pex-seg-btn">YoY</button>
+            <button type="button" data-view="indexed"  class="pex-seg-btn">Indexed</button>
+          </div>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
