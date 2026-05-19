@@ -1574,28 +1574,33 @@ body::before {
   border-color: #BFDBFE;
 }
 
-/* Side legend layout (Industry explorer left card only) */
-.chart-panel.chart-panel-explorer .chart-panel-body {
-  flex-direction: row;
-  align-items: stretch;
-  gap: 14px;
-}
+/* Industry Explorer — left card layout tweaks.
+   The chart stays full-width inside the panel body (vertical layout
+   inherited from .chart-panel-body); legend sits below the chart as
+   wrappable compact chips, and the source line lives in the card
+   footer with its standard slim border-top — no side panel, no
+   vertical divider next to the chart. */
 .chart-panel.chart-panel-explorer .chart-panel-body > #chart1 {
   flex: 1 1 auto;
-  min-width: 0;
+  /* Slightly taller canvas — the explorer chart is the focal
+     element of the card and deserves more vertical real estate
+     than the legacy single-metric chart. */
+  min-height: 300px !important;
+  height: 300px !important;
+}
+.chart-panel.chart-panel-explorer .chart-panel-body > #chart1 svg.chart-svg {
+  height: 300px;
 }
 .chart-panel.chart-panel-explorer #chart1-legend {
-  flex: 0 0 168px;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  gap: 6px;
-  margin: 0;
-  padding-left: 10px;
-  border-left: 1px dashed #E5EAF1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 10px;
+  max-height: 96px;
   overflow-y: auto;
-  max-height: 240px;
-  min-height: 0;
+  min-height: 24px;
 }
 .chart-panel.chart-panel-explorer #chart1-legend .legend-chip-explorer {
   display: inline-flex;
@@ -1604,67 +1609,95 @@ body::before {
   font-size: 10.5px;
   color: #1F2A37;
   line-height: 1.25;
-  word-break: break-word;
+  white-space: nowrap;
 }
 .chart-panel.chart-panel-explorer #chart1-legend .legend-chip-explorer .swatch {
   width: 10px; height: 10px;
   border-radius: 2px;
   flex-shrink: 0;
 }
-.chart-panel.chart-panel-explorer #chart1-source {
-  flex-basis: 100%;
-}
 
-/* Peer summary mini-table for the right card (multi-company mode) */
-.peer-summary {
+/* Selected Year Snapshot table — right card (Industry explorer only) */
+.snapshot-table {
   width: 100%;
   font-size: 11.5px;
   border-collapse: collapse;
+  table-layout: fixed;
 }
-.peer-summary th {
+.snapshot-table th {
   text-align: left;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 9.5px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #64748B;
   padding: 6px 8px;
   border-bottom: 1px solid #E5EAF1;
+  background: #FBFCFE;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
-.peer-summary td {
-  padding: 7px 8px;
+.snapshot-table td {
+  padding: 8px;
   border-bottom: 1px solid #F1F5F9;
   color: #1F2A37;
   vertical-align: middle;
+  font-variant-numeric: tabular-nums;
 }
-.peer-summary tr:last-child td { border-bottom: none; }
-.peer-summary .peer-name {
+.snapshot-table tr:last-child td { border-bottom: none; }
+.snapshot-table .ss-series {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
-.peer-summary .peer-name .swatch {
+.snapshot-table .ss-series .swatch {
   width: 8px; height: 8px;
   border-radius: 2px;
+  flex-shrink: 0;
 }
-.peer-summary .num {
-  font-variant-numeric: tabular-nums;
-  text-align: right;
+.snapshot-table .ss-series .ss-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.peer-summary .peer-rank-best  { color: #15803D; font-weight: 600; }
-.peer-summary .peer-rank-worst { color: #B91C1C; font-weight: 600; }
-
-@media (max-width: 820px) {
-  .chart-panel.chart-panel-explorer .chart-panel-body { flex-direction: column; }
-  .chart-panel.chart-panel-explorer #chart1-legend {
-    flex: 0 0 auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border-left: none;
-    border-top: 1px dashed #E5EAF1;
-    padding-left: 0;
-    padding-top: 10px;
-    max-height: none;
-  }
+.snapshot-table .num { text-align: right; }
+.snapshot-table .ss-unit {
+  color: #94A3B8;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.snapshot-table .ss-up   { color: #15803D; font-weight: 600; }
+.snapshot-table .ss-down { color: #B91C1C; font-weight: 600; }
+.snapshot-table .ss-flat { color: #64748B; font-weight: 500; }
+.snapshot-table .ss-best-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  color: #166534;
+  background: #DCFCE7;
+  border: 1px solid #BBF7D0;
+  border-radius: 999px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.snapshot-wrap {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  /* Match the height of the left chart card so both card bodies
+     align visually even when the table has many rows. */
+  max-height: 312px;
+}
+.snapshot-empty {
+  text-align: center;
+  color: #94A3B8;
+  font-size: 11.5px;
+  padding: 36px 12px;
 }

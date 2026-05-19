@@ -2202,7 +2202,7 @@
         yUnit,
         tooltipUnit,
         area: lineSeries.length === 1,
-        height: 240,
+        height: 300,
       });
 
       if (leftLegend) {
@@ -2232,188 +2232,151 @@
     bindChartHovers($("#chart2"));
   }
 
+  /* Selected Year Snapshot — right card.
+     One row per active (company × metric) series. Columns:
+       SERIES | FY (to) value | vs prior FY | From → To change | UNIT
+     For percent metrics the deltas are reported in pp; for absolute
+     metrics they are reported as percent changes. Missing inputs
+     always render as "—" (no fabrication). When multiple series
+     share the same metric a "Best" badge marks the top performer
+     (highest current value) for that metric. */
   function _renderExplorerRightCard(seriesIndex, fys) {
-    const chart2 = $("#chart2");
-    const titleEl = $("#chart2-title");
-    const helpEl  = $("#chart2-help");
+    const chart2   = $("#chart2");
+    const titleEl  = $("#chart2-title");
+    const helpEl   = $("#chart2-help");
     const legendEl = $("#chart2-legend");
     const sourceEl = $("#chart2-source");
-
     if (!chart2) return;
-    chart2.removeAttribute("style");
-    legendEl && (legendEl.innerHTML = "");
 
-    const companies = state.explorer.companies;
-    /* Use the latest FY in the selected range that actually has data
-       for the lead metric across any of the selected companies — keeps
-       the right card meaningful when the user's range extends past
-       published data. */
-    const leadMetricKey = state.explorer.metrics[0];
-    const leadDef = explorerMetricDef(leadMetricKey);
-    const lastFy = (() => {
-      if (!leadDef) return fys[fys.length - 1];
+    chart2.removeAttribute("style");
+    if (legendEl) legendEl.innerHTML = "";
+
+    /* Selected FY = state.explorer.fyTo, snapped back to the last FY in
+       the range that actually has at least one populated value across
+       the active series. Keeps the snapshot meaningful when the user's
+       To FY extends past published data. */
+    const fallbackTo = state.explorer.fyTo;
+    const fyTo = (() => {
       for (let i = fys.length - 1; i >= 0; i--) {
         const fy = fys[i];
-        const hit = companies.some(co =>
-          explorerIsAvailable(leadDef, co) && explorerLookup(co, leadDef, fy) != null);
-        if (hit) return fy;
+        if (seriesIndex.some(s => explorerLookup(s.company, s.def, fy) != null)) return fy;
       }
-      return fys[fys.length - 1];
+      return fallbackTo;
     })();
+    const fyFrom = state.explorer.fyFrom;
+    const idxTo = fys.indexOf(fyTo);
+    const fyPrev = idxTo > 0 ? fys[idxTo - 1] : null;
 
-    /* Single-company case → OEM mix / industry composition for the
-       FIRST selected metric (closest match to existing METRIC_PIE). */
-    if (companies.length === 1 && companies[0] === "Industry") {
-      /* Re-use existing METRIC_PIE composition for the first metric
-         whose key maps to an entry in METRIC_PIE. */
-      const firstMk = state.explorer.metrics[0];
-      const legacyId = explorerMapToLegacy(firstMk);
-      const piedef = legacyId ? METRIC_PIE[legacyId] : null;
-      if (piedef) {
-        _renderLegacyPieIntoChart2(legacyId, lastFy);
-        return;
-      }
-      /* Fallback: empty contextual card */
-      titleEl && (titleEl.textContent = "Industry composition");
-      helpEl  && (helpEl.textContent  = `No OEM-level composition available for ${explorerMetricDef(firstMk).label}.`);
-      chart2.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">Composition unavailable for this metric.</div>`;
-      sourceEl && (sourceEl.textContent = "");
+    if (titleEl) titleEl.textContent = "Selected Year Snapshot";
+    if (helpEl) {
+      const count = seriesIndex.length;
+      const range = (fyFrom && fyTo && fyFrom !== fyTo) ? `${fyFrom}–${fyTo}` : fyTo;
+      helpEl.textContent = `${fyTo} · ${count} ${count === 1 ? "series" : "series"} · period ${range}`;
+    }
+
+    if (!seriesIndex.length) {
+      chart2.innerHTML = `<div class="snapshot-empty">Select at least one company and metric to populate the snapshot.</div>`;
+      if (sourceEl) sourceEl.textContent = "";
       return;
     }
 
-    /* Multi or single-OEM case → peer summary for the FIRST metric.
-       Shows: latest, prior FY value, change, 3-year CAGR (for absolute),
-       and a best/worst tag. */
-    const mk = state.explorer.metrics[0];
-    const def = explorerMetricDef(mk);
-    if (!def) return;
-    titleEl && (titleEl.textContent = `Peer summary · ${def.label}`);
-    helpEl  && (helpEl.textContent  = `Latest FY ${lastFy} · ${companies.length} ${companies.length === 1 ? "entity" : "entities"}`);
-
-    /* Build rows from explorer companies. Include "Industry" only when
-       industry data exists for this metric. */
-    const fy3Back = fys.length >= 4 ? fys[fys.length - 4] : (fys[0] || lastFy);
-    const rows = [];
-    companies.forEach(co => {
-      if (!explorerIsAvailable(def, co)) return;
-      const cur  = explorerLookup(co, def, lastFy);
-      const prev = explorerLookup(co, def, fys[fys.length - 2] || lastFy);
-      const back = explorerLookup(co, def, fy3Back);
-      let changeStr = "—";
-      if (cur != null && prev != null) {
-        if (def.format === "pct") {
-          const d = cur - prev;
-          changeStr = `${d > 0 ? "+" : ""}${d.toFixed(1)} pp`;
-        } else if (prev !== 0) {
-          const pct = ((cur - prev) / Math.abs(prev)) * 100;
-          changeStr = `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`;
-        }
-      }
-      let cagrStr = "—";
-      if (cur != null && back != null && back !== 0 && def.format !== "pct" && fys.length >= 4) {
-        const years = fys.length - 1;
-        const cagr = (Math.pow(cur / back, 1 / Math.max(1, years - 1)) - 1) * 100;
-        if (Number.isFinite(cagr)) cagrStr = `${cagr > 0 ? "+" : ""}${cagr.toFixed(1)}%`;
-      }
-      rows.push({
-        company: co,
-        color: explorerSeriesColor(co, mk),
-        latest: cur,
-        latestText: explorerFormatValue(def, cur, "actual"),
-        changeText: changeStr,
-        cagrText: cagrStr,
-        _cur: cur,
-      });
+    /* Best-marker grouping — for each metric appearing in more than one
+       row, mark the row with the highest current value as "Best". */
+    const byMetric = new Map();
+    const rowsPre = seriesIndex.map(s => ({
+      s,
+      cur:  explorerLookup(s.company, s.def, fyTo),
+      prev: fyPrev ? explorerLookup(s.company, s.def, fyPrev) : null,
+      from: explorerLookup(s.company, s.def, fyFrom),
+    }));
+    rowsPre.forEach(r => {
+      if (r.cur == null) return;
+      if (!byMetric.has(r.s.metricKey)) byMetric.set(r.s.metricKey, []);
+      byMetric.get(r.s.metricKey).push(r);
+    });
+    const bestSet = new Set();
+    byMetric.forEach((arr) => {
+      if (arr.length < 2) return;
+      const best = arr.slice().sort((a, b) => b.cur - a.cur)[0];
+      if (best) bestSet.add(best);
     });
 
-    /* Rank best / worst by latest */
-    const valid = rows.filter(r => r._cur != null);
-    if (valid.length >= 2) {
-      const sorted = valid.slice().sort((a, b) => b._cur - a._cur);
-      rows.forEach(r => {
-        if (r === sorted[0])                 r.rank = "best";
-        else if (r === sorted[sorted.length - 1]) r.rank = "worst";
-      });
-    }
+    const fmtDeltaForDef = (def, cur, base) => {
+      if (cur == null || base == null) return { text: "—", cls: "ss-flat" };
+      if (def.format === "pct") {
+        const d = cur - base;
+        const cls = d > 0.05 ? "ss-up" : d < -0.05 ? "ss-down" : "ss-flat";
+        return { text: `${d > 0 ? "+" : ""}${d.toFixed(1)} pp`, cls };
+      }
+      if (base === 0) return { text: "—", cls: "ss-flat" };
+      const pct = ((cur - base) / Math.abs(base)) * 100;
+      if (!Number.isFinite(pct)) return { text: "—", cls: "ss-flat" };
+      const cls = pct > 0.05 ? "ss-up" : pct < -0.05 ? "ss-down" : "ss-flat";
+      return { text: `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`, cls };
+    };
+
+    const rows = rowsPre.map(r => {
+      const dPrev = fmtDeltaForDef(r.s.def, r.cur, r.prev);
+      const dPeriod = (fyFrom && fyFrom !== fyTo)
+        ? fmtDeltaForDef(r.s.def, r.cur, r.from)
+        : { text: "—", cls: "ss-flat" };
+      return {
+        seriesKey: r.s.key,
+        company: r.s.company,
+        metricLabel: r.s.def.label,
+        color: r.s.color,
+        valueText: explorerFormatValue(r.s.def, r.cur, "actual"),
+        prevDeltaText: dPrev.text, prevDeltaCls: dPrev.cls,
+        periodDeltaText: dPeriod.text, periodDeltaCls: dPeriod.cls,
+        unit: r.s.def.unit,
+        isBest: bestSet.has(r),
+      };
+    });
+
+    const prevCol  = fyPrev ? `vs ${fyPrev}` : "vs prior FY";
+    const periodCol = (fyFrom && fyFrom !== fyTo) ? `${fyFrom}→${fyTo}` : "Period";
 
     chart2.innerHTML = `
-      <table class="peer-summary" aria-label="Peer summary">
-        <thead>
-          <tr>
-            <th>Entity</th>
-            <th class="num">${lastFy}</th>
-            <th class="num">vs ${fys[fys.length - 2] || lastFy}</th>
-            <th class="num">${fys.length >= 4 ? fy3Back + "→" + lastFy + " CAGR" : "CAGR"}</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows.map(r => `
+      <div class="snapshot-wrap">
+        <table class="snapshot-table" aria-label="Selected year snapshot">
+          <thead>
             <tr>
-              <td><span class="peer-name"><span class="swatch" style="background:${r.color}"></span>${r.company}</span></td>
-              <td class="num">${r.latestText}</td>
-              <td class="num ${r.rank === "best" ? "peer-rank-best" : r.rank === "worst" ? "peer-rank-worst" : ""}">${r.changeText}</td>
-              <td class="num">${r.cagrText}</td>
-            </tr>`).join("")}
-        </tbody>
-      </table>`;
+              <th>Series</th>
+              <th class="num">${fyTo}</th>
+              <th class="num">${prevCol}</th>
+              <th class="num">${periodCol}</th>
+              <th class="num">Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>
+                  <span class="ss-series" title="${ATTR(r.company + " · " + r.metricLabel)}">
+                    <span class="swatch" style="background:${r.color}"></span>
+                    <span class="ss-label">${r.company} · ${r.metricLabel}</span>
+                  </span>
+                  ${r.isBest ? `<span class="ss-best-badge">Best</span>` : ""}
+                </td>
+                <td class="num">${r.valueText}</td>
+                <td class="num ${r.prevDeltaCls}">${r.prevDeltaText}</td>
+                <td class="num ${r.periodDeltaCls}">${r.periodDeltaText}</td>
+                <td class="num ss-unit">${r.unit}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+
+    /* Source footer — collapse identical sources across the visible
+       rows. Reuses explorerSourceFor() so the credit lines stay in
+       lockstep with what the chart shows. */
     if (sourceEl) {
-      const src = explorerSourceFor(companies[0], def, lastFy);
-      sourceEl.textContent = src ? `Source: ${src}.` : "";
-    }
-  }
-
-  /* Map explorer registry key → legacy IND_METRICS id so we can reuse
-     METRIC_PIE for the single-Industry case. */
-  function explorerMapToLegacy(key) {
-    const map = {
-      volume:        "volume",
-      volumeGrowth:  "growth",
-      marketShare:   "marketshare",
-      suvShare:      "suv",
-      evShare:       "ev",
-      exportShare:   "export",
-      revenueGrowth: "rev_growth",
-      ebitdaMargin:  "ebitda",
-      realisationGrowth: "real_growth",
-      capex:         "capex",
-      newLaunches:   "newlaunches",
-      facelifts:     "facelifts",
-    };
-    return map[key] || null;
-  }
-
-  /* Re-uses existing METRIC_PIE logic. Stashes / restores state.indMetric
-     and state.indYearRight so this never permanently mutates the legacy
-     Industry view's state. */
-  function _renderLegacyPieIntoChart2(legacyId, fy) {
-    const savedMetric = state.indMetric;
-    const savedYear = state.indYearRight;
-    state.indMetric = legacyId;
-    state.indYearRight = fy;
-    try {
-      /* The legacy impl renders both chart1 AND chart2. We want only
-         chart2, so snapshot chart1 then restore after. */
-      const c1 = $("#chart1");
-      const c1html = c1 ? c1.innerHTML : "";
-      const c1cls  = c1 ? c1.className : "";
-      const t1     = $("#chart1-title") ? $("#chart1-title").textContent : "";
-      const h1     = $("#chart1-help")  ? $("#chart1-help").textContent  : "";
-      const s1     = $("#chart1-sub")   ? $("#chart1-sub").textContent   : "";
-      const l1     = $("#chart1-legend") ? $("#chart1-legend").innerHTML : "";
-      const src1   = $("#chart1-source") ? $("#chart1-source").textContent : "";
-
-      _renderIndustryPerformanceImpl();
-
-      /* Restore chart1 (the explorer chart) */
-      if (c1) { c1.innerHTML = c1html; c1.className = c1cls; }
-      if ($("#chart1-title"))  $("#chart1-title").textContent  = t1;
-      if ($("#chart1-help"))   $("#chart1-help").textContent   = h1;
-      if ($("#chart1-sub"))    $("#chart1-sub").textContent    = s1;
-      if ($("#chart1-legend")) $("#chart1-legend").innerHTML  = l1;
-      if ($("#chart1-source")) $("#chart1-source").textContent = src1;
-    } finally {
-      state.indMetric = savedMetric;
-      state.indYearRight = savedYear;
+      const sources = Array.from(new Set(
+        seriesIndex.map(s => explorerSourceFor(s.company, s.def, fyTo)).filter(Boolean)
+      ));
+      sourceEl.textContent = sources.length
+        ? `Source: ${sources.slice(0, 3).join("; ")}${sources.length > 3 ? "; +" + (sources.length - 3) + " more" : ""}.`
+        : "";
     }
   }
 
