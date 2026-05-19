@@ -661,7 +661,15 @@
              YoY change next to the absolute. */
           const prev = i > 0 ? s.values[i - 1] : null;
           return {
-            label: s.name || "",
+            label:   s.name || "",
+            /* Optional split fields — when present, the tooltip
+               handler can group by company; absent, it falls back to
+               the existing flat list rendering. Set only by callers
+               that pass them (Industry Performance Explorer). */
+            company: s.company || null,
+            metric:  s.metric  || null,
+            unit:    s.unit    || null,
+            source:  s.source  || null,
             value: v,
             prev: (prev === null || prev === undefined) ? null : prev,
             color: s.color || "#2563EB",
@@ -676,6 +684,11 @@
            AND the analyst-facing unit phrase from the caller
            (axisLabel takes priority for the tooltip suffix). */
         unit: options.tooltipUnit || options.yUnit || "",
+        /* When set ("company"), tooltip groups segments by that
+           field and switches to a wider 2-column block layout for
+           larger selections. Only the Industry Performance Explorer
+           sets this. */
+        groupBy: options.groupBy || null,
         segments,
       });
       return `<rect class="hover-target" x="${x(i) - colW/2}" y="${padT}" width="${colW}" height="${h - padT - padB}" fill="transparent"
@@ -2207,14 +2220,22 @@
       else leftSubEl.textContent = (seriesIndex[0] && seriesIndex[0].def.unit) || "";
     }
 
-    /* Build line series */
+    /* Build line series. company / metric / source are passed through
+       to lineChart so the multi-line tooltip can group by company. */
     const lineSeries = seriesIndex.map(s => {
       const raw = fys.map(fy => explorerLookup(s.company, s.def, fy));
       const scaled = raw.map(v => explorerScaledForChart(s.def, v, view));
       const viewed = explorerApplyView(scaled, view);
+      const tipUnit = view === "yoy" ? "% YoY"
+                    : view === "indexed" ? `index (${state.explorer.fyFrom}=100)`
+                    : (s.def.unit || "");
       return {
         name: s.name,
         color: s.color,
+        company: s.company,
+        metric: s.def.label,
+        source: explorerSourceFor(s.company, s.def, fys[fys.length - 1]) || null,
+        unit: tipUnit,
         values: viewed,
         _rawValues: raw,
         _def: s.def,
@@ -2242,6 +2263,10 @@
         tooltipUnit,
         area: lineSeries.length === 1,
         height: 300,
+        /* Tells the multi-line tooltip handler to group rows by
+           company in a 2-column block layout. Only the explorer
+           passes this; OEM & legacy paths render the flat list. */
+        groupBy: "company",
       });
 
       if (leftLegend) {
@@ -2946,6 +2971,10 @@
     const tip    = $("#chart-tooltip");
     const simple = $("#cht-simple");
     const rich   = $("#cht-rich");
+    /* Strip the wide-layout flag at every entry — only the grouped
+       multi-line path re-adds it. Keeps every other tooltip kind at
+       the compact width. */
+    if (tip) tip.classList.remove("tt-wide");
 
     /* Rich payload — multi-row tooltip. Two flavours:
          kind === 'multi-line' (line charts): FY title + one row per
@@ -3113,19 +3142,26 @@
         simple.classList.add("hidden");
         const unit = p.unit || "";
         const isDelta = unit === "%" || /Δ|growth/i.test(unit);
-        const fmtVal = (v) => {
-          const sign = (isDelta && v > 0) ? "+" : "";
+        /* Per-segment value formatter — prefers the segment's own
+           unit (set by callers in mixed-unit explorer mode) so each
+           row reads correctly even when the chart axis uses no
+           common unit. */
+        const fmtSegVal = (s) => {
+          const u = s.unit || unit || "";
+          const isPct = u === "%" || /%/i.test(u);
+          const isYoYRow = isDelta || /yoy/i.test(u);
+          const sign = ((isYoYRow || isPct) && s.value > 0) ? "+" : "";
           let body;
-          if (unit === "%") body = v.toFixed(1);
-          else if (Math.abs(v) >= 1000) body = Math.round(v).toLocaleString("en-IN");
-          else body = v.toFixed(2);
-          const suffix = unit ? ` ${unit}` : "";
-          return `${sign}${body}${suffix}`;
+          if (isPct) body = s.value.toFixed(1);
+          else if (Math.abs(s.value) >= 1000) body = Math.round(s.value).toLocaleString("en-IN");
+          else body = s.value.toFixed(2);
+          const suffix = u ? (isPct ? "%" : ` ${u}`) : "";
+          return `${sign}${body}${suffix.replace(/^ %$/, "%")}`;
         };
-        /* For absolute-value series, also render the YoY change
-           next to the value so analysts see the trajectory at a
-           glance. Skip when prev is missing (first FY) or when
-           the metric itself is already a % (avoids double %).  */
+        /* YoY badge — for absolute-value series, render the YoY
+           change next to the value so analysts see the trajectory
+           at a glance. Skip when prev is missing (first FY) or
+           when the metric itself is already a % (avoids double %). */
         const fmtYoY = (cur, prev) => {
           if (prev == null || prev === 0) return "";
           const dPct = ((cur - prev) / Math.abs(prev)) * 100;
@@ -3133,12 +3169,75 @@
           const colour = dPct >= 0 ? "#15803D" : "#B91C1C";
           return `<span class="ml-1.5 text-[11px] font-medium" style="color:${colour}">${sign}${dPct.toFixed(1)}%</span>`;
         };
+        const segIsPct = (s) => {
+          const u = s.unit || unit || "";
+          return u === "%" || /%/i.test(u);
+        };
+
+        /* Grouped 2-column-block layout — used when the caller
+           sets groupBy="company" AND the selection is busy enough
+           to read cleanly (>6 series). For smaller selections we
+           keep the existing compact flat list. */
+        const grouped = p.groupBy === "company" && p.segments.length > 6
+                        && p.segments.some(s => s.company);
+        if (grouped) {
+          /* Build company → segment list in deterministic order
+             (Industry, then OEMs in the order they were first
+             encountered). Industry always renders full-width at
+             the bottom of the grid for analyst familiarity. */
+          const byCompany = new Map();
+          p.segments.forEach(s => {
+            const co = s.company || "Other";
+            if (!byCompany.has(co)) byCompany.set(co, []);
+            byCompany.get(co).push(s);
+          });
+          const renderMetricRow = (s) => {
+            const isPct = segIsPct(s);
+            const trailing = isPct ? "" : fmtYoY(s.value, s.prev);
+            const metricLabel = s.metric || s.label || "";
+            return `
+              <div class="tt-metric-row">
+                <span class="tt-dot" style="background:${s.color}"></span>
+                <span class="tt-metric-name" title="${ATTR(metricLabel)}">${metricLabel}</span>
+                <span class="tt-metric-val">
+                  <span class="tt-val-num">${fmtSegVal(s)}</span>${trailing}
+                </span>
+              </div>`;
+          };
+          const renderBlock = (companyName, segs) => `
+            <div class="tt-company-block">
+              <div class="tt-company-name">${companyName}</div>
+              ${segs.map(renderMetricRow).join("")}
+            </div>`;
+          const industrySegs = byCompany.get("Industry") || [];
+          const oemEntries = Array.from(byCompany.entries()).filter(([c]) => c !== "Industry");
+          const oemBlocks = oemEntries.map(([c, segs]) => renderBlock(c, segs)).join("");
+          const industryBlock = industrySegs.length
+            ? renderBlock("Industry", industrySegs)
+            : "";
+
+          rich.innerHTML = `
+            <div class="tt-grouped">
+              <div class="tt-grouped-grid">${oemBlocks}</div>
+              ${industryBlock ? `<div class="tt-industry-row">${industryBlock}</div>` : ""}
+            </div>`;
+          tip.classList.add("tt-wide");
+          rich.classList.remove("hidden");
+          tip.classList.remove("hidden");
+          positionTip(tip, e);
+          return;
+        }
+
+        /* Flat list (small selections, OEM page, legacy industry).
+           For mixed-unit explorer tooltips the segment's own unit
+           is used; otherwise the chart-level unit is used. */
+        tip.classList.remove("tt-wide");
         const segs = p.segments.map(s => `
           <div class="flex items-center gap-2.5">
             <span class="inline-block w-2 h-2 rounded-sm flex-shrink-0" style="background:${s.color}"></span>
             <span class="text-[11.5px]" style="color:#1F2A37;">${s.label}</span>
             <span class="text-[12px] tabular-nums ml-auto whitespace-nowrap">
-              <span class="font-semibold" style="color:#1F2A37;">${fmtVal(s.value)}</span>${unit !== "%" ? fmtYoY(s.value, s.prev) : ""}
+              <span class="font-semibold" style="color:#1F2A37;">${fmtSegVal(s)}</span>${segIsPct(s) ? "" : fmtYoY(s.value, s.prev)}
             </span>
           </div>`).join("");
         rich.innerHTML = `<div class="space-y-1.5 mt-1">${segs}</div>`;
