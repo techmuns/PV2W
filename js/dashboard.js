@@ -2089,38 +2089,42 @@
     const entity = state.company;
     /* Metrics that have *any* numeric data for this entity. */
     const allForEntity = metricRegistryFor(entity);
-    let metricsWereReset = false;
+    /* Categories with ≥1 metric that has data for this entity. Industry
+       data is only published for Volume + a single Financials slot
+       (PAT), so the other six categories are hidden from the toolbar
+       rather than presented as a dropdown full of N/A items with a
+       silent fallback metric from another category. */
+    const availableCats = PEX_CATEGORIES.filter(c =>
+      allForEntity.some(m => m.category === c)
+    );
+
+    /* Snap category to one that actually has data for this entity. */
+    if (!availableCats.includes(state.explorer.category)) {
+      state.explorer.category = availableCats[0] || "Volume";
+    }
+
     if (!allForEntity.length) {
       /* Nothing to plot — preserve the toolbar shape and render
          an empty-state in chart1/chart2. */
       state.explorer.metrics = [];
     } else {
       /* Drop any selected metrics that aren't valid for this entity. */
-      const before = state.explorer.metrics.length;
       state.explorer.metrics = state.explorer.metrics.filter(k => {
         const m = METRIC_BY_KEY[k];
         return m && entityHasAnyMetricData(entity, m);
       });
       if (!state.explorer.metrics.length) {
-        /* Pick a sensible default: PV Volume for Industry, else
-           Volume Growth % for the entity, else first available. */
+        /* Pick a sensible default *inside the current category* so the
+           pill row and the category select always agree. Prefer the
+           landing seeds (PV Volume for Industry, Volume Growth % for
+           OEMs) when they live in the active category. */
+        const inCat = allForEntity.filter(m => m.category === state.explorer.category);
         const seed = (entity === "Industry") ? "volume" : "volumeGrowth";
-        const fallback = entityHasAnyMetricData(entity, METRIC_BY_KEY[seed])
-          ? seed
-          : (allForEntity[0] && allForEntity[0].key);
-        if (fallback) state.explorer.metrics = [fallback];
-        if (before > 0) metricsWereReset = true;
+        let fallback = inCat.find(m => m.key === seed)
+          || inCat[0]
+          || allForEntity[0];
+        if (fallback) state.explorer.metrics = [fallback.key];
       }
-    }
-
-    /* Reconcile category: snap when (a) current category is invalid,
-       or (b) we just had to auto-pick a fallback metric in a different
-       category. Otherwise honour the user's chosen category so multi-
-       category selection still works. */
-    if (!PEX_CATEGORIES.includes(state.explorer.category) || metricsWereReset) {
-      const firstCat = state.explorer.metrics[0]
-        ? METRIC_BY_KEY[state.explorer.metrics[0]].category : null;
-      state.explorer.category = firstCat || "Volume";
     }
 
     /* If entity == Industry, peer comparison doesn't apply — reset. */
@@ -2151,10 +2155,11 @@
       }
     }
 
-    /* Category select */
+    /* Category select — only categories with data for this entity. */
     const catSel = $("#pex-category");
     if (catSel) {
-      const html = PEX_CATEGORIES.map(c =>
+      const cats = availableCats.length ? availableCats : ["Volume"];
+      const html = cats.map(c =>
         `<option value="${c}" ${c === state.explorer.category ? "selected" : ""}>${c}</option>`
       ).join("");
       if (catSel.innerHTML !== html) catSel.innerHTML = html;
@@ -2235,6 +2240,10 @@
     /* Metric multi-select pills + dropdown menu. */
     renderPexMetricPills();
     wirePexMetricMenu();
+    /* If the menu is open, refresh it so it reflects the new entity /
+       category instead of showing stale items. */
+    const menu = $("#pex-metric-menu");
+    if (menu && !menu.classList.contains("hidden")) renderPexMetricMenu();
   }
 
   function renderPexMetricPills() {
