@@ -178,14 +178,48 @@
         <span class="section-hint">Growth · Mix · Composition</span>
       </div>
 
-      <!-- Industry-only shared controls — drive both Performance cards
-           with one metric + year selection. Toggled visible by JS only
-           when state.company === 'Industry'. -->
-      <div id="industry-controls" class="hidden items-center gap-3 mb-3 flex-wrap">
-        <span class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold">Metric</span>
-        <select id="ind-metric-select" class="cat-select-inline" style="width:auto;min-width:170px"></select>
-        <span class="text-[10px] uppercase tracking-wider text-inkMuted font-semibold ml-2">Year (right)</span>
-        <select id="ind-year-select" class="cat-select-inline" style="width:auto;min-width:90px"></select>
+      <!-- Industry-only Performance Explorer toolbar. Hidden by JS for
+           every other page so OEM views render unaffected. -->
+      <div id="industry-controls" class="hidden flex-col gap-2 mb-3">
+        <div id="explorer-toolbar" class="explorer-toolbar">
+          <div class="explorer-field">
+            <span class="explorer-label">Companies</span>
+            <details class="explorer-popover" data-explorer="companies">
+              <summary class="explorer-trigger" id="explorer-companies-trigger">Select companies</summary>
+              <div class="explorer-menu" id="explorer-companies-menu" role="group" aria-label="Companies"></div>
+            </details>
+          </div>
+
+          <div class="explorer-field">
+            <span class="explorer-label">Metrics</span>
+            <details class="explorer-popover" data-explorer="metrics">
+              <summary class="explorer-trigger" id="explorer-metrics-trigger">Select metrics</summary>
+              <div class="explorer-menu explorer-menu-wide" id="explorer-metrics-menu" role="group" aria-label="Metrics"></div>
+            </details>
+          </div>
+
+          <div class="explorer-field">
+            <span class="explorer-label">From</span>
+            <select id="explorer-fy-from" class="cat-select-inline" style="width:auto;min-width:78px"></select>
+          </div>
+          <div class="explorer-field">
+            <span class="explorer-label">To</span>
+            <select id="explorer-fy-to" class="cat-select-inline" style="width:auto;min-width:78px"></select>
+          </div>
+
+          <div class="explorer-field">
+            <span class="explorer-label">View</span>
+            <div class="explorer-view-toggle" role="tablist" aria-label="View mode">
+              <button type="button" class="exp-view-btn" data-view="actual">Actual</button>
+              <button type="button" class="exp-view-btn" data-view="yoy">YoY</button>
+              <button type="button" class="exp-view-btn" data-view="indexed">Indexed</button>
+            </div>
+          </div>
+
+          <button type="button" id="explorer-reset" class="explorer-reset" title="Reset filters">Reset</button>
+        </div>
+        <div id="explorer-chips" class="explorer-chips" aria-live="polite"></div>
+        <div id="explorer-notice" class="explorer-notice hidden"></div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">

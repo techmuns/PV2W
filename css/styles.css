@@ -1373,3 +1373,298 @@ body::before {
   .segment-switcher .text-white { font-size: 14px; }
   #segment-menu-panel { left: 1rem; right: 1rem; width: auto; }
 }
+
+/* ============================================================
+   Industry Performance Explorer — Industry-only toolbar, chips,
+   popover multi-selects, view toggle, side-legend, notice.
+   Scoped to #industry-controls / .explorer-* / .chart-panel-explorer
+   so OEM pages are unaffected.
+   ============================================================ */
+#industry-controls.flex { display: flex; }
+
+.explorer-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 10px 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5EAF1;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.04);
+}
+.explorer-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.explorer-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: #64748B;
+}
+.explorer-popover { position: relative; }
+.explorer-popover > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.explorer-popover > summary::-webkit-details-marker { display: none; }
+.explorer-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #0B1F33;
+  background: #F8FAFC;
+  border: 1px solid #D9E0EA;
+  border-radius: 8px;
+  min-width: 170px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.explorer-trigger::after {
+  content: "▾";
+  margin-left: auto;
+  color: #94A3B8;
+  font-size: 10px;
+}
+.explorer-popover[open] > .explorer-trigger,
+.explorer-trigger:hover {
+  border-color: #93B4F4;
+  background: #FFFFFF;
+}
+.explorer-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 240px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: #FFFFFF;
+  border: 1px solid #E5EAF1;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(11, 31, 51, 0.10), 0 2px 4px rgba(11, 31, 51, 0.05);
+  padding: 6px;
+}
+.explorer-menu-wide { min-width: 320px; }
+.explorer-menu-group-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: #94A3B8;
+  padding: 6px 8px 4px;
+}
+.explorer-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: #0B1F33;
+  cursor: pointer;
+  border-radius: 6px;
+  user-select: none;
+}
+.explorer-menu-item:hover { background: #F4F7FB; }
+.explorer-menu-item.is-disabled {
+  color: #94A3B8;
+  cursor: not-allowed;
+}
+.explorer-menu-item.is-disabled .explorer-unavail {
+  margin-left: auto;
+  font-size: 9.5px;
+  color: #94A3B8;
+  font-style: italic;
+}
+.explorer-menu-item input[type="checkbox"] {
+  width: 13px; height: 13px;
+  accent-color: #2563EB;
+  margin: 0;
+}
+
+.explorer-view-toggle {
+  display: inline-flex;
+  background: #F1F5F9;
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+}
+.exp-view-btn {
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.exp-view-btn.is-active {
+  background: #FFFFFF;
+  color: #0B1F33;
+  box-shadow: 0 1px 2px rgba(11, 31, 51, 0.08);
+}
+
+.explorer-reset {
+  margin-left: auto;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #64748B;
+  background: transparent;
+  border: 1px solid #E5EAF1;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.explorer-reset:hover { color: #0B1F33; border-color: #BFD3EE; }
+
+.explorer-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 0;
+}
+.explorer-chips:empty { display: none; }
+.explorer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1F2A37;
+  background: #F4F7FB;
+  border: 1px solid #DCE3EE;
+  border-radius: 999px;
+}
+.explorer-chip-swatch {
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.explorer-chip-x {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.explorer-chip-x:hover { color: #DC2626; }
+
+.explorer-notice {
+  font-size: 11px;
+  font-weight: 500;
+  color: #92400E;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+.explorer-notice.is-info {
+  color: #1E40AF;
+  background: #DBEAFE;
+  border-color: #BFDBFE;
+}
+
+/* Side legend layout (Industry explorer left card only) */
+.chart-panel.chart-panel-explorer .chart-panel-body {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 14px;
+}
+.chart-panel.chart-panel-explorer .chart-panel-body > #chart1 {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.chart-panel.chart-panel-explorer #chart1-legend {
+  flex: 0 0 168px;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  padding-left: 10px;
+  border-left: 1px dashed #E5EAF1;
+  overflow-y: auto;
+  max-height: 240px;
+  min-height: 0;
+}
+.chart-panel.chart-panel-explorer #chart1-legend .legend-chip-explorer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: #1F2A37;
+  line-height: 1.25;
+  word-break: break-word;
+}
+.chart-panel.chart-panel-explorer #chart1-legend .legend-chip-explorer .swatch {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.chart-panel.chart-panel-explorer #chart1-source {
+  flex-basis: 100%;
+}
+
+/* Peer summary mini-table for the right card (multi-company mode) */
+.peer-summary {
+  width: 100%;
+  font-size: 11.5px;
+  border-collapse: collapse;
+}
+.peer-summary th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748B;
+  padding: 6px 8px;
+  border-bottom: 1px solid #E5EAF1;
+}
+.peer-summary td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #F1F5F9;
+  color: #1F2A37;
+  vertical-align: middle;
+}
+.peer-summary tr:last-child td { border-bottom: none; }
+.peer-summary .peer-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+.peer-summary .peer-name .swatch {
+  width: 8px; height: 8px;
+  border-radius: 2px;
+}
+.peer-summary .num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.peer-summary .peer-rank-best  { color: #15803D; font-weight: 600; }
+.peer-summary .peer-rank-worst { color: #B91C1C; font-weight: 600; }
+
+@media (max-width: 820px) {
+  .chart-panel.chart-panel-explorer .chart-panel-body { flex-direction: column; }
+  .chart-panel.chart-panel-explorer #chart1-legend {
+    flex: 0 0 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: none;
+    border-top: 1px dashed #E5EAF1;
+    padding-left: 0;
+    padding-top: 10px;
+    max-height: none;
+  }
+}
