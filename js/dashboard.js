@@ -68,7 +68,7 @@
          range, Actual / YoY / Indexed view, Snapshot Table/Bars,
          legend chips) is reused verbatim. */
       mode:        "companies",                // "companies" | "segments"
-      segCompany:  "Maruti",                   // active OEM in segments mode
+      segCompanies: ["Maruti"],                // multi-select OEMs in segments mode
       segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"], // ≤6 segment keys
     },
     /* Segment switcher — PV is the only live module today. 2W / CV
@@ -1804,7 +1804,14 @@
        in companies mode so a later toggle finds a valid selection. */
     if (e.mode !== "segments") e.mode = "companies";
     const segOEMs = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
-    if (!segOEMs.includes(e.segCompany)) e.segCompany = "Maruti";
+    /* Migrate legacy single-company state if it's still around. */
+    if (e.segCompany && (!Array.isArray(e.segCompanies) || !e.segCompanies.length)) {
+      e.segCompanies = [e.segCompany];
+    }
+    delete e.segCompany;
+    if (!Array.isArray(e.segCompanies)) e.segCompanies = [];
+    e.segCompanies = e.segCompanies.filter(c => segOEMs.includes(c));
+    if (!e.segCompanies.length) e.segCompanies = ["Maruti"];
     if (!Array.isArray(e.segSelected)) e.segSelected = [];
     const validKeys = new Set(PRODUCT_SEG_DEF.map(s => s.key));
     e.segSelected = e.segSelected.filter(k => validKeys.has(k));
@@ -1995,7 +2002,7 @@
           snapshotView: "auto",
           barsBasis: "value",
           mode:        "companies",
-          segCompany:  "Maruti",
+          segCompanies: ["Maruti"],
           segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"],
         };
         _explorerColorAssigned.clear();
@@ -2022,17 +2029,33 @@
       cmpToggle.dataset.wired = "1";
     }
 
-    /* Single-company select shown only in segments mode. */
-    const segCoSel = $("#explorer-seg-company-select");
-    if (segCoSel && !segCoSel.dataset.wired) {
-      /* Industry has no per-OEM segment breakdown — excluded. */
+    /* Multi-select Company picker, shown only in segments mode.
+       Same popover pattern as #explorer-companies-menu so the look
+       and interaction model stays consistent. Industry is excluded —
+       no per-OEM segment breakdown exists for it. */
+    const segCoMenu = $("#explorer-seg-companies-menu");
+    if (segCoMenu && !segCoMenu.dataset.wired) {
       const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
-      segCoSel.innerHTML = oems.map(c => `<option value="${c}">${c}</option>`).join("");
-      segCoSel.addEventListener("change", () => {
-        state.explorer.segCompany = segCoSel.value;
+      segCoMenu.innerHTML = oems.map(co => `
+        <label class="explorer-menu-item">
+          <input type="checkbox" data-seg-company="${ATTR(co)}">
+          <span>${co}</span>
+        </label>`).join("");
+      segCoMenu.addEventListener("change", (ev) => {
+        const cb = ev.target.closest("input[data-seg-company]");
+        if (!cb) return;
+        const co = cb.getAttribute("data-seg-company");
+        const set = new Set(state.explorer.segCompanies);
+        if (cb.checked) set.add(co); else set.delete(co);
+        /* Never bottom out — if the user unchecks the last company,
+           fall back to Maruti so the chart still has content rather
+           than an empty state on every interaction. */
+        const next = Array.from(set);
+        state.explorer.segCompanies = next.length ? next : ["Maruti"];
+        explorerSyncToolbarUI();
         renderIndustryExplorer();
       });
-      segCoSel.dataset.wired = "1";
+      segCoMenu.dataset.wired = "1";
     }
 
     /* Segment chips — populated once from PRODUCT_SEG_DEF. Click
@@ -2171,9 +2194,20 @@
     if (sCoFld) sCoFld.classList.toggle("hidden", !inSegments);
     if (sChFld) sChFld.classList.toggle("hidden", !inSegments);
 
-    /* Single-company select value */
-    const segCoSel = $("#explorer-seg-company-select");
-    if (segCoSel) segCoSel.value = state.explorer.segCompany;
+    /* Multi-select Companies (segments mode) — sync checkboxes + the
+       trigger summary label. Mirrors how the companies-mode trigger
+       collapses 1-vs-N selections. */
+    const segCoMenu = $("#explorer-seg-companies-menu");
+    if (segCoMenu) {
+      segCoMenu.querySelectorAll("input[data-seg-company]").forEach(cb => {
+        cb.checked = state.explorer.segCompanies.includes(cb.getAttribute("data-seg-company"));
+      });
+    }
+    const segCoTrig = $("#explorer-seg-companies-trigger");
+    if (segCoTrig) {
+      const n = state.explorer.segCompanies.length;
+      segCoTrig.textContent = n === 1 ? state.explorer.segCompanies[0] : `${n} companies`;
+    }
 
     /* Segment chips — active state + cap-disabled state. */
     const atCap = state.explorer.segSelected.length >= MAX_SEG_SELECTED;
@@ -2206,18 +2240,31 @@
         if (!btn) return;
         const co = btn.getAttribute("data-remove-company");
         const mk = btn.getAttribute("data-remove-metric");
-        /* Segments mode — metricKey is "segment:<key>". Strip the
-           segment from segSelected; everything else (FY range, view)
-           is unaffected. */
+        /* Segments mode — chips encode a (company × segment) pair.
+           Removal walks the same "drop whichever axis is single" rule
+           the companies path uses: if there's only one company,
+           remove the segment; if there's only one segment, remove
+           the company; otherwise drop the segment (the more
+           selective axis). Never bottom out; fall back to a sane
+           default rather than show an empty chart. */
         if (state.explorer.mode === "segments") {
           const segKey = (mk || "").startsWith("segment:") ? mk.slice("segment:".length) : null;
-          if (segKey) {
+          const nCo  = state.explorer.segCompanies.length;
+          const nSeg = state.explorer.segSelected.length;
+          if (nCo === 1 && segKey) {
             state.explorer.segSelected = state.explorer.segSelected.filter(k => k !== segKey);
-            /* Never bottom out — fall back to the default 6 if the
-               user deselects every segment. */
-            if (!state.explorer.segSelected.length) {
-              state.explorer.segSelected = PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
-            }
+          } else if (nSeg === 1 && co) {
+            state.explorer.segCompanies = state.explorer.segCompanies.filter(c => c !== co);
+          } else if (segKey) {
+            state.explorer.segSelected = state.explorer.segSelected.filter(k => k !== segKey);
+          } else if (co) {
+            state.explorer.segCompanies = state.explorer.segCompanies.filter(c => c !== co);
+          }
+          if (!state.explorer.segSelected.length) {
+            state.explorer.segSelected = PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
+          }
+          if (!state.explorer.segCompanies.length) {
+            state.explorer.segCompanies = ["Maruti"];
           }
           explorerSyncToolbarUI();
           renderIndustryExplorer();
@@ -2295,29 +2342,101 @@
     };
   }
 
+  /* Per-(company × segment) shading. The segment colour stays the
+     dominant hue so segments remain readable at a glance; per-company
+     luminance offsets keep companies distinguishable inside a single
+     segment without inventing a second colour vocabulary. Order of
+     SEG_COMPANY_SHADE_ORDER matches OEM alphabetical-ish convention
+     so two-company selections (e.g. Maruti vs Hyundai) read as
+     base-vs-darker. */
+  const SEG_COMPANY_SHADE_ORDER = ["Maruti", "Hyundai", "Tata Motors PV", "M&M"];
+  /* L offsets (HSL %): base, slightly darker, darker still, lighter
+     (Mahindra often gets the lighter one so it doesn't clash with the
+     navy UV anchor). */
+  const SEG_COMPANY_L_OFFSET = [0, -10, -20, 12];
+
+  function _hexToHsl(hex) {
+    const m = String(hex || "").replace("#", "").match(/.{2}/g);
+    if (!m || m.length < 3) return null;
+    const r = parseInt(m[0], 16) / 255;
+    const g = parseInt(m[1], 16) / 255;
+    const b = parseInt(m[2], 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = 0; s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        default: h = (r - g) / d + 4;
+      }
+      h *= 60;
+    }
+    return [h, s * 100, l * 100];
+  }
+  function _hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    let r, g, b;
+    if (h < 60)        [r, g, b] = [c, x, 0];
+    else if (h < 120)  [r, g, b] = [x, c, 0];
+    else if (h < 180)  [r, g, b] = [0, c, x];
+    else if (h < 240)  [r, g, b] = [0, x, c];
+    else if (h < 300)  [r, g, b] = [x, 0, c];
+    else               [r, g, b] = [c, 0, x];
+    const to8 = (v) => Math.max(0, Math.min(255, Math.round((v + m) * 255)));
+    const hex = (n) => n.toString(16).padStart(2, "0");
+    return `#${hex(to8(r))}${hex(to8(g))}${hex(to8(b))}`;
+  }
+  /* Shade the segment color by the company's lightness offset. Returns
+     the original hex unchanged for unknown companies / unparseable
+     colors so the chart never falls back to a degenerate gray. */
+  function _segCompanyShade(company, segHex) {
+    const idx = SEG_COMPANY_SHADE_ORDER.indexOf(company);
+    if (idx <= 0) return segHex;
+    const hsl = _hexToHsl(segHex);
+    if (!hsl) return segHex;
+    const dL = SEG_COMPANY_L_OFFSET[idx] || 0;
+    const l = Math.max(8, Math.min(92, hsl[2] + dL));
+    return _hslToHex(hsl[0], hsl[1], l);
+  }
+
   function explorerBuildSeriesIndex() {
-    /* Segments compare-mode → one OEM, many segments. Series shape
-       matches the companies path so _renderIndustryExplorerImpl
-       and _renderExplorerRightCard work unchanged. */
+    /* Segments compare-mode → cross-product of selected companies and
+       selected segments. Series shape matches the companies path so
+       _renderIndustryExplorerImpl and _renderExplorerRightCard work
+       unchanged. */
     if (state.explorer.mode === "segments") {
-      const co = state.explorer.segCompany;
-      const sel = state.explorer.segSelected.length
-        ? state.explorer.segSelected
-        : PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
-      return sel
+      const companies = state.explorer.segCompanies.length
+        ? state.explorer.segCompanies
+        : ["Maruti"];
+      const segs = (state.explorer.segSelected.length
+          ? state.explorer.segSelected
+          : PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key))
         .map(k => PRODUCT_SEG_DEF.find(s => s.key === k))
-        .filter(Boolean)
-        .map(seg => {
+        .filter(Boolean);
+      const out = [];
+      companies.forEach(co => {
+        segs.forEach(seg => {
           const def = _segmentMetricDef(seg, co);
-          return {
+          out.push({
             key:       `${co}|${def.key}`,
             company:   co,
             metricKey: def.key,
             def,
-            name:      seg.label,        // chips already convey company
-            color:     seg.color,
-          };
+            /* Company prefix matters once >1 OEM is selected. Drop it
+               for single-OEM selections so the chip / legend stays
+               compact (matches the v1 segments-mode behaviour). */
+            name:      companies.length > 1 ? `${co} · ${seg.label}` : seg.label,
+            color:     _segCompanyShade(co, seg.color),
+          });
         });
+      });
+      return out;
     }
 
     const out = [];
@@ -2350,7 +2469,7 @@
       messages.push({ text: "Mixed units selected. Indexed view is recommended for comparison.", info: true });
     }
     if (series.length > 6) {
-      messages.push({ text: "Many series selected. Use fewer series for cleaner readability.", info: false });
+      messages.push({ text: "Many series selected — chart may be easier in Table view.", info: false });
     }
     if (!messages.length) {
       el.classList.add("hidden");
@@ -2417,9 +2536,17 @@
 
     const inSegments = state.explorer.mode === "segments";
     if (leftTitleEl) {
-      leftTitleEl.textContent = inSegments
-        ? `${state.explorer.segCompany} Segment Trend Explorer`
-        : "Performance Trend Explorer";
+      if (inSegments) {
+        const cos = state.explorer.segCompanies || [];
+        let prefix;
+        if (cos.length === 0)      prefix = "Segment";
+        else if (cos.length === 1) prefix = `${cos[0]} Segment`;
+        else if (cos.length === 2) prefix = `${cos[0]} vs ${cos[1]} · Segment`;
+        else                       prefix = `${cos.length} OEMs · Segment`;
+        leftTitleEl.textContent = `${prefix} Trend Explorer`;
+      } else {
+        leftTitleEl.textContent = "Performance Trend Explorer";
+      }
     }
     let subtitleBits = [`${fys[0] || ""}${fys.length > 1 ? "–" + fys[fys.length-1] : ""}`];
     if (view === "yoy") subtitleBits.push("YoY %");
@@ -2466,7 +2593,10 @@
     const hasAnyData = lineSeries.some(s => s.values.some(v => v != null));
     const chart1El = $("#chart1");
     if (!hasAnyData) {
-      chart1El.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">No data available for the current selection.</div>`;
+      const emptyMsg = inSegments
+        ? "Select at least one company and one segment to compare."
+        : "No data available for the current selection.";
+      chart1El.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">${emptyMsg}</div>`;
       if (leftLegend) leftLegend.innerHTML = "";
       if (leftSource) leftSource.textContent = "";
     } else {
@@ -2686,7 +2816,10 @@
     _explorerUpdateSnapshotToggleUI(mode);
 
     if (!seriesIndex.length) {
-      chart2.innerHTML = `<div class="snapshot-empty">Select at least one company and metric to populate the snapshot.</div>`;
+      const emptyMsg = inSegments
+        ? "Select at least one company and one segment to compare."
+        : "Select at least one company and metric to populate the snapshot.";
+      chart2.innerHTML = `<div class="snapshot-empty">${emptyMsg}</div>`;
       if (sourceEl) sourceEl.textContent = "";
       return;
     }

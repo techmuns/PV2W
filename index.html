@@ -211,8 +211,11 @@
           </div>
 
           <div class="explorer-field hidden" id="explorer-field-seg-company">
-            <span class="explorer-label">Company</span>
-            <select id="explorer-seg-company-select" class="cat-select-inline" style="width:auto;min-width:130px"></select>
+            <span class="explorer-label">Companies</span>
+            <details class="explorer-popover" data-explorer="seg-companies">
+              <summary class="explorer-trigger" id="explorer-seg-companies-trigger">Select companies</summary>
+              <div class="explorer-menu" id="explorer-seg-companies-menu" role="group" aria-label="Segment-mode companies"></div>
+            </details>
           </div>
 
           <div class="explorer-field hidden" id="explorer-field-seg-chips">
