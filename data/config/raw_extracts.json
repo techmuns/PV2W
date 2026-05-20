@@ -76,7 +76,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-20T11:33:04.988Z",
+      "fetched_at": "2026-05-20T12:40:27.557Z",
       "source_url": "https://www.screener.in/company/MARUTI/consolidated/",
       "basis": "Maruti Suzuki India consolidated annual P&L + cash flow",
       "by_fy": {
@@ -324,7 +324,7 @@
       "problems": []
     },
     "Tickertape": {
-      "fetched_at": "2026-05-20T11:33:13.253Z",
+      "fetched_at": "2026-05-20T12:40:33.766Z",
       "source_url": "https://www.tickertape.in/stocks/maruti-suzuki-india-MARU",
       "by_fy": {},
       "problems": [
@@ -332,12 +332,41 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-20T11:33:21.955Z",
+      "fetched_at": "2026-05-20T12:40:38.517Z",
       "source_url": "https://www.moneycontrol.com/financials/marutisuzukiindia/balance-sheetVI/MS24",
-      "by_fy": {},
-      "problems": [
-        "no BS sub-lines parsed"
-      ]
+      "by_fy": {
+        "FY26": {
+          "receivables_cr": 5336,
+          "inventory_cr": 11314.7,
+          "payables_cr": 22131.4,
+          "cash_bank_cr": 1576.4
+        },
+        "FY25": {
+          "receivables_cr": 6537.7,
+          "inventory_cr": 5123,
+          "payables_cr": 17421.1,
+          "cash_bank_cr": 446.4
+        },
+        "FY24": {
+          "receivables_cr": 4601.3,
+          "inventory_cr": 4119.6,
+          "payables_cr": 14582.4,
+          "cash_bank_cr": 460
+        },
+        "FY23": {
+          "receivables_cr": 3295.8,
+          "inventory_cr": 4283.8,
+          "payables_cr": 11780.4,
+          "cash_bank_cr": 37.7
+        },
+        "FY22": {
+          "receivables_cr": 2030.1,
+          "inventory_cr": 3533.1,
+          "payables_cr": 9761,
+          "cash_bank_cr": 3036.2
+        }
+      },
+      "problems": []
     }
   },
   "Hyundai": {
@@ -442,7 +471,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-20T11:33:01.588Z",
+      "fetched_at": "2026-05-20T12:40:23.343Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
@@ -451,7 +480,7 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-05-20T11:33:06.086Z",
+      "fetched_at": "2026-05-20T12:40:28.687Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -603,12 +632,41 @@
       "problems": []
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-20T11:33:22.261Z",
+      "fetched_at": "2026-05-20T12:40:42.914Z",
       "source_url": "https://www.moneycontrol.com/financials/hyundaimotorindia/balance-sheetVI/HMI01",
-      "by_fy": {},
-      "problems": [
-        "no BS sub-lines parsed"
-      ]
+      "by_fy": {
+        "FY26": {
+          "receivables_cr": 2016.78,
+          "inventory_cr": 3593.51,
+          "payables_cr": 7071.11,
+          "cash_bank_cr": 10042.67
+        },
+        "FY25": {
+          "receivables_cr": 2241.4,
+          "inventory_cr": 3404.36,
+          "payables_cr": 6972.62,
+          "cash_bank_cr": 8135.35
+        },
+        "FY24": {
+          "receivables_cr": 2288.31,
+          "inventory_cr": 3315.63,
+          "payables_cr": 7269.39,
+          "cash_bank_cr": 8657.9
+        },
+        "FY23": {
+          "receivables_cr": 2802.72,
+          "inventory_cr": 3422.41,
+          "payables_cr": 7366.14,
+          "cash_bank_cr": 17493.21
+        },
+        "FY22": {
+          "receivables_cr": 2149.09,
+          "inventory_cr": 2881.12,
+          "payables_cr": 5398.59,
+          "cash_bank_cr": 13965.84
+        }
+      },
+      "problems": []
     }
   },
   "M&M": {
@@ -665,7 +723,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-20T11:33:00.195Z",
+      "fetched_at": "2026-05-20T12:40:21.471Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
@@ -971,7 +1029,7 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-05-20T11:33:02.630Z",
+      "fetched_at": "2026-05-20T12:40:24.341Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
@@ -980,12 +1038,41 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-20T11:33:22.557Z",
+      "fetched_at": "2026-05-20T12:40:46.035Z",
       "source_url": "https://www.moneycontrol.com/financials/mahindramahindra/balance-sheetVI/MM",
-      "by_fy": {},
-      "problems": [
-        "no BS sub-lines parsed"
-      ]
+      "by_fy": {
+        "FY26": {
+          "receivables_cr": 6485.75,
+          "inventory_cr": 10305.86,
+          "payables_cr": 29499.9,
+          "cash_bank_cr": 18479.91
+        },
+        "FY25": {
+          "receivables_cr": 5725.57,
+          "inventory_cr": 10333.34,
+          "payables_cr": 23405.77,
+          "cash_bank_cr": 10790.55
+        },
+        "FY24": {
+          "receivables_cr": 4549.46,
+          "inventory_cr": 9504.82,
+          "payables_cr": 18591.95,
+          "cash_bank_cr": 5525.92
+        },
+        "FY23": {
+          "receivables_cr": 4041.73,
+          "inventory_cr": 8881.35,
+          "payables_cr": 17145.62,
+          "cash_bank_cr": 4481.75
+        },
+        "FY22": {
+          "receivables_cr": 3035.11,
+          "inventory_cr": 5882.85,
+          "payables_cr": 12893.54,
+          "cash_bank_cr": 3650.53
+        }
+      },
+      "problems": []
     }
   },
   "Tata Motors PV": {
@@ -1082,7 +1169,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-20T11:33:02.999Z",
+      "fetched_at": "2026-05-20T12:40:25.430Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [
@@ -1091,12 +1178,41 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-05-20T11:33:22.879Z",
+      "fetched_at": "2026-05-20T12:40:46.546Z",
       "source_url": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
-      "by_fy": {},
-      "problems": [
-        "no BS sub-lines parsed"
-      ]
+      "by_fy": {
+        "FY26": {
+          "receivables_cr": 454,
+          "inventory_cr": 3261,
+          "payables_cr": 10462,
+          "cash_bank_cr": 4466
+        },
+        "FY25": {
+          "receivables_cr": 2280,
+          "inventory_cr": 3154,
+          "payables_cr": 13267,
+          "cash_bank_cr": 1601
+        },
+        "FY24": {
+          "receivables_cr": 2765.16,
+          "inventory_cr": 3470.38,
+          "payables_cr": 8826.46,
+          "cash_bank_cr": 5150.96
+        },
+        "FY23": {
+          "receivables_cr": 2307.72,
+          "inventory_cr": 3027.9,
+          "payables_cr": 7162.6,
+          "cash_bank_cr": 1414.65
+        },
+        "FY22": {
+          "receivables_cr": 2111.78,
+          "inventory_cr": 3718.49,
+          "payables_cr": 6102.1,
+          "cash_bank_cr": 2605.43
+        }
+      },
+      "problems": []
     }
   }
 }
