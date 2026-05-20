@@ -70,6 +70,14 @@
       mode:        "companies",                // "companies" | "segments"
       segCompanies: ["Maruti"],                // multi-select OEMs in segments mode
       segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"], // ≤6 segment keys
+      /* Per-(company × segment) pair exclusions. Each entry is
+         "<Company>|<segKey>" (same shape as the chip × button data
+         attrs). Cartesian product in explorerBuildSeriesIndex filters
+         out anything in this list, so the user can drop a single
+         Maruti · Compact without losing Hyundai · Compact. Cleared
+         automatically on popover/chip toggle so re-adding a company
+         or segment doesn't leave invisible ghost exclusions. */
+      segExcluded: [],
     },
     /* Segment switcher — PV is the only live module today. 2W / CV
        open the under-construction overlay (no real data wired up). */
@@ -1821,6 +1829,16 @@
     if (!e.segSelected.length) {
       e.segSelected = PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
     }
+    /* Normalise pair exclusions — drop any entries referring to a
+       company or segment no longer in state so stale exclusions
+       can't haunt the cartesian product invisibly. */
+    if (!Array.isArray(e.segExcluded)) e.segExcluded = [];
+    const activeCo  = new Set(e.segCompanies);
+    const activeSeg = new Set(e.segSelected);
+    e.segExcluded = e.segExcluded.filter(k => {
+      const [co, segKey] = String(k).split("|");
+      return co && segKey && activeCo.has(co) && activeSeg.has(segKey);
+    });
   }
 
   function explorerFyList() {
@@ -1993,6 +2011,11 @@
     const reset = $("#explorer-reset");
     if (reset && !reset.dataset.wired) {
       reset.addEventListener("click", () => {
+        /* Reset preserves the active Compare mode so the user doesn't
+           lose context just to clear filters. Both modes share the
+           same fyFrom / fyTo / view / snapshot defaults — the mode
+           field is the only thing that stays sticky. */
+        const wasSegments = state.explorer.mode === "segments";
         state.explorer = {
           companies: ["Industry"],
           metrics:   ["volume"],
@@ -2001,9 +2024,10 @@
           view:      "actual",
           snapshotView: "auto",
           barsBasis: "value",
-          mode:        "companies",
+          mode:        wasSegments ? "segments" : "companies",
           segCompanies: ["Maruti"],
           segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"],
+          segExcluded: [],
         };
         _explorerColorAssigned.clear();
         _explorerPaletteCursor = 0;
@@ -2052,6 +2076,11 @@
            than an empty state on every interaction. */
         const next = Array.from(set);
         state.explorer.segCompanies = next.length ? next : ["Maruti"];
+        /* Clear any pair-exclusions that referenced this company so
+           checking the OEM back on always brings in a clean cross
+           with all currently-selected segments (no ghost holes). */
+        state.explorer.segExcluded = (state.explorer.segExcluded || [])
+          .filter(k => String(k).split("|")[0] !== co);
         explorerSyncToolbarUI();
         renderIndustryExplorer();
       });
@@ -2081,6 +2110,11 @@
           if (state.explorer.segSelected.length >= MAX_SEG_SELECTED) return;
           state.explorer.segSelected.push(key);
         }
+        /* Same lifecycle hygiene as the company popover — toggling
+           a segment (on or off) clears its pair-exclusions so the
+           user never sees a stale hole. */
+        state.explorer.segExcluded = (state.explorer.segExcluded || [])
+          .filter(k => String(k).split("|")[1] !== key);
         explorerSyncToolbarUI();
         renderIndustryExplorer();
       });
@@ -2240,31 +2274,39 @@
         if (!btn) return;
         const co = btn.getAttribute("data-remove-company");
         const mk = btn.getAttribute("data-remove-metric");
-        /* Segments mode — chips encode a (company × segment) pair.
-           Removal walks the same "drop whichever axis is single" rule
-           the companies path uses: if there's only one company,
-           remove the segment; if there's only one segment, remove
-           the company; otherwise drop the segment (the more
-           selective axis). Never bottom out; fall back to a sane
-           default rather than show an empty chart. */
+        /* Segments mode — chips encode an exact (company × segment)
+           pair. Removal rules:
+             - Both axes multi-select → add the pair to segExcluded so
+               only that specific cell vanishes; the other companies'
+               same-segment chips and the other segments' same-company
+               chips stay put.
+             - One axis is single-select → fall through to "drop the
+               other axis" (single-OEM × N segments: × removes the
+               segment; N OEMs × single-segment: × removes the OEM).
+               Bottom-out auto-restores defaults so the chart never
+               fully empties via this path.
+             - Pair-exclusion path explicitly does NOT auto-restore —
+               the user is shaping the cross deliberately and may
+               legitimately empty it down to the empty state. */
         if (state.explorer.mode === "segments") {
           const segKey = (mk || "").startsWith("segment:") ? mk.slice("segment:".length) : null;
           const nCo  = state.explorer.segCompanies.length;
           const nSeg = state.explorer.segSelected.length;
-          if (nCo === 1 && segKey) {
+          if (nCo > 1 && nSeg > 1 && co && segKey) {
+            const pairKey = `${co}|${segKey}`;
+            if (!state.explorer.segExcluded.includes(pairKey)) {
+              state.explorer.segExcluded.push(pairKey);
+            }
+          } else if (nCo === 1 && segKey) {
             state.explorer.segSelected = state.explorer.segSelected.filter(k => k !== segKey);
+            if (!state.explorer.segSelected.length) {
+              state.explorer.segSelected = PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
+            }
           } else if (nSeg === 1 && co) {
             state.explorer.segCompanies = state.explorer.segCompanies.filter(c => c !== co);
-          } else if (segKey) {
-            state.explorer.segSelected = state.explorer.segSelected.filter(k => k !== segKey);
-          } else if (co) {
-            state.explorer.segCompanies = state.explorer.segCompanies.filter(c => c !== co);
-          }
-          if (!state.explorer.segSelected.length) {
-            state.explorer.segSelected = PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
-          }
-          if (!state.explorer.segCompanies.length) {
-            state.explorer.segCompanies = ["Maruti"];
+            if (!state.explorer.segCompanies.length) {
+              state.explorer.segCompanies = ["Maruti"];
+            }
           }
           explorerSyncToolbarUI();
           renderIndustryExplorer();
@@ -2420,8 +2462,12 @@
         .map(k => PRODUCT_SEG_DEF.find(s => s.key === k))
         .filter(Boolean);
       const out = [];
+      const excluded = new Set(state.explorer.segExcluded || []);
       companies.forEach(co => {
         segs.forEach(seg => {
+          /* Pair-exclusion: skip the cartesian cell the user × -ed
+             out, even though the underlying axes still include it. */
+          if (excluded.has(`${co}|${seg.key}`)) return;
           const def = _segmentMetricDef(seg, co);
           out.push({
             key:       `${co}|${def.key}`,
