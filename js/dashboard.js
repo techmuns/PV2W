@@ -69,7 +69,7 @@
          legend chips) is reused verbatim. */
       mode:        "companies",                // "companies" | "segments"
       segCompanies: ["Maruti"],                // multi-select OEMs in segments mode
-      segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"], // ≤6 segment keys
+      segSelected: ["Hatch","Sedan","MPV","SUV","Sub-SUV","Utility"], // ≤6 segment keys
       /* Per-(company × segment) pair exclusions. Each entry is
          "<Company>|<segKey>" (same shape as the chip × button data
          attrs). Cartesian product in explorerBuildSeriesIndex filters
@@ -2026,7 +2026,7 @@
           barsBasis: "value",
           mode:        wasSegments ? "segments" : "companies",
           segCompanies: ["Maruti"],
-          segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"],
+          segSelected: ["Hatch","Sedan","MPV","SUV","Sub-SUV","Utility"],
           segExcluded: [],
         };
         _explorerColorAssigned.clear();
@@ -2362,32 +2362,26 @@
   /* Build the active series index — every (company × metric) combo
      that's actually available. Each entry: { key, name, company,
      metricKey, def, color }. */
-  /* Per-segment lookup: returns the segment's volume in raw units for
-     the given (company, fy). Maruti uses audited SIAM segment-wise
-     units + an "Other" residual against Total Sales Volume. Other
-     OEMs only publish SUV vs total, so only the UV chip resolves;
-     the rest return null and render as gaps (matches the spec's
-     "Segments mode will look thinner for non-Maruti" trade-off). */
+  /* Per-segment lookup — sums every model-level Volume in
+     D.Vehicle_FY_Metrics whose (Company, FY, Segment) matches.
+     Same source the OEM-page model grid reads, so explorer numbers
+     line up with the per-OEM "top models by FY volume" cards.
+     Returns null (rendered as a gap) when no models in that segment
+     exist for the OEM/FY pair — honest about coverage instead of
+     synthesising a single bucket from share % math. */
   function _segVolumeRaw(company, segKey, fy) {
-    const mix = PRODUCT_MIX_BY_OEM[company] && PRODUCT_MIX_BY_OEM[company][fy];
-    if (mix) {
-      if (segKey === "Other") {
-        const tot = getCompanyMetric(fy, company, "Total Sales Volume");
-        if (!tot || tot.Value == null) return null;
-        const six = (mix.Mini || 0) + (mix.Compact || 0) + (mix.MidSize || 0)
-                  + (mix.UV   || 0) + (mix.Vans    || 0) + (mix.LCV     || 0);
-        return Math.max(0, tot.Value - six);
+    const rows = (D.Vehicle_FY_Metrics || []).filter(r =>
+      r.Company === company && r.FY === fy && r.Segment === segKey);
+    if (!rows.length) return null;
+    let sum = 0;
+    let hasAny = false;
+    for (const r of rows) {
+      if (r.Volume != null && Number.isFinite(r.Volume)) {
+        sum += r.Volume;
+        hasAny = true;
       }
-      return (mix[segKey] != null) ? mix[segKey] : null;
     }
-    /* Non-Maruti fallback — only UV / SUV is derivable. */
-    if (segKey === "UV") {
-      const tot  = getCompanyMetric(fy, company, "Total Sales Volume");
-      const suvP = getCompanyMetric(fy, company, "SUV Volume %");
-      if (!tot || tot.Value == null || !suvP || suvP.Value == null) return null;
-      return tot.Value * suvP.Value / 100;
-    }
-    return null;
+    return hasAny ? sum : null;
   }
 
   /* Synthesise a registry-shaped def for one (segment × company)
@@ -2404,9 +2398,7 @@
       scaleToDisplay: 1 / 1e5,        // raw units → lakh on chart axis
       chartable:      true,
       derive:         (co, fy) => _segVolumeRaw(co, seg.key, fy),
-      source: company === "Maruti"
-        ? "Maruti Suzuki SIAM segment-wise dispatches (FY23-FY25 audited) + AR / Q4 IP"
-        : `${company} AR + Q4 IP — only SUV vs total disclosed; non-UV segments not separately published`,
+      source: `${company} model-level dispatches (top models tracked) — same source as the OEM model grid; aggregated by body-type segment.`,
     };
   }
 
@@ -2675,11 +2667,7 @@
         /* Name the missing pairs so the user knows what to change. */
         const pairs = seriesIndex.map(s => s.name).slice(0, 3).join(", ")
                     + (seriesIndex.length > 3 ? `, +${seriesIndex.length - 3} more` : "");
-        const onlyNonMaruti = seriesIndex.every(s => s.company !== "Maruti");
-        const hint = onlyNonMaruti
-          ? "Hyundai, M&M and Tata only publish UV / SUV — pick that segment, or add Maruti."
-          : "Try a different segment for these OEMs, or pick UV / SUV.";
-        emptyMsg = `No segment-wise data published for ${pairs}. ${hint}`;
+        emptyMsg = `No tracked models in ${pairs}. The model grid only carries the top sellers per OEM — try another segment (e.g. SUV or Sub-SUV are populated for every OEM).`;
       } else if (inSegments) {
         emptyMsg = "Select at least one company and one segment to compare.";
       } else {
@@ -3931,18 +3919,21 @@
       FY25: { Mini: 65580,  Compact: 671737, MidSize: 583,   UV: 767728, Vans: 130167, LCV: 36167 },
     },
   };
-  /* Canonical segment definition for the Segments compare-mode. Order
-     drives chip + chart-series order. Labels mirror the OEM-view
-     product-mix legend; colours come from MIX_PALETTE.product so the
-     two surfaces look like one design system. */
+  /* Canonical segment definition for the Performance Explorer's
+     Segments compare-mode. Keys match the body-type vocabulary used
+     by D.Vehicle_FY_Metrics (which the OEM-page model grid reads
+     from), so every tracked OEM can populate every chip from the
+     same source — no Maruti-only sparse-data case.
+     Colours come from MIX_PALETTE.product so chips, lines, and
+     snapshot bars share one vocabulary. */
   const PRODUCT_SEG_DEF = [
-    { key: "Mini",    label: "Mini",                 color: MIX_PALETTE.product.mini    },
-    { key: "Compact", label: "Compact",              color: MIX_PALETTE.product.compact },
-    { key: "MidSize", label: "Mid-size",             color: MIX_PALETTE.product.midSize },
-    { key: "UV",      label: "UV / SUV",             color: MIX_PALETTE.product.uv      },
-    { key: "Vans",    label: "Vans",                 color: MIX_PALETTE.product.vans    },
-    { key: "LCV",     label: "LCV",                  color: MIX_PALETTE.product.lcv     },
-    { key: "Other",   label: "Exports + OEM supply", color: MIX_PALETTE.product.other   },
+    { key: "Hatch",   label: "Hatch",      color: MIX_PALETTE.product.compact },
+    { key: "Sedan",   label: "Sedan",      color: MIX_PALETTE.product.midSize },
+    { key: "MPV",     label: "MPV",        color: MIX_PALETTE.product.vans    },
+    { key: "SUV",     label: "SUV",        color: MIX_PALETTE.product.uv      },
+    { key: "Sub-SUV", label: "Sub-SUV",    color: MIX_PALETTE.product.mini    },
+    { key: "Utility", label: "Utility",    color: MIX_PALETTE.product.lcv     },
+    { key: "EV",      label: "EV",         color: MIX_PALETTE.product.other   },
   ];
   const MAX_SEG_SELECTED = 6;
 
