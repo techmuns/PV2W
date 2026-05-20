@@ -2294,8 +2294,34 @@
           const nSeg = state.explorer.segSelected.length;
           if (nCo > 1 && nSeg > 1 && co && segKey) {
             const pairKey = `${co}|${segKey}`;
-            if (!state.explorer.segExcluded.includes(pairKey)) {
-              state.explorer.segExcluded.push(pairKey);
+            /* Guard: ×ing the last visible cell via pair-exclusion
+               would leave the cartesian empty (chart + snapshot read
+               as "Select at least one…" even though both axes have
+               selections — the bug from the screenshot). Instead,
+               treat the × as "remove this OEM" since the user just
+               cleared its last cell — matches the axis-collapse
+               behaviour they'd get if there were only one segment
+               selected to start with. Drop matching exclusions so
+               the remaining OEMs go back to the full segment set
+               for that axis. */
+            const tentative = new Set([...state.explorer.segExcluded, pairKey]);
+            const remaining = (nCo * nSeg) - tentative.size;
+            if (remaining >= 1) {
+              if (!state.explorer.segExcluded.includes(pairKey)) {
+                state.explorer.segExcluded.push(pairKey);
+              }
+            } else {
+              /* Remove the OEM and clear ALL accumulated exclusions
+                 — not just this OEM's. Accumulated exclusions on
+                 the remaining OEMs are exactly what produced this
+                 dead-end (the user × -ed enough cells to exclude
+                 every cartesian cell). At this moment the only
+                 honest "undo" is a clean cross over the remaining
+                 axes; otherwise the user is stuck with an empty
+                 chart and no obvious recovery. */
+              state.explorer.segCompanies = state.explorer.segCompanies.filter(c => c !== co);
+              if (!state.explorer.segCompanies.length) state.explorer.segCompanies = ["Maruti"];
+              state.explorer.segExcluded = [];
             }
           } else if (nCo === 1 && segKey) {
             state.explorer.segSelected = state.explorer.segSelected.filter(k => k !== segKey);
@@ -2639,10 +2665,27 @@
     const hasAnyData = lineSeries.some(s => s.values.some(v => v != null));
     const chart1El = $("#chart1");
     if (!hasAnyData) {
-      const emptyMsg = inSegments
-        ? "Select at least one company and one segment to compare."
-        : "No data available for the current selection.";
-      chart1El.innerHTML = `<div class="text-xs text-inkMuted py-12 text-center">${emptyMsg}</div>`;
+      /* Distinguish "user hasn't picked anything" from "user picked
+         a pair that has no published data" — they look identical to
+         the renderer (both produce zero values) but mean very
+         different things to the user. The latter case is common in
+         Segments mode where non-Maruti OEMs only publish UV / SUV. */
+      let emptyMsg;
+      if (inSegments && seriesIndex.length > 0) {
+        /* Name the missing pairs so the user knows what to change. */
+        const pairs = seriesIndex.map(s => s.name).slice(0, 3).join(", ")
+                    + (seriesIndex.length > 3 ? `, +${seriesIndex.length - 3} more` : "");
+        const onlyNonMaruti = seriesIndex.every(s => s.company !== "Maruti");
+        const hint = onlyNonMaruti
+          ? "Hyundai, M&M and Tata only publish UV / SUV — pick that segment, or add Maruti."
+          : "Try a different segment for these OEMs, or pick UV / SUV.";
+        emptyMsg = `No segment-wise data published for ${pairs}. ${hint}`;
+      } else if (inSegments) {
+        emptyMsg = "Select at least one company and one segment to compare.";
+      } else {
+        emptyMsg = "No data available for the current selection.";
+      }
+      chart1El.innerHTML = `<div class="text-xs text-inkMuted py-12 px-6 text-center leading-relaxed">${emptyMsg}</div>`;
       if (leftLegend) leftLegend.innerHTML = "";
       if (leftSource) leftSource.textContent = "";
     } else {
