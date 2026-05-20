@@ -2658,11 +2658,15 @@
         tooltipUnit,
         area: lineSeries.length === 1,
         height: 300,
-        /* Group tooltip rows by company in companies-mode (one OEM
-           per block). In segments-mode every series is the same
-           company, so the grouped layout collapses to one block
-           with all segments — flat list reads better there. */
-        groupBy: inSegments ? null : "company",
+        /* Group tooltip rows by company in companies-mode AND in
+           segments-mode whenever more than one OEM is selected (a
+           single-OEM cross collapses to one block and reads better
+           as a flat list — same threshold the grouped renderer uses
+           internally). The grouped renderer itself only kicks in
+           above 6 segments; smaller selections keep the flat list. */
+        groupBy: (inSegments && (state.explorer.segCompanies || []).length <= 1)
+                 ? null
+                 : "company",
       });
 
       if (leftLegend) {
@@ -3598,16 +3602,45 @@
             if (!byCompany.has(co)) byCompany.set(co, []);
             byCompany.get(co).push(s);
           });
+
+          /* Unit dedup — when every visible row shares the same unit
+             string, hoist it once into a small sub-header and strip
+             from per-row values. Saves a lot of horizontal space in
+             the indexed-view case ("index (FY18=100)" was repeating
+             on every row). Mixed-unit selections fall back to the
+             per-row format. */
+          const allUnits = new Set(p.segments.map(s => s.unit || p.unit || "").filter(Boolean));
+          const sharedUnit = allUnits.size === 1 ? Array.from(allUnits)[0] : null;
+          /* Strip the shared unit / sign suffix from a single
+             formatted value (the formatter is the only place that
+             knows the exact suffix shape). Per-row YoY trailing
+             text is added separately so we leave it intact. */
+          const stripSharedUnit = (rendered, u) => {
+            if (!u) return rendered;
+            /* Suffix is " <unit>" or "<unit>" depending on % vs other;
+               the formatter normalises "% " edge already. */
+            const cands = [` ${u}`, u];
+            for (const c of cands) if (rendered.endsWith(c)) return rendered.slice(0, -c.length);
+            return rendered;
+          };
+          const oemCount = Array.from(byCompany.keys()).filter(c => c !== "Industry").length;
+          /* Auto-flow to 3 columns when there are 3+ OEM blocks;
+             keep 2 cols below that so 1-2-OEM cases don't read as
+             empty whitespace. The CSS uses a modifier class. */
+          const gridCls = oemCount >= 3 ? "tt-grouped-grid tt-grouped-grid--3" : "tt-grouped-grid";
+
           const renderMetricRow = (s) => {
             const isPct = segIsPct(s);
             const trailing = isPct ? "" : fmtYoY(s.value, s.prev);
             const metricLabel = s.metric || s.label || "";
+            let valTxt = fmtSegVal(s);
+            if (sharedUnit) valTxt = stripSharedUnit(valTxt, sharedUnit);
             return `
               <div class="tt-metric-row">
                 <span class="tt-dot" style="background:${s.color}"></span>
                 <span class="tt-metric-name" title="${ATTR(metricLabel)}">${metricLabel}</span>
                 <span class="tt-metric-val">
-                  <span class="tt-val-num">${fmtSegVal(s)}</span>${trailing}
+                  <span class="tt-val-num">${valTxt}</span>${trailing}
                 </span>
               </div>`;
           };
@@ -3623,9 +3656,14 @@
             ? renderBlock("Industry", industrySegs)
             : "";
 
+          const unitHeader = sharedUnit
+            ? `<div class="tt-shared-unit">${sharedUnit}</div>`
+            : "";
+
           rich.innerHTML = `
+            ${unitHeader}
             <div class="tt-grouped">
-              <div class="tt-grouped-grid">${oemBlocks}</div>
+              <div class="${gridCls}">${oemBlocks}</div>
               ${industryBlock ? `<div class="tt-industry-row">${industryBlock}</div>` : ""}
             </div>`;
           tip.classList.add("tt-wide");
@@ -5284,8 +5322,32 @@
     el.addEventListener("mouseleave", () => tip.classList.add("hidden"));
   }
   function positionTip(tip, e) {
-    tip.style.left = (e.clientX + 12) + "px";
-    tip.style.top  = (e.clientY + 14) + "px";
+    /* Clamp to the viewport so tall tooltips (grouped, many series)
+       never overflow off the bottom or the right edge. Default
+       offset is below-right of the cursor; if that would clip the
+       bottom, flip above the cursor; if that would clip the right,
+       shift left so the right edge sits inside the viewport. The
+       tooltip must already be measurable (display:block, not hidden)
+       when this is called — every caller in the rich-tooltip paths
+       unhides before invoking us. */
+    const margin = 8;
+    const offX = 12, offY = 14;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const r  = tip.getBoundingClientRect();
+    const w  = r.width  || tip.offsetWidth  || 0;
+    const h  = r.height || tip.offsetHeight || 0;
+
+    let left = e.clientX + offX;
+    let top  = e.clientY + offY;
+    if (left + w > vw - margin) left = Math.max(margin, e.clientX - offX - w);
+    if (top  + h > vh - margin) top  = Math.max(margin, e.clientY - offY - h);
+    /* Final safety: never go negative. */
+    if (left < margin) left = margin;
+    if (top  < margin) top  = margin;
+
+    tip.style.left = left + "px";
+    tip.style.top  = top  + "px";
   }
 
   /* Render the small "Last refreshed" line in the footer.

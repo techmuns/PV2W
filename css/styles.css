@@ -1892,13 +1892,45 @@ body::before {
    block layout with company headings, no impact on other tooltips. */
 #chart-tooltip.tt-wide {
   min-width: 360px !important;
-  max-width: 560px !important;
+  max-width: 620px !important;
+  /* Cap height to ~70vh and scroll the inner grouped block so the
+     tooltip never overflows the viewport. The FY title (rendered
+     above .tt-grouped) stays visible — only the metric rows scroll. */
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+#chart-tooltip.tt-wide .tt-grouped {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  /* Reserve room for the FY heading + shared-unit sub-line; the rest
+     of the tooltip box scrolls if rows exceed the cap. */
+  max-height: calc(70vh - 64px);
 }
 .tt-grouped { display: flex; flex-direction: column; gap: 10px; }
 .tt-grouped-grid {
   display: grid;
   grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr);
   gap: 10px 18px;
+}
+/* 3-column variant — applied by the grouped-tooltip renderer when
+   ≥3 OEM blocks are present so cross-OEM comparisons (e.g. 4 OEMs ×
+   3 segments) flow horizontally instead of stretching tall. */
+.tt-grouped-grid.tt-grouped-grid--3 {
+  grid-template-columns: repeat(3, minmax(140px, 1fr));
+  gap: 10px 14px;
+}
+/* Shared-unit sub-header — single small line beneath the FY title
+   when every visible row uses the same unit ("index (FY18=100)",
+   "lakh units", "% YoY"). Saves the per-row suffix repeat. */
+.tt-shared-unit {
+  font-size: 10.5px;
+  color: #6B7280;
+  margin-top: 1px;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
 }
 .tt-industry-row .tt-company-block {
   border-top: 1px dashed #E5EAF1;
