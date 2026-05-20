@@ -61,6 +61,15 @@
          the bars to the corresponding delta. Indexed view forces
          "value" regardless. */
       barsBasis: "value",    // "value" | "yoy" | "period"
+      /* Compare mode. "companies" (default) keeps the existing
+         multi-company × multi-metric explorer behaviour. "segments"
+         swaps the series source to a single OEM's SIAM segment-wise
+         dispatch volumes — the rest of the explorer pipeline (FY
+         range, Actual / YoY / Indexed view, Snapshot Table/Bars,
+         legend chips) is reused verbatim. */
+      mode:        "companies",                // "companies" | "segments"
+      segCompany:  "Maruti",                   // active OEM in segments mode
+      segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"], // ≤6 segment keys
     },
     /* Segment switcher — PV is the only live module today. 2W / CV
        open the under-construction overlay (no real data wired up). */
@@ -1790,6 +1799,21 @@
       [e.fyFrom, e.fyTo] = [e.fyTo, e.fyFrom];
     }
     if (!["actual", "yoy", "indexed"].includes(e.view)) e.view = "actual";
+
+    /* Segments compare-mode defaults — applied even when the user is
+       in companies mode so a later toggle finds a valid selection. */
+    if (e.mode !== "segments") e.mode = "companies";
+    const segOEMs = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
+    if (!segOEMs.includes(e.segCompany)) e.segCompany = "Maruti";
+    if (!Array.isArray(e.segSelected)) e.segSelected = [];
+    const validKeys = new Set(PRODUCT_SEG_DEF.map(s => s.key));
+    e.segSelected = e.segSelected.filter(k => validKeys.has(k));
+    if (e.segSelected.length > MAX_SEG_SELECTED) {
+      e.segSelected = e.segSelected.slice(0, MAX_SEG_SELECTED);
+    }
+    if (!e.segSelected.length) {
+      e.segSelected = PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
+    }
   }
 
   function explorerFyList() {
@@ -1970,6 +1994,9 @@
           view:      "actual",
           snapshotView: "auto",
           barsBasis: "value",
+          mode:        "companies",
+          segCompany:  "Maruti",
+          segSelected: ["Mini","Compact","MidSize","UV","Vans","LCV"],
         };
         _explorerColorAssigned.clear();
         _explorerPaletteCursor = 0;
@@ -1978,6 +2005,63 @@
         renderIndustryExplorer();
       });
       reset.dataset.wired = "1";
+    }
+
+    /* ── Compare = Companies | Segments ── */
+    const cmpToggle = $("#explorer-compare-toggle");
+    if (cmpToggle && !cmpToggle.dataset.wired) {
+      cmpToggle.querySelectorAll("button[data-cmp]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const next = btn.dataset.cmp;
+          if (next === state.explorer.mode) return;
+          state.explorer.mode = next;
+          explorerSyncToolbarUI();
+          renderIndustryExplorer();
+        });
+      });
+      cmpToggle.dataset.wired = "1";
+    }
+
+    /* Single-company select shown only in segments mode. */
+    const segCoSel = $("#explorer-seg-company-select");
+    if (segCoSel && !segCoSel.dataset.wired) {
+      /* Industry has no per-OEM segment breakdown — excluded. */
+      const oems = ["Maruti", "Hyundai", "M&M", "Tata Motors PV"];
+      segCoSel.innerHTML = oems.map(c => `<option value="${c}">${c}</option>`).join("");
+      segCoSel.addEventListener("change", () => {
+        state.explorer.segCompany = segCoSel.value;
+        renderIndustryExplorer();
+      });
+      segCoSel.dataset.wired = "1";
+    }
+
+    /* Segment chips — populated once from PRODUCT_SEG_DEF. Click
+       toggles selection up to MAX_SEG_SELECTED; the cap is enforced
+       by short-circuiting the click handler and visually flagged via
+       aria-disabled in explorerSyncToolbarUI. */
+    const segChipEl = $("#explorer-seg-chips");
+    if (segChipEl && !segChipEl.dataset.wired) {
+      segChipEl.innerHTML = PRODUCT_SEG_DEF.map(s =>
+        `<button type="button" class="seg-chip" data-seg="${ATTR(s.key)}"
+                 style="--seg-chip-color:${s.color}">
+           <span class="seg-chip-dot"></span>${s.label}
+         </button>`
+      ).join("");
+      segChipEl.addEventListener("click", (e) => {
+        const btn = e.target.closest("button.seg-chip");
+        if (!btn) return;
+        const key = btn.dataset.seg;
+        const idx = state.explorer.segSelected.indexOf(key);
+        if (idx >= 0) {
+          state.explorer.segSelected.splice(idx, 1);
+        } else {
+          if (state.explorer.segSelected.length >= MAX_SEG_SELECTED) return;
+          state.explorer.segSelected.push(key);
+        }
+        explorerSyncToolbarUI();
+        renderIndustryExplorer();
+      });
+      segChipEl.dataset.wired = "1";
     }
 
     /* Snapshot view toggle (Table | Bars) inside the right card head. */
@@ -2064,6 +2148,42 @@
     const toSel = $("#explorer-fy-to");
     if (fromSel) fromSel.value = state.explorer.fyFrom;
     if (toSel)   toSel.value   = state.explorer.fyTo;
+
+    /* ── Compare toggle + segments-mode controls ── */
+    const mode = state.explorer.mode;
+    const inSegments = mode === "segments";
+
+    /* Compare toggle highlighting — match the existing .exp-view-btn
+       convention (is-active) so it inherits the same active style. */
+    document.querySelectorAll("#explorer-compare-toggle button[data-cmp]").forEach(b => {
+      b.classList.toggle("is-active", b.getAttribute("data-cmp") === mode);
+    });
+
+    /* Show / hide the Companies + Metrics multi-select fields vs the
+       Company + Segments fields per mode. The field wrappers carry
+       the .hidden utility so layout collapses cleanly. */
+    const cFld = $("#explorer-field-companies");
+    const mFld = $("#explorer-field-metrics");
+    const sCoFld = $("#explorer-field-seg-company");
+    const sChFld = $("#explorer-field-seg-chips");
+    if (cFld)   cFld.classList.toggle("hidden",  inSegments);
+    if (mFld)   mFld.classList.toggle("hidden",  inSegments);
+    if (sCoFld) sCoFld.classList.toggle("hidden", !inSegments);
+    if (sChFld) sChFld.classList.toggle("hidden", !inSegments);
+
+    /* Single-company select value */
+    const segCoSel = $("#explorer-seg-company-select");
+    if (segCoSel) segCoSel.value = state.explorer.segCompany;
+
+    /* Segment chips — active state + cap-disabled state. */
+    const atCap = state.explorer.segSelected.length >= MAX_SEG_SELECTED;
+    document.querySelectorAll("#explorer-seg-chips button.seg-chip").forEach(btn => {
+      const key = btn.dataset.seg;
+      const on  = state.explorer.segSelected.includes(key);
+      btn.classList.toggle("active", on);
+      if (!on && atCap) btn.setAttribute("aria-disabled", "true");
+      else btn.removeAttribute("aria-disabled");
+    });
   }
 
   /* ---------- chips below toolbar ---------- */
@@ -2086,6 +2206,23 @@
         if (!btn) return;
         const co = btn.getAttribute("data-remove-company");
         const mk = btn.getAttribute("data-remove-metric");
+        /* Segments mode — metricKey is "segment:<key>". Strip the
+           segment from segSelected; everything else (FY range, view)
+           is unaffected. */
+        if (state.explorer.mode === "segments") {
+          const segKey = (mk || "").startsWith("segment:") ? mk.slice("segment:".length) : null;
+          if (segKey) {
+            state.explorer.segSelected = state.explorer.segSelected.filter(k => k !== segKey);
+            /* Never bottom out — fall back to the default 6 if the
+               user deselects every segment. */
+            if (!state.explorer.segSelected.length) {
+              state.explorer.segSelected = PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
+            }
+          }
+          explorerSyncToolbarUI();
+          renderIndustryExplorer();
+          return;
+        }
         /* Removing a chip removes whichever axis is single — if the user
            has multiple companies AND multiple metrics, we remove that
            metric across all companies (the more selective signal). */
@@ -2110,7 +2247,79 @@
   /* Build the active series index — every (company × metric) combo
      that's actually available. Each entry: { key, name, company,
      metricKey, def, color }. */
+  /* Per-segment lookup: returns the segment's volume in raw units for
+     the given (company, fy). Maruti uses audited SIAM segment-wise
+     units + an "Other" residual against Total Sales Volume. Other
+     OEMs only publish SUV vs total, so only the UV chip resolves;
+     the rest return null and render as gaps (matches the spec's
+     "Segments mode will look thinner for non-Maruti" trade-off). */
+  function _segVolumeRaw(company, segKey, fy) {
+    const mix = PRODUCT_MIX_BY_OEM[company] && PRODUCT_MIX_BY_OEM[company][fy];
+    if (mix) {
+      if (segKey === "Other") {
+        const tot = getCompanyMetric(fy, company, "Total Sales Volume");
+        if (!tot || tot.Value == null) return null;
+        const six = (mix.Mini || 0) + (mix.Compact || 0) + (mix.MidSize || 0)
+                  + (mix.UV   || 0) + (mix.Vans    || 0) + (mix.LCV     || 0);
+        return Math.max(0, tot.Value - six);
+      }
+      return (mix[segKey] != null) ? mix[segKey] : null;
+    }
+    /* Non-Maruti fallback — only UV / SUV is derivable. */
+    if (segKey === "UV") {
+      const tot  = getCompanyMetric(fy, company, "Total Sales Volume");
+      const suvP = getCompanyMetric(fy, company, "SUV Volume %");
+      if (!tot || tot.Value == null || !suvP || suvP.Value == null) return null;
+      return tot.Value * suvP.Value / 100;
+    }
+    return null;
+  }
+
+  /* Synthesise a registry-shaped def for one (segment × company)
+     so the rest of the explorer pipeline (explorerLookup, scaling,
+     formatting, snapshot rendering) works with zero branching. */
+  function _segmentMetricDef(seg, company) {
+    return {
+      key:            `segment:${seg.key}`,
+      label:          seg.label,
+      group:          "Segment",
+      unit:           "lakh units",
+      type:           "absolute",
+      format:         "lakh",
+      scaleToDisplay: 1 / 1e5,        // raw units → lakh on chart axis
+      chartable:      true,
+      derive:         (co, fy) => _segVolumeRaw(co, seg.key, fy),
+      source: company === "Maruti"
+        ? "Maruti Suzuki SIAM segment-wise dispatches (FY23-FY25 audited) + AR / Q4 IP"
+        : `${company} AR + Q4 IP — only SUV vs total disclosed; non-UV segments not separately published`,
+    };
+  }
+
   function explorerBuildSeriesIndex() {
+    /* Segments compare-mode → one OEM, many segments. Series shape
+       matches the companies path so _renderIndustryExplorerImpl
+       and _renderExplorerRightCard work unchanged. */
+    if (state.explorer.mode === "segments") {
+      const co = state.explorer.segCompany;
+      const sel = state.explorer.segSelected.length
+        ? state.explorer.segSelected
+        : PRODUCT_SEG_DEF.slice(0, MAX_SEG_SELECTED).map(s => s.key);
+      return sel
+        .map(k => PRODUCT_SEG_DEF.find(s => s.key === k))
+        .filter(Boolean)
+        .map(seg => {
+          const def = _segmentMetricDef(seg, co);
+          return {
+            key:       `${co}|${def.key}`,
+            company:   co,
+            metricKey: def.key,
+            def,
+            name:      seg.label,        // chips already convey company
+            color:     seg.color,
+          };
+        });
+    }
+
     const out = [];
     state.explorer.companies.forEach(co => {
       state.explorer.metrics.forEach(mk => {
@@ -2206,11 +2415,21 @@
     const leftLegend  = $("#chart1-legend");
     const leftSource  = $("#chart1-source");
 
-    if (leftTitleEl) leftTitleEl.textContent = "Performance Trend Explorer";
+    const inSegments = state.explorer.mode === "segments";
+    if (leftTitleEl) {
+      leftTitleEl.textContent = inSegments
+        ? `${state.explorer.segCompany} Segment Trend Explorer`
+        : "Performance Trend Explorer";
+    }
     let subtitleBits = [`${fys[0] || ""}${fys.length > 1 ? "–" + fys[fys.length-1] : ""}`];
     if (view === "yoy") subtitleBits.push("YoY %");
     else if (view === "indexed") subtitleBits.push(`Indexed to ${state.explorer.fyFrom} = 100`);
-    if (leftHelpEl) leftHelpEl.textContent = `${seriesIndex.length} series · ${subtitleBits.join(" · ")}`;
+    if (leftHelpEl) {
+      const noun = inSegments
+        ? (seriesIndex.length === 1 ? "segment" : "segments")
+        : "series";
+      leftHelpEl.textContent = `${seriesIndex.length} ${noun} · ${subtitleBits.join(" · ")}`;
+    }
 
     /* Unit pill — shows the unit when consistent, "mixed" otherwise */
     if (leftSubEl) {
@@ -2263,10 +2482,11 @@
         tooltipUnit,
         area: lineSeries.length === 1,
         height: 300,
-        /* Tells the multi-line tooltip handler to group rows by
-           company in a 2-column block layout. Only the explorer
-           passes this; OEM & legacy paths render the flat list. */
-        groupBy: "company",
+        /* Group tooltip rows by company in companies-mode (one OEM
+           per block). In segments-mode every series is the same
+           company, so the grouped layout collapses to one block
+           with all segments — flat list reads better there. */
+        groupBy: inSegments ? null : "company",
       });
 
       if (leftLegend) {
@@ -2446,11 +2666,19 @@
     const idxTo = fys.indexOf(fyTo);
     const fyPrev = idxTo > 0 ? fys[idxTo - 1] : null;
 
-    if (titleEl) titleEl.textContent = "Selected Year Snapshot";
+    const inSegments = state.explorer.mode === "segments";
+    if (titleEl) {
+      titleEl.textContent = inSegments
+        ? `${fyTo} Segment Snapshot`
+        : "Selected Year Snapshot";
+    }
     if (helpEl) {
       const count = seriesIndex.length;
       const range = (fyFrom && fyTo && fyFrom !== fyTo) ? `${fyFrom}–${fyTo}` : fyTo;
-      helpEl.textContent = `${fyTo} · ${count} ${count === 1 ? "series" : "series"} · period ${range}`;
+      const noun = inSegments
+        ? (count === 1 ? "segment" : "segments")
+        : "series";
+      helpEl.textContent = `${fyTo} · ${count} ${noun} · period ${range}`;
     }
 
     /* Refresh the Table | Bars toggle UI — active state + bars-disabled. */
@@ -2632,9 +2860,9 @@
                 return `
                 <tr>
                   <td>
-                    <span class="ss-series" title="${ATTR(r.s.company + " · " + r.s.def.label)}">
+                    <span class="ss-series" title="${ATTR(r.s.name)}">
                       <span class="swatch" style="background:${r.s.color}"></span>
-                      <span class="ss-label">${r.s.company} · ${r.s.def.label}</span>
+                      <span class="ss-label">${r.s.name}</span>
                       ${bestSet.has(r) ? `<span class="ss-best-badge">Best</span>` : ""}
                     </span>
                   </td>
@@ -2784,12 +3012,12 @@
         leftPct = zeroPct - widthPct;
         fillCls = "is-neg";
       }
-      const rowTip = `${r.s.company} · ${r.s.def.label} — ${banner}`;
+      const rowTip = `${r.s.name} — ${banner}`;
       return `
         <div class="hbar-row" title="${ATTR(rowTip)}">
           <div class="hbar-label">
             <span class="swatch" style="background:${r.s.color}"></span>
-            <span class="hbar-name">${r.s.company} · ${r.s.def.label}</span>
+            <span class="hbar-name">${r.s.name}</span>
             ${bestSet.has(r) ? `<span class="ss-best-badge">Best</span>` : ""}
           </div>
           <div class="hbar-track" aria-hidden="true">
@@ -3409,6 +3637,10 @@
       lcv:     "#E7A64A",
       other:   "#C9D2DF",
     },
+    /* MIX_PALETTE is used by the OEM-view product mix chart and,
+       through the hoisted PRODUCT_SEG_DEF below, by the Industry
+       Performance Explorer's Segments compare-mode. Both surfaces
+       therefore share one colour vocabulary for segments. */
     suv: {
       suv:    "#173B63",
       nonSuv: "#B9C6D8",
@@ -3424,6 +3656,35 @@
       bev:    "#7DD3FC",
     },
   };
+
+  /* Audited SIAM segment-wise units. Maruti is the only OEM publishing
+     this monthly; other OEMs only disclose SUV-vs-total in their
+     AR / IP, so the Explorer's Segments compare-mode falls back to
+     SUV % × Total Sales Volume for them (UV chip carries data, the
+     other six are gaps). Hoisted so both renderVolumeMixChart (OEM
+     view) and the Industry explorer's segments path read the same
+     numbers. */
+  const PRODUCT_MIX_BY_OEM = {
+    Maruti: {
+      FY23: { Mini: 144517, Compact: 870790, MidSize: 13596, UV: 339640, Vans: 161099, LCV: 30762 },
+      FY24: { Mini: 121395, Compact: 802514, MidSize: 12118, UV: 627360, Vans: 134058, LCV: 30159 },
+      FY25: { Mini: 65580,  Compact: 671737, MidSize: 583,   UV: 767728, Vans: 130167, LCV: 36167 },
+    },
+  };
+  /* Canonical segment definition for the Segments compare-mode. Order
+     drives chip + chart-series order. Labels mirror the OEM-view
+     product-mix legend; colours come from MIX_PALETTE.product so the
+     two surfaces look like one design system. */
+  const PRODUCT_SEG_DEF = [
+    { key: "Mini",    label: "Mini",                 color: MIX_PALETTE.product.mini    },
+    { key: "Compact", label: "Compact",              color: MIX_PALETTE.product.compact },
+    { key: "MidSize", label: "Mid-size",             color: MIX_PALETTE.product.midSize },
+    { key: "UV",      label: "UV / SUV",             color: MIX_PALETTE.product.uv      },
+    { key: "Vans",    label: "Vans",                 color: MIX_PALETTE.product.vans    },
+    { key: "LCV",     label: "LCV",                  color: MIX_PALETTE.product.lcv     },
+    { key: "Other",   label: "Exports + OEM supply", color: MIX_PALETTE.product.other   },
+  ];
+  const MAX_SEG_SELECTED = 6;
 
   function renderVolumeMixChart() {
     const view = state.mixView;
@@ -3637,13 +3898,7 @@
            Detailed view is hidden for them and SUV / Non-SUV is
            computed from SUV Volume % × Total Sales Volume.
       */
-      const PRODUCT_MIX = {
-        Maruti: {
-          FY23: { Mini: 144517, Compact: 870790, MidSize: 13596, UV: 339640, Vans: 161099, LCV: 30762 },
-          FY24: { Mini: 121395, Compact: 802514, MidSize: 12118, UV: 627360, Vans: 134058, LCV: 30159 },
-          FY25: { Mini: 65580,  Compact: 671737, MidSize: 583,   UV: 767728, Vans: 130167, LCV: 36167 },
-        },
-      };
+      const PRODUCT_MIX = PRODUCT_MIX_BY_OEM;
       const PP = MIX_PALETTE.product;
       const SP = MIX_PALETTE.suv;
       const segDef = [

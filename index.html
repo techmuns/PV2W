@@ -182,7 +182,19 @@
            every other page so OEM views render unaffected. -->
       <div id="industry-controls" class="hidden flex-col gap-2 mb-3">
         <div id="explorer-toolbar" class="explorer-toolbar">
+          <!-- Compare toggle: flips the explorer between OEM-as-series
+               (Companies, default) and single-OEM segment-as-series
+               (Segments). Hides Companies / Metrics multi-selects in
+               Segments mode; reveals Company + segment-chip fields. -->
           <div class="explorer-field">
+            <span class="explorer-label">Compare</span>
+            <div id="explorer-compare-toggle" class="explorer-view-toggle" role="tablist" aria-label="Compare mode">
+              <button type="button" class="exp-view-btn" data-cmp="companies">Companies</button>
+              <button type="button" class="exp-view-btn" data-cmp="segments">Segments</button>
+            </div>
+          </div>
+
+          <div class="explorer-field" id="explorer-field-companies">
             <span class="explorer-label">Companies</span>
             <details class="explorer-popover" data-explorer="companies">
               <summary class="explorer-trigger" id="explorer-companies-trigger">Select companies</summary>
@@ -190,12 +202,22 @@
             </details>
           </div>
 
-          <div class="explorer-field">
+          <div class="explorer-field" id="explorer-field-metrics">
             <span class="explorer-label">Metrics</span>
             <details class="explorer-popover" data-explorer="metrics">
               <summary class="explorer-trigger" id="explorer-metrics-trigger">Select metrics</summary>
               <div class="explorer-menu explorer-menu-wide" id="explorer-metrics-menu" role="group" aria-label="Metrics"></div>
             </details>
+          </div>
+
+          <div class="explorer-field hidden" id="explorer-field-seg-company">
+            <span class="explorer-label">Company</span>
+            <select id="explorer-seg-company-select" class="cat-select-inline" style="width:auto;min-width:130px"></select>
+          </div>
+
+          <div class="explorer-field hidden" id="explorer-field-seg-chips">
+            <span class="explorer-label">Segments</span>
+            <div id="explorer-seg-chips" class="seg-chip-row" role="group" aria-label="Segments"></div>
           </div>
 
           <div class="explorer-field">
