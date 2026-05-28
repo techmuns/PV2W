@@ -1,0 +1,33 @@
+{
+  "name": "two-wheeler-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "vite build && npx -y wrangler@4 deploy",
+    "fetch:tvs": "npx -y cheerio@1 node scripts/fetch-screener.mjs TVSMOTOR",
+    "fetch:bajaj": "npx -y cheerio@1 node scripts/fetch-screener.mjs BAJAJ-AUTO",
+    "fetch:hero": "npx -y cheerio@1 node scripts/fetch-screener.mjs HEROMOTOCO",
+    "fetch:eicher": "npx -y cheerio@1 node scripts/fetch-screener.mjs EICHERMOT",
+    "fetch:ola": "npx -y cheerio@1 node scripts/fetch-screener.mjs OLAELEC"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.13.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.11"
+  },
+  "optionalDependencies": {
+    "cheerio": "^1.0.0",
+    "wrangler": "^4.0.0"
+  }
+}

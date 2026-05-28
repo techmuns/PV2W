@@ -1,0 +1,42 @@
+{
+  "metric": "Two-Wheeler Domestic Volume Growth (% YoY)",
+  "source": "SIAM — domestic two-wheeler sales (wholesale)",
+  "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
+  "notes": "Total domestic two-wheeler retail + wholesale sales (motorcycles + scooters + mopeds), all OEMs, India. FY26 / FY27 reserved for industry forecasts (ICRA / CRISIL / SIAM outlook) — leave null until a forecast source is selected.",
+  "underlyingVolumesUnits": {
+    "FY17": 17589738,
+    "FY18": 20200117,
+    "FY19": 21181390,
+    "FY20": 17416432,
+    "FY21": 15119387,
+    "FY22": 13466412,
+    "FY23": 15862771,
+    "FY24": 17974365,
+    "FY25": 19605000
+  },
+  "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "audited",
+    "confidence": "high",
+    "verifiedAgainstPrimary": true,
+    "method": "SIAM domestic 2W wholesale sales. FY25 cross-verified: 19.6M units, +9.1% YoY — the segment’s best in six fiscals, below the FY19 peak of 21.1M. Earlier years are SIAM annual-series figures."
+  },
+  "forecastYears": [
+    "FY26",
+    "FY27"
+  ],
+  "series": {
+    "FY16": null,
+    "FY17": 6.9,
+    "FY18": 14.8,
+    "FY19": 4.9,
+    "FY20": -17.8,
+    "FY21": -13.2,
+    "FY22": -10.9,
+    "FY23": 17.8,
+    "FY24": 13.3,
+    "FY25": 9.1,
+    "FY26": null,
+    "FY27": null
+  }
+}

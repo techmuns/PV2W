@@ -1,0 +1,99 @@
+{
+  "metric": "Two-Wheeler Domestic Market Share by OEM (% of domestic units)",
+  "source": "Vahan — OEM 2W retail registration share",
+  "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
+  "notes": "Market share computed on domestic dispatches (SIAM) — same denominator as the segment-mix series. EV-only OEMs (Ola Electric, Ather) show up from FY22.",
+  "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "audited",
+    "confidence": "medium",
+    "verifiedAgainstPrimary": true,
+    "method": "OEM 2W share from Vahan retail registrations. FY24–FY25 cross-verified (FY25: Hero 28.8%, Honda 25.4%, TVS 17.5%, Bajaj 11.4%, RE 4.5%, Suzuki ~5.2%). FY16–FY23 are the earlier SIAM domestic-dispatch series (Vahan OEM retail share is not available pre-FY19)."
+  },
+  "series": {
+    "Hero MotoCorp": {
+      "FY16": 38.7,
+      "FY17": 36.2,
+      "FY18": 35.3,
+      "FY19": 35.1,
+      "FY20": 36.7,
+      "FY21": 36.4,
+      "FY22": 33.7,
+      "FY23": 32.4,
+      "FY24": 30.79,
+      "FY25": 28.84
+    },
+    "Honda HMSI": {
+      "FY16": 25.0,
+      "FY17": 28.0,
+      "FY18": 28.6,
+      "FY19": 27.8,
+      "FY20": 25.8,
+      "FY21": 27.1,
+      "FY22": 25.7,
+      "FY23": 25.0,
+      "FY24": 23.36,
+      "FY25": 25.37
+    },
+    "TVS": {
+      "FY16": 12.5,
+      "FY17": 13.5,
+      "FY18": 14.3,
+      "FY19": 15.0,
+      "FY20": 14.8,
+      "FY21": 14.0,
+      "FY22": 15.0,
+      "FY23": 16.0,
+      "FY24": 16.93,
+      "FY25": 17.49
+    },
+    "Bajaj Auto": {
+      "FY16": 9.7,
+      "FY17": 9.1,
+      "FY18": 9.8,
+      "FY19": 11.5,
+      "FY20": 10.6,
+      "FY21": 11.0,
+      "FY22": 11.5,
+      "FY23": 12.0,
+      "FY24": 12.03,
+      "FY25": 11.41
+    },
+    "Royal Enfield": {
+      "FY16": 2.8,
+      "FY17": 3.2,
+      "FY18": 4.0,
+      "FY19": 3.6,
+      "FY20": 3.4,
+      "FY21": 3.4,
+      "FY22": 3.7,
+      "FY23": 4.5,
+      "FY24": 4.47,
+      "FY25": 4.47
+    },
+    "Suzuki": {
+      "FY16": 3.0,
+      "FY17": 3.5,
+      "FY18": 4.0,
+      "FY19": 4.5,
+      "FY20": 4.8,
+      "FY21": 4.6,
+      "FY22": 5.0,
+      "FY23": 4.6,
+      "FY24": 4.5,
+      "FY25": 5.2
+    },
+    "Ola Electric": {
+      "FY16": 0.0,
+      "FY17": 0.0,
+      "FY18": 0.0,
+      "FY19": 0.0,
+      "FY20": 0.0,
+      "FY21": 0.0,
+      "FY22": 0.1,
+      "FY23": 1.7,
+      "FY24": 2.0,
+      "FY25": 1.7
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "metric": "Two-Wheeler Industry Segment Mix (% of domestic units)",
+  "source": "SIAM — 2W body-type split",
+  "sourceUrl": "https://www.siam.in/statistics.aspx?mpgid=8&pgidtrail=14",
+  "notes": "Values are widely-cited SIAM annual figures. Mopeds includes TVS XL100 family. Three-wheeler share excluded from total — the four-segment row sums to ~100% with small rounding.",
+  "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "audited",
+    "confidence": "high",
+    "verifiedAgainstPrimary": true,
+    "method": "SIAM 2W body-type mix. FY25 cross-verified: motorcycles 12.25M (62.5%), scooters record 6.85M (34.9%), mopeds ~2.6%."
+  },
+  "series": {
+    "Motorcycles": {
+      "FY16": 68.1,
+      "FY17": 67.2,
+      "FY18": 66.4,
+      "FY19": 64.8,
+      "FY20": 65.6,
+      "FY21": 66.4,
+      "FY22": 66.2,
+      "FY23": 64.5,
+      "FY24": 62.7,
+      "FY25": 62.5
+    },
+    "Scooters": {
+      "FY16": 27.0,
+      "FY17": 28.2,
+      "FY18": 29.4,
+      "FY19": 31.0,
+      "FY20": 30.0,
+      "FY21": 28.6,
+      "FY22": 29.0,
+      "FY23": 30.8,
+      "FY24": 32.8,
+      "FY25": 34.9
+    },
+    "Mopeds": {
+      "FY16": 4.9,
+      "FY17": 4.6,
+      "FY18": 4.2,
+      "FY19": 4.2,
+      "FY20": 4.4,
+      "FY21": 5.0,
+      "FY22": 4.8,
+      "FY23": 4.7,
+      "FY24": 4.5,
+      "FY25": 2.6
+    }
+  }
+}

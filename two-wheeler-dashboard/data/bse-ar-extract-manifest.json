@@ -1,0 +1,209 @@
+{
+  "ranAt": "2026-05-28T17:32:18.450Z",
+  "entries": [
+    {
+      "slug": "bajaj",
+      "year": 2023,
+      "txtPath": "src/data/source-text/BAJAJ_2023.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2022,
+      "txtPath": "src/data/source-text/BAJAJ_2022.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2021,
+      "txtPath": "src/data/source-text/BAJAJ_2021.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2020,
+      "txtPath": "src/data/source-text/BAJAJ_2020.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2019,
+      "txtPath": "src/data/source-text/BAJAJ_2019.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2018,
+      "txtPath": "src/data/source-text/BAJAJ_2018.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2017,
+      "txtPath": "src/data/source-text/BAJAJ_2017.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "bajaj",
+      "year": 2016,
+      "txtPath": "src/data/source-text/BAJAJ_2016.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2023,
+      "txtPath": "src/data/source-text/HERO_2023.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2022,
+      "txtPath": "src/data/source-text/HERO_2022.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2021,
+      "txtPath": "src/data/source-text/HERO_2021.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2020,
+      "txtPath": "src/data/source-text/HERO_2020.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2019,
+      "txtPath": "src/data/source-text/HERO_2019.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2018,
+      "txtPath": "src/data/source-text/HERO_2018.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2017,
+      "txtPath": "src/data/source-text/HERO_2017.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "hero",
+      "year": 2016,
+      "txtPath": "src/data/source-text/HERO_2016.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2025,
+      "txtPath": "src/data/source-text/EICHER_2025.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2024,
+      "txtPath": "src/data/source-text/EICHER_2024.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2023,
+      "txtPath": "src/data/source-text/EICHER_2023.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2023,
+      "txtPath": "src/data/source-text/EICHER_2023.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2022,
+      "txtPath": "src/data/source-text/EICHER_2022.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2021,
+      "txtPath": "src/data/source-text/EICHER_2021.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2020,
+      "txtPath": "src/data/source-text/EICHER_2020.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2019,
+      "txtPath": "src/data/source-text/EICHER_2019.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2018,
+      "txtPath": "src/data/source-text/EICHER_2018.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2017,
+      "txtPath": "src/data/source-text/EICHER_2017.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2016,
+      "txtPath": "src/data/source-text/EICHER_2016.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2014,
+      "txtPath": "src/data/source-text/EICHER_2014.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2013,
+      "txtPath": "src/data/source-text/EICHER_2013.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2012,
+      "txtPath": "src/data/source-text/EICHER_2012.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2011,
+      "txtPath": "src/data/source-text/EICHER_2011.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "eicher",
+      "year": 2010,
+      "txtPath": "src/data/source-text/EICHER_2010.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "ola-electric",
+      "year": 2025,
+      "txtPath": "src/data/source-text/OLA_2025.txt",
+      "status": "already-present"
+    },
+    {
+      "slug": "ola-electric",
+      "year": 2025,
+      "txtPath": "src/data/source-text/OLA_2025.txt",
+      "status": "already-present"
+    }
+  ]
+}

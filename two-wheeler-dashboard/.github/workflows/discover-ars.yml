@@ -1,0 +1,234 @@
+name: Discover + fetch + extract OEM annual reports
+
+# Scrapes a company's investor-relations page for PDF links, downloads every
+# annual-report-looking PDF, runs pdftotext -layout on each, and commits the
+# .txt files to src/data/source-text/. PDFs themselves are NEVER committed.
+#
+# Triggers:
+#   1. Manual button in Actions (workflow_dispatch — single company input)
+#   2. Push to .github/discover-queue.json — batch of companies
+#
+# Queue file shape:
+#   { "companies": [
+#       { "id": "bajaj", "name": "Bajaj Auto",
+#         "irPages": ["https://www.bajajauto.com/investors/annual-reports"],
+#         "pdfRegex": "annual.report",
+#         "fyTag": "annual.?report.?(20\\d\\d).?(20\\d\\d)" },
+#       ...
+#   ] }
+
+on:
+  workflow_dispatch:
+    inputs:
+      company_id:
+        description: 'Company id (slug used in saved filenames, e.g. bajaj)'
+        required: true
+        default: 'bajaj'
+      ir_url:
+        description: 'Investor-relations page URL to scrape for PDFs'
+        required: true
+        default: 'https://www.bajajauto.com/investors/annual-reports'
+      pdf_regex:
+        description: 'grep -iE filter for PDF URLs to keep (regex)'
+        required: false
+        default: 'annual.report'
+  push:
+    paths:
+      - '.github/discover-queue.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discover-ars
+  cancel-in-progress: false
+
+jobs:
+  discover-and-extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install poppler + jq + curl
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils jq curl
+          pdftotext -v 2>&1 | head -1
+
+      - name: Build company list
+        id: list
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/dl
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            jq -nc \
+              --arg id   '${{ inputs.company_id }}' \
+              --arg url  '${{ inputs.ir_url }}' \
+              --arg re   '${{ inputs.pdf_regex }}' \
+              '[{id:$id, irPages:[$url], pdfRegex:$re}]' \
+              > /tmp/dl/companies.json
+          else
+            if [ ! -f .github/discover-queue.json ]; then
+              echo "::error::Push trigger fired but .github/discover-queue.json missing."
+              exit 1
+            fi
+            jq -c '.companies' .github/discover-queue.json > /tmp/dl/companies.json
+          fi
+          echo "Company list:"
+          jq . /tmp/dl/companies.json
+
+      - name: Discover + fetch + extract
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'
+          mkdir -p src/data/source-text
+
+          # Pull every <a href> ending in .pdf from a page, then filter via
+          # the company's pdfRegex. Resolves protocol-relative + relative URLs
+          # against the base. De-duplicates.
+          discover() {
+            local PAGE_URL="$1"; local FILTER="$2"
+            local TMP=/tmp/dl/page.html
+            echo "Scraping $PAGE_URL"
+            if ! curl -L --fail -sS --max-time 60 -A "$UA" -o "$TMP" "$PAGE_URL"; then
+              echo "::warning::failed to fetch $PAGE_URL"
+              return 0
+            fi
+            local SIZE; SIZE=$(stat -c%s "$TMP")
+            echo "  page size: $SIZE bytes"
+            local BASE; BASE=$(echo "$PAGE_URL" | grep -oE 'https?://[^/]+')
+            # Extract every URL ending .pdf or .PDF — from href= and from src=
+            grep -oiE '(href|src|data-href|data-pdf)\s*=\s*["'\''"][^"'\''" >]+\.pdf[^"'\''" >]*' "$TMP" \
+              | sed -E 's/^[^=]*=\s*["'\''"]//' \
+              | sed -E 's/["'\''" ].*$//' \
+              | sort -u \
+              | while read -r RAW; do
+                  case "$RAW" in
+                    http*) echo "$RAW";;
+                    //*)   echo "https:$RAW";;
+                    /*)    echo "$BASE$RAW";;
+                    *)     echo "${PAGE_URL%/*}/$RAW";;
+                  esac
+                done \
+              | grep -iE "$FILTER" \
+              | sort -u
+          }
+
+          # Derive a slug from a PDF URL. Tries to find FY pattern like
+          # 2024-25, 2024_25, FY25, 2025 in the URL path; otherwise uses the
+          # basename without extension.
+          slug_from_url() {
+            local URL="$1"; local ID="$2"
+            local BASE; BASE=$(basename "$URL" | sed -E 's/\.pdf.*$//' | sed -E 's/[^A-Za-z0-9_-]+/_/g')
+            # Try FY YY-YY → use the YY-YY → "FY<YY>"
+            local FY
+            FY=$(echo "$URL" \
+                  | grep -oE '20[0-9]{2}[_-]?20?[0-9]{2}|FY[_-]?20?[0-9]{2}|fy[_-]?20?[0-9]{2}|20[0-9]{2}_[0-9]{2}|20[0-9]{2}-[0-9]{2}|annual.?report.?20[0-9]{2}' \
+                  | head -1 \
+                  | grep -oE '[0-9]{2}-[0-9]{2}|[0-9]{4}' \
+                  | head -1 || true)
+            if [ -n "$FY" ]; then
+              # FY = "24-25" → "FY25"; "2025" → "FY25"; "201819" → "FY19"
+              local LAST2
+              LAST2=$(echo "$FY" | sed -E 's/.*([0-9]{2})$/\1/')
+              echo "${ID^^}_FY${LAST2}"
+            else
+              echo "${ID^^}_${BASE}"
+            fi
+          }
+
+          process_pdf() {
+            local URL="$1"; local SLUG="$2"
+            local OUT="src/data/source-text/${SLUG}.txt"
+            if [ -f "$OUT" ] || [ -f "${OUT}.gz" ]; then
+              echo "  ✓ already extracted: $SLUG"
+              return 0
+            fi
+            rm -f /tmp/dl/in.pdf
+            echo "  fetching $URL -> $SLUG"
+            if ! curl -L --fail -sS --max-time 300 -A "$UA" -H "Accept: application/pdf,*/*" -o /tmp/dl/in.pdf "$URL"; then
+              echo "::warning::download failed: $URL"
+              return 0
+            fi
+            if ! file /tmp/dl/in.pdf | grep -qi 'PDF document'; then
+              echo "::warning::not a PDF: $URL"
+              head -c 200 /tmp/dl/in.pdf
+              echo ""
+              return 0
+            fi
+            local SIZE; SIZE=$(stat -c%s /tmp/dl/in.pdf)
+            echo "  downloaded $SIZE bytes"
+            pdftotext -layout /tmp/dl/in.pdf "$OUT"
+            pdfinfo /tmp/dl/in.pdf > "src/data/source-text/${SLUG}.meta.txt" || true
+            local LINES; LINES=$(wc -l < "$OUT")
+            local TBYTES; TBYTES=$(stat -c%s "$OUT")
+            echo "  extracted: $LINES lines, $TBYTES bytes -> $OUT"
+            if [ "$TBYTES" -gt 20971520 ]; then
+              gzip -9 "$OUT"
+              echo "  compressed to ${OUT}.gz"
+            fi
+          }
+
+          TOTAL_FOUND=0; TOTAL_OK=0
+          while IFS= read -r company; do
+            ID=$(echo "$company" | jq -r '.id')
+            FILTER=$(echo "$company" | jq -r '.pdfRegex // "annual.report"')
+            echo ""
+            echo "──────────────────────────────────────────────"
+            echo "Company: $ID  (filter: $FILTER)"
+            URLS=$(echo "$company" | jq -r '.irPages[]')
+            ALL_PDFS=""
+            for PAGE in $URLS; do
+              FOUND=$(discover "$PAGE" "$FILTER" || true)
+              if [ -n "$FOUND" ]; then
+                echo "  matched $(echo "$FOUND" | wc -l) PDF URLs"
+                ALL_PDFS="$ALL_PDFS"$'\n'"$FOUND"
+              else
+                echo "  no PDFs matched"
+              fi
+            done
+            ALL_PDFS=$(echo "$ALL_PDFS" | sed '/^$/d' | sort -u)
+            COUNT=$(echo "$ALL_PDFS" | sed '/^$/d' | wc -l)
+            TOTAL_FOUND=$((TOTAL_FOUND + COUNT))
+            echo "  -> $COUNT unique PDF(s) to fetch"
+            while IFS= read -r URL; do
+              [ -z "$URL" ] && continue
+              SLUG=$(slug_from_url "$URL" "$ID")
+              if process_pdf "$URL" "$SLUG"; then
+                TOTAL_OK=$((TOTAL_OK + 1))
+              fi
+            done <<< "$ALL_PDFS"
+          done < <(jq -c '.[]' /tmp/dl/companies.json)
+
+          echo ""
+          echo "Summary: $TOTAL_OK / $TOTAL_FOUND PDF(s) extracted."
+          ls -la src/data/source-text/ | head -50
+
+      - name: Commit extracted text
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/source-text/
+          if git diff --staged --quiet; then
+            echo "No new text files — nothing to commit."
+            exit 0
+          fi
+          NEW=$(git diff --staged --name-only | wc -l)
+          git commit -m "data(discover): extract $NEW AR text file(s) via Actions
+
+Auto-discovered from company IR pages by .github/workflows/discover-ars.yml.
+PDFs not committed (text only).
+"
+          # Retry push up to 4× with exponential backoff
+          for delay in 0 2 4 8 16; do
+            [ "$delay" -gt 0 ] && sleep "$delay"
+            if git push; then exit 0; fi
+            echo "::warning::push failed, retrying after ${delay}s"
+            git fetch origin "$GITHUB_REF_NAME"
+            git rebase origin/"$GITHUB_REF_NAME" || true
+          done
+          echo "::error::push failed after retries"
+          exit 1

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "curl -fsSL https://raw.githubusercontent.com/techmuns/claude-skill/HEAD/scripts/setup-agent-base.sh | CLAUDE_CODE_REMOTE=true bash",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

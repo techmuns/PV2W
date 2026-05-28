@@ -1,0 +1,79 @@
+{
+  "bajaj": {
+    "FY16": 6060000,
+    "FY17": 6060000,
+    "FY18": 6240000,
+    "FY19": 6330000,
+    "FY20": 6330000,
+    "FY21": 6330000,
+    "FY22": 6650000,
+    "FY24": 7110000,
+    "FY25": 7200000,
+    "_evidence": {
+      "FY16": "BAJAJ_2016.txt L2456 — 'The Company’s current installed capacity is 6.06 million units per annum.' (6.06 million -> 6,060,000)",
+      "FY17": "BAJAJ_2017.txt L2504 — 'The Company’s current installed capacity is 6.06 million units per annum.' (6.06 million -> 6,060,000)",
+      "FY18": "BAJAJ_2018.txt L2795 — 'The Company’s current installed capacity is 6.24 million units per annum.' (6.24 million -> 6,240,000)",
+      "FY19": "BAJAJ_2019.txt L4705 — 'The Company’s current installed capacity is 6.33 million units per annum.' (6.33 million -> 6,330,000)",
+      "FY20": "BAJAJ_2020.txt L4251 — 'The Company’s current installed capacity is 6.33 million units per annum.' (6.33 million -> 6,330,000)",
+      "FY21": "BAJAJ_2021.txt L4829 — 'The Company’s current installed capacity is 6.33 million units per annum.' (6.33 million -> 6,330,000)",
+      "FY22": "BAJAJ_2022.txt L4689 — 'The Company’s current installed capacity is 6.65 million units per annum.' (6.65 million -> 6,650,000)",
+      "FY24": "BAJAJ_2024.txt L1820 — 'The Company’s current installed capacity is 7.11 million units per annum.' (7.11 million -> 7,110,000)",
+      "FY25": "BAJAJ_2025.txt L1676 — 'The Company’s current installed capacity is 7.2 million units per annum.' (7.2 million -> 7,200,000)",
+      "FY23": "BAJAJ_2023.txt L5034 — 'The Company's current installed capacity is 6.65 million units per annum.' (6.65 million -> 6,650,000)"
+    },
+    "FY23": 6650000
+  },
+  "hero": {
+    "FY16": 8100000,
+    "FY17": null,
+    "FY18": 9100000,
+    "FY19": 9000000,
+    "FY20": 9100000,
+    "FY21": 9500000,
+    "FY22": 9500000,
+    "FY24": 9500000,
+    "FY25": 9400000,
+    "_evidence": {
+      "FY16": "HERO_2016.txt L264-271 — '8.1 Mn units CUMULATIVE INSTALLED CAPACITY ACROSS FIVE WORLD-CLASS FACILITIES' (8.1 million -> 8,100,000)",
+      "FY17": "null — no stated total installed capacity. Only a plant-wise table (HERO_2017.txt L508-513: Gurgaon 2.1 + Dharuhera 2.1 + Haridwar 2.7 + Neemrana 1.1 + Vadodara 1.2^ + Villa Rica 0.08 Mn units/annum) where Vadodara is footnoted 'Capacity to be ramped up to 1.2 Mn'; no single disclosed total figure, so not summed/guessed.",
+      "FY18": "HERO_2018.txt L180-181 — 'production capacity of 91 lakh+ 2-wheelers, annually' (91 lakh -> 9,100,000)",
+      "FY19": "HERO_2019.txt L220-221 — 'a combined installed capacity of around nine million units of two-wheelers per annum' (nine million -> 9,000,000; note: 'This capacity will go up to 11 million units' once 8th plant operational — planned, not used)",
+      "FY20": "HERO_2020.txt L1245-1246 — Manufacturing Capital: 'Installed Capacity: 9.1 million two-wheelers annually' (9.1 million -> 9,100,000)",
+      "FY21": "HERO_2021.txt L957 — Manufactured Capital snapshot: '9.5 Annual Capacity (in million)' (9.5 million -> 9,500,000). Detailed text L4051-4052 states 'consolidating the overall capacity to 9.3 million for domestic plants' (9.3 million domestic only); used the company-wide capitals-snapshot figure for series consistency.",
+      "FY22": "HERO_2022.txt L581 — Manufactured Capital snapshot: '~9.5 million Annual Capacity' (9.5 million -> 9,500,000). Detailed text L4040 states 'overall capacity of 9.3 million for all' plants (9.3 million); used capitals-snapshot figure for series consistency.",
+      "FY24": "HERO_2024.txt L1685-1686 — '9.5 million units annual production capacity' (9.5 million -> 9,500,000)",
+      "FY25": "HERO_2025.txt L960-962 — 'our annual production capacity stands at approximately 9.4 million units' (9.4 million -> 9,400,000)",
+      "FY23": "HERO_2023.txt L1605, L542, L320 — Manufactured Capital snapshot: '9.5 million Total production capacity' (9.5 million -> 9,500,000)"
+    },
+    "FY23": 9500000
+  },
+  "eicher": {
+    "FY17": null,
+    "FY18": 825000,
+    "FY19": 900000,
+    "FY20": 1200000,
+    "FY21": 1000000,
+    "FY22": 1200000,
+    "FY23": 1200000,
+    "FY24": 1200000,
+    "FY25": 1200000,
+    "_evidence": {
+      "FY17": "null — EICHER_2017.txt states only a forward-looking figure: L1869-1871 'By 2017-18, the total annual production capacity of your Company is expected to be 8,25,000 motorcycles' and L586-587 'be producing 8,25,000 motorcycles at Royal Enfield in 2017-18'. No current-year (FY2016-17) installed-capacity number is stated (L1913 only says capacity 'is nearly at its peak'); not used to avoid guessing.",
+      "FY18": "EICHER_2018.txt L2387-2393 — 'During 2017-18, the total production from all the three plants was close to the target capacity of 8,25,000 motorcycles.' (8,25,000 -> 825,000). Note: L1758-1761 says first phase of Vallam Vadagal takes 'Royal Enfield’s overall production capacity to 9 lac units per annum' (900,000) and L2407 'plans an annual production capacity of 9,50,000 motorcycles' in 2018-19 (forward-looking).",
+      "FY19": "EICHER_2019.txt L2641-2642 (font-shifted text decodes to) — 'Your Company’s total installed capacity across plants as on March 2019 was 9,00,000 motorcycles.' (9,00,000 -> 900,000). Total production was ~8,42,000 (L2645).",
+      "FY20": "EICHER_2020.txt L3016-3018 — 'With the addition of Phase-2 of Vallam Vadagal, total installed capacity of your Company has increased to 1.2 million motorcycles per annum.' (1.2 million -> 1,200,000). FY production ~6,80,000.",
+      "FY21": "EICHER_2021.txt L5351-5355 — 'EML currently has a combined installed capacity of 10 lakhs* across all manufacturing units.' (10 lakh -> 1,000,000)",
+      "FY22": "EICHER_2022.txt L3184 — Manufactured Capital: '12 Lakh motorcycles per annum capacity' (12 lakh -> 1,200,000)",
+      "FY23": "EICHER_2023.txt L2842-2843 — '3 world-class manufacturing sites in Chennai, India with 12 lakh annual manufacturing capacity' (12 lakh -> 1,200,000)",
+      "FY24": "EICHER_2024.txt L8457-8460 — 'three major manufacturing facilities at - Vallam Vadagal, Oragadam and Tiruvottiyur, with a combined production capacity of 1.2 million units a year.' (1.2 million -> 1,200,000)",
+      "FY25": "EICHER_2025.txt L5769-5770 — '12 Lakhs+ Motorcycle capacity across Indian units' (also L4334 '12 Lakhs+ annual manufacturing capacity') (12 lakh -> 1,200,000)"
+    }
+  },
+  "ola": {
+    "FY25": 1000000,
+    "_evidencenote": "OLA_2025.txt — Phase-1 INSTALLED capacity 1M units (commissioned during FY22), scalable to 4M. Applied to FY22-FY25 (phase-1 capacity has been flat since commissioning).",
+    "FY22": 1000000,
+    "FY23": 1000000,
+    "FY24": 1000000
+  }
+}
