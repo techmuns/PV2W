@@ -76,7 +76,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-28T07:08:14.706Z",
+      "fetched_at": "2026-05-28T20:10:06.495Z",
       "source_url": "https://www.screener.in/company/MARUTI/consolidated/",
       "basis": "Maruti Suzuki India consolidated annual P&L + cash flow",
       "by_fy": {
@@ -324,7 +324,7 @@
       "problems": []
     },
     "Tickertape": {
-      "fetched_at": "2026-05-28T07:08:22.480Z",
+      "fetched_at": "2026-05-28T20:10:09.988Z",
       "source_url": "https://www.tickertape.in/stocks/maruti-suzuki-india-MARU",
       "by_fy": {},
       "problems": [
@@ -471,7 +471,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-28T07:08:11.349Z",
+      "fetched_at": "2026-05-28T20:10:02.633Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
@@ -480,7 +480,7 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-05-28T07:08:15.861Z",
+      "fetched_at": "2026-05-28T20:10:07.480Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -723,7 +723,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-05-28T07:08:10.572Z",
+      "fetched_at": "2026-05-28T20:10:02.000Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
@@ -1029,7 +1029,7 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-05-28T07:08:12.426Z",
+      "fetched_at": "2026-05-28T20:10:03.846Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
@@ -1169,7 +1169,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-05-28T07:08:12.811Z",
+      "fetched_at": "2026-05-28T20:10:04.643Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [
