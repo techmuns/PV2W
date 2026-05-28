@@ -1,0 +1,68 @@
+# Auto-build & publish the 2W dashboard bundle.
+#
+# The PV "neha" Worker serves static files with no build step, so the 2W
+# React app's compiled output must live in the repo at /2w/. This workflow
+# rebuilds /2w/ whenever the 2W *source* changes on main and commits the
+# result — so nobody has to remember to `npm run build` by hand.
+#
+# Loop-safety: this job only ever writes under /2w/, which is OUTSIDE the
+# two-wheeler-dashboard/** trigger path, so its own commit cannot retrigger
+# it. (Data-refresh workflows rebuild /2w/ inline for the same reason — a
+# GITHUB_TOKEN commit would not trigger this workflow anyway.)
+name: 2W Build & Publish /2w
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'two-wheeler-dashboard/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: 2w-build-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: two-wheeler-dashboard
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: two-wheeler-dashboard/package-lock.json
+
+      - run: npm ci
+
+      - name: Build 2W bundle into /2w
+        run: npm run build
+
+      - name: Commit rebuilt /2w bundle if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # ../2w is the repo-root output dir (Vite outDir = ../2w).
+          git add ../2w
+          if git diff --staged --quiet; then
+            echo "No /2w changes — bundle already up to date."
+            exit 0
+          fi
+          git commit -m "build: rebuild /2w bundle from two-wheeler-dashboard source (auto)"
+          for delay in 0 2 4 8 16; do
+            [ "$delay" -gt 0 ] && sleep "$delay"
+            if git push; then exit 0; fi
+            echo "::warning::push failed, retrying after ${delay}s"
+            git fetch origin "$GITHUB_REF_NAME"
+            git rebase origin/"$GITHUB_REF_NAME" || true
+          done
+          echo "::error::push failed after retries"
+          exit 1

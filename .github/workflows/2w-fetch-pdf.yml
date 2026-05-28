@@ -1,12 +1,14 @@
-name: Fetch + extract PDF text
+name: 2W Fetch + extract PDF text
 
-# Downloads one or more publicly-accessible PDFs on the runner, extracts
-# the layout text, and commits the .txt files (never the PDF). Solves
-# the 100 MB / LFS-per-file repo size limit for large investor documents.
+# Ported from the standalone two-wheeler-dashboard repo into the
+# two-wheeler-dashboard/ subfolder (job-level working-directory). Downloads
+# one or more publicly-accessible PDFs on the runner, extracts the layout
+# text, and commits the .txt files (never the PDF). Solves the 100 MB /
+# LFS-per-file repo size limit for large investor documents.
 #
 # Triggers:
 #   1. Manual button in Actions (workflow_dispatch — single file)
-#   2. Push to .github/fetch-queue.json — single file or array of files
+#   2. Push to two-wheeler-dashboard/.github/fetch-queue.json
 #
 # Queue file shape (either):
 #   { "url": "...", "slug": "OLA_DRHP" }
@@ -25,18 +27,21 @@ on:
         default: 'OLA_DRHP'
   push:
     paths:
-      - '.github/fetch-queue.json'
+      - 'two-wheeler-dashboard/.github/fetch-queue.json'
 
 permissions:
   contents: write
 
 concurrency:
-  group: fetch-pdf
+  group: 2w-fetch-pdf
   cancel-in-progress: false
 
 jobs:
   fetch-and-extract:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: two-wheeler-dashboard
     steps:
       - uses: actions/checkout@v4
         with:
@@ -177,8 +182,7 @@ jobs:
             exit 0
           fi
           COUNT=$(jq 'length' /tmp/dl/jobs.json)
-          git commit -m "data: extract text from $COUNT PDF(s) via Actions
-
-$(jq -r '.[] | "  - \(.slug) : \(.url)"' /tmp/dl/jobs.json)
-"
+          git commit \
+            -m "data: extract text from $COUNT PDF(s) via Actions" \
+            -m "$(jq -r '.[] | "  - \(.slug) : \(.url)"' /tmp/dl/jobs.json)"
           git push

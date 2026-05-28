@@ -1,12 +1,14 @@
-name: Discover + fetch + extract OEM annual reports
+name: 2W Discover + fetch + extract OEM annual reports
 
-# Scrapes a company's investor-relations page for PDF links, downloads every
+# Ported from the standalone two-wheeler-dashboard repo into the
+# two-wheeler-dashboard/ subfolder (job-level working-directory). Scrapes a
+# company's investor-relations page for PDF links, downloads every
 # annual-report-looking PDF, runs pdftotext -layout on each, and commits the
 # .txt files to src/data/source-text/. PDFs themselves are NEVER committed.
 #
 # Triggers:
 #   1. Manual button in Actions (workflow_dispatch — single company input)
-#   2. Push to .github/discover-queue.json — batch of companies
+#   2. Push to two-wheeler-dashboard/.github/discover-queue.json — batch
 #
 # Queue file shape:
 #   { "companies": [
@@ -34,18 +36,21 @@ on:
         default: 'annual.report'
   push:
     paths:
-      - '.github/discover-queue.json'
+      - 'two-wheeler-dashboard/.github/discover-queue.json'
 
 permissions:
   contents: write
 
 concurrency:
-  group: discover-ars
+  group: 2w-discover-ars
   cancel-in-progress: false
 
 jobs:
   discover-and-extract:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: two-wheeler-dashboard
     steps:
       - uses: actions/checkout@v4
         with:
@@ -217,11 +222,9 @@ jobs:
             exit 0
           fi
           NEW=$(git diff --staged --name-only | wc -l)
-          git commit -m "data(discover): extract $NEW AR text file(s) via Actions
-
-Auto-discovered from company IR pages by .github/workflows/discover-ars.yml.
-PDFs not committed (text only).
-"
+          git commit \
+            -m "data(discover): extract $NEW AR text file(s) via Actions" \
+            -m "Auto-discovered from company IR pages by .github/workflows/2w-discover-ars.yml. PDFs not committed (text only)."
           # Retry push up to 4× with exponential backoff
           for delay in 0 2 4 8 16; do
             [ "$delay" -gt 0 ] && sleep "$delay"
