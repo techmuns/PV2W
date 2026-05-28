@@ -1,0 +1,139 @@
+{
+  "ticker": "OLAELEC",
+  "id": "ola",
+  "name": "Ola Electric Mobility Ltd",
+  "shortName": "Ola",
+  "basis": "Financials: Ola Electric consolidated (exchange filings). Volumes: electric scooter deliveries.",
+  "currency": "INR",
+  "unit": "Cr",
+  "fyAxis": [],
+  "fetchedAt": null,
+  "sources": {
+    "primary": "Ola Electric deliveries from the FY25 annual report; financials from exchange filings (BSE/NSE).",
+    "notes": "Ola Electric sells electric scooters only — product mix is 100% scooters, powertrain 100% EV, domestic-only. FY22 was the first meaningful commercial year (S1 launch Dec-2021). FY25 deliveries 3.59 lakh per the AR (deliveries basis); note this differs from Vahan registrations (~3.44 lakh), which lag invoiced deliveries.",
+    "perFY": {
+      "FY22": "Ola Electric electric-scooter deliveries for FY2021-22, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.",
+      "FY23": "Ola Electric electric-scooter deliveries for FY2022-23, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.",
+      "FY24": "Ola Electric electric-scooter deliveries for FY2023-24, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.",
+      "FY25": "Ola Electric electric-scooter deliveries for FY2024-25, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters."
+    }
+  },
+  "verification": {
+    "status": "audited",
+    "confidence": "high",
+    "verifiedAgainstPrimary": true,
+    "method": "Financials from exchange filings (BSE/NSE). Volumes: electric-scooter deliveries FY22–FY25 from the Ola Electric FY25 annual report (deliveries basis, not Vahan registrations).",
+    "upgradePath": "Pre-FY22 not applicable (entity pre-commercial; S1 launched Dec-2021)."
+  },
+  "pl": {},
+  "bs": {},
+  "cf": {},
+  "ops": {
+    "totalVolume": [null, null, null, null, null, null, 20948, 156251, 329618, 359221],
+    "motorcyclesByFy": {
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "scootersByFy": {
+      "FY22": 20948,
+      "FY23": 156251,
+      "FY24": 329618,
+      "FY25": 359221
+    },
+    "mopedsByFy": {
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "threeWheelersByFy": {
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "exportsByFy": {
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "evByFy": {
+      "FY22": 20948,
+      "FY23": 156251,
+      "FY24": 329618,
+      "FY25": 359221
+    },
+    "notes": {
+      "basis": "Electric scooter deliveries (Ola S1 family).",
+      "ev": "100% electric by definition.",
+      "sources": "FY22–FY25 from Ola Electric disclosures / Autocar Professional industry e-2W sales."
+    },
+    "sourcesByFy": {
+      "productMix": {
+        "FY22": "Ola Electric electric-scooter deliveries for FY2021-22, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.",
+        "FY23": "Ola Electric electric-scooter deliveries for FY2022-23, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.",
+        "FY24": "Ola Electric electric-scooter deliveries for FY2023-24, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters.",
+        "FY25": "Ola Electric electric-scooter deliveries for FY2024-25, from the Ola Electric FY25 Annual Report's multi-year deliveries track record (BSE scripcode 544225; src/data/source-text/OLA_2025.txt; data/raw-eicher-ola-recent.json). Metric = deliveries (invoiced), not Vahan registrations. Ola is 100% electric scooters."
+      }
+    }
+  },
+  "metrics": {
+    "volumeGrowth": [null, null, null, null, null, null, null, 645.9, 110.95, 8.98],
+    "evShare": [null, null, null, null, null, null, 100, 100, 100, 100],
+    "capacity": [null, null, null, null, null, null, 1000000, 1000000, 1000000, 1000000],
+    "capacityUtilisation": [null, null, null, null, null, null, 2.1, 15.6, 33, 35.9]
+  },
+  "na": ["Pre-FY22 volumes (entity pre-commercial)", "Capacity Utilisation %", "Stock Price 31-Mar"],
+  "dataStatus": {
+    "productMix": {
+      "FY22": "available",
+      "FY23": "available",
+      "FY24": "available",
+      "FY25": "available"
+    },
+    "powertrainMix": {
+      "FY22": "available",
+      "FY23": "available",
+      "FY24": "available",
+      "FY25": "available"
+    },
+    "domesticExportMix": {
+      "FY22": "derived",
+      "FY23": "derived",
+      "FY24": "derived",
+      "FY25": "derived"
+    },
+    "ccMix": {
+      "FY16": "unavailable",
+      "FY17": "unavailable",
+      "FY18": "unavailable",
+      "FY19": "unavailable",
+      "FY20": "unavailable",
+      "FY21": "unavailable",
+      "FY22": "unavailable",
+      "FY23": "unavailable",
+      "FY24": "unavailable",
+      "FY25": "unavailable"
+    },
+    "revenueMix": {
+      "FY16": "unavailable",
+      "FY17": "unavailable",
+      "FY18": "unavailable",
+      "FY19": "unavailable",
+      "FY20": "unavailable",
+      "FY21": "unavailable",
+      "FY22": "unavailable",
+      "FY23": "unavailable",
+      "FY24": "unavailable",
+      "FY25": "unavailable"
+    },
+    "statusLegend": {
+      "available": "Ola scooter deliveries reported for that FY (company disclosures / industry sales).",
+      "derived": "Computed: EV mix 100%, domestic 100%, volume growth = YoY of deliveries.",
+      "unavailable": "Not applicable / not disclosed."
+    }
+  }
+}

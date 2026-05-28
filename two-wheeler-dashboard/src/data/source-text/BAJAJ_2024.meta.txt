@@ -1,0 +1,18 @@
+Creator:         Adobe InDesign 19.4 (Macintosh)
+Producer:        iLovePDF
+CreationDate:    Fri Jun 14 12:45:42 2024 UTC
+ModDate:         Tue Jun 18 10:19:03 2024 UTC
+Custom Metadata: yes
+Metadata Stream: yes
+Tagged:          no
+UserProperties:  no
+Suspects:        no
+Form:            AcroForm
+JavaScript:      no
+Pages:           276
+Encrypted:       no
+Page size:       595.276 x 841.89 pts (A4)
+Page rot:        0
+File size:       18648341 bytes
+Optimized:       no
+PDF version:     1.7

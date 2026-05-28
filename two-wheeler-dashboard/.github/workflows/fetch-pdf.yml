@@ -1,0 +1,184 @@
+name: Fetch + extract PDF text
+
+# Downloads one or more publicly-accessible PDFs on the runner, extracts
+# the layout text, and commits the .txt files (never the PDF). Solves
+# the 100 MB / LFS-per-file repo size limit for large investor documents.
+#
+# Triggers:
+#   1. Manual button in Actions (workflow_dispatch — single file)
+#   2. Push to .github/fetch-queue.json — single file or array of files
+#
+# Queue file shape (either):
+#   { "url": "...", "slug": "OLA_DRHP" }
+#   { "files": [ { "url": "...", "slug": "..." }, ... ] }
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Direct PDF URL (publicly accessible)'
+        required: true
+        default: 'https://www.sebi.gov.in/sebi_data/attachdocs/dec-2023/1703580725954.PDF'
+      slug:
+        description: 'Slug to save extracted text as (no extension), e.g. OLA_DRHP'
+        required: true
+        default: 'OLA_DRHP'
+  push:
+    paths:
+      - '.github/fetch-queue.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-pdf
+  cancel-in-progress: false
+
+jobs:
+  fetch-and-extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install poppler-utils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pdftotext -v 2>&1 | head -1
+
+      - name: Build job list from event
+        id: list
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/dl
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            jq -nc --arg url '${{ inputs.url }}' --arg slug '${{ inputs.slug }}' \
+              '[{url:$url, slug:$slug}]' > /tmp/dl/jobs.json
+          else
+            if [ ! -f .github/fetch-queue.json ]; then
+              echo "::error::Push trigger fired but .github/fetch-queue.json is missing."
+              exit 1
+            fi
+            # Accept either { url, slug } or { files: [...] } or array root.
+            jq -c '
+              if type == "array" then .
+              elif .files then .files
+              elif .url and (.slug or .filename) then
+                [{url: .url, slug: (.slug // (.filename | sub("\\.[Pp][Dd][Ff]$"; "")))}]
+              else error("queue file must have { url, slug } or { files: [...] }")
+              end
+            ' .github/fetch-queue.json > /tmp/dl/jobs.json
+          fi
+          echo "Job list:"
+          jq . /tmp/dl/jobs.json
+          COUNT=$(jq 'length' /tmp/dl/jobs.json)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch + extract each PDF
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'
+          mkdir -p src/data/source-text
+
+          fetch() {
+            curl -L --fail -sS \
+              -c /tmp/dl/cookies.txt -b /tmp/dl/cookies.txt \
+              -A "$UA" \
+              -H "Accept: application/pdf,application/octet-stream,*/*" \
+              -o "$1" "$2"
+          }
+
+          process_one() {
+            local URL="$1"; local SLUG="$2"
+            if ! echo "$SLUG" | grep -qE '^[A-Za-z0-9_-]+$'; then
+              echo "::warning::Skipping bad slug: $SLUG"
+              return 0
+            fi
+            echo ""
+            echo "──────────────────────────────────────────────"
+            echo "Job: $SLUG"
+            echo "URL: $URL"
+            rm -f /tmp/dl/in.pdf /tmp/dl/page1.html /tmp/dl/cookies.txt
+
+            fetch /tmp/dl/in.pdf "$URL" || { echo "::error::curl failed for $SLUG"; return 1; }
+            file /tmp/dl/in.pdf
+
+            # Google Drive virus-scan interstitial (for files >25 MB) returns
+            # an HTML confirmation page. Look for the confirm token + retry.
+            if file /tmp/dl/in.pdf | grep -qi 'HTML\|XML\|ASCII text'; then
+              echo "Got HTML interstitial, retrying with Drive confirm token..."
+              mv /tmp/dl/in.pdf /tmp/dl/page1.html
+              local FILE_ID
+              FILE_ID=$(echo "$URL" | grep -oE 'id=[A-Za-z0-9_-]+' | head -1 | cut -d= -f2 || true)
+              local TOKEN
+              TOKEN=$(grep -oE 'confirm=[A-Za-z0-9_-]{4,}' /tmp/dl/page1.html | head -1 | cut -d= -f2 || true)
+              if [ -n "${FILE_ID:-}" ] && [ -n "${TOKEN:-}" ]; then
+                local CONFIRMED="https://drive.usercontent.google.com/download?id=${FILE_ID}&export=download&confirm=${TOKEN}"
+                fetch /tmp/dl/in.pdf "$CONFIRMED"
+              elif [ -n "${FILE_ID:-}" ]; then
+                # Fallback: hit usercontent.google.com directly with confirm=t.
+                fetch /tmp/dl/in.pdf "https://drive.usercontent.google.com/download?id=${FILE_ID}&export=download&confirm=t"
+              else
+                local ACTION
+                ACTION=$(grep -oE 'action="[^"]+"' /tmp/dl/page1.html | head -1 | cut -d'"' -f2 | sed 's/&amp;/\&/g' || true)
+                if [ -n "$ACTION" ]; then
+                  fetch /tmp/dl/in.pdf "$ACTION"
+                else
+                  echo "::error::HTML interstitial but no confirm token / form action for $SLUG"
+                  head -c 1500 /tmp/dl/page1.html
+                  return 1
+                fi
+              fi
+              file /tmp/dl/in.pdf
+            fi
+
+            if ! file /tmp/dl/in.pdf | grep -qi 'PDF document'; then
+              echo "::error::Final file is not a PDF for $SLUG"
+              head -c 1000 /tmp/dl/in.pdf | hexdump -C | head -10
+              return 1
+            fi
+
+            local SIZE; SIZE=$(stat -c%s /tmp/dl/in.pdf)
+            echo "Downloaded $SIZE bytes."
+
+            local OUT="src/data/source-text/${SLUG}.txt"
+            pdftotext -layout /tmp/dl/in.pdf "$OUT"
+            pdfinfo /tmp/dl/in.pdf > "src/data/source-text/${SLUG}.meta.txt" || true
+            local LINES; LINES=$(wc -l < "$OUT")
+            local TBYTES; TBYTES=$(stat -c%s "$OUT")
+            echo "Extracted: $LINES lines, $TBYTES bytes -> $OUT"
+            if [ "$TBYTES" -gt 20971520 ]; then
+              gzip -9 "$OUT"
+              echo "Compressed to ${OUT}.gz"
+            fi
+          }
+
+          FAILED=0
+          while IFS= read -r row; do
+            URL=$(echo "$row" | jq -r '.url')
+            SLUG=$(echo "$row" | jq -r '.slug // (.filename | sub("\\.[Pp][Dd][Ff]$"; ""))')
+            process_one "$URL" "$SLUG" || FAILED=$((FAILED+1))
+          done < <(jq -c '.[]' /tmp/dl/jobs.json)
+
+          echo ""
+          echo "Done. Failures: $FAILED"
+          ls -la src/data/source-text/
+
+      - name: Commit extracted text (PDFs never committed)
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/source-text/
+          if git diff --staged --quiet; then
+            echo "No changes -- nothing new extracted."
+            exit 0
+          fi
+          COUNT=$(jq 'length' /tmp/dl/jobs.json)
+          git commit -m "data: extract text from $COUNT PDF(s) via Actions
+
+$(jq -r '.[] | "  - \(.slug) : \(.url)"' /tmp/dl/jobs.json)
+"
+          git push

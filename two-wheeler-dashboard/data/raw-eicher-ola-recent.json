@@ -1,0 +1,57 @@
+{
+  "royalEnfield": {
+    "FY23": {
+      "sourceFile": "EICHER_2023.txt",
+      "totalUnits": 834895,
+      "domesticUnits": 734840,
+      "exportUnits": 100055,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "EICHER_2023.txt L9604-9608 (Directors' Report): 'Your Company has sold 8,34,895 motorcycles in the financial year 2022-23, 38.6% higher when compared to 2021-22 sales of 6,02,268 motorcycles. Out of 8,34,895 motorcycles sold in 2022-23, 1,00,055 motorcycles were exported, an increase of 23.5% over previous year export volume of 81,032 motorcycles.' Domestic = 834,895 - 100,055 = 734,840 (derived). Also L2916 '8,34,895 motorcycles sold'. No RE displacement (350cc vs 650 twin) unit split disclosed."
+    },
+    "FY24": {
+      "sourceFile": "EICHER_2024.txt",
+      "totalUnits": 912731,
+      "domesticUnits": 834794,
+      "exportUnits": 77937,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "EICHER_2024.txt L11422-11426 (Directors' Report): 'Your Company has sold 9,12,731 motorcycles in FY 2023-24, 9.3% higher when compared to 2022-23 sales of 8,34,895 motorcycles. Out of 9,12,731 motorcycles sold in 2023-24, 77,937 motorcycles were exported, a decrease of 22.1% over previous year export volume of 1,00,055 motorcycles.' Domestic = 912,731 - 77,937 = 834,794 (derived). NOTE: L2951 separately reports '9,12,003 motorcycles sold (consolidated volumes)' - a different consolidated metric. No displacement unit split disclosed."
+    },
+    "FY25": {
+      "sourceFile": "EICHER_2025.txt",
+      "totalUnits": 1005340,
+      "domesticUnits": 902757,
+      "exportUnits": 102583,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "EICHER_2025.txt L12205-12210 (Directors' Report): 'Your Company has sold 10,05,340 motorcycles in FY 2024-25, 10.1% higher when compared to 2023-24 sales of 9,12,731 motorcycles. Out of 10,05,340 motorcycles sold in 2024-25, 1,02,583 motorcycles were exported, an increase of 31.6% over previous financial year export volume of 77,937 motorcycles.' Domestic explicitly stated L636-638: '9,02,757 Domestic motorcycles sold'. Export cross-check L1306: 'over 1 lakh units sold outside India, a 30% increase'. Also L4410 '10,05,340 motorcycles sold'. No displacement unit split disclosed."
+    }
+  },
+  "ola": {
+    "FY25": {
+      "sourceFile": "OLA_2025.txt",
+      "unitsSold": 359221,
+      "metric": "deliveries",
+      "evidence": "OLA_2025.txt L819: 'We delivered 3,59,221 vehicles in FY25, up from 3,29,618 units the previous year'. Reiterated L856-857 ('3,59,221 Deliveries'), L878, L3764 ('Deliveries (Units) ... 3,59,221'), L3638-3641 multi-year chart '359k FY25 Ola Deliveries'. NOTE: AR headline metric is deliveries (wholesale/invoiced), distinct from Vahan registrations; auditors flagged (L14717-14720, L19441-19444) that an earlier press-announced 25,000 figure referred to bookings not registered sales."
+    },
+    "FY24": {
+      "sourceFile": "OLA_2025.txt",
+      "unitsSold": 329618,
+      "metric": "deliveries",
+      "evidence": "OLA_2025.txt L819 ('up from 3,29,618 units the previous year'), L880 ('FY 2024 3,29,618'), L3764, L3638 ('329k FY24')."
+    },
+    "FY23": {
+      "sourceFile": "OLA_2025.txt",
+      "unitsSold": 156251,
+      "metric": "deliveries",
+      "evidence": "OLA_2025.txt L882 multi-year track-record table: 'FY 2023 1,56,251'; chart L3638 '156k FY23 Ola Deliveries'."
+    },
+    "FY22": {
+      "sourceFile": "OLA_2025.txt",
+      "unitsSold": 20948,
+      "metric": "deliveries",
+      "evidence": "OLA_2025.txt L884 multi-year track-record table: 'FY2022 20,948'; chart L3638-3639 '21k FY22 Ola Deliveries'."
+    }
+  }
+}

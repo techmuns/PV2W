@@ -1,0 +1,14 @@
+# Cloudflare Worker (static assets) config — matches the *.workers.dev hosting
+# pattern used by the PV dashboard (neha.tech-441.workers.dev).
+#
+# Deploy: `npx wrangler deploy` (after `npm run build`).
+# CI deploy is wired in .github/workflows/deploy.yml.
+
+name = "two-wheeler-dashboard"
+compatibility_date = "2025-05-01"
+
+# Static-only worker: serve everything from ./dist and SPA-fallback to index.html.
+# No Worker script needed when assets are configured this way.
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"

@@ -1,0 +1,60 @@
+name: Refresh Data (Screener)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ticker:
+        description: 'Screener ticker (e.g. TVSMOTOR, BAJAJ-AUTO, HEROMOTOCO, EICHERMOT, OLAELEC). Leave blank for all.'
+        required: false
+        default: 'TVSMOTOR'
+  schedule:
+    # Weekly: Monday 03:17 UTC.
+    - cron: '17 3 * * 1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (incl. optional cheerio for the scraper)
+        run: npm ci --include=optional
+
+      - name: Fetch from Screener
+        env:
+          TICKER: ${{ inputs.ticker || 'TVSMOTOR' }}
+        run: |
+          if [ "$TICKER" = "ALL" ]; then
+            node scripts/fetch-screener.mjs TVSMOTOR BAJAJ-AUTO HEROMOTOCO EICHERMOT OLAELEC
+          else
+            node scripts/fetch-screener.mjs "$TICKER"
+          fi
+
+      - name: Verify build still passes
+        run: npm run build
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/companies/
+          if git diff --staged --quiet; then
+            echo "No data changes — nothing to commit."
+          else
+            git commit -m "data: refresh Screener financials (auto)"
+            git push
+          fi

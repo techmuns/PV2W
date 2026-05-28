@@ -1,0 +1,76 @@
+{
+  "slug": "eicher",
+  "entity": "Royal Enfield (motorcycle business of Eicher Motors Ltd)",
+  "note": "Eicher FY16 was a 15-month transition period (Jan-2015 to Mar-2016); figures here are clean Apr-Mar fiscal years FY17-FY22. PRIMARY figures use CONSOLIDATED numbers, which the Management Discussion & Analysis explicitly states it reports ('all the numbers pertaining to EML refer to consolidated numbers') and which are the figures cross-referenced in every multi-year operational-highlights table and MD&A chart from FY18 onward. Each AR ALSO publishes a STANDALONE total in the Directors' Report and a separate standalone operational-highlights table; the standalone totals are slightly higher (e.g. FY17 standalone 6,66,493 vs consolidated 6,66,135). Both are recorded in evidence. units350 and unitsTwin left null in every year because no AR discloses an RE-total displacement split in units (only fragmentary India sub-segment hints such as FY20 'above 500cc ~25,500 in India').",
+  "fy": {
+    "FY17": {
+      "sourceFile": "EICHER_2017.txt",
+      "totalUnits": 666135,
+      "domesticUnits": null,
+      "exportUnits": 15383,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "CONSOLIDATED total 6,66,135 confirmed by every later AR's consolidated multi-year table: EICHER_2018.txt L372 'Motorcycles (Nos.) ... 8,20,121  6,66,135  5,07,548'; EICHER_2018.txt L1859 'from 6,66,135 units in 2016-17 to 8,20,121 units in 2017-18'; EICHER_2019.txt L412 (consolidated) '8,22,724  8,20,121  6,66,135  5,07,548'; EICHER_2020.txt L566 '6,97,582  8,22,724  8,20,121  6,66,135'. STANDALONE total in the FY17 AR itself is 6,66,493: EICHER_2017.txt L1753 'Your Company sold 6,66,493 motorcycles in 2016-17' and L2662-2666 'It sold 6,66,493 motorcycles in the financial year 2016-17 (12 months) ... Out of 6,66,493 motorcycles sold in 2016-17 (12 months), 15,383 were exported'. Export 15,383 is the figure stated in the FY17 Directors' Report (standalone). Multi-year RE Sales Volume chart EICHER_2017.txt L1647-1657 shows 2014-15: 3,31,169; 2015-16: 5,08,099; 2016-17: 6,66,493 (standalone series). Domestic split not separately disclosed in the FY17 AR (null)."
+    },
+    "FY18": {
+      "sourceFile": "EICHER_2018.txt",
+      "totalUnits": 820121,
+      "domesticUnits": 801230,
+      "exportUnits": 18891,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "CONSOLIDATED total 8,20,121: EICHER_2018.txt L1857-1859 'the total sales volume including international sales increased from 6,66,135 units in 2016-17 to 8,20,121 units in 2017-18'; L372 operational-highlights (consolidated) 'Motorcycles (Nos.) 8,20,121  6,66,135'; confirmed by EICHER_2019.txt L412 and EICHER_2020.txt L566 (8,20,121). Domestic (India) 8,01,230: EICHER_2018.txt L1873-1875 'India sales increased from 6,51,110 units in 2016-17 to 8,01,230 units in 2017-18'. International 18,891: EICHER_2018.txt L2118-2120 'international sales volume which increased by a healthy 26% from 15,025 in 2016-17 to 18,891 in 2017-18' (and chart L2127/L2134 18.9 / 15.0 '000). NOTE within-AR difference: the STANDALONE Directors' Report says a different total/export: EICHER_2018.txt L3578-3583 'It sold 8,20,492 motorcycles in the financial year 2017-18 ... Out of 8,20,492 motorcycles sold in 2017-18, 19,262 motorcycles were exported'; standalone op-highlights table L1108 '8,20,492  6,66,493'. (8,01,230 + 18,891 = 8,20,121 reconciles the consolidated total.)"
+    },
+    "FY19": {
+      "sourceFile": "EICHER_2019.txt",
+      "totalUnits": 822724,
+      "domesticUnits": 803003,
+      "exportUnits": 19721,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "CONSOLIDATED total 8,22,724: EICHER_2019.txt L412 operational-highlights (consolidated) 'Motorcycles (Nos.) 8,22,724  8,20,121  6,66,135  5,07,548'; L540-544 narrative (garbled encoding) 'Royal Enfield sold 8,22,724 motorcycles in the year, largely flat from 8,20,121 motorcycles sold last year'; L233 cover-highlight '8,22,724'. Domestic (India) 8,03,003: EICHER_2019.txt L2077 '8,03,003 India motorcycles sales in 2018-19' (also cited in EICHER_2020.txt L2322-2323 'from 8,03,003 in 2018-19'). Export 19,721: stated in the FY20 AR cross-reference EICHER_2020.txt L2329-2330 'export volume of 38,662 motorcycles, a 96% increase from 19,721 in 2018-19' (consolidated). The FY19 AR's own MD&A export figure is in corrupted/garbled text and not cleanly quotable. STANDALONE total in FY19 AR is 8,23,828 (op-highlights L1128 '8,23,828  8,20,492  6,66,493'; Directors' Report cross-ref in EICHER_2020.txt L4168 '8,23,828 motorcycles' with standalone FY19 exports 20,825 per EICHER_2020.txt L4170)."
+    },
+    "FY20": {
+      "sourceFile": "EICHER_2020.txt",
+      "totalUnits": 697582,
+      "domesticUnits": 658920,
+      "exportUnits": 38662,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "CONSOLIDATED (MD&A L2316-2318 states 'all the numbers ... refer to consolidated numbers'). Total 6,97,582: EICHER_2020.txt L2317-2319 'Royal Enfield's total sales volume including exports was at 6,97,582 motorcycles in 2019-20, a decline of 15% from 8,22,724 motorcycles in 2018-19'; op-highlights L566 '6,97,582  8,22,724  8,20,121  6,66,135'; L779 'Royal Enfield sold 6,97,582 motorcycles in the financial year'. Domestic (India) 6,58,920: L2320-2323 'the overall sales volume was at 6,58,920 in 2019-20, a decline of 18% from 8,03,003 in 2018-19'. Export 38,662: L2328-2331 'all-time high export volume of 38,662 motorcycles, a 96% increase from 19,721 in 2018-19'. (6,58,920 + 38,662 = 6,97,582.) STANDALONE Directors' Report L4166-4170 'sold 6,98,216 motorcycles in the financial year 2019-20 ... 39,296 motorcycles were exported, a growth of 88.7% over the volume of 20,825 motorcycles exported in financial year 2018-19'; standalone op-highlights L1400 '6,98,216  8,23,828  8,20,492  6,66,493'. Displacement: L2358-2359 'grew the volume of the above 500cc category by 128% to about 25,500 motorcycles in India in 2019-20' (India-only sub-segment, not RE total; units350/unitsTwin left null)."
+    },
+    "FY21": {
+      "sourceFile": "EICHER_2021.txt",
+      "totalUnits": 609403,
+      "domesticUnits": 573728,
+      "exportUnits": 35675,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "CONSOLIDATED. Total 6,09,403: EICHER_2021.txt L3032-3034 'Royal Enfield's total sales volume including exports was at 6,09,403 motorcycles in 2020-21, a decline of 13% from 6,97,582 motorcycles in 2019-20'; op-highlights L682 '8,20,121  8,22,724  6,97,582  6,09,403'; L873 'Enfield sold 6,09,403 motorcycles'. Domestic (India) 5,73,728: L3040-3041 'In India, your Company's sales volume was at 5,73,728 motorcycles in 2020-21, a decrease of 13% from 6,58,920 motorcycles in 2019-20'. Export 35,675: L3059-3060 'The total export volume was at 35,675 motorcycles in 2020-21, a decline of 8% from 38,662 motorcycles in 2019-20'. (5,73,728 + 35,675 = 6,09,403.) STANDALONE Directors' Report L9298-9302 'sold 6,12,350 motorcycles in the financial year ... motorcycles were exported'; standalone op-highlights L1532 '8,20,492  8,23,828  6,98,216  6,12,350'; L5094-5095 'In FY 2020-21, Royal Enfield ... sold 6,12,350 motorcycles of which 5,73,728 units sold in the domestic market and 38,622 units in markets overseas'."
+    },
+    "FY22": {
+      "sourceFile": "EICHER_2022.txt",
+      "totalUnits": 595474,
+      "domesticUnits": 521236,
+      "exportUnits": 74238,
+      "units350": null,
+      "unitsTwin": null,
+      "evidence": "CONSOLIDATED. Total 5,95,474: EICHER_2022.txt L2071-2075 'Royal Enfield's total sales volume (including international business) stood at 5,95,474 units in 2021-22, reporting a decline of 2% from 6,09,403 units in 2020-21'; op-highlights L510 '8,22,724  6,97,582  6,09,403  5,95,474'; L2671 'to 5,95,474 motorcycles in 2021-22'. Domestic (India) 5,21,236: L2092-2093 'In 2021-22, 5,21,236 units of Royal Enfield were sold in India, registering a 9% decline year-on-year (from 5,73,728 units)'. International/export 74,238: L2266-2267 'Royal Enfield has registered sales of 74,238 units in international markets during the year, which marks a stellar growth of over 108% year-on-year'; L2157 'business, which registered sales of 74,238 units'. (5,21,236 + 74,238 = 5,95,474.) STANDALONE Directors' Report L7126-7134 'Your Company has sold 6,02,268 motorcycles in the financial year 2021-22, 1.6% lower when compared to 2020-21 sales of 6,12,350 motorcycles. Out of 6,02,268 motorcycles sold in 2021-22, 81,032 motorcycles were exported, an increase of 109.8% over previous year export volume of 38,622 motorcycles in 2020-21'; standalone op-highlights L3749/L3934 '8,23,828  6,98,216  6,12,350  6,02,268'."
+    }
+  },
+  "multiYearCharts": [
+    "EICHER_2017.txt L1641-1657 Chart 4 // Royal Enfield Sales Volume (STANDALONE, units sold): 2014-15 = 3,31,169; 2015-16 = 5,08,099; 2016-17 = 6,66,493.",
+    "EICHER_2018.txt L370-372 Operational Highlights (CONSOLIDATED) Motorcycles (Nos.): 2017-18 = 8,20,121; 2016-17 = 6,66,135; 2015-16 = 5,07,548.",
+    "EICHER_2018.txt L1107-1108 Operational Highlights (STANDALONE) Motorcycles (Nos.): 2017-18 = 8,20,492; 2016-17 = 6,66,493; 2015-16 = 5,08,099.",
+    "EICHER_2018.txt L2118-2165 Chart 5 // Royal Enfield International sales Volume ('000): 2015-16 = 8.8; 2016-17 = 15.0; 2017-18 = 18.9 (narrative L2118-2120: 15,025 in 2016-17 to 18,891 in 2017-18).",
+    "EICHER_2019.txt L410-412 Operational Highlights (CONSOLIDATED) Motorcycles (Nos.): 2018-19 = 8,22,724; 2017-18 = 8,20,121; 2016-17 = 6,66,135; 2015-16 = 5,07,548.",
+    "EICHER_2019.txt L1127-1128 Operational Highlights (STANDALONE) Motorcycles (Nos.): 2018-19 = 8,23,828; 2017-18 = 8,20,492; 2016-17 = 6,66,493; 2015-16 = 5,08,099.",
+    "EICHER_2020.txt L564-566 Operational Highlights (CONSOLIDATED) Motorcycles (Nos.): 2019-20 = 6,97,582; 2018-19 = 8,22,724; 2017-18 = 8,20,121; 2016-17 = 6,66,135.",
+    "EICHER_2020.txt L1399-1400 Operational Highlights (STANDALONE) Motorcycles (Nos.): 2019-20 = 6,98,216; 2018-19 = 8,23,828; 2017-18 = 8,20,492; 2016-17 = 6,66,493.",
+    "EICHER_2021.txt L680-682 Operational Highlights (CONSOLIDATED) Motorcycles (Nos.): 2017-18 = 8,20,121; 2018-19 = 8,22,724; 2019-20 = 6,97,582; 2020-21 = 6,09,403.",
+    "EICHER_2021.txt L1531-1532 Operational Highlights (STANDALONE) Motorcycles (Nos.): 2017-18 = 8,20,492; 2018-19 = 8,23,828; 2019-20 = 6,98,216; 2020-21 = 6,12,350.",
+    "EICHER_2022.txt L507-510 Operational Highlights (CONSOLIDATED) Motorcycles (Nos.): 2018-19 = 8,22,724; 2019-20 = 6,97,582; 2020-21 = 6,09,403; 2021-22 = 5,95,474.",
+    "EICHER_2022.txt L3748-3749 / L3934 Operational Highlights (STANDALONE) Motorcycles (Nos.): 2018-19 = 8,23,828; 2019-20 = 6,98,216; 2020-21 = 6,12,350; 2021-22 = 6,02,268.",
+    "CROSS-VALIDATION: The CONSOLIDATED series is internally perfectly consistent across all six ARs (FY17 6,66,135 / FY18 8,20,121 / FY19 8,22,724 / FY20 6,97,582 / FY21 6,09,403 / FY22 5,95,474 each appears identically in every later AR's consolidated table). The STANDALONE series is likewise self-consistent across ARs (FY17 6,66,493 / FY18 8,20,492 / FY19 8,23,828 / FY20 6,98,216 / FY21 6,12,350 / FY22 6,02,268). The only 'conflicts' are the consolidated-vs-standalone gap within each AR, not disagreements between current-year and later-AR figures."
+  ]
+}

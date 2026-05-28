@@ -1,0 +1,79 @@
+name: BSE Company Scrape
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: 'Optional slug to scrape just one OEM (tvs|bajaj|hero|eicher|ola-electric). Leave blank to scrape all 5.'
+        required: false
+        default: ''
+  schedule:
+    - cron: '0 1,14 * * *'
+  push:
+    branches: [main, claude/exciting-dirac-2zUUa]
+    paths:
+      - 'scripts/scrape-bse-company.mjs'
+      - 'scripts/extract-bse-ars.mjs'
+      - '.github/workflows/bse-scrape.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bse-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Scrape BSE (all OEMs, or only the one selected)
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          set -e
+          # scripCode|slug pairs — 5 OEMs covered by the dashboard.
+          OEMS=(
+            "532343|tvs"
+            "532977|bajaj"
+            "500182|hero"
+            "505200|eicher"
+            "544225|ola-electric"
+          )
+          for pair in "${OEMS[@]}"; do
+            scrip="${pair%%|*}"
+            slug="${pair##*|}"
+            if [ -n "$ONLY" ] && [ "$ONLY" != "$slug" ]; then
+              echo "skipping $slug (only=$ONLY)"
+              continue
+            fi
+            echo "=== $slug ($scrip) ==="
+            node scripts/scrape-bse-company.mjs "$scrip" "$slug"
+            sleep 3
+          done
+
+      - name: Install poppler-utils (for pdftotext)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      - name: Extract AR PDFs to text (gap years only)
+        run: node scripts/extract-bse-ars.mjs
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/bse-*.json data/bse-ar-extract-manifest.json src/data/source-text/
+          if git diff --staged --quiet; then
+            echo "No data changes — nothing to commit."
+          else
+            git commit -m "data: refresh BSE scrape + extract AR text (auto)"
+            git push
+          fi

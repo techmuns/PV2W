@@ -1,0 +1,206 @@
+{
+  "ticker": "EICHERMOT",
+  "id": "eicher",
+  "name": "Eicher Motors Ltd / Royal Enfield",
+  "shortName": "Royal Enfield",
+  "basis": "Financials: Eicher Motors consolidated (exchange filings). Volumes: Royal Enfield motorcycles.",
+  "currency": "INR",
+  "unit": "Cr",
+  "fyAxis": [],
+  "fetchedAt": null,
+  "sources": {
+    "primary": "Royal Enfield volumes from Eicher Motors annual reports (FY17–FY25); financials from exchange filings (BSE/NSE).",
+    "notes": "Royal Enfield is 100% motorcycles (no scooters/mopeds/3W) and 100% ICE through FY25 (Flying Flea EV is FY26+). Domestic/export split disclosed in the ARs (wholesale/dispatch basis; FY25 total 10,05,340 = domestic 9,02,757 + export 1,02,583). Realisation-per-unit is intentionally NOT computed: revenue is Eicher consolidated (includes the VECV commercial-vehicle JV) while volume is Royal Enfield only, so the ratio would be meaningless. FY16 is a 15-month transition period and left null.",
+    "perFY": {
+      "FY17": "Eicher Motors Annual Report FY2016-17 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2017.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+      "FY18": "Eicher Motors Annual Report FY2017-18 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2018.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+      "FY19": "Eicher Motors Annual Report FY2018-19 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2019.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+      "FY20": "Eicher Motors Annual Report FY2019-20 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2020.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+      "FY21": "Eicher Motors Annual Report FY2020-21 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2021.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+      "FY22": "Eicher Motors Annual Report FY2021-22 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2022.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+      "FY23": "Eicher Motors Annual Report FY2022-23 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2023.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json.",
+      "FY24": "Eicher Motors Annual Report FY2023-24 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2024.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json.",
+      "FY25": "Eicher Motors Annual Report FY2024-25 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2025.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json."
+    }
+  },
+  "verification": {
+    "status": "audited",
+    "confidence": "high",
+    "verifiedAgainstPrimary": true,
+    "method": "Financials: Eicher Motors consolidated, from exchange filings (BSE/NSE). Volumes: Royal Enfield sales from Eicher annual reports FY17–FY25 (domestic + export reconciles to total). VECV excluded; FY16 (15-month transition) omitted.",
+    "upgradePath": "Engine-capacity (350cc vs 650cc) unit split is not disclosed in the ARs and would need SIAM / JATO."
+  },
+  "pl": {},
+  "bs": {},
+  "cf": {},
+  "ops": {
+    "totalVolume": [null, 666135, 820121, 822724, 697582, 609403, 595474, 834895, 912731, 1005340],
+    "motorcyclesByFy": {
+      "FY17": 666135,
+      "FY18": 820121,
+      "FY19": 822724,
+      "FY20": 697582,
+      "FY21": 609403,
+      "FY22": 595474,
+      "FY23": 834895,
+      "FY24": 912731,
+      "FY25": 1005340
+    },
+    "scootersByFy": {
+      "FY17": 0,
+      "FY18": 0,
+      "FY19": 0,
+      "FY20": 0,
+      "FY21": 0,
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "mopedsByFy": {
+      "FY17": 0,
+      "FY18": 0,
+      "FY19": 0,
+      "FY20": 0,
+      "FY21": 0,
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "threeWheelersByFy": {
+      "FY17": 0,
+      "FY18": 0,
+      "FY19": 0,
+      "FY20": 0,
+      "FY21": 0,
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "exportsByFy": {
+      "FY17": 15383,
+      "FY18": 18891,
+      "FY19": 19721,
+      "FY20": 38662,
+      "FY21": 35675,
+      "FY22": 74238,
+      "FY23": 100055,
+      "FY24": 77937,
+      "FY25": 102583
+    },
+    "evByFy": {
+      "FY17": 0,
+      "FY18": 0,
+      "FY19": 0,
+      "FY20": 0,
+      "FY21": 0,
+      "FY22": 0,
+      "FY23": 0,
+      "FY24": 0,
+      "FY25": 0
+    },
+    "notes": {
+      "basis": "Royal Enfield motorcycles (consolidated). VECV commercial vehicles excluded.",
+      "ev": "Royal Enfield had no electric model through FY25; powertrain mix is 100% ICE.",
+      "sources": "FY17–FY22 from Eicher annual reports (BSE); FY23–FY25 from RE sale-volume press releases (BSE/NSE), cross-checked with trade press."
+    },
+    "sourcesByFy": {
+      "productMix": {
+        "FY17": "Eicher Motors Annual Report FY2016-17 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2017.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY18": "Eicher Motors Annual Report FY2017-18 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2018.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY19": "Eicher Motors Annual Report FY2018-19 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2019.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY20": "Eicher Motors Annual Report FY2019-20 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2020.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY21": "Eicher Motors Annual Report FY2020-21 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2021.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY22": "Eicher Motors Annual Report FY2021-22 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2022.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY23": "Eicher Motors Annual Report FY2022-23 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2023.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json.",
+        "FY24": "Eicher Motors Annual Report FY2023-24 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2024.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json.",
+        "FY25": "Eicher Motors Annual Report FY2024-25 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2025.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json."
+      },
+      "exports": {
+        "FY17": "Eicher Motors Annual Report FY2016-17 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2017.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY18": "Eicher Motors Annual Report FY2017-18 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2018.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY19": "Eicher Motors Annual Report FY2018-19 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2019.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY20": "Eicher Motors Annual Report FY2019-20 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2020.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY21": "Eicher Motors Annual Report FY2020-21 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2021.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY22": "Eicher Motors Annual Report FY2021-22 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2022.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-backfill.json.",
+        "FY23": "Eicher Motors Annual Report FY2022-23 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2023.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json.",
+        "FY24": "Eicher Motors Annual Report FY2023-24 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2024.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json.",
+        "FY25": "Eicher Motors Annual Report FY2024-25 (BSE filing, scripcode 505200; src/data/source-text/EICHER_2025.txt) — Royal Enfield motorcycle sales volume (Directors' Report / operational highlights); domestic + export reconciles to total. Parsed in data/raw-eicher-ola-recent.json."
+      }
+    }
+  },
+  "metrics": {
+    "volumeGrowth": [null, null, 23.12, 0.32, -15.21, -12.64, -2.29, 40.21, 9.32, 10.15],
+    "evShare": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "capacity": [null, null, 825000, 900000, 1200000, 1000000, 1200000, 1200000, 1200000, 1200000],
+    "capacityUtilisation": [null, null, 99.4, 91.4, 58.1, 60.9, 49.6, 69.6, 76.1, 83.8]
+  },
+  "na": ["350cc vs 650cc volume split (not disclosed as RE-total units in the AR)", "Royal Enfield standalone vs consolidated reconciliation (using consolidated)", "Capacity Utilisation %", "Stock Price 31-Mar"],
+  "dataStatus": {
+    "productMix": {
+      "FY17": "available",
+      "FY18": "available",
+      "FY19": "available",
+      "FY20": "available",
+      "FY21": "available",
+      "FY22": "available",
+      "FY23": "available",
+      "FY24": "available",
+      "FY25": "available"
+    },
+    "powertrainMix": {
+      "FY17": "available",
+      "FY18": "available",
+      "FY19": "available",
+      "FY20": "available",
+      "FY21": "available",
+      "FY22": "available",
+      "FY23": "available",
+      "FY24": "available",
+      "FY25": "available"
+    },
+    "domesticExportMix": {
+      "FY17": "derived",
+      "FY18": "derived",
+      "FY19": "derived",
+      "FY20": "derived",
+      "FY21": "derived",
+      "FY22": "derived",
+      "FY23": "derived",
+      "FY24": "derived",
+      "FY25": "derived"
+    },
+    "ccMix": {
+      "FY16": "paid_source_required",
+      "FY17": "paid_source_required",
+      "FY18": "paid_source_required",
+      "FY19": "paid_source_required",
+      "FY20": "paid_source_required",
+      "FY21": "paid_source_required",
+      "FY22": "paid_source_required",
+      "FY23": "paid_source_required",
+      "FY24": "paid_source_required",
+      "FY25": "paid_source_required"
+    },
+    "revenueMix": {
+      "FY16": "unavailable",
+      "FY17": "unavailable",
+      "FY18": "unavailable",
+      "FY19": "unavailable",
+      "FY20": "unavailable",
+      "FY21": "unavailable",
+      "FY22": "unavailable",
+      "FY23": "unavailable",
+      "FY24": "unavailable",
+      "FY25": "unavailable"
+    },
+    "statusLegend": {
+      "available": "Royal Enfield volume disclosed in the Eicher annual report (FY17–FY22) or RE sale-volume press release (FY23–FY25).",
+      "derived": "Computed from disclosed figures (Domestic = Total − Export; volume growth = YoY of total RE units).",
+      "unavailable": "Not separately disclosed for that FY.",
+      "paid_source_required": "Engine-capacity (350cc vs 650cc) unit split needs SIAM / JATO — not in the annual report."
+    }
+  }
+}

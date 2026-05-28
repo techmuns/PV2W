@@ -1,0 +1,35 @@
+{
+  "_note": "Direct PDF URLs for AR back-catalogue. Eicher pattern confirmed (eml-ir{YY}.pdf). Bajaj/Hero/Ola URLs are best-guess and may 404 — workflow skips failed downloads with a warning rather than aborting.",
+  "_version": 2,
+  "files": [
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir24.pdf",  "slug": "EICHER_FY24" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir23.pdf",  "slug": "EICHER_FY23" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir22.pdf",  "slug": "EICHER_FY22" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir21.pdf",  "slug": "EICHER_FY21" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir20.pdf",  "slug": "EICHER_FY20" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir19.pdf",  "slug": "EICHER_FY19" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir18.pdf",  "slug": "EICHER_FY18" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir17.pdf",  "slug": "EICHER_FY17" },
+    { "url": "https://www.eicher.in/content/dam/eicher-motors/investor/financial-and-reports/annual-reports/eml-ir16.pdf",  "slug": "EICHER_FY16" },
+
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2015-16.pdf", "slug": "BAJAJ_FY16" },
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2016-17.pdf", "slug": "BAJAJ_FY17" },
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2017-18.pdf", "slug": "BAJAJ_FY18" },
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2018-19.pdf", "slug": "BAJAJ_FY19" },
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2019-20.pdf", "slug": "BAJAJ_FY20" },
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2020-21.pdf", "slug": "BAJAJ_FY21" },
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2021-22.pdf", "slug": "BAJAJ_FY22" },
+    { "url": "https://www.bajajauto.com/-/media/assets/bajajauto/investors/annual-reports/annual-report-2022-23.pdf", "slug": "BAJAJ_FY23" },
+
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2015-16.pdf", "slug": "HERO_FY16" },
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2016-17.pdf", "slug": "HERO_FY17" },
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2017-18.pdf", "slug": "HERO_FY18" },
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2018-19.pdf", "slug": "HERO_FY19" },
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2019-20.pdf", "slug": "HERO_FY20" },
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2020-21.pdf", "slug": "HERO_FY21" },
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2021-22.pdf", "slug": "HERO_FY22" },
+    { "url": "https://www.heromotocorp.com/content/dam/hero-aem-website/in/investors/annual-reports/annual-report-2022-23.pdf", "slug": "HERO_FY23" },
+
+    { "url": "https://www.sebi.gov.in/sebi_data/attachdocs/dec-2023/1703580725954.PDF", "slug": "OLA_DRHP_DEC2023" }
+  ]
+}

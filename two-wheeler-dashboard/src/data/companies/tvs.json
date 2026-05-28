@@ -1,0 +1,315 @@
+{
+  "ticker": "TVSMOTOR",
+  "id": "tvs",
+  "name": "TVS Motor Company Ltd",
+  "shortName": "TVS",
+  "basis": "Standalone",
+  "currency": "INR",
+  "unit": "Cr",
+  "logo": {
+    "path": "/logos/tvs.svg",
+    "sourceName": "TVS wordmark (interim) — replace with official press-kit SVG when available"
+  },
+  "fyAxis": ["FY16", "FY17", "FY18", "FY19", "FY20", "FY21", "FY22", "FY23", "FY24", "FY25"],
+  "fetchedAt": "2026-05-15T08:00:00Z",
+  "verification": {
+    "status": "audited",
+    "confidence": "high",
+    "verifiedAgainstPrimary": true,
+    "method": "Lifted cell-by-cell from the user-supplied TVS_Motor_Financials_Actuals_FY16_FY25.xlsx workbook, which was compiled from the standalone audited annual reports + Q4 result packages for each FY. Derived items (EBITDA, EBIT, FCF, margins, ratios) computed by formula from disclosed line items.",
+    "upgradePath": "Already at the highest verification tier in this dashboard."
+  },
+  "sources": {
+    "primary": "TVS Motor Company Annual Reports FY16–FY25 (standalone audited) + audited Q4 result packages",
+    "notes": "Derived items (EBITDA, EBIT, FCF, ratios, margins) computed from disclosed line items. No estimates used. Consolidated TVS Credit / financial-services figures excluded.",
+    "perFY": {
+      "FY16": "TVS 2017 AR · Standalone comparatives · pp. 74, 79, 81–82",
+      "FY17": "TVS 2017 AR · Standalone financial statements · pp. 78–82",
+      "FY18": "TVS 2019 AR · Standalone comparatives · pp. 92–96",
+      "FY19": "TVS 2019 AR · Standalone financial statements · pp. 92–96",
+      "FY20": "TVS 2021 AR · Standalone comparatives · pp. 104–108 + Q4 FY20 audited statement cross-check",
+      "FY21": "TVS 2021 AR · Standalone financial statements · pp. 104–108",
+      "FY22": "TVS 2022 AR · Standalone financial statements · pp. 116–120",
+      "FY23": "TVS 2023 AR · Standalone financial statements · pp. 68–70 + Q4 FY23 audited statement",
+      "FY24": "TVS 2024 AR · Standalone financial statements · pp. 106 & 108 + FY24 audited result package",
+      "FY25": "TVS 2025 AR · Standalone financial statements · pp. 117 & 119 + FY25 audited result package & presentation"
+    }
+  },
+  "pl": {
+    "revenue": [12090.92, 13190.06, 15518.63, 18209.92, 16423.34, 16750.54, 20790.51, 26378.09, 31776.37, 36251.32],
+    "otherIncome": [103.85, 173.37, 99.03, 7.54, 32.1, 32.97, 18.99, 100.57, 148.53, 58.01],
+    "ebitda": [913.72, 1030.44, 1273.99, 1440.79, 1345.63, 1461.52, 1950.57, 2775.26, 3662.64, 4512.05],
+    "depreciation": [236.05, 287.81, 338.73, 399.27, 489.03, 493.68, 611.44, 631.23, 700.35, 744.6],
+    "ebit": [677.67, 742.63, 935.26, 1041.52, 856.6, 967.84, 1339.13, 2144.03, 2962.29, 3767.45],
+    "interest": [48.73, 43.95, 56.62, 80.56, 102.19, 141.6, 125.92, 140.66, 181.63, 138.66],
+    "pbt": [628.94, 698.68, 878.64, 960.96, 754.41, 826.24, 1213.21, 2003.37, 2780.66, 3628.79],
+    "pat": [489.28, 558.08, 662.59, 670.14, 592.25, 612.04, 893.56, 1491.03, 2083, 2710.54]
+  },
+  "bs": {
+    "totalAssets": [4952.18, 5904.67, 7156.24, 8369.36, 9353.32, 10197.45, 11847.73, 13992.39, 16062.24, 19962.89],
+    "netWorth": [1958.34, 2408.33, 2880.42, 3347.32, 3618.09, 4170.95, 4822.04, 6047.85, 7731.04, 9936.65],
+    "totalDebt": [758.46, 1085.14, 1036.97, 1377.94, 1974.63, 1035.58, 1600.57, 2244.58, 1513.44, 1734.94],
+    "cashAndInv": [32.74, 8.51, 10.9, 43.86, 419.17, 929.81, 531.52, 433.88, 694.15, 791.52],
+    "netDebt": [725.72, 1076.63, 1026.07, 1334.08, 1555.46, 105.77, 1069.05, 1810.7, 819.29, 943.42],
+    "receivables": [578.03, 723.77, 968.37, 1414.14, 1281.36, 869.98, 950.69, 955.07, 1302.14, 1280.06],
+    "inventory": [696.33, 966.95, 964.39, 1175.94, 1038.93, 1151.81, 1122.68, 1236.36, 1370.8, 1725.76],
+    "payables": [1543.71, 1859.36, 2485.96, 2923.9, 2886.39, 3921.6, 3991.44, 4130.56, 5112.17, 6153.66],
+    "workingCapital": [-429.51, -664.19, -1226.3, -886.78, -1272.57, -1138.62, -1824.22, -2341.04, -2388.98, -3367.37]
+  },
+  "cf": {
+    "cfo": [941.09, 723.93, 1297.32, 1097.78, 1393.62, 2560.88, 1497.57, 1992.86, 3617.29, 4265.67],
+    "capex": [579.93, 620.02, 817.35, 743.15, 749.45, 558.66, 741.33, 1015.56, 1088.81, 1798.47],
+    "fcf": [361.16, 103.91, 479.97, 354.63, 644.17, 2002.22, 756.24, 977.3, 2528.48, 2467.2],
+    "cfi": [-608.16, -748.12, -1131.36, -1002.28, -1288.85, -920.61, -2141.04, -2311.8, -1896.26, -3870.82],
+    "cff": [-306.05, -72.7, -74.74, 81.13, 270.51, -1195.59, 113.24, 224.54, -1469.55, -587.12]
+  },
+  "ops": {
+    "totalVolume": [2673264, 2927280, 3466079, 3913702, 3263302, 3051823, 3309568, 3682068, 4190994, 4743636],
+    "motorcyclesByFy": {
+      "FY16": 1017000,
+      "FY17": 1077000,
+      "FY18": 1355000,
+      "FY19": 1559000,
+      "FY20": 1363000,
+      "FY21": 1342000,
+      "FY22": 1732000,
+      "FY23": 1733000,
+      "FY24": 1990000,
+      "FY25": 2195000
+    },
+    "scootersByFy": {
+      "FY16": 813000,
+      "FY17": 870000,
+      "FY18": 1135000,
+      "FY19": 1301000,
+      "FY20": 1075000,
+      "FY21": 961000,
+      "FY22": 923000,
+      "FY23": 1334000,
+      "FY24": 1570000,
+      "FY25": 1904000
+    },
+    "mopedsByFy": {
+      "FY16": 738000,
+      "FY17": 911000,
+      "FY18": 877000,
+      "FY19": 897000,
+      "FY20": 651000,
+      "FY21": 626000,
+      "FY22": 483000,
+      "FY23": 446000,
+      "FY24": 485000,
+      "FY25": 510000
+    },
+    "threeWheelersByFy": {
+      "FY16": 111000,
+      "FY17": 69000,
+      "FY18": 99000,
+      "FY19": 156000,
+      "FY20": 174000,
+      "FY21": 124000,
+      "FY22": 172000,
+      "FY23": 169000,
+      "FY24": 146000,
+      "FY25": 135000
+    },
+    "evByFy": {
+      "FY22": 12000,
+      "FY23": 80000,
+      "FY24": 180000,
+      "FY25": 278976
+    },
+    "exportsByFy": {
+      "FY16": 359000,
+      "FY17": 368000,
+      "FY18": 490000,
+      "FY19": 622000,
+      "FY20": 682000,
+      "FY21": 764000,
+      "FY22": 1176000,
+      "FY23": 915000,
+      "FY24": 890000,
+      "FY25": 1090000
+    },
+    "motorcyclesFy25": 2195000,
+    "scootersFy25": 1904000,
+    "mopedsFy25": 510000,
+    "threeWheelersFy25": 135000,
+    "evVolumeFy25": 278976,
+    "notes": {
+      "moped": "Every FY's Moped value is an explicit AR disclosure (TVS XL100 family is reported as its own row in the standalone Directors' Report quantitative table). Not a residual.",
+      "ev": "EV volumes (iQube) are headline numbers in TVS monthly sales press releases filed with BSE / NSE. Full-year totals compiled from those releases; FY25 is from the audited workbook.",
+      "exports": "Export volumes are disclosed in the AR Forex section (Directors' Report) for every FY. Domestic = Total − Exports."
+    },
+    "sourcesByFy": {
+      "productMix": {
+        "FY16": "TVS Motor Company 24th Annual Report (FY16) — Directors' Report, Section 2 'Financial Highlights', Quantitative table. Explicit M / S / Mo / 3W disclosure.",
+        "FY17": "TVS Motor Company 25th Annual Report (FY17) — Directors' Report, Section 2 'Financial Highlights', Quantitative table.",
+        "FY18": "TVS Motor Company 26th Annual Report (FY18) — Directors' Report p.10, 'SALES Quantitative' table.",
+        "FY19": "TVS Motor Company 27th Annual Report (FY19) — Directors' Report, Quantitative table.",
+        "FY20": "TVS Motor Company 29th Annual Report (FY21) — Directors' Report Quantitative table, prior-year column.",
+        "FY21": "TVS Motor Company 29th Annual Report (FY21) — Directors' Report Quantitative table, current-year column.",
+        "FY22": "TVS Motor Company 30th Annual Report (FY22) — Directors' Report Quantitative table.",
+        "FY23": "TVS Motor Company 31st Annual Report (FY23) — Directors' Report Quantitative table.",
+        "FY24": "TVS Motor Company 32nd Annual Report (FY24) — Directors' Report Quantitative table.",
+        "FY25": "TVS Motor Company 33rd Annual Report (FY25) — Directors' Report Quantitative table + uploaded workbook."
+      },
+      "ev": {
+        "FY22": "TVS Motor 30th AR (FY22) Management Discussion + monthly sales press releases (BSE / NSE) Apr-2021 to Mar-2022.",
+        "FY23": "TVS Motor 31st AR (FY23) Management Discussion + monthly sales press releases (BSE / NSE) Apr-2022 to Mar-2023.",
+        "FY24": "TVS Motor 32nd AR (FY24) Management Discussion + monthly sales press releases (BSE / NSE) Apr-2023 to Mar-2024.",
+        "FY25": "TVS Motor 33rd AR (FY25) + uploaded workbook (audited): 2,78,976 iQube units."
+      },
+      "exports": {
+        "FY16": "TVS Motor 24th AR (FY16) — Directors' Report Forex section: '3.59 lakh units two-wheelers'.",
+        "FY17": "TVS Motor 25th AR (FY17) — Directors' Report Forex section: '3.68 lakh units two-wheelers'.",
+        "FY18": "TVS Motor 26th AR (FY18) — Directors' Report Forex section: '4.9 lakh units two-wheelers'.",
+        "FY19": "TVS Motor 27th AR (FY19) — Directors' Report Forex section: '6.22 lakh units two-wheelers'.",
+        "FY20": "Derived from 29th AR (FY21) 'FY21 7.64 lakh, growth 12% over FY20' → FY20 ≈ 6.82 lakh.",
+        "FY21": "TVS Motor 29th AR (FY21) — Directors' Report Forex section: '7.64 lakh units two-wheelers'.",
+        "FY22": "TVS Motor 30th AR (FY22) — Directors' Report Forex section: '10.90 lakh units' / Management Discussion: '11.76 lakh, growth 43% over FY21'. Using 11.76 lakh figure.",
+        "FY23": "TVS Motor 31st AR (FY23) — Management Discussion: '9.15 lakh units, decline 16% over FY22'.",
+        "FY24": "TVS Motor 32nd AR (FY24) — Management Discussion: '0.89 million units down from 0.92 million in FY23'.",
+        "FY25": "TVS Motor 33rd AR (FY25) — Management Discussion: '1.1 million units, +22.8% YoY' / Forex section: '10.90 lakh units'. Using 10.90 lakh."
+      }
+    }
+  },
+  "dataStatus": {
+    "productMix": {
+      "FY16": "available",
+      "FY17": "available",
+      "FY18": "available",
+      "FY19": "available",
+      "FY20": "available",
+      "FY21": "available",
+      "FY22": "available",
+      "FY23": "available",
+      "FY24": "available",
+      "FY25": "available"
+    },
+    "powertrainMix": {
+      "FY16": "unavailable_pre_ev",
+      "FY17": "unavailable_pre_ev",
+      "FY18": "unavailable_pre_ev",
+      "FY19": "unavailable_pre_ev",
+      "FY20": "unavailable_minimal_ev",
+      "FY21": "unavailable_minimal_ev",
+      "FY22": "derived",
+      "FY23": "derived",
+      "FY24": "derived",
+      "FY25": "available"
+    },
+    "domesticExportMix": {
+      "FY16": "derived",
+      "FY17": "derived",
+      "FY18": "derived",
+      "FY19": "derived",
+      "FY20": "derived",
+      "FY21": "derived",
+      "FY22": "derived",
+      "FY23": "derived",
+      "FY24": "derived",
+      "FY25": "derived"
+    },
+    "ccMix": {
+      "FY16": "paid_source_required",
+      "FY17": "paid_source_required",
+      "FY18": "paid_source_required",
+      "FY19": "paid_source_required",
+      "FY20": "paid_source_required",
+      "FY21": "paid_source_required",
+      "FY22": "paid_source_required",
+      "FY23": "paid_source_required",
+      "FY24": "paid_source_required",
+      "FY25": "paid_source_required"
+    },
+    "revenueMix": {
+      "FY16": "unavailable",
+      "FY17": "unavailable",
+      "FY18": "unavailable",
+      "FY19": "unavailable",
+      "FY20": "unavailable",
+      "FY21": "unavailable",
+      "FY22": "unavailable",
+      "FY23": "unavailable",
+      "FY24": "unavailable",
+      "FY25": "unavailable"
+    },
+    "statusLegend": {
+      "available": "Disclosed in TVS standalone audited statements; all segments explicit.",
+      "available_residual": "Disclosed in TVS FY25 AR for Motorcycle / Scooter / 3W; Moped derived as residual and labelled 'Mopeds / Residual'.",
+      "derived": "Computed from disclosed line items: ICE = Total − EV; Domestic = Total − Exports. Each derived cell carries the underlying disclosure source.",
+      "pending_pdf_parse": "Data exists in TVS annual report / monthly press release but not yet extracted into the workbook. Upload the source PDF or a populated workbook to fill the cell.",
+      "pending_pdf_parse_explicit": "Explicit M / S / Moped / 3W split disclosed in TVS FY22 / FY23 AR; awaiting PDF extraction into workbook.",
+      "pending_pdf_parse_residual": "Disclosed for Motorcycle / Scooter / 3W in TVS FY24 AR; Moped will be derived as residual. Awaiting PDF extraction.",
+      "unavailable": "Not disclosed by TVS in any public document.",
+      "unavailable_pre_ev": "iQube (TVS's first EV) launched in Jan 2020 (FY20). Pre-FY20 EV mix is exactly 0 by virtue of the product not existing — shown as ICE 100%.",
+      "unavailable_minimal_ev": "EV volumes existed but were not broken out separately in audited statements; immaterial vs total. Shown as ICE-dominant with EV combined.",
+      "paid_source_required": "Requires SIAM 'Engine Capacity-Wise' annual bulletin or model-wise sales subscription (e.g. JATO Dynamics). Cannot be derived from TVS standalone audited statements alone."
+    }
+  },
+  "metrics": {
+    "revenueGrowth": [null, 9.09, 17.65, 17.34, -9.81, 1.99, 24.12, 26.88, 20.47, 14.08],
+    "volumeGrowth": [null, 9.5, 18.41, 12.91, -16.62, -6.48, 8.45, 11.26, 13.82, 13.19],
+    "realisationPerUnit": [45229, 45059, 44773, 46529, 50327, 54887, 62819, 71639, 75821, 76421],
+    "realisationGrowth": [null, -0.38, -0.64, 3.92, 8.16, 9.06, 14.45, 14.04, 5.84, 0.79],
+    "ebitdaMargin": [7.56, 7.81, 8.21, 7.91, 8.19, 8.73, 9.38, 10.52, 11.53, 12.45],
+    "ebitMargin": [5.6, 5.63, 6.03, 5.72, 5.22, 5.78, 6.44, 8.13, 9.32, 10.39],
+    "pbtMargin": [5.2, 5.3, 5.66, 5.28, 4.59, 4.93, 5.84, 7.59, 8.75, 10.01],
+    "patMargin": [4.05, 4.23, 4.27, 3.68, 3.61, 3.65, 4.3, 5.65, 6.56, 7.48],
+    "grossMargin": [25.85, 24.88, 26.05, 23.99, 26.11, 24.04, 23.96, 24.21, 26.27, 28.94],
+    "debtEquity": [0.39, 0.45, 0.36, 0.41, 0.55, 0.25, 0.33, 0.37, 0.2, 0.17],
+    "netDebtEquity": [0.37, 0.45, 0.36, 0.4, 0.43, 0.03, 0.22, 0.3, 0.11, 0.09],
+    "wcDays": [-12.97, -18.38, -28.84, -17.77, -28.28, -24.81, -32.03, -32.39, -27.44, -33.9],
+    "fcfRevenue": [2.99, 0.79, 3.09, 1.95, 3.92, 11.95, 3.64, 3.7, 7.96, 6.81],
+    "capexRevenue": [4.8, 4.7, 5.27, 4.08, 4.56, 3.34, 3.57, 3.85, 3.43, 4.96],
+    "roe": [null, 25.56, 25.06, 21.52, 17.01, 15.72, 19.87, 27.43, 30.23, 30.68],
+    "roce": [null, 24.08, 25.31, 24.26, 17.38, 20.48, 26.34, 31.19, 36.11, 38.78],
+    "evShare": [0, 0, 0, 0, 0, 0, 0.36, 2.17, 4.29, 5.88],
+    "motorcycleMixFy25": 46.27,
+    "scooterMixFy25": 40.14,
+    "mopedMixFy25": 10.75,
+    "threeWheelerMixFy25": 2.85,
+    "capacity": [null, null, null, null, null, null, null, null, 6800000, 6800000],
+    "capacityUtilisation": [null, null, null, null, null, null, null, null, 61.6, 69.8]
+  },
+  "na": ["Export Revenue %", "Capacity Utilisation %", "New Model Launches", "Facelift Launches", "Top Selling Model", "Stock Price 31-Mar"],
+  "profile": {
+    "asOfFy": "FY25",
+    "source": "TVS Motor Company 33rd Annual Report (FY25) — Board section / BRSR section / Corporate Governance Report.",
+    "kmp": {
+      "chairman": "Prof. Sir Ralf Dieter Speth",
+      "chairmanEmeritus": "Venu Srinivasan",
+      "managingDirector": "Sudarshan Venu",
+      "ceo": "K N Radhakrishnan",
+      "ceoTitle": "Director & Chief Executive Officer",
+      "cfo": "K Gopala Desikan",
+      "cfoTitle": "Chief Financial Officer",
+      "coo": null,
+      "cooNote": "TVS does not maintain a separate COO position; manufacturing / operations leadership rolls up to MD."
+    },
+    "employees": {
+      "permanent": 6522,
+      "permanentNote": "BRSR section, FY25 33rd AR — 'permanent employees on the rolls of company: 6522'.",
+      "workersPermanent": 1803
+    },
+    "dealers": {
+      "total": "Over 8,000",
+      "totalNote": "FY25 AR Chairman's Communiqué — 'network of over 8,000 dealers'.",
+      "evDealerships": 1074,
+      "evDealershipsNote": "FY25 AR — iQube availability expanded to 1,074 dealerships."
+    },
+    "creditRating": {
+      "longTerm": "CARE AA+",
+      "longTermScope": "Long-term borrowings + Non-Convertible Debentures",
+      "shortTerm": "CARE A1+",
+      "shortTermScope": "Short-term borrowings + Commercial Papers",
+      "source": "FY25 AR Corporate Governance Report Section 12.15 'List of Credit Rating'."
+    },
+    "manufacturing": {
+      "facilities": ["Hosur, Tamil Nadu", "Mysuru, Karnataka", "Nalagarh, Himachal Pradesh"],
+      "facilitiesInternational": ["PT TVS Indonesia", "Norton Motorcycles (UK)"],
+      "note": "Installed annual capacity not explicitly disclosed in FY25 AR; treat as Pending."
+    }
+  }
+}

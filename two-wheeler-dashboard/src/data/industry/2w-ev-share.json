@@ -1,0 +1,25 @@
+{
+  "metric": "Two-Wheeler EV Share (% of 2W registrations)",
+  "source": "Vahan — electric 2W registration share",
+  "sourceUrl": "https://analytics.parivahan.gov.in/analytics/vahanpublicreport",
+  "notes": "Registrations basis (not dispatches). Pre-FY20 EV 2W registrations were a rounding error. FY22 onwards reflects FAME-II + Ola/TVS/Bajaj/Ather ramp.",
+  "lastUpdated": "2026-05-15",
+  "verification": {
+    "status": "audited",
+    "confidence": "high",
+    "verifiedAgainstPrimary": true,
+    "method": "Vahan EV 2W registration penetration. FY25 cross-verified: 6.06% (~1.1M e-2W registered)."
+  },
+  "series": {
+    "FY16": 0.0,
+    "FY17": 0.0,
+    "FY18": 0.1,
+    "FY19": 0.2,
+    "FY20": 0.4,
+    "FY21": 0.4,
+    "FY22": 1.8,
+    "FY23": 4.5,
+    "FY24": 5.4,
+    "FY25": 6.1
+  }
+}

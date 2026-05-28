@@ -1,0 +1,42 @@
+{
+  "_note": "Push-trigger queue for .github/workflows/discover-ars.yml. The runner scrapes each irPage URL for <a href=*.pdf> matching pdfRegex, downloads, pdftotext-extracts, and commits .txt files. PDFs are NEVER committed. Bump _version to re-trigger.",
+  "_version": 1,
+  "companies": [
+    {
+      "id": "bajaj",
+      "name": "Bajaj Auto",
+      "irPages": [
+        "https://www.bajajauto.com/investors/annual-reports",
+        "https://www.bajajauto.com/investors/financial-reports/annual-reports"
+      ],
+      "pdfRegex": "annual.report|AR[-_]?20|FY[-_]?2[0-9]"
+    },
+    {
+      "id": "hero",
+      "name": "Hero MotoCorp",
+      "irPages": [
+        "https://www.heromotocorp.com/en-in/investors-html/annual-reports.html",
+        "https://www.heromotocorp.com/en-in/investors-html/financial-reports.html"
+      ],
+      "pdfRegex": "annual.report|AR[-_]?20|FY[-_]?2[0-9]|hero.*report"
+    },
+    {
+      "id": "eicher",
+      "name": "Eicher Motors",
+      "irPages": [
+        "https://www.eichermotors.com/financial-and-reports",
+        "https://www.eicher.in/investor-relations/financial-and-reports"
+      ],
+      "pdfRegex": "ir[-_]?\\d|annual.report|EML.IR|eicher.*report"
+    },
+    {
+      "id": "ola",
+      "name": "Ola Electric",
+      "irPages": [
+        "https://olaelectric.com/investor-relations",
+        "https://olaelectric.com/financial-and-reports"
+      ],
+      "pdfRegex": "annual.report|drhp|prospectus|ola.*report|investor"
+    }
+  ]
+}

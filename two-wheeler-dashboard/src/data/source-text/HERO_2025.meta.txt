@@ -1,0 +1,18 @@
+Creator:         Adobe InDesign 20.3 (Windows)
+Producer:        Adobe PDF Library 17.0
+CreationDate:    Fri Jul 11 18:54:09 2025 UTC
+ModDate:         Sat Jul 12 05:53:39 2025 UTC
+Custom Metadata: no
+Metadata Stream: yes
+Tagged:          no
+UserProperties:  no
+Suspects:        no
+Form:            none
+JavaScript:      no
+Pages:           187
+Encrypted:       no
+Page size:       595.276 x 841.89 pts (A4)
+Page rot:        0
+File size:       25058797 bytes
+Optimized:       yes
+PDF version:     1.7
