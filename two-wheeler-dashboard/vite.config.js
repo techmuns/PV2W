@@ -3,8 +3,16 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  // Served as a sub-app of the PV dashboard at /2w/ (single Cloudflare
+  // Worker hosts both sister dashboards). Absolute base so deep assets
+  // resolve to /2w/assets/* regardless of the URL the user landed on.
+  base: '/2w/',
   build: {
+    // Emit straight into the PV repo root at /2w/ so the existing
+    // static-serving Worker (directory = ".") picks it up — no separate
+    // deploy. emptyOutDir lets Vite clean a dir outside its own root.
+    outDir: '../2w',
+    emptyOutDir: true,
     // Modern browsers only — skips legacy polyfills and shaves ~25% off
     // build time. Cloudflare's audience is desktop dashboards, so safe.
     target: 'es2022',

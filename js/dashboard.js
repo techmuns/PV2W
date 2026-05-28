@@ -4893,6 +4893,13 @@
     setTimeout(() => m.classList.add("hidden"), 200);
   }
   function switchSegment(seg) {
+    /* 2W is now a live sister dashboard served by the same Worker at
+       /2w/. Navigate there instead of showing the placeholder overlay. */
+    if (seg === "2W") {
+      closeSegmentMenu();
+      window.location.href = "/2w/";
+      return;
+    }
     state.segment = seg;
     closeSegmentMenu();
     const uc = $("#under-construction");
@@ -4903,7 +4910,7 @@
       if (main) main.style.display = "";
       return;
     }
-    /* 2W / CV — show under-construction overlay. */
+    /* CV — still under construction: show the overlay. */
     const meta = SEGMENT_META[seg];
     if (!meta) return;
     $("#uc-title").textContent = meta.title;

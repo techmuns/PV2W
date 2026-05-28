@@ -32,3 +32,11 @@
   Cache-Control: no-cache, must-revalidate
 /index.html
   Cache-Control: no-cache, must-revalidate
+
+# 2W sister dashboard (Vite build under /2w/). Its asset filenames are
+# content-hashed, so they cache long; only the entry HTML must always be
+# revalidated so a fresh build's new asset hashes take effect on deploy.
+/2w/
+  Cache-Control: no-cache, must-revalidate
+/2w/index.html
+  Cache-Control: no-cache, must-revalidate

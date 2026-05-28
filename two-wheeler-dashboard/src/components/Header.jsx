@@ -38,13 +38,29 @@ function DownloadIcon() {
   )
 }
 
+// Sister dashboards served by the same Worker. The PV dashboard lives at
+// the site root; this 2W app is mounted at /2w/. The switcher jumps
+// between them by absolute path so it works regardless of the current URL.
+const SEGMENTS = [
+  { id: 'PV', label: 'Passenger Vehicles',  sub: 'Cars · SUVs · MPVs — Maruti · Hyundai · M&M · Tata',          href: '/',    status: null },
+  { id: '2W', label: 'Two Wheelers',         sub: 'Motorcycles · scooters — Hero · Bajaj · TVS · Eicher · Ola',  href: null,   status: 'ACTIVE' },
+  { id: 'CV', label: 'Commercial Vehicles',  sub: 'Trucks · buses · LCVs — Tata · M&M · Ashok Leyland · VECV',   href: null,   status: 'SOON' },
+]
+
 export default function Header({ company, companies, onSelectCompany, onExport }) {
   const [open, setOpen] = useState(false)
+  const [segOpen, setSegOpen] = useState(false)
   const ref = useRef(null)
+  const segRef = useRef(null)
   useEffect(() => {
-    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    const close = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+      if (segRef.current && !segRef.current.contains(e.target)) setSegOpen(false)
+    }
+    const onKey = (e) => { if (e.key === 'Escape') { setOpen(false); setSegOpen(false) } }
     window.addEventListener('mousedown', close)
-    return () => window.removeEventListener('mousedown', close)
+    window.addEventListener('keydown', onKey)
+    return () => { window.removeEventListener('mousedown', close); window.removeEventListener('keydown', onKey) }
   }, [])
 
   return (
@@ -53,22 +69,82 @@ export default function Header({ company, companies, onSelectCompany, onExport }
       style={{ background: 'linear-gradient(95deg, #4F46E5 0%, #6D28D9 55%, #7C3AED 100%)' }}
     >
       <div className="max-w-[1480px] mx-auto px-8 py-4 flex items-center gap-6 flex-wrap">
-        {/* Segment switcher (brand pill) */}
-        <div
-          className="flex items-center pr-3.5 pl-1.5 py-1.5 rounded-xl"
-          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.22)' }}
-        >
-          <div className="relative w-10 h-10 rounded-md bg-white/95 text-brand-700 font-bold text-[15px] flex items-center justify-center">
-            {SECTOR_META.badge}
-            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#6D28D9]" />
-          </div>
-          <div className="ml-2.5 leading-tight">
-            <div className="flex items-center gap-1 font-semibold text-[16px] tracking-tight">
-              {SECTOR_META.title}
-              <Caret className="opacity-80 ml-0.5" />
+        {/* Segment switcher (brand pill → dropdown to sister dashboards) */}
+        <div className="relative" ref={segRef}>
+          <button
+            type="button"
+            onClick={() => setSegOpen((v) => !v)}
+            aria-haspopup="menu"
+            aria-expanded={segOpen}
+            title="Switch segment"
+            className="flex items-center pr-3.5 pl-1.5 py-1.5 rounded-xl text-left transition-colors hover:bg-white/10"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.22)' }}
+          >
+            <div className="relative w-10 h-10 rounded-md bg-white/95 text-brand-700 font-bold text-[15px] flex items-center justify-center">
+              {SECTOR_META.badge}
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#6D28D9]" />
             </div>
-            <div className="text-[11.5px] text-white/65">{SECTOR_META.subtitle}</div>
-          </div>
+            <div className="ml-2.5 leading-tight">
+              <div className="flex items-center gap-1 font-semibold text-[16px] tracking-tight">
+                {SECTOR_META.title}
+                <Caret className={`opacity-80 ml-0.5 transition-transform ${segOpen ? 'rotate-180' : ''}`} />
+              </div>
+              <div className="text-[11.5px] text-white/65">{SECTOR_META.subtitle}</div>
+            </div>
+          </button>
+
+          {segOpen && (
+            <div
+              role="menu"
+              className="absolute top-full left-0 mt-2 w-[400px] max-w-[calc(100vw-2rem)] bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200/70 overflow-hidden z-40"
+            >
+              <div className="px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-brand-50 to-slate-50">
+                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Switch segment</div>
+                <div className="text-[14px] font-semibold text-slate-800 mt-0.5">Indian Auto Coverage</div>
+              </div>
+              <div className="p-2 space-y-1">
+                {SEGMENTS.map((s) => {
+                  const active = s.id === '2W'
+                  const Tag = s.href ? 'a' : 'button'
+                  return (
+                    <Tag
+                      key={s.id}
+                      {...(s.href ? { href: s.href } : { type: 'button', disabled: !s.href })}
+                      role="menuitem"
+                      onClick={() => setSegOpen(false)}
+                      className={`w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg transition-colors ${
+                        active ? 'bg-brand-50' : s.href ? 'hover:bg-slate-50 cursor-pointer' : 'opacity-70 cursor-default'
+                      }`}
+                    >
+                      <span className={`w-9 h-9 rounded-lg flex items-center justify-center font-bold text-[12px] ${
+                        active ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-500'
+                      }`}>
+                        {s.id}
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span className="flex items-center gap-2">
+                          <span className="text-[13.5px] font-semibold text-slate-800">{s.label}</span>
+                          {s.status === 'ACTIVE' && (
+                            <span className="text-[9.5px] font-bold tracking-wider px-1.5 py-0.5 rounded" style={{ background: '#D1FAE5', color: '#065F46' }}>ACTIVE</span>
+                          )}
+                          {s.status === 'SOON' && (
+                            <span className="text-[9.5px] font-bold tracking-wider px-1.5 py-0.5 rounded" style={{ background: '#FEF3C7', color: '#92400E' }}>SOON</span>
+                          )}
+                        </span>
+                        <span className="block text-[11px] text-slate-400 mt-0.5">{s.sub}</span>
+                      </span>
+                      {s.href && (
+                        <svg className="text-slate-300 flex-shrink-0" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4l4 4-4 4" /></svg>
+                      )}
+                    </Tag>
+                  )
+                })}
+              </div>
+              <div className="px-5 py-3 border-t border-slate-100 text-[10.5px] text-slate-400 bg-slate-50/60">
+                CV module is under construction. PV &amp; 2W are live.
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Latest data */}
