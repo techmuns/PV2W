@@ -1,10 +1,10 @@
 {
   "scrip": "532343",
   "slug": "tvs",
-  "fetchedAt": "2026-05-28T17:31:00.565Z",
+  "fetchedAt": "2026-05-29T08:36:45.399Z",
   "window": {
-    "from": "20260227",
-    "to": "20260528",
+    "from": "20260228",
+    "to": "20260529",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,10 +14,38 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260227&strScrip=532343&strSearch=P&strToDate=20260528&strType=C",
-      "count": 41,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260228&strScrip=532343&strSearch=P&strToDate=20260529&strType=C",
+      "count": 42,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "c42d5e7c-e77a-4a77-8a6e-3ab6daa14541",
+          "SCRIP_CD": 532343,
+          "XML_NAME": "ANN_532343_C42D5E7C-E77A-4A77-8A6E-3AB6DAA14541",
+          "NEWSSUB": "Compliances-Reg.24(A)-Annual Secretarial Compliance",
+          "DT_TM": "2026-05-29T12:07:20.05",
+          "NEWS_DT": "2026-05-29T12:07:20.05",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "1edce96c-1b34-42b2-8c71-7a577de85ac9.pdf",
+          "MORE": "",
+          "HEADLINE": "Annual Secretarial Compliance Report for the year ended 31st March 2026",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 0,
+          "NSURL": "https://www.bseindia.com/stock-share-price/tvs-motor-company-ltd/tvsmotor/532343/",
+          "SLONGNAME": "TVS Motor Company Ltd",
+          "AGENDA_ID": 210,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-29T12:07:20",
+          "DissemDT": "2026-05-29T12:07:20.05",
+          "TimeDiff": "00:00:00",
+          "Fld_Attachsize": 3280302,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1edce96c-1b34-42b2-8c71-7a577de85ac9.pdf"
+        },
         {
           "NEWSID": "b44a7279-18db-4fd5-9d2a-b1d7509345bb",
           "SCRIP_CD": 532343,
@@ -1170,7 +1198,7 @@
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260227&TDate=20260528&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532343&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260228&TDate=20260529&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532343&segment=0&strSearch=S",
       "count": 1,
       "tag": "confirmed",
       "data": [
@@ -1192,7 +1220,7 @@
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260227&todate=20260528&scripcode=532343",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260228&todate=20260529&scripcode=532343",
       "count": 0,
       "tag": "confirmed",
       "data": []
