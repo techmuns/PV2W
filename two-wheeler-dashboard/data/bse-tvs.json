@@ -1,7 +1,7 @@
 {
   "scrip": "532343",
   "slug": "tvs",
-  "fetchedAt": "2026-05-29T08:36:45.399Z",
+  "fetchedAt": "2026-05-29T17:33:40.496Z",
   "window": {
     "from": "20260228",
     "to": "20260529",
@@ -15,9 +15,37 @@
     "announcements": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260228&strScrip=532343&strSearch=P&strToDate=20260529&strType=C",
-      "count": 42,
+      "count": 43,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "be02a091-71be-4cf0-b001-2243561ef835",
+          "SCRIP_CD": 532343,
+          "XML_NAME": "ANN_532343_BE02A091-71BE-4CF0-B001-2243561EF835",
+          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
+          "DT_TM": "2026-05-29T18:38:49.163",
+          "NEWS_DT": "2026-05-29T18:38:49.163",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "d8885a83-e3a9-4142-ac59-336ebbc5ffef.pdf",
+          "MORE": "",
+          "HEADLINE": "Compliance under Regulation 30 of SEBI (LODR) Regulations, 2015",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 0,
+          "NSURL": "https://www.bseindia.com/stock-share-price/tvs-motor-company-ltd/tvsmotor/532343/",
+          "SLONGNAME": "TVS Motor Company Ltd",
+          "AGENDA_ID": 80,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-29T18:38:48",
+          "DissemDT": "2026-05-29T18:38:49.167",
+          "TimeDiff": "00:00:01",
+          "Fld_Attachsize": 262957,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d8885a83-e3a9-4142-ac59-336ebbc5ffef.pdf"
+        },
         {
           "NEWSID": "c42d5e7c-e77a-4a77-8a6e-3ab6daa14541",
           "SCRIP_CD": 532343,
