@@ -1,0 +1,39 @@
+# 2W dashboard CI build check.
+#
+# This is the standalone two-wheeler-dashboard's original "Build" workflow,
+# ported into the merged repo. The 2W project now lives in the
+# two-wheeler-dashboard/ subfolder, so every npm step runs there via the
+# job-level working-directory default. Pushes to main are handled by
+# 2w-build-deploy.yml (which also publishes the /2w bundle), so this one
+# only guards branches + PRs.
+name: 2W Build
+
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - 'two-wheeler-dashboard/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'two-wheeler-dashboard/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: two-wheeler-dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npm run build
+      # Vite now emits to ../2w (repo root). upload-artifact paths are
+      # relative to the workspace root, so the built bundle is at 2w/.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 2w-dist
+          path: 2w

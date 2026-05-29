@@ -1,4 +1,11 @@
-name: BSE Company Scrape
+# 2W BSE filings scrape + AR text extraction.
+#
+# Ported from the standalone two-wheeler-dashboard repo into the
+# two-wheeler-dashboard/ subfolder. Produces raw intermediate data
+# (data/bse-*.json) and extracted AR text (src/data/source-text/) that
+# feed the backfill scripts — none of which is imported at build time,
+# so no /2w rebuild is needed here.
+name: 2W BSE Company Scrape
 
 on:
   workflow_dispatch:
@@ -10,22 +17,25 @@ on:
   schedule:
     - cron: '0 1,14 * * *'
   push:
-    branches: [main, claude/exciting-dirac-2zUUa]
+    branches: [main]
     paths:
-      - 'scripts/scrape-bse-company.mjs'
-      - 'scripts/extract-bse-ars.mjs'
-      - '.github/workflows/bse-scrape.yml'
+      - 'two-wheeler-dashboard/scripts/scrape-bse-company.mjs'
+      - 'two-wheeler-dashboard/scripts/extract-bse-ars.mjs'
+      - '.github/workflows/2w-bse-scrape.yml'
 
 permissions:
   contents: write
 
 concurrency:
-  group: bse-scrape
+  group: 2w-bse-scrape
   cancel-in-progress: false
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: two-wheeler-dashboard
     steps:
       - uses: actions/checkout@v4
         with:
