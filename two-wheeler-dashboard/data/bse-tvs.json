@@ -1,7 +1,7 @@
 {
   "scrip": "532343",
   "slug": "tvs",
-  "fetchedAt": "2026-05-30T04:52:43.769Z",
+  "fetchedAt": "2026-05-30T15:06:51.533Z",
   "window": {
     "from": "20260301",
     "to": "20260530",
@@ -15,9 +15,37 @@
     "announcements": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260301&strScrip=532343&strSearch=P&strToDate=20260530&strType=C",
-      "count": 43,
+      "count": 44,
       "tag": "confirmed",
       "data": [
+        {
+          "NEWSID": "c94c8c61-73b8-46cd-a055-2afe896cba26",
+          "SCRIP_CD": 532343,
+          "XML_NAME": "ANN_532343_C94C8C61-73B8-46CD-A055-2AFE896CBA26",
+          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+          "DT_TM": "2026-05-30T19:30:26.42",
+          "NEWS_DT": "2026-05-30T19:30:26.42",
+          "CRITICALNEWS": 0,
+          "ANNOUNCEMENT_TYPE": "A",
+          "QUARTER_ID": null,
+          "FILESTATUS": "N    ",
+          "ATTACHMENTNAME": "9d93d106-9135-49f4-a618-ac5ac1e143a4.pdf",
+          "MORE": "",
+          "HEADLINE": "TVS MOTOR COMPANY UNLEASHES RONIN MOTOTONE AND AGONDA VARIANTS IN NEPAL - INTRODUCING A BOLD NEW EXPRESSION OF STYLE, INDIVIDUALITY, AND MODERN CRUISING",
+          "CATEGORYNAME": "Company Update",
+          "OLD": 1,
+          "RN": 1,
+          "PDFFLAG": 0,
+          "NSURL": "https://www.bseindia.com/stock-share-price/tvs-motor-company-ltd/tvsmotor/532343/",
+          "SLONGNAME": "TVS Motor Company Ltd",
+          "AGENDA_ID": 35,
+          "TotalPageCnt": 1,
+          "News_submission_dt": "2026-05-30T19:30:26",
+          "DissemDT": "2026-05-30T19:30:26.42",
+          "TimeDiff": "00:00:00",
+          "Fld_Attachsize": 1411521,
+          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9d93d106-9135-49f4-a618-ac5ac1e143a4.pdf"
+        },
         {
           "NEWSID": "be02a091-71be-4cf0-b001-2243561ef835",
           "SCRIP_CD": 532343,
