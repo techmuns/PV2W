@@ -1,10 +1,10 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-05-30T15:07:06.234Z",
+  "fetchedAt": "2026-05-31T05:18:21.997Z",
   "window": {
-    "from": "20260301",
-    "to": "20260530",
+    "from": "20260302",
+    "to": "20260531",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,8 +14,8 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260301&strScrip=505200&strSearch=P&strToDate=20260530&strType=C",
-      "count": 37,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260302&strScrip=505200&strSearch=P&strToDate=20260531&strType=C",
+      "count": 35,
       "tag": "confirmed",
       "data": [
         {
@@ -91,7 +91,7 @@
           "CATEGORYNAME": "Company Update",
           "OLD": 1,
           "RN": 1,
-          "PDFFLAG": 0,
+          "PDFFLAG": 1,
           "NSURL": "https://www.bseindia.com/stock-share-price/eicher-motors-ltd/eichermot/505200/",
           "SLONGNAME": "Eicher Motors Ltd",
           "AGENDA_ID": 35,
@@ -997,75 +997,19 @@
           "TimeDiff": "00:00:00",
           "Fld_Attachsize": 443073,
           "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2dfb68d9-5603-4316-8e47-ee2ffbe3e404.pdf"
-        },
-        {
-          "NEWSID": "ad7aba77-f760-4ef5-afe1-9d6ac645d634",
-          "SCRIP_CD": 505200,
-          "XML_NAME": "ANN_505200_AD7ABA77-F760-4EF5-AFE1-9D6AC645D634",
-          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Monthly Business Updates",
-          "DT_TM": "2026-03-01T13:27:38.223",
-          "NEWS_DT": "2026-03-01T13:27:38.223",
-          "CRITICALNEWS": 0,
-          "ANNOUNCEMENT_TYPE": "A",
-          "QUARTER_ID": null,
-          "FILESTATUS": "N    ",
-          "ATTACHMENTNAME": "840e5e4c-c2fd-458e-bb08-8ae7fca30d58.pdf",
-          "MORE": "",
-          "HEADLINE": "Sales volume for the February, 2026",
-          "CATEGORYNAME": "Company Update",
-          "OLD": 1,
-          "RN": 1,
-          "PDFFLAG": 1,
-          "NSURL": "https://www.bseindia.com/stock-share-price/eicher-motors-ltd/eichermot/505200/",
-          "SLONGNAME": "Eicher Motors Ltd",
-          "AGENDA_ID": 110,
-          "TotalPageCnt": 1,
-          "News_submission_dt": "2026-03-01T13:27:38",
-          "DissemDT": "2026-03-01T13:27:38.223",
-          "TimeDiff": "00:00:00",
-          "Fld_Attachsize": 368684,
-          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/840e5e4c-c2fd-458e-bb08-8ae7fca30d58.pdf"
-        },
-        {
-          "NEWSID": "7249fdd3-875b-4fcb-9554-8c2b06bab0b3",
-          "SCRIP_CD": 505200,
-          "XML_NAME": "ANN_505200_7249FDD3-875B-4FCB-9554-8C2B06BAB0B3",
-          "NEWSSUB": "Announcement under Regulation 30 (LODR)-Monthly Business Updates",
-          "DT_TM": "2026-03-01T12:09:25.763",
-          "NEWS_DT": "2026-03-01T12:09:25.763",
-          "CRITICALNEWS": 0,
-          "ANNOUNCEMENT_TYPE": "A",
-          "QUARTER_ID": null,
-          "FILESTATUS": "N    ",
-          "ATTACHMENTNAME": "b97b3f67-6872-4cfd-8df0-cb56d0cd7a23.pdf",
-          "MORE": "",
-          "HEADLINE": "Monthly Business Updates for the month, February 2026 of VE Commercial Vehicles Limited, an unlisted material subsidiary of Eicher Motors Limited.",
-          "CATEGORYNAME": "Company Update",
-          "OLD": 1,
-          "RN": 1,
-          "PDFFLAG": 1,
-          "NSURL": "https://www.bseindia.com/stock-share-price/eicher-motors-ltd/eichermot/505200/",
-          "SLONGNAME": "Eicher Motors Ltd",
-          "AGENDA_ID": 110,
-          "TotalPageCnt": 1,
-          "News_submission_dt": "2026-03-01T12:09:25",
-          "DissemDT": "2026-03-01T12:09:25.763",
-          "TimeDiff": "00:00:00",
-          "Fld_Attachsize": 280595,
-          "_pdfUrl": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b97b3f67-6872-4cfd-8df0-cb56d0cd7a23.pdf"
         }
       ]
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260301&TDate=20260530&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260302&TDate=20260531&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260301&todate=20260530&scripcode=505200",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260302&todate=20260531&scripcode=505200",
       "count": 0,
       "tag": "confirmed",
       "data": []
