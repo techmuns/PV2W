@@ -1,0 +1,12 @@
+{
+  "source": "Vahan public analytics dashboard",
+  "sourceUrl": "https://analytics.parivahan.gov.in/analytics/",
+  "lastUpdated": "2026-06-01T09:34:42.194Z",
+  "fetchStatus": "requires_browser_session",
+  "notes": [
+    "Vahan public reports require a JSF ViewState session token. A simple GET cannot extract the registration breakdown.",
+    "Recommended approaches: (1) Capture a real network request from analytics.parivahan.gov.in via DevTools, save the payload, and replay it here. (2) Use the Government Open Data Platform (data.gov.in) Vahan dataset where available. (3) Use a Playwright-based fetcher (heavier; needs browser deps in CI).",
+    "Until then, 2w-ev-share.json carries the verified Vahan annual figures from SIAM cross-checks and analyst notes."
+  ],
+  "rawStatus": 404
+}

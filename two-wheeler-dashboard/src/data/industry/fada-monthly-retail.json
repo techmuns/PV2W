@@ -1,0 +1,8 @@
+{
+  "source": "FADA monthly retail press releases",
+  "sourceUrl": "https://fada.in/research-monthly-vehicle.php",
+  "lastUpdated": null,
+  "fetchStatus": "error",
+  "error": "HTTP 404",
+  "months": []
+}
