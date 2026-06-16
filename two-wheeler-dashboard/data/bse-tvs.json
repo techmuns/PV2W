@@ -1,10 +1,10 @@
 {
   "scrip": "532343",
   "slug": "tvs",
-  "fetchedAt": "2026-06-15T18:26:03.798Z",
+  "fetchedAt": "2026-06-16T06:35:26.562Z",
   "window": {
-    "from": "20260317",
-    "to": "20260615",
+    "from": "20260318",
+    "to": "20260616",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,14 +14,14 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260317&strScrip=532343&strSearch=P&strToDate=20260615&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260318&strScrip=532343&strSearch=P&strToDate=20260616&strType=C",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260317&TDate=20260615&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532343&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260318&TDate=20260616&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532343&segment=0&strSearch=S",
       "count": 1,
       "tag": "confirmed",
       "data": [
@@ -43,7 +43,7 @@
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260317&todate=20260615&scripcode=532343",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260318&todate=20260616&scripcode=532343",
       "count": 0,
       "tag": "confirmed",
       "data": []
