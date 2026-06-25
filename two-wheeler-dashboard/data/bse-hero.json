@@ -1,7 +1,7 @@
 {
   "scrip": "500182",
   "slug": "hero",
-  "fetchedAt": "2026-06-25T05:05:46.931Z",
+  "fetchedAt": "2026-06-25T16:24:32.694Z",
   "window": {
     "from": "20260327",
     "to": "20260625",
@@ -20,11 +20,11 @@
       "data": []
     },
     "corpActions": {
-      "ok": true,
+      "ok": false,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260327&TDate=20260625&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=500182&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "Non-JSON HTML response — wrong endpoint path"
     },
     "boardMeetings": {
       "ok": true,

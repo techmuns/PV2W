@@ -1,7 +1,7 @@
 {
   "scrip": "532977",
   "slug": "bajaj",
-  "fetchedAt": "2026-06-25T05:05:40.543Z",
+  "fetchedAt": "2026-06-25T16:23:42.822Z",
   "window": {
     "from": "20260327",
     "to": "20260625",
@@ -65,9 +65,14 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=532977",
-      "count": 16,
+      "count": 17,
       "tag": "confirmed",
       "data": [
+        {
+          "year": "2026",
+          "file_name": "5cfa2fc3-ea76-452d-a3a9-71d3c9bf5ad6.pdf.pdf",
+          "dt_tm": "2026-06-25T13:04:35.023"
+        },
         {
           "year": "2025",
           "file_name": "5b564ba4-e324-4e91-a177-fb272352f81d.pdf.pdf",
