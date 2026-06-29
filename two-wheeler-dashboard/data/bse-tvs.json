@@ -1,7 +1,7 @@
 {
   "scrip": "532343",
   "slug": "tvs",
-  "fetchedAt": "2026-06-29T05:50:27.903Z",
+  "fetchedAt": "2026-06-29T16:52:26.593Z",
   "window": {
     "from": "20260331",
     "to": "20260629",
@@ -36,9 +36,14 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=532343",
-      "count": 16,
+      "count": 17,
       "tag": "confirmed",
       "data": [
+        {
+          "year": "2026",
+          "file_name": "4e988d1e-e2c9-40c8-aa8d-8760675c59d6.pdf.pdf",
+          "dt_tm": "2026-06-29T13:51:51.483"
+        },
         {
           "year": "2025",
           "file_name": "23df052a-7d0d-4f73-acf1-3170d353957e.pdf.pdf",
