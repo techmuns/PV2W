@@ -3,6 +3,6 @@
   "sourceUrl": "https://fada.in/research-monthly-vehicle.php",
   "lastUpdated": null,
   "fetchStatus": "error",
-  "error": "HTTP 404",
+  "error": "HTTP 409",
   "months": []
 }
