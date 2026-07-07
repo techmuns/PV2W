@@ -335,7 +335,7 @@
       "problems": []
     },
     "Tickertape": {
-      "fetched_at": "2026-07-07T07:01:06.773Z",
+      "fetched_at": "2026-07-07T07:26:02.195Z",
       "source_url": "https://www.tickertape.in/stocks/maruti-suzuki-india-MARU",
       "by_fy": {},
       "problems": [
@@ -343,7 +343,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-07-07T07:01:10.729Z",
+      "fetched_at": "2026-07-07T07:26:09.962Z",
       "source_url": "https://www.moneycontrol.com/financials/marutisuzukiindia/balance-sheetVI/MS24",
       "by_fy": {},
       "problems": [
@@ -453,7 +453,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-07-07T07:00:56.727Z",
+      "fetched_at": "2026-07-07T07:25:56.394Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
@@ -462,7 +462,7 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-07-07T07:01:00.961Z",
+      "fetched_at": "2026-07-07T07:26:00.111Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -621,7 +621,7 @@
       "problems": []
     },
     "Moneycontrol": {
-      "fetched_at": "2026-07-07T07:01:11.965Z",
+      "fetched_at": "2026-07-07T07:26:11.011Z",
       "source_url": "https://www.moneycontrol.com/financials/hyundaimotorindia/balance-sheetVI/HMI01",
       "by_fy": {},
       "problems": [
@@ -683,7 +683,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-07-07T07:00:56.204Z",
+      "fetched_at": "2026-07-07T07:25:55.719Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
@@ -989,7 +989,7 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-07-07T07:00:57.322Z",
+      "fetched_at": "2026-07-07T07:25:57.106Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
@@ -998,7 +998,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-07-07T07:01:12.956Z",
+      "fetched_at": "2026-07-07T07:26:11.968Z",
       "source_url": "https://www.moneycontrol.com/financials/mahindramahindra/balance-sheetVI/MM",
       "by_fy": {},
       "problems": [
@@ -1100,7 +1100,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-07-07T07:00:57.858Z",
+      "fetched_at": "2026-07-07T07:25:57.589Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [
@@ -1109,7 +1109,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-07-07T07:01:14.698Z",
+      "fetched_at": "2026-07-07T07:26:13.149Z",
       "source_url": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
       "by_fy": {},
       "problems": [
