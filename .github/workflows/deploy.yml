@@ -1,0 +1,74 @@
+# Deploy the PV "neha" Cloudflare Worker (static assets) to production.
+#
+# WHY THIS EXISTS
+#   Cloudflare Workers Static Assets are uploaded at *deploy time* — the
+#   live site serves the last-published snapshot, NOT the repo's HEAD.
+#   The data-refresh workflows commit fresh JSON to main every day, but
+#   without a deploy those commits never reach production, so the
+#   dashboard shows stale numbers even though the data is "pulled in".
+#   This workflow closes that gap: every change that lands on main is
+#   republished automatically.
+#
+# ONE-TIME SETUP — add repository secrets under
+#   Settings → Secrets and variables → Actions:
+#     CLOUDFLARE_API_TOKEN   (required) — token with the
+#                            "Edit Cloudflare Workers" template scope
+#     CLOUDFLARE_ACCOUNT_ID  (only if the token spans multiple accounts)
+#   Until CLOUDFLARE_API_TOKEN exists this workflow fails fast with a
+#   clear message and changes nothing.
+#
+# TRIGGERS
+#   - push to main            — human merges / direct commits
+#   - workflow_run completion — the refresh bots commit with GITHUB_TOKEN,
+#                               whose pushes do NOT fire `push:` events, so
+#                               we also redeploy when those workflows finish
+#   - workflow_dispatch       — manual "Run workflow" button
+name: Deploy dashboard
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows:
+      - "Refresh dashboard data"
+      - "2W Refresh Data (Screener)"
+      - "2W Refresh Industry Data (FADA + Vahan)"
+      - "2W BSE Company Scrape"
+      - "2W Build & Publish /2w"
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-worker
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # push / manual always run; a workflow_run trigger only deploys when
+    # the refresh it followed actually succeeded.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify Cloudflare credentials are configured
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CF_TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN repository secret is missing. Add it under Settings → Secrets and variables → Actions (see the header of .github/workflows/deploy.yml). Deploy skipped."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Publish to Cloudflare Workers
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
