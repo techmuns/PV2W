@@ -19138,6 +19138,94 @@
       "Source": "Moneycontrol — Tata Motors PV balance sheet sub-lines",
       "Source_URL": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
       "Last_Updated": "2026-05-15"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Maruti",
+      "Metric": "Stock Price (31-Mar)",
+      "Value": 12306,
+      "YoY_Change": 6.8,
+      "Signal": "Neutral",
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/MARUTI.NS/history",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "M&M",
+      "Metric": "Stock Price (31-Mar)",
+      "Value": 2954.7,
+      "YoY_Change": 10.8,
+      "Signal": "Neutral",
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/M%26M.NS/history",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Hyundai",
+      "Metric": "Stock Price (31-Mar)",
+      "Value": 1778,
+      "YoY_Change": 4.1,
+      "Signal": "Neutral",
+      "Source": "Yahoo Finance (NSE close)",
+      "Source_URL": "https://finance.yahoo.com/quote/HYUNDAI.NS/history",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY15",
+      "Company": "Maruti",
+      "Metric": "EBITDA Margin %",
+      "Value": 14,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India consolidated financials (Screener.in)",
+      "Source_URL": "https://www.screener.in/company/MARUTI/consolidated/",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Maruti",
+      "Metric": "Revenue Growth %",
+      "Value": 19.9,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India consolidated financials (Screener.in)",
+      "Source_URL": "https://www.screener.in/company/MARUTI/consolidated/",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Maruti",
+      "Metric": "EBITDA Margin %",
+      "Value": 12,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Maruti Suzuki India consolidated financials (Screener.in)",
+      "Source_URL": "https://www.screener.in/company/MARUTI/consolidated/",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Hyundai",
+      "Metric": "Revenue Growth %",
+      "Value": 2,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India standalone financials (Screener.in)",
+      "Source_URL": "https://www.screener.in/company/HYUNDAI/",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Hyundai",
+      "Metric": "EBITDA Margin %",
+      "Value": 12,
+      "YoY_Change": null,
+      "Signal": "Neutral",
+      "Source": "Hyundai Motor India standalone financials (Screener.in)",
+      "Source_URL": "https://www.screener.in/company/HYUNDAI/",
+      "Last_Updated": "2026-07-07"
     }
   ],
   "vehicle_fy_metrics": [
@@ -21560,6 +21648,58 @@
       "Source": "Tata Motors Annual Report (KMP, dealer / employee counts) + CRISIL ratings history",
       "Source_URL": "https://www.tatamotors.com/investors/",
       "Last_Updated": "2026-05-09"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Maruti",
+      "CEO": "Hisashi Takeuchi",
+      "CFO": "Arnab Roy",
+      "COO": "—",
+      "Credit_Rating": "CRISIL AAA / Stable",
+      "Dealers": 4235,
+      "Employees": 20171,
+      "Source": "KMP per https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MARUTI.html · Dealers / employees per https://www.marutisuzuki.com/corporate/investors/financial-and-other-information/annual-reports",
+      "Source_URL": "https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Hyundai",
+      "CEO": "Unsoo Kim",
+      "CFO": "Wangdo Hur",
+      "COO": "Tarun Garg",
+      "Credit_Rating": "CRISIL AAA / Stable; CRISIL A1+",
+      "Dealers": 1419,
+      "Employees": 9000,
+      "Source": "KMP per https://www.hyundai.com/in/en/about-us/our-leaders · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.HYUNDAIMOTORINDIA.html · Dealers / employees per https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
+      "Source_URL": "https://www.hyundai.com/in/en/about-us/our-leaders",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "M&M",
+      "CEO": "Dr. Anish Shah",
+      "CFO": "Amarjyoti Barua",
+      "COO": "Rajesh Jejurikar",
+      "Credit_Rating": "CRISIL AAA / Stable",
+      "Dealers": 1500,
+      "Employees": 24500,
+      "Source": "KMP per https://www.mahindra.com/about-us/management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MAHINDRAANDMAHINDRA.html · Dealers / employees per https://www.mahindra.com/investor-relations/annual-reports",
+      "Source_URL": "https://www.mahindra.com/about-us/management",
+      "Last_Updated": "2026-07-07"
+    },
+    {
+      "FY": "FY26",
+      "Company": "Tata Motors PV",
+      "CEO": "Shailesh Chandra",
+      "CFO": "P B Balaji",
+      "COO": "—",
+      "Credit_Rating": "CRISIL AA+ / Positive",
+      "Dealers": 1500,
+      "Employees": 5500,
+      "Source": "KMP per https://www.tatamotors.com/board-management/ · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.TATAMOTORS.html · Dealers / employees per https://www.tatamotors.com/investors/annual-reports/",
+      "Source_URL": "https://www.tatamotors.com/board-management/",
+      "Last_Updated": "2026-07-07"
     }
   ],
   "industry_fy_metrics": [

@@ -76,7 +76,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-07-06T08:01:44.346Z",
+      "fetched_at": "2026-07-07T06:25:12.507Z",
       "source_url": "https://www.screener.in/company/MARUTI/consolidated/",
       "basis": "Maruti Suzuki India consolidated annual P&L + cash flow",
       "by_fy": {
@@ -118,7 +118,8 @@
           "total_assets_cr": 42726,
           "cfo_cr": 8482,
           "investing_cr": -7230,
-          "cff_cr": -1237
+          "cff_cr": -1237,
+          "revenue_growth_pct": 13.4
         },
         "FY17": {
           "sales_cr": 68085,
@@ -138,7 +139,8 @@
           "total_assets_cr": 51960,
           "cfo_cr": 10282,
           "investing_cr": -9173,
-          "cff_cr": -1129
+          "cff_cr": -1129,
+          "revenue_growth_pct": 18.2
         },
         "FY18": {
           "sales_cr": 79809,
@@ -158,7 +160,8 @@
           "total_assets_cr": 60248,
           "cfo_cr": 11788,
           "investing_cr": -8302,
-          "cff_cr": -3436
+          "cff_cr": -3436,
+          "revenue_growth_pct": 17.2
         },
         "FY19": {
           "sales_cr": 86068,
@@ -178,7 +181,8 @@
           "total_assets_cr": 63969,
           "cfo_cr": 6601,
           "investing_cr": -3540,
-          "cff_cr": -2948
+          "cff_cr": -2948,
+          "revenue_growth_pct": 7.8
         },
         "FY20": {
           "sales_cr": 75660,
@@ -198,7 +202,8 @@
           "total_assets_cr": 63628,
           "cfo_cr": 3496,
           "investing_cr": -557,
-          "cff_cr": -3104
+          "cff_cr": -3104,
+          "revenue_growth_pct": -12.1
         },
         "FY21": {
           "sales_cr": 70372,
@@ -218,7 +223,8 @@
           "total_assets_cr": 71376,
           "cfo_cr": 8856,
           "investing_cr": -7291,
-          "cff_cr": -1545
+          "cff_cr": -1545,
+          "revenue_growth_pct": -7
         },
         "FY22": {
           "sales_cr": 88330,
@@ -238,7 +244,8 @@
           "total_assets_cr": 74656,
           "cfo_cr": 1840,
           "investing_cr": -239,
-          "cff_cr": -1607
+          "cff_cr": -1607,
+          "revenue_growth_pct": 25.5
         },
         "FY23": {
           "sales_cr": 117571,
@@ -258,7 +265,8 @@
           "total_assets_cr": 84597,
           "cfo_cr": 9251,
           "investing_cr": -8036,
-          "cff_cr": -1213
+          "cff_cr": -1213,
+          "revenue_growth_pct": 33.1
         },
         "FY24": {
           "sales_cr": 141858,
@@ -278,7 +286,8 @@
           "total_assets_cr": 115304,
           "cfo_cr": 16801,
           "investing_cr": -11865,
-          "cff_cr": -4062
+          "cff_cr": -4062,
+          "revenue_growth_pct": 20.7
         },
         "FY25": {
           "sales_cr": 152913,
@@ -298,7 +307,8 @@
           "total_assets_cr": 131971,
           "cfo_cr": 16136,
           "investing_cr": -14456,
-          "cff_cr": -4155
+          "cff_cr": -4155,
+          "revenue_growth_pct": 7.8
         },
         "FY26": {
           "sales_cr": 183316,
@@ -318,7 +328,8 @@
           "total_assets_cr": 148881,
           "cfo_cr": 19100,
           "investing_cr": -14734,
-          "cff_cr": -4484
+          "cff_cr": -4484,
+          "revenue_growth_pct": 19.9
         }
       },
       "problems": []
@@ -348,7 +359,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "export_volume": {
         "value": 599,
@@ -364,7 +375,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "ebitda_margin_pct": {
         "value": 13.1,
@@ -372,7 +383,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "pat_cr": {
         "value": 6060,
@@ -380,7 +391,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       }
     },
     "FY25": {
@@ -390,7 +401,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "export_volume": {
         "value": 163000,
@@ -398,7 +409,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "suv_mix_pct": {
         "value": 68.5,
@@ -406,7 +417,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "revenue_cr": {
         "value": 69193,
@@ -414,7 +425,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "ebitda_margin_pct": {
         "value": 12.9,
@@ -422,7 +433,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "pat_cr": {
         "value": 5640,
@@ -430,7 +441,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       },
       "domestic_volume": {
         "value": 599000,
@@ -438,7 +449,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-07-06"
+        "last_updated": "2026-07-07"
       }
     },
     "Tijori": {
@@ -451,7 +462,7 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-07-06T08:01:45.489Z",
+      "fetched_at": "2026-07-07T06:25:13.955Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -489,7 +500,8 @@
           "total_assets_cr": 22331,
           "cfo_cr": 4072,
           "investing_cr": -2357,
-          "cff_cr": -2898
+          "cff_cr": -2898,
+          "revenue_growth_pct": -0.6
         },
         "FY21": {
           "sales_cr": 40674,
@@ -507,7 +519,8 @@
           "total_assets_cr": 26498,
           "cfo_cr": 5365,
           "investing_cr": -2157,
-          "cff_cr": 143
+          "cff_cr": 143,
+          "revenue_growth_pct": -5.4
         },
         "FY22": {
           "sales_cr": 47043,
@@ -525,7 +538,8 @@
           "total_assets_cr": 28084,
           "cfo_cr": 5081,
           "investing_cr": -875,
-          "cff_cr": -1662
+          "cff_cr": -1662,
+          "revenue_growth_pct": 15.7
         },
         "FY23": {
           "sales_cr": 59761,
@@ -543,7 +557,8 @@
           "total_assets_cr": 34159,
           "cfo_cr": 6476,
           "investing_cr": -1370,
-          "cff_cr": -1578
+          "cff_cr": -1578,
+          "revenue_growth_pct": 27
         },
         "FY24": {
           "sales_cr": 68539,
@@ -561,7 +576,8 @@
           "total_assets_cr": 25654,
           "cfo_cr": 9113,
           "investing_cr": -9814,
-          "cff_cr": -15929
+          "cff_cr": -15929,
+          "revenue_growth_pct": 14.7
         },
         "FY25": {
           "sales_cr": 67654,
@@ -579,7 +595,8 @@
           "total_assets_cr": 29372,
           "cfo_cr": 4251,
           "investing_cr": -322,
-          "cff_cr": -62
+          "cff_cr": -62,
+          "revenue_growth_pct": -1.3
         },
         "FY26": {
           "sales_cr": 68991,
@@ -597,7 +614,8 @@
           "total_assets_cr": 33521,
           "cfo_cr": 7174,
           "investing_cr": -2022,
-          "cff_cr": -1587
+          "cff_cr": -1587,
+          "revenue_growth_pct": 2
         }
       },
       "problems": []
@@ -665,7 +683,7 @@
       }
     },
     "Screener": {
-      "fetched_at": "2026-07-06T08:01:40.611Z",
+      "fetched_at": "2026-07-07T06:25:14.641Z",
       "source_url": "https://www.screener.in/company/M%26M/consolidated/",
       "by_fy": {
         "FY15": {
