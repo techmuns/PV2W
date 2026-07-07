@@ -167,7 +167,9 @@ function GroupedSupportingData({ company }) {
   const [selected, setSelected] = useState(groups[0]?.name || 'Growth')
   const group = useMemo(() => groups.find((g) => g.name === selected) || groups[0], [groups, selected])
 
-  const tableRows = useMemo(() => getSupportingData(group), [group])
+  const latestFy = company.latestFy || 'FY25'
+  const prevFy = FY[Math.max(0, FY.indexOf(latestFy) - 1)] || 'FY24'
+  const tableRows = useMemo(() => getSupportingData(group, latestFy), [group, latestFy])
   const chart = useMemo(() => getSupportingChartData(group), [group])
 
   const isProfile = group.chartType === 'profile'
@@ -187,7 +189,7 @@ function GroupedSupportingData({ company }) {
             <div className="chart-panel-row1">
               <div className="min-w-0 flex-1">
                 <div className="chart-panel-title">{group.name}</div>
-                <div className="chart-panel-sub">{group.metrics.length} metric{group.metrics.length !== 1 ? 's' : ''} · FY24 vs FY25</div>
+                <div className="chart-panel-sub">{group.metrics.length} metric{group.metrics.length !== 1 ? 's' : ''} · {prevFy} vs {latestFy}</div>
               </div>
               <div className="w-[200px] shrink-0">
                 <Dropdown
@@ -205,8 +207,8 @@ function GroupedSupportingData({ company }) {
                 <thead>
                   <tr>
                     <th className="metric-head" style={{ width: '50%' }}>Metric</th>
-                    <th>FY24</th>
-                    <th>FY25</th>
+                    <th>{prevFy}</th>
+                    <th>{latestFy}</th>
                     <th>Change</th>
                     <th>Read</th>
                   </tr>
@@ -258,10 +260,10 @@ function GroupedSupportingData({ company }) {
               <div className="min-w-0">
                 <div className="chart-panel-title">{group.name} — trend</div>
                 <div className="chart-panel-sub">
-                  {isProfile ? 'Profile' : showUnavailable ? 'Not disclosed' : 'FY16–FY25'}
+                  {isProfile ? 'Profile' : showUnavailable ? 'Not disclosed' : `FY16–${latestFy}`}
                 </div>
               </div>
-              <span className="bsr-pill">FY25</span>
+              <span className="bsr-pill">{latestFy}</span>
             </div>
             <div className="chart-panel-meta">
               <span>{group.metrics.length} metrics</span>

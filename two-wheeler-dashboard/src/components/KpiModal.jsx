@@ -52,10 +52,11 @@ export default function KpiModal({ open, kpi, company, onClose }) {
   if (!open || !kpi) return null
 
   const series = kpi.series || []
-  const fy25Idx = FY.indexOf('FY25')
+  const latestFy = company?.latestFy || 'FY25'
+  const curIdx = Math.max(FY.indexOf('FY25'), FY.indexOf(latestFy))
   const tenYearWindow = series
     .map((v, i) => ({ i, v }))
-    .filter((p) => p.i <= fy25Idx && typeof p.v === 'number' && p.i >= fy25Idx - 9)
+    .filter((p) => p.i <= curIdx && typeof p.v === 'number' && p.i >= curIdx - 9)
 
   const nums = tenYearWindow.map((p) => p.v)
   const current = nums.length ? nums[nums.length - 1] : null
@@ -82,14 +83,14 @@ export default function KpiModal({ open, kpi, company, onClose }) {
             <h3 className="text-[20px] font-semibold text-[#0B1F33] tracking-tight leading-tight mt-1">
               {kpi.label} <span className="text-[#94A3B8] font-normal">|</span> {company.name} <span className="text-[#94A3B8] font-normal">|</span> 10-Year Trend
             </h3>
-            <div className="text-[12.5px] text-[#334E68] mt-1">FY16–FY25 trend</div>
+            <div className="text-[12.5px] text-[#334E68] mt-1">{`FY16–${latestFy} trend`}</div>
           </div>
           <button onClick={onClose} className="w-9 h-9 rounded-lg text-[#475569] hover:bg-white text-2xl leading-none flex items-center justify-center">×</button>
         </div>
 
         <div className="px-7 py-6 overflow-y-auto space-y-5">
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            <StatTile label="Current FY25" value={fmtVal(current, kpi.fmt)} />
+            <StatTile label={`Current ${latestFy}`} value={fmtVal(current, kpi.fmt)} />
             <StatTile label="10Y High" value={fmtVal(tenHigh, kpi.fmt)} variant="blue" />
             <StatTile label="10Y Low" value={fmtVal(tenLow, kpi.fmt)} variant="amber" />
             <StatTile
@@ -116,7 +117,7 @@ export default function KpiModal({ open, kpi, company, onClose }) {
                     allowEscapeViewBox={{ x: false, y: false }}
                     offset={14}
                   />
-                  <ReferenceLine x="FY25" stroke="#CBD5E1" strokeDasharray="3 3" />
+                  <ReferenceLine x={latestFy} stroke="#CBD5E1" strokeDasharray="3 3" />
                   <Line
                     type="monotone"
                     dataKey="v"

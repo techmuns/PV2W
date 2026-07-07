@@ -124,7 +124,10 @@ export function mapScreenerToCompany(screener, opts = {}) {
     basis: 'Consolidated',
     currency: 'INR',
     unit: 'Cr',
-    fyAxis: FY_TARGET.slice(0, 10),
+    // Full axis (FY16..FY27) so a newer reported year (e.g. FY26) survives
+    // the re-alignment in buildFromActuals instead of being truncated at
+    // FY25. Years the sidecar has no data for stay null.
+    fyAxis: [...FY_TARGET],
 
     fetchedAt: screener.fetchedAt,
 

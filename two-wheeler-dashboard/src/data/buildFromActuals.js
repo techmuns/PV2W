@@ -7,7 +7,7 @@
 //    line items — they are not estimates.
 //  - Every populated cell carries a source citation back to the annual report.
 
-import { FY } from './_fy.js'
+import { FY, latestPopulatedIdx } from './_fy.js'
 import { getIndustryGrowthSeries } from './performance.js'
 import marketShareJson from './industry/2w-market-share.json'
 
@@ -101,9 +101,21 @@ export function buildFromActuals(json, opts = {}) {
       ? Number(((e / t) * 100).toFixed(1)) : null
   })
 
-  // FY values
-  const v25 = (s) => s[fy25Idx]
-  const v24 = (s) => s[fy24Idx]
+  // Current / prior FY, chosen from the data rather than hardcoded to
+  // FY25: the latest year this company actually reported financials
+  // (floored at FY25 so a view never regresses). Standalone companies
+  // whose audited workbook ends FY25 stay at FY25; a company fed by a
+  // consolidated Screener sidecar that already carries FY26 advances to
+  // FY26 on its own. Metrics with no value at that year render as
+  // '—' / Pending via the existing KpiCards path — nothing is fabricated.
+  const latestIdx = latestPopulatedIdx([revenue, ebitda, pat, revGrowth, ebitdaMargin])
+  const prevIdx   = latestIdx - 1
+  const latestFy  = FY[latestIdx]
+
+  // v25/v24 read the current / prior FY (names kept for continuity; they
+  // are no longer pinned to FY25/FY24 — see latestIdx above).
+  const v25 = (s) => s[latestIdx]
+  const v24 = (s) => (prevIdx >= 0 ? s[prevIdx] : null)
 
   const revGrowthFy25     = v25(revGrowth)
   const revGrowthFy24     = v24(revGrowth)
@@ -115,14 +127,16 @@ export function buildFromActuals(json, opts = {}) {
   const evShareFy24       = v24(evShare)
 
   // ---- KPI cards ----
+  const mktCur = mktShare[latestIdx], mktPrev = prevIdx >= 0 ? mktShare[prevIdx] : null
+  const expCur = exportMixSeries[latestIdx], expPrev = prevIdx >= 0 ? exportMixSeries[prevIdx] : null
   const kpis = [
     {
       key: 'mktShare',
       label: 'Market Share %',
-      value: fmtPct(mktShare[fy25Idx]),
-      sub: 'FY25',
-      delta: fmtPpSigned(typeof mktShare[fy25Idx] === 'number' && typeof mktShare[fy24Idx] === 'number' ? mktShare[fy25Idx] - mktShare[fy24Idx] : null),
-      tone: toneFromDelta(typeof mktShare[fy25Idx] === 'number' && typeof mktShare[fy24Idx] === 'number' ? mktShare[fy25Idx] - mktShare[fy24Idx] : null),
+      value: fmtPct(mktCur),
+      sub: latestFy,
+      delta: fmtPpSigned(typeof mktCur === 'number' && typeof mktPrev === 'number' ? mktCur - mktPrev : null),
+      tone: toneFromDelta(typeof mktCur === 'number' && typeof mktPrev === 'number' ? mktCur - mktPrev : null),
       fmt: 'pp',
       series: mktShare,
       source: 'Vahan · FADA',
@@ -131,7 +145,7 @@ export function buildFromActuals(json, opts = {}) {
       key: 'volGrowth',
       label: 'Volume Growth %',
       value: fmtPctSigned(volGrowthFy25),
-      sub: 'FY25 YoY',
+      sub: `${latestFy} YoY`,
       delta: fmtPpSigned(typeof volGrowthFy25 === 'number' && typeof volGrowthFy24 === 'number' ? volGrowthFy25 - volGrowthFy24 : null),
       tone: toneFromDelta(typeof volGrowthFy25 === 'number' && typeof volGrowthFy24 === 'number' ? volGrowthFy25 - volGrowthFy24 : null),
       fmt: 'pp',
@@ -142,7 +156,7 @@ export function buildFromActuals(json, opts = {}) {
       key: 'revGrowth',
       label: 'Revenue Growth %',
       value: fmtPctSigned(revGrowthFy25),
-      sub: 'FY25 YoY',
+      sub: `${latestFy} YoY`,
       delta: fmtPpSigned(typeof revGrowthFy25 === 'number' && typeof revGrowthFy24 === 'number' ? revGrowthFy25 - revGrowthFy24 : null),
       tone: toneFromDelta(typeof revGrowthFy25 === 'number' && typeof revGrowthFy24 === 'number' ? revGrowthFy25 - revGrowthFy24 : null),
       fmt: 'pp',
@@ -153,7 +167,7 @@ export function buildFromActuals(json, opts = {}) {
       key: 'ebitda',
       label: 'EBITDA Margin %',
       value: fmtPct(ebitdaMarginFy25),
-      sub: 'FY25',
+      sub: latestFy,
       delta: fmtPpSigned(typeof ebitdaMarginFy25 === 'number' && typeof ebitdaMarginFy24 === 'number' ? ebitdaMarginFy25 - ebitdaMarginFy24 : null),
       tone: toneFromDelta(typeof ebitdaMarginFy25 === 'number' && typeof ebitdaMarginFy24 === 'number' ? ebitdaMarginFy25 - ebitdaMarginFy24 : null),
       fmt: 'pp',
@@ -164,7 +178,7 @@ export function buildFromActuals(json, opts = {}) {
       key: 'evMix',
       label: 'EV Mix %',
       value: fmtPct(evShareFy25),
-      sub: 'FY25',
+      sub: latestFy,
       delta: fmtPpSigned(typeof evShareFy25 === 'number' && typeof evShareFy24 === 'number' ? evShareFy25 - evShareFy24 : null),
       tone: 'pos',
       fmt: 'pp',
@@ -174,10 +188,10 @@ export function buildFromActuals(json, opts = {}) {
     {
       key: 'exportMix',
       label: 'Export Mix %',
-      value: fmtPct(exportMixSeries[fy25Idx]),
-      sub: 'FY25',
-      delta: fmtPpSigned(typeof exportMixSeries[fy25Idx] === 'number' && typeof exportMixSeries[fy24Idx] === 'number' ? exportMixSeries[fy25Idx] - exportMixSeries[fy24Idx] : null),
-      tone: toneFromDelta(typeof exportMixSeries[fy25Idx] === 'number' && typeof exportMixSeries[fy24Idx] === 'number' ? exportMixSeries[fy25Idx] - exportMixSeries[fy24Idx] : null),
+      value: fmtPct(expCur),
+      sub: latestFy,
+      delta: fmtPpSigned(typeof expCur === 'number' && typeof expPrev === 'number' ? expCur - expPrev : null),
+      tone: toneFromDelta(typeof expCur === 'number' && typeof expPrev === 'number' ? expCur - expPrev : null),
       fmt: 'pp',
       series: exportMixSeries,
       source: 'Annual reports',
@@ -460,8 +474,9 @@ export function buildFromActuals(json, opts = {}) {
     hero: heroOverride || {
       title: shortName || name,
       subtitle: 'Buy-side snapshot',
-      fy: 'FY25',
+      fy: latestFy,
     },
+    latestFy,
     kpis,
     performance,
     productDrivers: drivers,

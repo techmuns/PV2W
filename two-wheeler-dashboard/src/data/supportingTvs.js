@@ -191,11 +191,15 @@ export function getMetricRead(curr, prev, fmt) {
   return 'Neutral'
 }
 
-export function getSupportingData(group) {
+export function getSupportingData(group, latestFy = 'FY25') {
   // Returns the table rows for the left panel: { metric, fy24, fy25, change, read, ... }
+  // The fy24/fy25 keys carry the prior / current FY. Current follows the
+  // company's latest reported year (floored at FY25 so it never regresses).
+  const curIdx = Math.max(fy25Idx, FY.indexOf(latestFy))
+  const prevIdx = curIdx - 1
   return group.metrics.map((m) => {
-    const fy24 = m.series?.[fy24Idx]
-    const fy25 = m.series?.[fy25Idx]
+    const fy24 = prevIdx >= 0 ? m.series?.[prevIdx] : null
+    const fy25 = m.series?.[curIdx]
     const change = (typeof fy24 === 'number' && typeof fy25 === 'number') ? Number((fy25 - fy24).toFixed(2)) : null
     const read = m.unavailable ? 'Neutral' : getMetricRead(fy25, fy24, m.fmt)
     return { ...m, fy24, fy25, change, read }

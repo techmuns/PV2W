@@ -150,7 +150,7 @@ export default function Header({ company, companies, onSelectCompany, onExport }
         {/* Latest data */}
         <div className="flex items-center gap-2">
           <Label>Latest data</Label>
-          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-white/15 text-white">{SECTOR_META.latestFy}</span>
+          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-white/15 text-white">{company?.latestFy || SECTOR_META.latestFy}</span>
         </div>
 
         {/* Company selector */}

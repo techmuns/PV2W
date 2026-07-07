@@ -1,7 +1,7 @@
 // Builds the 'Industry' aggregate company object from per-data-source JSONs.
 // Each JSON carries its own source citation; this module is a pure mapper.
 
-import { FY } from './_fy.js'
+import { FY, latestPopulatedIdx } from './_fy.js'
 import volumeGrowth from './industry/2w-domestic-volume-growth.json'
 import segmentMix from './industry/2w-segment-mix.json'
 import evShare from './industry/2w-ev-share.json'
@@ -62,8 +62,15 @@ export function buildIndustry(opts = {}) {
   const suzukiShare  = alignByFy(marketShare.series?.Suzuki)
   const olaShare     = alignByFy(marketShare.series?.['Ola Electric'])
 
-  const v25 = (s) => s[fy25Idx]
-  const v24 = (s) => s[fy24Idx]
+  // Latest reported FY for the industry aggregates, floored at FY25 so the
+  // view only ever advances. Today Vahan/FADA volumes end FY25, so this
+  // resolves to FY25; it moves to FY26 on its own once the aggregates
+  // carry it. (v25/v24 names kept for continuity — they read current/prior.)
+  const latestIdx = latestPopulatedIdx([volumeUnits, volumeGrowthSeries, evSeries, exportVolumes])
+  const prevIdx   = latestIdx - 1
+  const latestFy  = FY[latestIdx]
+  const v25 = (s) => s[latestIdx]
+  const v24 = (s) => (prevIdx >= 0 ? s[prevIdx] : null)
 
   // ---- KPI tiles ----
   const kpis = [
@@ -293,8 +300,9 @@ export function buildIndustry(opts = {}) {
     hero: {
       title: 'Indian Two-Wheeler Industry Cockpit',
       subtitle: 'Two-wheeler industry snapshot',
-      fy: 'FY25',
+      fy: latestFy,
     },
+    latestFy,
     kpis,
     performance,
     productDrivers: drivers,
