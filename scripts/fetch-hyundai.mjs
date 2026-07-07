@@ -2,33 +2,32 @@
 /**
  * fetch-hyundai.mjs
  *
- * Hyundai Motor India FY24 + FY25 — financials & volumes from
- * the Q4 audited standalone results press release.
+ * Hyundai Motor India — financials & volumes from the Q4 audited
+ * standalone results press release.
  *
  * Primary source: hyundai.com IR — pressrelease-audited-standalone.pdf
  * Scope: Standalone (HMIL is the listed entity)
  *
+ * The reported fiscal year is read *from the PDF itself* (its title
+ * line "Q4 and FY25 Financial Results" / the annual column header
+ * "FY25 FY24"), NOT assumed from a hardcoded literal. Hyundai keeps the
+ * same URL and overwrites it each quarter, so the moment the FY26 filing
+ * lands the parser labels the new figures FY26 automatically instead of
+ * mislabelling them as the prior year.
+ *
  * Extracts (where present):
- *   - Revenue (₹ Cr)         per FY
- *   - EBITDA (₹ Cr)          per FY
- *   - EBITDA margin %         per FY
- *   - PAT (₹ Cr)             per FY
- *   - Domestic sales (units) per FY
- *   - Export sales (units)   per FY
- *   - SUV mix % (if stated)  per FY
+ *   - Revenue (₹ Cr) / EBITDA (₹ Cr) / EBITDA margin % / PAT (₹ Cr)
+ *     per FY (current + prior, from the 5-column table)
+ *   - Domestic / Export sales (units), SUV mix % (narrative, latest FY)
  *
  * Calculates and writes (only when inputs are present):
- *   - Revenue Growth %
- *   - EBITDA Margin %
- *   - Volume Growth %        (domestic + export = total)
- *   - Export Volume %
- *   - Realisation Growth %   (revenue / total volume)
- *   - SUV Volume %           (when explicitly stated)
+ *   - Revenue Growth %, EBITDA Margin %, Volume Growth %,
+ *     Export Volume %, Realisation Growth %, SUV Volume %
  *
  * Hard rules:
- *   - Skip any metric whose required input(s) are null
- *   - No guessing
+ *   - Skip any metric whose required input(s) are null; no guessing
  *   - Idempotent: only writes when value or source-tag changes
+ *   - Creates the dashboard row if a newly-reported FY has none yet
  *   - Saves the raw PDF text to data/config/press_text/hyundai/ for
  *     audit + parser-debugging in the next iteration
  */
@@ -36,6 +35,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { latestCompleteFY } from './lib/fy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_PATH = path.join(__dirname, '..', 'data', 'config', 'placeholder_data.json');
@@ -52,6 +52,7 @@ const SOURCES = {
 const SOURCE_LABEL = 'Hyundai Q4 audited standalone results PR';
 
 const today = () => new Date().toISOString().slice(0, 10);
+const priorFYName = (fy) => 'FY' + String(parseInt(fy.replace(/^FY/i, ''), 10) - 1).padStart(2, '0');
 
 async function loadPdfParse() {
   const mod = await import('pdf-parse/lib/pdf-parse.js');
@@ -77,19 +78,39 @@ function parseIndianInt(s) {
   return Number.isFinite(n) ? n : null;
 }
 
+/* Read the fiscal year the PDF reports on. Tries, in order:
+     1. the results title  — "Q4 and FY25 Financial Results"
+     2. the annual header  — "FY25 FY24"
+     3. the full-year form  — "FY 2024-25"
+   Returns { cur, prev } FY names, or null if none matched (caller then
+   skips writing rather than guessing the year). */
+function detectFYs(text) {
+  let curYY = null;
+  let m = text.match(/Q4\s*(?:and|&)?\s*FY\s*'?(\d{2})\b[^\n]*Financial\s+Results/i)
+       || text.match(/\bFY\s*'?(\d{2})\s+FY\s*'?(\d{2})\b/i);
+  if (m) curYY = parseInt(m[1], 10);
+  if (curYY == null) {
+    const y = text.match(/FY\s*20(\d{2})\s*[-–]\s*(\d{2})\b/i);   // FY 2024-25 → 25
+    if (y) curYY = parseInt(y[2], 10);
+  }
+  if (curYY == null) return null;
+  const cur = 'FY' + String(curYY).padStart(2, '0');
+  return { cur, prev: priorFYName(cur) };
+}
+
 /* Pull rows from the standalone results PR.
    HMIL's PR layout (verified from the saved text dump):
      - Numbers reported in INR Mn. (1 Cr = 10 Mn → divide by 10)
      - Five-column financial table: Q4-cur | Q4-prev | Q3-cur | FY-cur | FY-prev
-       i.e. for FY25/FY24 we want the 4th and 5th tokens on the row
+       i.e. we want the 4th and 5th tokens on the row
      - EBITDA% row similarly has 5 percent values
-     - Volumes appear in narrative form only ("Domestic volumes
-       stood at 599K", "Export volumes sustained at 163K"), FY25 only
+     - Volumes appear in narrative form only ("Domestic volumes stood at
+       599K", "Export volumes sustained at 163K") for the latest FY
      - SUV Contribution narrative: "domestic SUV Contribution at 68.5%" */
 function parseStandalone(text) {
   const out = {
-    FY25: { revenue:null, ebitda:null, ebitda_margin:null, pat:null, domestic:null, export:null, suv_pct:null },
-    FY24: { revenue:null, ebitda:null, ebitda_margin:null, pat:null, domestic:null, export:null, suv_pct:null },
+    cur:  { revenue:null, ebitda:null, ebitda_margin:null, pat:null, domestic:null, export:null, suv_pct:null },
+    prev: { revenue:null, ebitda:null, ebitda_margin:null, pat:null, domestic:null, export:null, suv_pct:null },
   };
   const lines = text.split(/\r?\n/).map(l => l.trim());
 
@@ -131,36 +152,43 @@ function parseStandalone(text) {
   }
 
   const rev = tableRowNums(/^Revenue\b/i, 14, 5, 1000);
-  if (rev) { out.FY25.revenue = cr(rev.cur); out.FY24.revenue = cr(rev.prev); }
+  if (rev) { out.cur.revenue = cr(rev.cur); out.prev.revenue = cr(rev.prev); }
 
   const eb = tableRowNums(/^EBITDA(?!\s*%)\*?\b/i, 14, 5, 100);
-  if (eb) { out.FY25.ebitda = cr(eb.cur); out.FY24.ebitda = cr(eb.prev); }
+  if (eb) { out.cur.ebitda = cr(eb.cur); out.prev.ebitda = cr(eb.prev); }
 
   const ebM = tableRowPcts(/^EBITDA\s*%/i);
-  if (ebM) { out.FY25.ebitda_margin = ebM.cur; out.FY24.ebitda_margin = ebM.prev; }
+  if (ebM) { out.cur.ebitda_margin = ebM.cur; out.prev.ebitda_margin = ebM.prev; }
 
   const pat = tableRowNums(/^PAT\b/i, 14, 5, 100);
-  if (pat) { out.FY25.pat = cr(pat.cur); out.FY24.pat = cr(pat.prev); }
+  if (pat) { out.cur.pat = cr(pat.cur); out.prev.pat = cr(pat.prev); }
 
-  /* Volume narrative — FY25 only in HMIL's standalone PR */
+  /* Volume narrative — latest FY only in HMIL's standalone PR */
   const dom = text.match(/Domestic\s+volumes?\s+(?:stood\s+at|at)\s+(\d+(?:\.\d+)?)\s*K\b/i);
-  if (dom) out.FY25.domestic = Math.round(parseFloat(dom[1]) * 1000);
+  if (dom) out.cur.domestic = Math.round(parseFloat(dom[1]) * 1000);
   const exp = text.match(/Export\s+volumes?\s+(?:sustained\s+at|stood\s+at|at)\s+(\d+(?:\.\d+)?)\s*K\b/i);
-  if (exp) out.FY25.export = Math.round(parseFloat(exp[1]) * 1000);
+  if (exp) out.cur.export = Math.round(parseFloat(exp[1]) * 1000);
 
-  /* SUV mix narrative — FY25 only */
+  /* SUV mix narrative — latest FY only */
   const suv = text.match(/SUV\s+Contribution\s+at\s+(\d+(?:\.\d+)?)\s*%/i);
-  if (suv) out.FY25.suv_pct = parseFloat(suv[1]);
+  if (suv) out.cur.suv_pct = parseFloat(suv[1]);
 
   return out;
 }
 
 function writeRow(data, fy, metric, value, sourceLabel, sourceUrl) {
   if (value == null) return null;
-  const row = data.company_fy_metrics.find(r =>
+  let row = data.company_fy_metrics.find(r =>
     r.Company === COMPANY && r.FY === fy && r.Metric === metric
   );
-  if (!row) return null;
+  if (!row) {
+    /* Create the row on demand so a newly-reported FY fills in instead
+       of being silently dropped (the old behaviour returned null here). */
+    row = { FY: fy, Company: COMPANY, Metric: metric,
+            Value: null, YoY_Change: null, Signal: 'Neutral',
+            Source: 'Pending', Source_URL: null, Last_Updated: null };
+    data.company_fy_metrics.push(row);
+  }
   if (row.Value === value && row.Source === sourceLabel && row.Source_URL === sourceUrl) return null;
   const before = row.Value;
   row.Value = value;
@@ -180,18 +208,29 @@ async function main() {
   fs.mkdirSync(TEXT_DIR, { recursive: true });
   const pdfParse = await loadPdfParse();
 
-  let extracted;
+  let extracted, fys;
   try {
     const text = await fetchPdfText(SOURCES.standalone_pdf, pdfParse);
     fs.writeFileSync(path.join(TEXT_DIR, 'standalone.txt'), text);
-    extracted = parseStandalone(text);
-    console.log('[fetch-hyundai] extracted:');
-    for (const fy of ['FY24', 'FY25']) {
-      console.log(`  ${fy}:`, extracted[fy]);
+    fys = detectFYs(text);
+    if (!fys) {
+      console.warn('[fetch-hyundai] could not detect the reported FY from the PDF — skipping write to avoid mislabelling.');
+      return;
     }
+    extracted = parseStandalone(text);
+    console.log(`[fetch-hyundai] reported period: ${fys.cur} (prior ${fys.prev})`);
+    console.log(`  ${fys.cur}:`, extracted.cur);
+    console.log(`  ${fys.prev}:`, extracted.prev);
   } catch (e) {
     console.error('[fetch-hyundai] standalone PDF fetch/parse failed:', e.message);
     throw e;
+  }
+
+  /* Sanity guard: the detected FY should never run ahead of the newest
+     completed fiscal year (a filing can lag the calendar, never lead it).
+     If it somehow does, trust the data-derived year but log it loudly. */
+  if (fys.cur > latestCompleteFY()) {
+    console.warn(`[fetch-hyundai] note: PDF reports ${fys.cur}, ahead of latest completed ${latestCompleteFY()} — using PDF value.`);
   }
 
   /* ---------- raw extracts (audit trail) ---------- */
@@ -199,8 +238,9 @@ async function main() {
   try { raw = JSON.parse(fs.readFileSync(RAW_PATH, 'utf8')); } catch {}
   raw[COMPANY] = raw[COMPANY] || {};
 
-  for (const fy of ['FY24', 'FY25']) {
-    const v = extracted[fy];
+  for (const key of ['prev', 'cur']) {
+    const fy = fys[key];
+    const v = extracted[key];
     raw[COMPANY][fy] = raw[COMPANY][fy] || {};
     if (v.revenue       != null) raw[COMPANY][fy].revenue_cr        = pack(v.revenue,       '₹ Cr',  SOURCE_LABEL, SOURCES.standalone_pdf);
     if (v.ebitda        != null) raw[COMPANY][fy].ebitda_cr         = pack(v.ebitda,        '₹ Cr',  SOURCE_LABEL, SOURCES.standalone_pdf);
@@ -217,77 +257,77 @@ async function main() {
   const URL = SOURCES.standalone_pdf;
 
   /* Revenue Growth % */
-  if (extracted.FY25.revenue && extracted.FY24.revenue) {
-    const g = +((extracted.FY25.revenue / extracted.FY24.revenue - 1) * 100).toFixed(1);
-    const r = writeRow(data, 'FY25', 'Revenue Growth %', g, SOURCE_LABEL, URL);
-    if (r) updates.push(`FY25 Revenue Growth %: ${r.before} → ${r.after}%`);
+  if (extracted.cur.revenue && extracted.prev.revenue) {
+    const g = +((extracted.cur.revenue / extracted.prev.revenue - 1) * 100).toFixed(1);
+    const r = writeRow(data, fys.cur, 'Revenue Growth %', g, SOURCE_LABEL, URL);
+    if (r) updates.push(`${fys.cur} Revenue Growth %: ${r.before} → ${r.after}%`);
   }
 
   /* EBITDA Margin % — prefer explicit, fall back to EBITDA/Revenue */
-  for (const fy of ['FY24', 'FY25']) {
-    const e = extracted[fy];
+  for (const key of ['prev', 'cur']) {
+    const e = extracted[key];
     let value = null;
     if (e.ebitda_margin != null) value = e.ebitda_margin;
     else if (e.ebitda && e.revenue) value = +((e.ebitda / e.revenue) * 100).toFixed(1);
     if (value != null) {
-      const r = writeRow(data, fy, 'EBITDA Margin %', value, SOURCE_LABEL, URL);
-      if (r) updates.push(`${fy} EBITDA Margin %: ${r.before} → ${r.after}%`);
+      const r = writeRow(data, fys[key], 'EBITDA Margin %', value, SOURCE_LABEL, URL);
+      if (r) updates.push(`${fys[key]} EBITDA Margin %: ${r.before} → ${r.after}%`);
     }
   }
 
   /* Volume Growth %, Export Volume %, Realisation Growth % */
-  function total(fy) {
-    const e = extracted[fy];
+  const total = (key) => {
+    const e = extracted[key];
     return (e.domestic && e.export) ? (e.domestic + e.export) : null;
+  };
+  if (total('prev') && total('cur')) {
+    const g = +((total('cur') / total('prev') - 1) * 100).toFixed(1);
+    const r = writeRow(data, fys.cur, 'Volume Growth %', g, SOURCE_LABEL, URL);
+    if (r) updates.push(`${fys.cur} Volume Growth %: ${r.before} → ${r.after}%`);
   }
-  if (total('FY24') && total('FY25')) {
-    const g = +((total('FY25') / total('FY24') - 1) * 100).toFixed(1);
-    const r = writeRow(data, 'FY25', 'Volume Growth %', g, SOURCE_LABEL, URL);
-    if (r) updates.push(`FY25 Volume Growth %: ${r.before} → ${r.after}%`);
-  }
-  for (const fy of ['FY24', 'FY25']) {
-    const e = extracted[fy];
+  for (const key of ['prev', 'cur']) {
+    const e = extracted[key];
     if (e.domestic && e.export) {
       const t = e.domestic + e.export;
       const pct = +((e.export / t) * 100).toFixed(1);
-      const r = writeRow(data, fy, 'Export Volume %', pct, SOURCE_LABEL, URL);
-      if (r) updates.push(`${fy} Export Volume %: ${r.before} → ${r.after}%`);
+      const r = writeRow(data, fys[key], 'Export Volume %', pct, SOURCE_LABEL, URL);
+      if (r) updates.push(`${fys[key]} Export Volume %: ${r.before} → ${r.after}%`);
     }
   }
-  function realisation(fy) {
-    const e = extracted[fy];
-    const t = total(fy);
+  const realisation = (key) => {
+    const e = extracted[key];
+    const t = total(key);
     if (!e.revenue || !t) return null;
     return (e.revenue * 1e7) / t;   // ₹ per unit
-  }
-  const r25 = realisation('FY25'), r24 = realisation('FY24');
-  if (r25 && r24) {
-    const g = +((r25 / r24 - 1) * 100).toFixed(1);
-    const r = writeRow(data, 'FY25', 'Realisation Growth %', g, SOURCE_LABEL, URL);
-    if (r) updates.push(`FY25 Realisation Growth %: ${r.before} → ${r.after}% (₹${r24.toFixed(0)}/u → ₹${r25.toFixed(0)}/u)`);
+  };
+  const rCur = realisation('cur'), rPrev = realisation('prev');
+  if (rCur && rPrev) {
+    const g = +((rCur / rPrev - 1) * 100).toFixed(1);
+    const r = writeRow(data, fys.cur, 'Realisation Growth %', g, SOURCE_LABEL, URL);
+    if (r) updates.push(`${fys.cur} Realisation Growth %: ${r.before} → ${r.after}% (₹${rPrev.toFixed(0)}/u → ₹${rCur.toFixed(0)}/u)`);
   }
 
   /* SUV Volume % */
-  for (const fy of ['FY24', 'FY25']) {
-    const e = extracted[fy];
+  for (const key of ['prev', 'cur']) {
+    const e = extracted[key];
     if (e.suv_pct != null) {
-      const r = writeRow(data, fy, 'SUV Volume %', e.suv_pct, SOURCE_LABEL, URL);
-      if (r) updates.push(`${fy} SUV Volume %: ${r.before} → ${r.after}%`);
+      const r = writeRow(data, fys[key], 'SUV Volume %', e.suv_pct, SOURCE_LABEL, URL);
+      if (r) updates.push(`${fys[key]} SUV Volume %: ${r.before} → ${r.after}%`);
     }
   }
 
   /* ---------- summary ---------- */
   console.log('\n=== Output table ===');
   const fmt = v => v == null ? '—' : v.toLocaleString('en-IN');
-  console.log('Metric                          | FY25            | FY24            | Source');
+  console.log(`Metric                          | ${fys.cur.padEnd(15)} | ${fys.prev.padEnd(15)} | Source`);
   console.log('--------------------------------+-----------------+-----------------+-----------');
-  console.log(`Revenue (₹ Cr)                  | ${fmt(extracted.FY25.revenue)} | ${fmt(extracted.FY24.revenue)} | standalone PR`);
-  console.log(`EBITDA (₹ Cr)                   | ${fmt(extracted.FY25.ebitda)} | ${fmt(extracted.FY24.ebitda)} | standalone PR`);
-  console.log(`EBITDA margin (%)               | ${fmt(extracted.FY25.ebitda_margin)} | ${fmt(extracted.FY24.ebitda_margin)} | standalone PR`);
-  console.log(`PAT (₹ Cr)                      | ${fmt(extracted.FY25.pat)} | ${fmt(extracted.FY24.pat)} | standalone PR`);
-  console.log(`Domestic sales (units)          | ${fmt(extracted.FY25.domestic)} | ${fmt(extracted.FY24.domestic)} | standalone PR`);
-  console.log(`Export sales (units)            | ${fmt(extracted.FY25.export)} | ${fmt(extracted.FY24.export)} | standalone PR`);
-  console.log(`SUV mix (%)                     | ${fmt(extracted.FY25.suv_pct)} | ${fmt(extracted.FY24.suv_pct)} | standalone PR`);
+  console.log(`Revenue (₹ Cr)                  | ${fmt(extracted.cur.revenue)} | ${fmt(extracted.prev.revenue)} | standalone PR`);
+  console.log(`EBITDA (₹ Cr)                   | ${fmt(extracted.cur.ebitda)} | ${fmt(extracted.prev.ebitda)} | standalone PR`);
+  console.log(`EBITDA margin (%)               | ${fmt(extracted.cur.ebitda_margin)} | ${fmt(extracted.prev.ebitda_margin)} | standalone PR`);
+  console.log(`PAT (₹ Cr)                      | ${fmt(extracted.cur.pat)} | ${fmt(extracted.prev.pat)} | standalone PR`);
+  console.log(`Domestic sales (units)          | ${fmt(extracted.cur.domestic)} | ${fmt(extracted.prev.domestic)} | standalone PR`);
+  console.log(`Export sales (units)            | ${fmt(extracted.cur.export)} | ${fmt(extracted.prev.export)} | standalone PR`);
+  console.log(`SUV mix (%)                     | ${fmt(extracted.cur.suv_pct)} | ${fmt(extracted.prev.suv_pct)} | standalone PR`);
 
   console.log(`\n[fetch-hyundai] ${updates.length} dashboard cell(s) to update:`);
   updates.forEach(u => console.log('  ' + u));

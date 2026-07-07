@@ -35,13 +35,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fetchAsText } from './lib/fetch-text.mjs';
+import { fyRange, latestCompleteFY } from './lib/fy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_PATH = path.join(__dirname, '..', 'data', 'config', 'placeholder_data.json');
 const DRY_RUN   = process.argv.includes('--dry-run');
 const TODAY     = new Date().toISOString().slice(0, 10);
 
-const FYS = ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25"];
+/* FY16 → latest completed FY, recomputed each run so a new fiscal year
+   enters the seed / derive / live loops automatically (scripts/lib/fy.mjs).
+   The curated SEED dicts below still only carry values through FY25, so a
+   new FY's seeded mix metrics stay absent until real SIAM numbers are
+   added — but the live PV-total override and the derived Top-Gaining-OEM
+   row advance to the new FY on their own. */
+const FYS = fyRange(2016);
 
 const SIAM_PRESS_INDEX = "https://www.siam.in/pressrelease.aspx";
 const SIAM_STATS       = "https://www.siam.in/statistics.aspx";
@@ -225,7 +232,7 @@ async function main() {
   /* Live override for latest-FY PV total */
   const live = await fetchLatestPvTotal();
   if (live) {
-    const fy = "FY25";
+    const fy = latestCompleteFY();
     const row = findOrCreateRow(data, fy, "Total PV Volume");
     if (row.Value !== live) {
       console.log(`  live SIAM ${fy} PV total: ${live.toLocaleString("en-IN")} (was ${row.Value})`);

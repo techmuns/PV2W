@@ -38,12 +38,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fetchAsText } from './lib/fetch-text.mjs';
+import { latestCompleteFY } from './lib/fy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_PATH = path.join(__dirname, '..', 'data', 'config', 'placeholder_data.json');
 const DRY_RUN   = process.argv.includes('--dry-run');
 const TODAY     = new Date().toISOString().slice(0, 10);
-const FY        = 'FY25';
+/* Governance is current-state data (today's KMP / credit rating / dealer
+   & employee counts); attach it to the latest completed fiscal year so
+   it surfaces on the FY the OEM views land on. Recomputed each run so it
+   advances to the new FY automatically (row is created if absent). */
+const FY        = latestCompleteFY();
 
 /* ──────────────────────────────────────────────────────────────────
    CURATED SEED

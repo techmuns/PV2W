@@ -32,6 +32,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RAW_PATH  = path.join(__dirname, '..', 'data', 'config', 'raw_extracts.json');
+const DATA_PATH = path.join(__dirname, '..', 'data', 'config', 'placeholder_data.json');
 const DRY_RUN   = process.argv.includes('--dry-run');
 
 const URL_PRIMARY = 'https://www.screener.in/company/HYUNDAI/';
@@ -153,7 +154,45 @@ function distill(html) {
       if (fin) setVal(fy, 'cff_cr',       toNum(fin.values[i]));
     });
   }
+
+  /* Revenue Growth % from Sales YoY, so the headline KPI can fill for a
+     newly-reported FY that has no press-release value yet. */
+  const fyKeys = Object.keys(out.byFY).sort();
+  for (let i = 1; i < fyKeys.length; i++) {
+    const cur = out.byFY[fyKeys[i]], prv = out.byFY[fyKeys[i - 1]];
+    if (cur && prv && cur.sales_cr != null && prv.sales_cr) {
+      cur.revenue_growth_pct = +(((cur.sales_cr / prv.sales_cr) - 1) * 100).toFixed(1);
+    }
+  }
   return out;
+}
+
+/* ── dashboard write ────────────────────────────────────────────────
+   Fill the headline KPI rows Screener can source — Revenue Growth %
+   and EBITDA Margin % — for any FY it reports. Gap-fill only: a cell
+   already carrying a press-release / AR value is left untouched; only
+   empty / Pending cells (e.g. a brand-new fiscal year) or this
+   fetcher's own prior Screener rows are written. */
+const SCREENER_SRC = 'Hyundai Motor India standalone financials (Screener.in)';
+
+function setRow(data, fy, metric, value, sourceLabel) {
+  if (value == null || !Number.isFinite(value)) return null;
+  let row = data.company_fy_metrics.find(r =>
+    r.Company === COMPANY && r.FY === fy && r.Metric === metric);
+  if (!row) {
+    row = { FY: fy, Company: COMPANY, Metric: metric,
+            Value: null, YoY_Change: null, Signal: 'Neutral',
+            Source: 'Pending', Source_URL: null, Last_Updated: null };
+    data.company_fy_metrics.push(row);
+  }
+  const filled = row.Value != null && row.Source && row.Source !== 'Pending';
+  if (filled && !/screener/i.test(row.Source)) return { status: 'kept' };
+  if (row.Value === value && row.Source === sourceLabel) return { status: 'unchanged' };
+  row.Value = value;
+  row.Source = sourceLabel;
+  row.Source_URL = URL_PRIMARY;
+  row.Last_Updated = new Date().toISOString().slice(0, 10);
+  return { status: 'updated', value };
 }
 
 async function main() {
@@ -187,9 +226,28 @@ async function main() {
     problems: extracted.problems,
   };
 
+  /* Fill headline KPI rows (Revenue Growth %, EBITDA Margin %) for any
+     FY Screener reports, without overwriting press-release / AR cells. */
+  const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+  let updated = 0, kept = 0, unchanged = 0;
+  for (const [fy, vals] of Object.entries(extracted.byFY)) {
+    const apply = (metric, v) => {
+      const r = setRow(data, fy, metric, v, SCREENER_SRC);
+      if (!r) return;
+      if (r.status === 'updated') updated++;
+      else if (r.status === 'kept') kept++;
+      else if (r.status === 'unchanged') unchanged++;
+    };
+    apply('Revenue Growth %', vals.revenue_growth_pct);
+    apply('EBITDA Margin %',  vals.ebitda_margin_pct);
+  }
+  console.log(`  dashboard rows: updated=${updated} kept=${kept} unchanged=${unchanged}`);
+
   if (DRY_RUN) { console.log('--dry-run: not writing files.'); return; }
   fs.writeFileSync(RAW_PATH, JSON.stringify(raw, null, 2) + '\n');
+  if (updated > 0) fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2) + '\n');
   console.log(`  wrote ${RAW_PATH}`);
+  if (updated > 0) console.log(`  wrote ${DATA_PATH}`);
   console.log(`  → run scripts/derive-financials.mjs to compute PAT Margin / Capex from this raw extract.`);
 }
 

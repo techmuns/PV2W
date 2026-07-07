@@ -27,6 +27,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { recentFYs } from './lib/fy.mjs';
 
 const __dirname  = path.dirname(fileURLToPath(import.meta.url));
 const DATA_PATH  = path.join(__dirname, '..', 'data', 'config', 'placeholder_data.json');
@@ -41,10 +42,15 @@ const COMPANY_TICKERS = {
   "Hyundai":        "HYUNDAI.NS",
 };
 
-const FY_LIST = ["FY23", "FY24", "FY25"];
+/* Trailing window of completed fiscal years to (re)fetch each run.
+   Derived from today's date (see scripts/lib/fy.mjs) so the newest FY
+   is picked up automatically the April after it ends — no yearly code
+   edit. In Jul 2026 this resolves to [FY23, FY24, FY25, FY26]. */
+const FY_LIST = recentFYs(4);
 
 /* FY25 → year ending 31 Mar 2025, so we look at March of 2025. */
 const fyToMarchYear = (fy) => 2000 + parseInt(fy.replace(/^FY/, ""), 10);
+const priorFY = (fy) => "FY" + String(fyToMarchYear(fy) - 1).slice(2);
 
 async function fetchMarchClose(ticker, fyYear) {
   const start = Math.floor(Date.UTC(fyYear, 2, 1)  / 1000);   // 1 Mar
@@ -99,14 +105,21 @@ async function main() {
         skipped++;
         continue;
       }
-      const row = data.company_fy_metrics.find(r =>
+      let row = data.company_fy_metrics.find(r =>
         r.Company === company && r.FY === fy &&
         r.Metric === 'Stock Price (31-Mar)'
       );
       if (!row) {
-        console.log(`  ${fy}: no matching row in dataset, skipping`);
-        skipped++;
-        continue;
+        /* Create the row on demand so a newly-completed fiscal year
+           fills in automatically instead of being silently skipped
+           (the previous behaviour, which left new FYs blank forever). */
+        row = {
+          FY: fy, Company: company, Metric: 'Stock Price (31-Mar)',
+          Value: null, YoY_Change: null, Signal: 'Neutral',
+          Source: 'Pending', Source_URL: null, Last_Updated: null,
+        };
+        data.company_fy_metrics.push(row);
+        console.log(`  ${fy}: created new row`);
       }
       const newVal = Math.round(result.close * 100) / 100;
       const dateStr = result.date.toISOString().slice(0, 10);
@@ -115,8 +128,17 @@ async function main() {
         unchanged++;
         continue;
       }
+      /* YoY % vs the prior FY's close, from real fetched values only. */
+      const prior = data.company_fy_metrics.find(r =>
+        r.Company === company && r.FY === priorFY(fy) &&
+        r.Metric === 'Stock Price (31-Mar)' && typeof r.Value === 'number'
+      );
+      const yoy = (prior && prior.Value)
+        ? +(((newVal / prior.Value) - 1) * 100).toFixed(1)
+        : (row.YoY_Change ?? null);
       console.log(`  ${fy}: ${row.Value ?? '—'} → ₹${newVal} (close ${dateStr})`);
       row.Value         = newVal;
+      row.YoY_Change    = yoy;
       row.Source        = 'Yahoo Finance (NSE close)';
       row.Source_URL    = `https://finance.yahoo.com/quote/${ticker}/history`;
       row.Last_Updated  = today;

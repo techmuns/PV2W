@@ -96,23 +96,43 @@
     const i = D.FYS_FULL.indexOf(fy);
     return i > 0 ? D.FYS_FULL[i - 1] : null;
   };
-  /* Walks FYS_FULL newest-first and returns the most recent FY that
-     actually has industry-level data populated. The data-refresh
-     workflow extends FYS each April (see scripts/extend-fys.mjs),
-     so the most recent listed FY can be empty for months until SIAM
-     publishes. Picking the latest *populated* FY keeps the dashboard
-     coherent without asking the user to choose. */
-  const pickLatestFY = (data) => {
-    const fys  = data.FYS_FULL || [];
-    const ind  = data.Industry_FY_Metrics || [];
-    const co   = data.Company_FY_Metrics  || [];
+  /* The headline metrics that decide whether a fiscal year is "worth
+     landing on" for a view — the KPI-strip metrics. An FY is presentable
+     once at least MIN_HEADLINE_HITS of them carry a real value. */
+  const MIN_HEADLINE_HITS = 2;
+  const headlineMetricsFor = (data, company) =>
+    (company === "Industry" ? data.INDUSTRY_KPIS : data.OEM_KPIS) || [];
+
+  /* Walks FYS_FULL newest-first and returns the most recent FY that has
+     enough of `company`'s headline metrics populated to be worth showing.
+
+     Deliberately per-company and decoupled from industry-level data:
+     SIAM industry aggregates lag OEM results by months, so an OEM's new
+     fiscal year must surface as soon as *its own* numbers land instead of
+     waiting on the Industry rows (the old logic required both, which
+     pinned every view a full year behind whenever SIAM was late). The
+     refresh workflow extends the FY range each April
+     (scripts/extend-fys.mjs) and the fetchers now auto-advance too, so
+     the newest listed FY fills in on its own.
+
+     Falls back to the most recent FY with any data for the company, then
+     to the newest configured FY. */
+  const pickLatestFYForCompany = (data, company) => {
+    const fys = data.FYS_FULL || [];
+    const isIndustry = company === "Industry";
+    const headline = headlineMetricsFor(data, company);
+    const rowsAt = (fy) =>
+      (isIndustry ? (data.Industry_FY_Metrics || []) : (data.Company_FY_Metrics || []))
+        .filter(r => r.FY === fy && r.Value != null && (isIndustry || r.Company === company));
+    let firstWithAny = null;
     for (let i = fys.length - 1; i >= 0; i--) {
       const fy = fys[i];
-      const hasInd = ind.some(r => r.FY === fy && r.Value !== null && r.Value !== undefined);
-      const hasCo  = co.filter(r => r.FY === fy && r.Value !== null && r.Value !== undefined).length >= 50;
-      if (hasInd && hasCo) return fy;
+      const rows = rowsAt(fy);
+      if (rows.length && firstWithAny == null) firstWithAny = fy;
+      const hits = rows.reduce((n, r) => n + (headline.includes(r.Metric) ? 1 : 0), 0);
+      if (hits >= MIN_HEADLINE_HITS) return fy;
     }
-    return fys[fys.length - 1] || "FY25";
+    return firstWithAny || fys[fys.length - 1] || "FY25";
   };
   const signalClass = (s) => ({
     "Positive": "signal-pos",
@@ -5157,11 +5177,15 @@
 
   /* ---------- listeners ---------- */
   function wire() {
-    /* FY is no longer user-selectable in the main header — it is
-       pinned to pickLatestFY(D) on boot. Trend/history charts carry
-       the multi-year context inline. */
+    /* FY is not a manual control in the main header — each view is
+       pinned to its own latest populated FY (pickLatestFYForCompany).
+       Trend/history charts carry the multi-year context inline. */
     $("#company-select").addEventListener("change", (e) => {
       state.company = e.target.value;
+      /* Re-pin to the latest FY this view actually has data for, so
+         switching to an OEM surfaces its newest fiscal year even while
+         the Industry landing view is still a year behind on SIAM data. */
+      state.fy = pickLatestFYForCompany(D, state.company);
       const tabs = state.company === "Industry" ? TABS_INDUSTRY : TABS_OEM;
       if (!Object.keys(tabs).includes(state.activeTab)) state.activeTab = Object.keys(tabs)[0];
       renderAll();
@@ -5246,12 +5270,13 @@
     TABS_OEM      = D.TABS && D.TABS.oem      ? D.TABS.oem      : {};
     TABS_INDUSTRY = D.TABS && D.TABS.industry ? D.TABS.industry : {};
 
-    /* Auto-pin to the latest populated FY so the user never lands on
-       a half-empty FY26 / FY27. The right-side Industry split also
-       defaults here. */
-    const latestFY = pickLatestFY(D);
-    state.fy = latestFY;
-    state.indYearRight = latestFY;
+    /* Auto-pin each view to the most recent fiscal year that actually
+       has data for it. The default (Industry) landing view tracks the
+       latest FY with SIAM data; OEM views advance to a newer FY the
+       moment that OEM's own numbers land (see pickLatestFYForCompany).
+       The right-side Industry split tracks industry data independently. */
+    state.fy = pickLatestFYForCompany(D, state.company);
+    state.indYearRight = pickLatestFYForCompany(D, "Industry");
 
     wire();
     renderAll();
