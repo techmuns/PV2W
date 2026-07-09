@@ -9160,7 +9160,7 @@
       "Signal": "Positive",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow",
       "Source_URL": "https://www.screener.in/company/M%26M/consolidated/",
-      "Last_Updated": "2026-07-08"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY25",
@@ -9254,12 +9254,12 @@
       "FY": "FY26",
       "Company": "M&M",
       "Metric": "Borrowings (Rs Cr)",
-      "Value": 133963,
+      "Value": 136936,
       "YoY_Change": null,
       "Signal": "Neutral",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / cash flow (auto + farm + tech combined)",
       "Source_URL": "https://www.mahindra.com/investor-relations",
-      "Last_Updated": "2026-05-10"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -9276,23 +9276,23 @@
       "FY": "FY26",
       "Company": "M&M",
       "Metric": "Capex (Rs Cr)",
-      "Value": 17707,
+      "Value": 17680,
       "YoY_Change": null,
       "Signal": "Neutral",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / cash flow (auto + farm + tech combined)",
       "Source_URL": "https://www.mahindra.com/investor-relations",
-      "Last_Updated": "2026-05-09"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
       "Company": "M&M",
       "Metric": "Capex Intensity %",
-      "Value": 8.91,
+      "Value": 8.9,
       "YoY_Change": null,
       "Signal": "Neutral",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / cash flow (auto + farm + tech combined)",
       "Source_URL": "https://www.mahindra.com/investor-relations",
-      "Last_Updated": "2026-05-09"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -9320,12 +9320,12 @@
       "FY": "FY26",
       "Company": "M&M",
       "Metric": "Cash from Investing (Rs Cr)",
-      "Value": -17707,
+      "Value": -17680,
       "YoY_Change": null,
       "Signal": "Neutral",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / cash flow (auto + farm + tech combined)",
       "Source_URL": "https://www.mahindra.com/investor-relations",
-      "Last_Updated": "2026-05-10"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -9353,12 +9353,12 @@
       "FY": "FY26",
       "Company": "M&M",
       "Metric": "EBITDA (Rs Cr)",
-      "Value": 37561,
+      "Value": 36980,
       "YoY_Change": null,
       "Signal": "Neutral",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / cash flow (auto + farm + tech combined)",
       "Source_URL": "https://www.mahindra.com/investor-relations",
-      "Last_Updated": "2026-05-10"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -9507,12 +9507,12 @@
       "FY": "FY26",
       "Company": "M&M",
       "Metric": "Total Assets (Rs Cr)",
-      "Value": 317635,
+      "Value": 316054,
       "YoY_Change": null,
       "Signal": "Neutral",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / cash flow (auto + farm + tech combined)",
       "Source_URL": "https://www.mahindra.com/investor-relations",
-      "Last_Updated": "2026-05-10"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -21660,7 +21660,7 @@
       "Employees": 20171,
       "Source": "KMP per https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MARUTI.html · Dealers / employees per https://www.marutisuzuki.com/corporate/investors/financial-and-other-information/annual-reports",
       "Source_URL": "https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management",
-      "Last_Updated": "2026-07-08"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -21673,7 +21673,7 @@
       "Employees": 9000,
       "Source": "KMP per https://www.hyundai.com/in/en/about-us/our-leaders · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.HYUNDAIMOTORINDIA.html · Dealers / employees per https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
       "Source_URL": "https://www.hyundai.com/in/en/about-us/our-leaders",
-      "Last_Updated": "2026-07-08"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -21686,7 +21686,7 @@
       "Employees": 24500,
       "Source": "KMP per https://www.mahindra.com/about-us/management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MAHINDRAANDMAHINDRA.html · Dealers / employees per https://www.mahindra.com/investor-relations/annual-reports",
       "Source_URL": "https://www.mahindra.com/about-us/management",
-      "Last_Updated": "2026-07-08"
+      "Last_Updated": "2026-07-09"
     },
     {
       "FY": "FY26",
@@ -21699,7 +21699,7 @@
       "Employees": 5500,
       "Source": "KMP per https://www.tatamotors.com/board-management/ · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.TATAMOTORS.html · Dealers / employees per https://www.tatamotors.com/investors/annual-reports/",
       "Source_URL": "https://www.tatamotors.com/board-management/",
-      "Last_Updated": "2026-07-08"
+      "Last_Updated": "2026-07-09"
     }
   ],
   "industry_fy_metrics": [
@@ -22595,7 +22595,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-07-08T06:12:58.869Z",
+    "last_refresh": "2026-07-09T07:03:02.024Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -22614,6 +22614,6 @@
       "hyundai_filings": "success",
       "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/neha/actions/runs/28921675951"
+    "run_url": "https://github.com/techmuns/neha/actions/runs/29000187236"
   }
 }
