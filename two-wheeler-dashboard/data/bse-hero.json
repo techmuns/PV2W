@@ -1,7 +1,7 @@
 {
   "scrip": "500182",
   "slug": "hero",
-  "fetchedAt": "2026-07-10T04:52:08.065Z",
+  "fetchedAt": "2026-07-10T16:24:37.526Z",
   "window": {
     "from": "20260411",
     "to": "20260710",
@@ -36,9 +36,14 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=500182",
-      "count": 16,
+      "count": 17,
       "tag": "confirmed",
       "data": [
+        {
+          "year": "2026",
+          "file_name": "b80c703d-600d-472b-a18c-9565f6f780a7.pdf.pdf",
+          "dt_tm": "2026-07-10T21:42:58.233"
+        },
         {
           "year": "2025",
           "file_name": "192e7793-7994-4958-8617-0dd0c3bdc550.pdf.pdf",
