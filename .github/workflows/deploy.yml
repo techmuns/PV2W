@@ -14,8 +14,9 @@
 #     CLOUDFLARE_API_TOKEN   (required) — token with the
 #                            "Edit Cloudflare Workers" template scope
 #     CLOUDFLARE_ACCOUNT_ID  (only if the token spans multiple accounts)
-#   Until CLOUDFLARE_API_TOKEN exists this workflow fails fast with a
-#   clear message and changes nothing.
+#   Until CLOUDFLARE_API_TOKEN exists this workflow SKIPS the deploy: the
+#   run stays green and GitHub sends no failure email. It starts publishing
+#   automatically the moment the secret is added — no further edits needed.
 #
 # TRIGGERS
 #   - push to main            — human merges / direct commits
@@ -49,25 +50,39 @@ jobs:
     # the refresh it followed actually succeeded.
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Verify Cloudflare credentials are configured
+      # Publishing needs CLOUDFLARE_API_TOKEN. When it isn't configured we
+      # SKIP rather than fail: a red run here is not actionable — it just
+      # makes GitHub email the repo owner on every refresh-bot commit, several
+      # times a day. Skipping keeps the run green and silent; the deploy steps
+      # below are gated on this check and resume automatically once the secret
+      # is added, with no further edits.
+      - name: Check Cloudflare credentials
+        id: creds
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           if [ -z "$CF_TOKEN" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN repository secret is missing. Add it under Settings → Secrets and variables → Actions (see the header of .github/workflows/deploy.yml). Deploy skipped."
-            exit 1
+            echo "::notice::CLOUDFLARE_API_TOKEN repository secret is not set — skipping deploy (run left green, no failure email). Add it under Settings → Secrets and variables → Actions to enable publishing."
+            echo "### ⏭️ Deploy skipped — CLOUDFLARE_API_TOKEN not configured" >> "$GITHUB_STEP_SUMMARY"
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - uses: actions/checkout@v4
+        if: steps.creds.outputs.configured == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.creds.outputs.configured == 'true'
+        with:
+          node-version: '20'
+
       - name: Install dependencies
+        if: steps.creds.outputs.configured == 'true'
         run: npm install --no-audit --no-fund
 
       - name: Publish to Cloudflare Workers
+        if: steps.creds.outputs.configured == 'true'
         run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
