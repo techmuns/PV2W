@@ -28,12 +28,12 @@ The sales figures for March 2025 are given below:
 
 /adobe/assets/urn:aaid:aem:38139dd4-4bf2-4bdc-b547-d3a19948fe37/as/64CB9390A38340E79B4153903B882352.png 
 
-Issued by: 
+Issued by :
 Corporate Communication,
 Maruti Suzuki India Limited,
-1, Nelson Mandela Road,
-Vasant Kunj, New Delhi Ph: 91-11-4678 1000
-Email: corp.comm@maruti.co.in | Twitter: @Maruti_Corp
+1, Nelson Mandela Road, Vasant Kunj,
+New Delhi
+Ph: 91-11-4678 1000
+Email: corp.comm@maruti.co.in 
 Website: www.marutisuzuki.com 
-
-Back
+X: @Maruti_Corp

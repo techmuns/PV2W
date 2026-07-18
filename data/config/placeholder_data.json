@@ -9160,7 +9160,7 @@
       "Signal": "Positive",
       "Source": "Mahindra & Mahindra annual report — consolidated P&L / ratios / cash flow",
       "Source_URL": "https://www.screener.in/company/M%26M/consolidated/",
-      "Last_Updated": "2026-07-17"
+      "Last_Updated": "2026-07-18"
     },
     {
       "FY": "FY25",
@@ -21660,7 +21660,7 @@
       "Employees": 20171,
       "Source": "KMP per https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MARUTI.html · Dealers / employees per https://www.marutisuzuki.com/corporate/investors/financial-and-other-information/annual-reports",
       "Source_URL": "https://www.marutisuzuki.com/corporate/about-us/board-of-directors-management",
-      "Last_Updated": "2026-07-17"
+      "Last_Updated": "2026-07-18"
     },
     {
       "FY": "FY26",
@@ -21673,7 +21673,7 @@
       "Employees": 9000,
       "Source": "KMP per https://www.hyundai.com/in/en/about-us/our-leaders · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.HYUNDAIMOTORINDIA.html · Dealers / employees per https://www.hyundai.com/in/en/about-us/investor-relations/annual-report",
       "Source_URL": "https://www.hyundai.com/in/en/about-us/our-leaders",
-      "Last_Updated": "2026-07-17"
+      "Last_Updated": "2026-07-18"
     },
     {
       "FY": "FY26",
@@ -21686,7 +21686,7 @@
       "Employees": 24500,
       "Source": "KMP per https://www.mahindra.com/about-us/management · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.MAHINDRAANDMAHINDRA.html · Dealers / employees per https://www.mahindra.com/investor-relations/annual-reports",
       "Source_URL": "https://www.mahindra.com/about-us/management",
-      "Last_Updated": "2026-07-17"
+      "Last_Updated": "2026-07-18"
     },
     {
       "FY": "FY26",
@@ -21699,7 +21699,7 @@
       "Employees": 5500,
       "Source": "KMP per https://www.tatamotors.com/board-management/ · Credit rating per https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.TATAMOTORS.html · Dealers / employees per https://www.tatamotors.com/investors/annual-reports/",
       "Source_URL": "https://www.tatamotors.com/board-management/",
-      "Last_Updated": "2026-07-17"
+      "Last_Updated": "2026-07-18"
     }
   ],
   "industry_fy_metrics": [
@@ -22595,7 +22595,7 @@
     }
   ],
   "_meta": {
-    "last_refresh": "2026-07-17T05:59:53.396Z",
+    "last_refresh": "2026-07-18T05:43:27.854Z",
     "status": "ok",
     "fetchers": {
       "stock_prices": "success",
@@ -22614,6 +22614,6 @@
       "hyundai_filings": "success",
       "derived_financials": "success"
     },
-    "run_url": "https://github.com/techmuns/PV2W/actions/runs/29558748976"
+    "run_url": "https://github.com/techmuns/PV2W/actions/runs/29632704829"
   }
 }
