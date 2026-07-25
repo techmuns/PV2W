@@ -1,7 +1,7 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-07-25T04:10:05.682Z",
+  "fetchedAt": "2026-07-25T15:02:13.647Z",
   "window": {
     "from": "20260426",
     "to": "20260725",
@@ -36,9 +36,14 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=505200",
-      "count": 16,
+      "count": 17,
       "tag": "confirmed",
       "data": [
+        {
+          "year": "2026",
+          "file_name": "d17e4c7d-5ef6-4135-b0f3-cc7bb1ca7f09.pdf.pdf",
+          "dt_tm": "2026-07-25T14:53:03.933"
+        },
         {
           "year": "2025",
           "file_name": "12df1c37-a6d3-456e-8151-edcdb4535ad5.pdf.pdf",
