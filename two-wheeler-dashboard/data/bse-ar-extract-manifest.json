@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-07-25T15:02:39.483Z",
+  "ranAt": "2026-07-26T04:25:24.413Z",
   "entries": [
     {
       "slug": "bajaj",
@@ -101,9 +101,7 @@
       "slug": "eicher",
       "year": 2026,
       "txtPath": "src/data/source-text/EICHER_2026.txt",
-      "status": "extracted",
-      "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d17e4c7d-5ef6-4135-b0f3-cc7bb1ca7f09.pdf",
-      "bytes": 15831005
+      "status": "already-present"
     },
     {
       "slug": "eicher",
