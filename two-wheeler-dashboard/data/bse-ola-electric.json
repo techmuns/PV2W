@@ -1,10 +1,10 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-08-06T04:11:50.602Z",
+  "fetchedAt": "2026-08-07T03:49:06.353Z",
   "window": {
-    "from": "20260508",
-    "to": "20260806",
+    "from": "20260509",
+    "to": "20260807",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,24 +14,32 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260508&strScrip=544225&strSearch=P&strToDate=20260806&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260509&strScrip=544225&strSearch=P&strToDate=20260807&strType=C",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260508&TDate=20260806&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260509&TDate=20260807&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260508&todate=20260806&scripcode=544225",
-      "count": 0,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260509&todate=20260807&scripcode=544225",
+      "count": 1,
       "tag": "confirmed",
-      "data": []
+      "data": [
+        {
+          "scrip_Code": "544225",
+          "short_name": "OLAELEC",
+          "Long_Name": "Ola Electric Mobility Ltd",
+          "meeting_date": "07 Aug 2026",
+          "URL": "https://www.bseindia.com/stock-share-price/ola-electric-mobility-ltd/olaelec/544225/"
+        }
+      ]
     },
     "annualReports": {
       "ok": true,
