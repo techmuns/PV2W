@@ -1,10 +1,10 @@
 {
   "scrip": "532343",
   "slug": "tvs",
-  "fetchedAt": "2026-08-07T14:51:39.749Z",
+  "fetchedAt": "2026-08-08T02:54:55.940Z",
   "window": {
-    "from": "20260509",
-    "to": "20260807",
+    "from": "20260510",
+    "to": "20260808",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,21 +14,21 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260509&strScrip=532343&strSearch=P&strToDate=20260807&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260510&strScrip=532343&strSearch=P&strToDate=20260808&strType=C",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260509&TDate=20260807&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532343&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260510&TDate=20260808&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532343&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260509&todate=20260807&scripcode=532343",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260510&todate=20260808&scripcode=532343",
       "count": 0,
       "tag": "confirmed",
       "data": []
@@ -36,95 +36,9 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=532343",
-      "count": 17,
+      "count": 0,
       "tag": "confirmed",
-      "data": [
-        {
-          "year": "2026",
-          "file_name": "4e988d1e-e2c9-40c8-aa8d-8760675c59d6.pdf.pdf",
-          "dt_tm": "2026-06-29T13:51:51.483"
-        },
-        {
-          "year": "2025",
-          "file_name": "23df052a-7d0d-4f73-acf1-3170d353957e.pdf.pdf",
-          "dt_tm": "2025-07-26T14:34:08.737"
-        },
-        {
-          "year": "2024",
-          "file_name": "4dacb4b8-66a7-43eb-bec5-e18324b2fcd5.pdf.pdf",
-          "dt_tm": "2024-07-12T22:38:50.833"
-        },
-        {
-          "year": "2023",
-          "file_name": "\\ef2ffaf7-ff44-48ef-b169-5b2469fe35b1.pdf.pdf",
-          "dt_tm": "2023-06-26T20:35:46.38"
-        },
-        {
-          "year": "2022",
-          "file_name": "73117532343.pdf",
-          "dt_tm": "2022-06-07T14:28:36"
-        },
-        {
-          "year": "2021",
-          "file_name": "68768532343_07_07_21.pdf",
-          "dt_tm": "2021-07-07T13:32:45"
-        },
-        {
-          "year": "2020",
-          "file_name": "5323430320.pdf",
-          "dt_tm": "2020-07-08T13:23:54"
-        },
-        {
-          "year": "2019",
-          "file_name": "5323430319.pdf",
-          "dt_tm": "2019-12-16T16:53:29"
-        },
-        {
-          "year": "2018",
-          "file_name": "5323430318.pdf",
-          "dt_tm": "2018-08-11T15:03:59"
-        },
-        {
-          "year": "2017",
-          "file_name": "5323430317.pdf",
-          "dt_tm": "2017-08-14T19:22:45"
-        },
-        {
-          "year": "2016",
-          "file_name": "5323430316.pdf",
-          "dt_tm": "2016-08-12T12:42:13"
-        },
-        {
-          "year": "2015",
-          "file_name": "5323430315.pdf",
-          "dt_tm": "2015-07-07T13:02:07"
-        },
-        {
-          "year": "2014",
-          "file_name": "5323430314.pdf",
-          "dt_tm": "2014-06-19T10:41:21"
-        },
-        {
-          "year": "2013",
-          "file_name": "5323430313.pdf",
-          "dt_tm": "2013-07-18T17:29:55"
-        },
-        {
-          "year": "2012",
-          "file_name": "5323430312.pdf",
-          "dt_tm": "2012-09-25T11:48:30"
-        },
-        {
-          "year": "2011",
-          "file_name": "5323430311.pdf",
-          "dt_tm": "2012-03-26T00:00:00"
-        },
-        {
-          "year": "2010",
-          "file_name": "5323430310.pdf",
-          "dt_tm": "2012-03-26T00:00:00"
-        }
-      ]
+      "data": []
     },
     "results": {
       "ok": true,
