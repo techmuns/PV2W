@@ -1,7 +1,7 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-08-08T02:59:00.403Z",
+  "fetchedAt": "2026-08-08T14:31:11.154Z",
   "window": {
     "from": "20260510",
     "to": "20260808",
@@ -42,18 +42,104 @@
       ]
     },
     "boardMeetings": {
-      "ok": false,
+      "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260510&todate=20260808&scripcode=505200",
       "count": 0,
       "tag": "confirmed",
-      "error": "Non-JSON HTML response — wrong endpoint path"
+      "data": []
     },
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=505200",
-      "count": 0,
+      "count": 17,
       "tag": "confirmed",
-      "data": []
+      "data": [
+        {
+          "year": "2026",
+          "file_name": "d17e4c7d-5ef6-4135-b0f3-cc7bb1ca7f09.pdf.pdf",
+          "dt_tm": "2026-07-25T14:53:03.933"
+        },
+        {
+          "year": "2025",
+          "file_name": "12df1c37-a6d3-456e-8151-edcdb4535ad5.pdf.pdf",
+          "dt_tm": "2025-07-28T18:36:13.453"
+        },
+        {
+          "year": "2024",
+          "file_name": "717238ca-0a65-4a34-9441-893ddeea9f2f.pdf.pdf",
+          "dt_tm": "2024-07-30T17:00:48.82"
+        },
+        {
+          "year": "2023",
+          "file_name": "\\857d13f1-9d43-4eac-b527-ed0df0099697.pdf.pdf",
+          "dt_tm": "2023-07-29T16:15:06.98"
+        },
+        {
+          "year": "2023",
+          "file_name": "\\11dfd17d-ae86-47c6-8db0-9c8607ad9a51.pdf.pdf",
+          "dt_tm": "2023-07-29T21:21:50.133"
+        },
+        {
+          "year": "2022",
+          "file_name": "74102505200_07_09_22.pdf",
+          "dt_tm": "2022-09-07T12:03:23"
+        },
+        {
+          "year": "2021",
+          "file_name": "69102505200.pdf",
+          "dt_tm": "2021-07-26T10:54:49"
+        },
+        {
+          "year": "2020",
+          "file_name": "5052000320.pdf",
+          "dt_tm": "2020-07-18T12:03:21"
+        },
+        {
+          "year": "2019",
+          "file_name": "5052000319.pdf",
+          "dt_tm": "2019-07-08T08:30:16"
+        },
+        {
+          "year": "2018",
+          "file_name": "5052000318.pdf",
+          "dt_tm": "2018-08-21T12:10:40"
+        },
+        {
+          "year": "2017",
+          "file_name": "5052000317.pdf",
+          "dt_tm": "2017-08-24T11:17:05"
+        },
+        {
+          "year": "2016",
+          "file_name": "5052000316.pdf",
+          "dt_tm": "2016-07-05T11:18:28"
+        },
+        {
+          "year": "2014",
+          "file_name": "5052001214.pdf",
+          "dt_tm": "2015-02-25T10:46:45"
+        },
+        {
+          "year": "2013",
+          "file_name": "5052001213.pdf",
+          "dt_tm": "2014-02-28T11:15:50"
+        },
+        {
+          "year": "2012",
+          "file_name": "5052001212.pdf",
+          "dt_tm": "2013-08-19T16:36:37"
+        },
+        {
+          "year": "2011",
+          "file_name": "5052001211.pdf",
+          "dt_tm": "2012-03-26T00:00:00"
+        },
+        {
+          "year": "2010",
+          "file_name": "5052001210.pdf",
+          "dt_tm": "2012-03-26T00:00:00"
+        }
+      ]
     },
     "results": {
       "ok": true,

@@ -1,7 +1,7 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-08-08T03:00:02.891Z",
+  "fetchedAt": "2026-08-08T14:31:15.445Z",
   "window": {
     "from": "20260510",
     "to": "20260808",
@@ -20,25 +20,36 @@
       "data": []
     },
     "corpActions": {
-      "ok": false,
+      "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260510&TDate=20260808&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
-      "error": "Non-JSON HTML response — wrong endpoint path"
+      "data": []
     },
     "boardMeetings": {
-      "ok": false,
+      "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260510&todate=20260808&scripcode=544225",
       "count": 0,
       "tag": "confirmed",
-      "error": "Non-JSON HTML response — wrong endpoint path"
+      "data": []
     },
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=544225",
-      "count": 0,
+      "count": 2,
       "tag": "confirmed",
-      "data": []
+      "data": [
+        {
+          "year": "2025",
+          "file_name": "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf.pdf",
+          "dt_tm": "2025-07-31T20:20:07.72"
+        },
+        {
+          "year": "2025",
+          "file_name": "7668374f-1f11-44db-bc4c-59b413ae4ddb.pdf.pdf",
+          "dt_tm": "2025-07-31T23:00:28.597"
+        }
+      ]
     },
     "results": {
       "ok": true,

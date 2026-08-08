@@ -1,7 +1,7 @@
 {
   "scrip": "500182",
   "slug": "hero",
-  "fetchedAt": "2026-08-08T02:57:30.857Z",
+  "fetchedAt": "2026-08-08T14:31:06.846Z",
   "window": {
     "from": "20260510",
     "to": "20260808",
@@ -20,11 +20,26 @@
       "data": []
     },
     "corpActions": {
-      "ok": false,
+      "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260510&TDate=20260808&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=500182&segment=0&strSearch=S",
-      "count": 0,
+      "count": 1,
       "tag": "confirmed",
-      "error": "Non-JSON HTML response — wrong endpoint path"
+      "data": [
+        {
+          "scrip_code": 500182,
+          "short_name": "HEROMOTOCO",
+          "Ex_date": "24 Jul 2026",
+          "Purpose": "Final Dividend - Rs. - 75.0000",
+          "RD_Date": "24 Jul 2026",
+          "BCRD_FROM": "",
+          "BCRD_TO": "",
+          "ND_START_DATE": "24 Jul 2026",
+          "ND_END_DATE": "24 Jul 2026",
+          "payment_date": "",
+          "exdate": "20260724",
+          "long_name": "Hero MotoCorp Ltd"
+        }
+      ]
     },
     "boardMeetings": {
       "ok": true,
@@ -36,9 +51,95 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=500182",
-      "count": 0,
+      "count": 17,
       "tag": "confirmed",
-      "data": []
+      "data": [
+        {
+          "year": "2026",
+          "file_name": "b80c703d-600d-472b-a18c-9565f6f780a7.pdf.pdf",
+          "dt_tm": "2026-07-10T21:42:58.233"
+        },
+        {
+          "year": "2025",
+          "file_name": "192e7793-7994-4958-8617-0dd0c3bdc550.pdf.pdf",
+          "dt_tm": "2025-07-12T14:08:13.197"
+        },
+        {
+          "year": "2024",
+          "file_name": "b3adbb03-7068-4761-b1ea-81b5bcfe115a.pdf.pdf",
+          "dt_tm": "2024-07-19T17:07:01.707"
+        },
+        {
+          "year": "2023",
+          "file_name": "\\b2fab600-70be-4d51-92f8-f2cd4118a8af.pdf.pdf",
+          "dt_tm": "2023-07-17T18:53:44.077"
+        },
+        {
+          "year": "2022",
+          "file_name": "73731500182_19_07_22.pdf",
+          "dt_tm": "2022-07-19T14:16:30"
+        },
+        {
+          "year": "2021",
+          "file_name": "68852500182.pdf",
+          "dt_tm": "2021-07-12T13:16:32"
+        },
+        {
+          "year": "2020",
+          "file_name": "5001820320.pdf",
+          "dt_tm": "2020-07-20T12:19:12"
+        },
+        {
+          "year": "2019",
+          "file_name": "5001820319.pdf",
+          "dt_tm": "2019-07-05T10:49:32"
+        },
+        {
+          "year": "2018",
+          "file_name": "5001820318.pdf",
+          "dt_tm": "2018-07-27T11:53:10"
+        },
+        {
+          "year": "2017",
+          "file_name": "5001820317.pdf",
+          "dt_tm": "2017-07-15T10:59:50"
+        },
+        {
+          "year": "2016",
+          "file_name": "5001820316.pdf",
+          "dt_tm": "2016-09-28T14:26:26"
+        },
+        {
+          "year": "2015",
+          "file_name": "5001820315.pdf",
+          "dt_tm": "2015-08-16T11:16:05"
+        },
+        {
+          "year": "2014",
+          "file_name": "5001820314.pdf",
+          "dt_tm": "2014-09-05T17:50:18"
+        },
+        {
+          "year": "2013",
+          "file_name": "5001820313.pdf",
+          "dt_tm": "2013-09-23T18:05:42"
+        },
+        {
+          "year": "2012",
+          "file_name": "5001820312.pdf",
+          "dt_tm": "2012-08-25T12:20:09"
+        },
+        {
+          "year": "2011",
+          "file_name": "5001820311.pdf",
+          "dt_tm": "2012-03-26T00:00:00"
+        },
+        {
+          "year": "2010",
+          "file_name": "5001820310.pdf",
+          "dt_tm": "2012-03-26T00:00:00"
+        }
+      ]
     },
     "results": {
       "ok": true,
