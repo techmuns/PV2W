@@ -7,35 +7,35 @@
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "sales_volume_domestic": {
         "value": 1793644,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "sales_volume_export": {
         "value": 283067,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-sales-in-march-2024",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "net_sales_cr": {
         "value": 134938,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-announces-financial-results-for-fy2023-24",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "pat_cr": {
         "value": 13209,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2024/april/maruti-suzuki-announces-financial-results-for-fy2023-24",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       }
     },
     "FY25": {
@@ -44,35 +44,35 @@
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "sales_volume_domestic": {
         "value": 1795259,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "sales_volume_export": {
         "value": 332585,
         "unit": "units",
         "source": "Maruti monthly sales press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-sales-in-march-2025",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "net_sales_cr": {
         "value": 145115,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "pat_cr": {
         "value": 13955,
         "unit": "₹ Cr",
         "source": "Maruti FY financial results press release",
         "source_url": "https://www.marutisuzuki.com/corporate/media/press-releases/2025/april/maruti-suzuki-announces-financial-results-for-fy2024-25",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       }
     },
     "Screener": {
@@ -335,7 +335,7 @@
       "problems": []
     },
     "Tickertape": {
-      "fetched_at": "2026-08-18T04:07:29.665Z",
+      "fetched_at": "2026-08-19T04:07:56.226Z",
       "source_url": "https://www.tickertape.in/stocks/maruti-suzuki-india-MARU",
       "by_fy": {},
       "problems": [
@@ -343,7 +343,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-08-18T04:07:32.748Z",
+      "fetched_at": "2026-08-19T04:08:03.656Z",
       "source_url": "https://www.moneycontrol.com/financials/marutisuzukiindia/balance-sheetVI/MS24",
       "by_fy": {},
       "problems": [
@@ -359,7 +359,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "export_volume": {
         "value": 599,
@@ -375,7 +375,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "ebitda_margin_pct": {
         "value": 13.1,
@@ -383,7 +383,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "pat_cr": {
         "value": 6060,
@@ -391,7 +391,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       }
     },
     "FY25": {
@@ -401,7 +401,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "export_volume": {
         "value": 163000,
@@ -409,7 +409,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "suv_mix_pct": {
         "value": 68.5,
@@ -417,7 +417,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "revenue_cr": {
         "value": 69193,
@@ -425,7 +425,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "ebitda_margin_pct": {
         "value": 12.9,
@@ -433,7 +433,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "pat_cr": {
         "value": 5640,
@@ -441,7 +441,7 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "domestic_volume": {
         "value": 599000,
@@ -449,11 +449,11 @@
         "scope": "Standalone",
         "source": "Hyundai Q4 audited standalone results PR",
         "source_url": "https://www.hyundai.com/content/dam/hyundai/in/en/data/investor-relations/annoucements/pressrelease-audited-standalone.pdf",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       }
     },
     "Tijori": {
-      "fetched_at": "2026-08-18T04:07:23.060Z",
+      "fetched_at": "2026-08-19T04:07:45.517Z",
       "source_url": "https://www.tijorifinance.com/company/hyundai-motor-india-ltd/",
       "by_fy": {},
       "problems": [
@@ -462,7 +462,7 @@
       ]
     },
     "Screener": {
-      "fetched_at": "2026-08-18T04:07:27.766Z",
+      "fetched_at": "2026-08-19T04:07:49.423Z",
       "source_url": "https://www.screener.in/company/HYUNDAI/",
       "basis": "Hyundai Motor India standalone P&L + cash flow (per Screener; pre-FY18 from DRHP bootstrap)",
       "by_fy": {
@@ -621,7 +621,7 @@
       "problems": []
     },
     "Moneycontrol": {
-      "fetched_at": "2026-08-18T04:07:33.614Z",
+      "fetched_at": "2026-08-19T04:08:04.913Z",
       "source_url": "https://www.moneycontrol.com/financials/hyundaimotorindia/balance-sheetVI/HMI01",
       "by_fy": {},
       "problems": [
@@ -645,7 +645,7 @@
         "scope": "Auto segment",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/mm-results-q4-fy24-and-fy24",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       }
     },
     "FY25": {
@@ -655,7 +655,7 @@
         "scope": "Consolidated",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "consol_pat_cr": {
         "value": 12929,
@@ -663,7 +663,7 @@
         "scope": "Consolidated",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "auto_revenue_cr": {
         "value": 90825,
@@ -671,7 +671,7 @@
         "scope": "Auto segment",
         "source": "M&M Q4 + FY results PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mm-results-q4-fy25-and-fy25",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       },
       "suv_volume": {
         "value": 551487,
@@ -679,7 +679,7 @@
         "scope": "Auto segment",
         "source": "M&M monthly auto sales PR",
         "source_url": "https://www.mahindra.com/news-room/press-release/en/mahindra-auto-sells-48048-SUVs-a-growth-of-18-percents-and-total-volumes-of-83894-a-growth-of-23-percents-in-march-2025",
-        "last_updated": "2026-08-18"
+        "last_updated": "2026-08-19"
       }
     },
     "Screener": {
@@ -989,7 +989,7 @@
       "problems": []
     },
     "Tijori": {
-      "fetched_at": "2026-08-18T04:07:24.016Z",
+      "fetched_at": "2026-08-19T04:07:46.339Z",
       "source_url": "https://www.tijorifinance.com/company/mahindra-and-mahindra-ltd/",
       "by_fy": {},
       "problems": [
@@ -998,7 +998,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-08-18T04:07:34.460Z",
+      "fetched_at": "2026-08-19T04:08:06.001Z",
       "source_url": "https://www.moneycontrol.com/financials/mahindramahindra/balance-sheetVI/MM",
       "by_fy": {},
       "problems": [
@@ -1100,7 +1100,7 @@
       }
     },
     "Tijori": {
-      "fetched_at": "2026-08-18T04:07:24.578Z",
+      "fetched_at": "2026-08-19T04:07:47.172Z",
       "source_url": "https://www.tijorifinance.com/company/tata-motors-ltd/",
       "by_fy": {},
       "problems": [
@@ -1109,7 +1109,7 @@
       ]
     },
     "Moneycontrol": {
-      "fetched_at": "2026-08-18T04:07:35.844Z",
+      "fetched_at": "2026-08-19T04:08:08.355Z",
       "source_url": "https://www.moneycontrol.com/financials/tatamotors/balance-sheetVI/TM03",
       "by_fy": {},
       "problems": [
