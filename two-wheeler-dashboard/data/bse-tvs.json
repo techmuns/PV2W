@@ -1,7 +1,7 @@
 {
   "scrip": "532343",
   "slug": "tvs",
-  "fetchedAt": "2026-08-22T02:15:17.002Z",
+  "fetchedAt": "2026-08-22T14:20:52.127Z",
   "window": {
     "from": "20260524",
     "to": "20260822",
@@ -20,11 +20,11 @@
       "data": []
     },
     "corpActions": {
-      "ok": true,
+      "ok": false,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260524&TDate=20260822&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532343&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "Non-JSON HTML response — wrong endpoint path"
     },
     "boardMeetings": {
       "ok": true,

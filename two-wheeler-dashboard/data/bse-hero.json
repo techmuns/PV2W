@@ -1,7 +1,7 @@
 {
   "scrip": "500182",
   "slug": "hero",
-  "fetchedAt": "2026-08-22T02:15:25.837Z",
+  "fetchedAt": "2026-08-22T14:21:47.071Z",
   "window": {
     "from": "20260524",
     "to": "20260822",
@@ -20,26 +20,11 @@
       "data": []
     },
     "corpActions": {
-      "ok": true,
+      "ok": false,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260524&TDate=20260822&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=500182&segment=0&strSearch=S",
-      "count": 1,
+      "count": 0,
       "tag": "confirmed",
-      "data": [
-        {
-          "scrip_code": 500182,
-          "short_name": "HEROMOTOCO",
-          "Ex_date": "24 Jul 2026",
-          "Purpose": "Final Dividend - Rs. - 75.0000",
-          "RD_Date": "24 Jul 2026",
-          "BCRD_FROM": "",
-          "BCRD_TO": "",
-          "ND_START_DATE": "24 Jul 2026",
-          "ND_END_DATE": "24 Jul 2026",
-          "payment_date": "",
-          "exdate": "20260724",
-          "long_name": "Hero MotoCorp Ltd"
-        }
-      ]
+      "error": "Non-JSON HTML response — wrong endpoint path"
     },
     "boardMeetings": {
       "ok": true,
