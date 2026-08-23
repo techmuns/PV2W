@@ -1,10 +1,10 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-08-22T14:22:36.387Z",
+  "fetchedAt": "2026-08-23T02:22:49.687Z",
   "window": {
-    "from": "20260524",
-    "to": "20260822",
+    "from": "20260525",
+    "to": "20260823",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,21 +14,36 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260524&strScrip=505200&strSearch=P&strToDate=20260822&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260525&strScrip=505200&strSearch=P&strToDate=20260823&strType=C",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "corpActions": {
-      "ok": false,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260524&TDate=20260822&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
-      "count": 0,
+      "ok": true,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260525&TDate=20260823&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
+      "count": 1,
       "tag": "confirmed",
-      "error": "Non-JSON HTML response — wrong endpoint path"
+      "data": [
+        {
+          "scrip_code": 505200,
+          "short_name": "EICHERMOT",
+          "Ex_date": "31 Jul 2026",
+          "Purpose": "Final Dividend - Rs. - 82.0000",
+          "RD_Date": "31 Jul 2026",
+          "BCRD_FROM": "",
+          "BCRD_TO": "",
+          "ND_START_DATE": "31 Jul 2026",
+          "ND_END_DATE": "31 Jul 2026",
+          "payment_date": "",
+          "exdate": "20260731",
+          "long_name": "Eicher Motors Ltd"
+        }
+      ]
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260524&todate=20260822&scripcode=505200",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260525&todate=20260823&scripcode=505200",
       "count": 0,
       "tag": "confirmed",
       "data": []
