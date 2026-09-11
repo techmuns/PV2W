@@ -1,10 +1,10 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-09-10T17:30:39.751Z",
+  "fetchedAt": "2026-09-11T05:40:49.092Z",
   "window": {
-    "from": "20260612",
-    "to": "20260910",
+    "from": "20260613",
+    "to": "20260911",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,21 +14,21 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260612&strScrip=544225&strSearch=P&strToDate=20260910&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260613&strScrip=544225&strSearch=P&strToDate=20260911&strType=C",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260612&TDate=20260910&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260613&TDate=20260911&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260612&todate=20260910&scripcode=544225",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260613&todate=20260911&scripcode=544225",
       "count": 0,
       "tag": "confirmed",
       "data": []
@@ -36,14 +36,9 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=544225",
-      "count": 3,
+      "count": 2,
       "tag": "confirmed",
       "data": [
-        {
-          "year": "2026",
-          "file_name": "e163f5cd-dad3-411b-8f2f-9c2b9ee4c1c0.pdf.pdf",
-          "dt_tm": "2026-09-08T22:34:08.077"
-        },
         {
           "year": "2025",
           "file_name": "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf.pdf",

@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-09-10T17:30:54.201Z",
+  "ranAt": "2026-09-11T05:41:06.672Z",
   "entries": [
     {
       "slug": "bajaj",
@@ -197,12 +197,6 @@
       "slug": "eicher",
       "year": 2010,
       "txtPath": "src/data/source-text/EICHER_2010.txt",
-      "status": "already-present"
-    },
-    {
-      "slug": "ola-electric",
-      "year": 2026,
-      "txtPath": "src/data/source-text/OLA_2026.txt",
       "status": "already-present"
     },
     {
