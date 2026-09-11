@@ -1,7 +1,7 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-09-11T05:40:49.092Z",
+  "fetchedAt": "2026-09-11T17:33:11.246Z",
   "window": {
     "from": "20260613",
     "to": "20260911",
@@ -36,9 +36,14 @@
     "annualReports": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=544225",
-      "count": 2,
+      "count": 3,
       "tag": "confirmed",
       "data": [
+        {
+          "year": "2026",
+          "file_name": "e163f5cd-dad3-411b-8f2f-9c2b9ee4c1c0.pdf.pdf",
+          "dt_tm": "2026-09-08T22:34:08.077"
+        },
         {
           "year": "2025",
           "file_name": "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf.pdf",
