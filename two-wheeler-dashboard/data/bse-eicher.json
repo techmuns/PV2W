@@ -1,10 +1,10 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-09-19T17:00:58.971Z",
+  "fetchedAt": "2026-09-20T05:45:32.290Z",
   "window": {
-    "from": "20260621",
-    "to": "20260919",
+    "from": "20260622",
+    "to": "20260920",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,14 +14,14 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260621&strScrip=505200&strSearch=P&strToDate=20260919&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260622&strScrip=505200&strSearch=P&strToDate=20260920&strType=C",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260621&TDate=20260919&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260622&TDate=20260920&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=505200&segment=0&strSearch=S",
       "count": 1,
       "tag": "confirmed",
       "data": [
@@ -43,7 +43,7 @@
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260621&todate=20260919&scripcode=505200",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260622&todate=20260920&scripcode=505200",
       "count": 0,
       "tag": "confirmed",
       "data": []
