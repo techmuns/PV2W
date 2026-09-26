@@ -1,10 +1,10 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-09-25T18:14:19.384Z",
+  "fetchedAt": "2026-09-26T05:57:44.741Z",
   "window": {
-    "from": "20260627",
-    "to": "20260925",
+    "from": "20260628",
+    "to": "20260926",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -13,56 +13,40 @@
   },
   "categories": {
     "announcements": {
-      "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260627&strScrip=544225&strSearch=P&strToDate=20260925&strType=C",
+      "ok": false,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260628&strScrip=544225&strSearch=P&strToDate=20260926&strType=C",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "HTTP 403"
     },
     "corpActions": {
-      "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260627&TDate=20260925&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
+      "ok": false,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260628&TDate=20260926&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "HTTP 403"
     },
     "boardMeetings": {
-      "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260627&todate=20260925&scripcode=544225",
+      "ok": false,
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260628&todate=20260926&scripcode=544225",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "HTTP 403"
     },
     "annualReports": {
-      "ok": true,
+      "ok": false,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?scripcode=544225",
-      "count": 3,
+      "count": 0,
       "tag": "confirmed",
-      "data": [
-        {
-          "year": "2026",
-          "file_name": "e163f5cd-dad3-411b-8f2f-9c2b9ee4c1c0.pdf.pdf",
-          "dt_tm": "2026-09-08T22:34:08.077"
-        },
-        {
-          "year": "2025",
-          "file_name": "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf.pdf",
-          "dt_tm": "2025-07-31T20:20:07.72"
-        },
-        {
-          "year": "2025",
-          "file_name": "7668374f-1f11-44db-bc4c-59b413ae4ddb.pdf.pdf",
-          "dt_tm": "2025-07-31T23:00:28.597"
-        }
-      ]
+      "error": "HTTP 403"
     },
     "results": {
-      "ok": true,
+      "ok": false,
       "url": null,
       "count": 0,
       "tag": "derived",
       "derivedFrom": "announcements",
-      "data": []
+      "error": "announcements not available"
     }
   }
 }
