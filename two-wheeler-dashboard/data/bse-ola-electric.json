@@ -1,10 +1,10 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-10-09T19:21:18.017Z",
+  "fetchedAt": "2026-10-10T06:47:39.117Z",
   "window": {
-    "from": "20260711",
-    "to": "20261009",
+    "from": "20260712",
+    "to": "20261010",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,21 +14,21 @@
   "categories": {
     "announcements": {
       "ok": false,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260711&strScrip=544225&strSearch=P&strToDate=20261009&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260712&strScrip=544225&strSearch=P&strToDate=20261010&strType=C",
       "count": 0,
       "tag": "confirmed",
       "error": "HTTP 403"
     },
     "corpActions": {
       "ok": false,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260711&TDate=20261009&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260712&TDate=20261010&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=544225&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "error": "HTTP 403"
     },
     "boardMeetings": {
       "ok": false,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260711&todate=20261009&scripcode=544225",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260712&todate=20261010&scripcode=544225",
       "count": 0,
       "tag": "confirmed",
       "error": "HTTP 403"
