@@ -1,7 +1,7 @@
 {
   "scrip": "544225",
   "slug": "ola-electric",
-  "fetchedAt": "2026-11-12T07:59:10.143Z",
+  "fetchedAt": "2026-11-12T21:18:57.481Z",
   "window": {
     "from": "20260814",
     "to": "20261112",
@@ -44,17 +44,9 @@
     "boardMeetings": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260814&todate=20261112&scripcode=544225",
-      "count": 1,
+      "count": 0,
       "tag": "confirmed",
-      "data": [
-        {
-          "scrip_Code": "544225",
-          "short_name": "OLAELEC",
-          "Long_Name": "Ola Electric Mobility Ltd",
-          "meeting_date": "12 Nov 2026",
-          "URL": "https://www.bseindia.com/stock-share-price/ola-electric-mobility-ltd/olaelec/544225/"
-        }
-      ]
+      "data": []
     },
     "annualReports": {
       "ok": true,
