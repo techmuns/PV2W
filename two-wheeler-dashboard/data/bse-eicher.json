@@ -1,7 +1,7 @@
 {
   "scrip": "505200",
   "slug": "eicher",
-  "fetchedAt": "2026-11-13T07:37:53.258Z",
+  "fetchedAt": "2026-11-13T20:46:56.528Z",
   "window": {
     "from": "20260815",
     "to": "20261113",
@@ -29,17 +29,9 @@
     "boardMeetings": {
       "ok": true,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260815&todate=20261113&scripcode=505200",
-      "count": 1,
+      "count": 0,
       "tag": "confirmed",
-      "data": [
-        {
-          "scrip_Code": "505200",
-          "short_name": "EICHERMOT",
-          "Long_Name": "Eicher Motors Ltd",
-          "meeting_date": "13 Nov 2026",
-          "URL": "https://www.bseindia.com/stock-share-price/eicher-motors-ltd/eichermot/505200/"
-        }
-      ]
+      "data": []
     },
     "annualReports": {
       "ok": true,

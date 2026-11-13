@@ -1,7 +1,7 @@
 {
   "scrip": "532977",
   "slug": "bajaj",
-  "fetchedAt": "2026-11-13T07:37:43.668Z",
+  "fetchedAt": "2026-11-13T20:46:46.955Z",
   "window": {
     "from": "20260815",
     "to": "20261113",
@@ -20,11 +20,11 @@
       "data": []
     },
     "corpActions": {
-      "ok": true,
+      "ok": false,
       "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260815&TDate=20261113&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532977&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
-      "data": []
+      "error": "Non-JSON HTML response — wrong endpoint path"
     },
     "boardMeetings": {
       "ok": true,
