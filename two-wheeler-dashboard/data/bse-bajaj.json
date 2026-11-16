@@ -1,10 +1,10 @@
 {
   "scrip": "532977",
   "slug": "bajaj",
-  "fetchedAt": "2026-11-15T19:33:08.608Z",
+  "fetchedAt": "2026-11-16T07:49:10.157Z",
   "window": {
-    "from": "20260817",
-    "to": "20261115",
+    "from": "20260818",
+    "to": "20261116",
     "days": 90
   },
   "pdfBase": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -14,21 +14,21 @@
   "categories": {
     "announcements": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260817&strScrip=532977&strSearch=P&strToDate=20261115&strType=C",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?pageno=1&strCat=-1&strPrevDate=20260818&strScrip=532977&strSearch=P&strToDate=20261116&strType=C",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "corpActions": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260817&TDate=20261115&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532977&segment=0&strSearch=S",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=20260818&TDate=20261116&Purposecode=&ddlcategorys=E&ddlindustrys=&scripcode=532977&segment=0&strSearch=S",
       "count": 0,
       "tag": "confirmed",
       "data": []
     },
     "boardMeetings": {
       "ok": true,
-      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260817&todate=20261115&scripcode=532977",
+      "url": "https://api.bseindia.com/BseIndiaAPI/api/Corpforthresults/w?fromdate=20260818&todate=20261116&scripcode=532977",
       "count": 0,
       "tag": "confirmed",
       "data": []
