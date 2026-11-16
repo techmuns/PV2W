@@ -10,7 +10,7 @@
     "ratios": "https://www.screener.in/company/TVSMOTOR/consolidated/#ratios",
     "quarters": "https://www.screener.in/company/TVSMOTOR/consolidated/#quarters"
   },
-  "fetchedAt": "2026-11-02T11:19:23.638Z",
+  "fetchedAt": "2026-11-16T11:28:59.552Z",
   "profitLoss": {
     "periods": [
       "FY15",
@@ -42,6 +42,21 @@
         44089,
         56070,
         65578
+      ],
+      "Sales growth": [
+        22,
+        11,
+        10,
+        31,
+        23,
+        -6,
+        3,
+        25,
+        31,
+        21,
+        14,
+        27,
+        34
       ],
       "Expenses": [
         9650,
@@ -614,6 +629,21 @@
         15053,
         16296,
         19474
+      ],
+      "YoY Sales growth": [
+        16,
+        25,
+        24,
+        14,
+        14,
+        9,
+        16,
+        18,
+        24,
+        34,
+        30,
+        33,
+        39
       ],
       "Expenses": [
         8588,
